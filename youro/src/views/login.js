@@ -14,12 +14,13 @@ const Login= () =>
   } = useForm();
 
   const onSubmit = (data) =>{
-    toast.error('Oops!! Wrong credentials');
-    // axios.post("", data).then((res) => {
-    //     toast.success("Successful login")
-    // }).catch((res) => {
-    //     toast.error('Oops!! Wrong credentials')
-    // })
+    console.log(data);
+    axios.post("http://localhost:9092/youro/api/v1/login", data).then((res) => {
+        toast.success("Successful login")
+    }).catch((res) => {
+        console.error(res.response.data.errorMessage)
+        toast.error('Oops!! ' + res.response.data.errorMessage)
+    });
   }
    
    return (
@@ -30,7 +31,7 @@ const Login= () =>
              <div className="Login-Form-Container">
                 <div>
                 <label>Email</label>
-                        <input className="input-field input-border" type="text" {...register("email", {
+                        <input className="input-field input-border" type="text" {...register("username", {
                                   required: true,
                                   maxLength: 32,
                                   pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/

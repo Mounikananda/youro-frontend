@@ -1,5 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from 'react-toastify';
+import axios from "axios";
 
 const PrivacyPolicy = (props) => {
   const {
@@ -10,11 +12,24 @@ const PrivacyPolicy = (props) => {
   } = useForm();
 
   const onSubmit = () => {
-    console.log(props.data)
+    let usrData = props.data;
+    usrData['userType'] = 'ADMIN';
+    usrData['hasInsurance'] = 'true';
+    //  "hasInsurance": true,
+    console.log("usr data :: ");
+    console.log(usrData);
+    axios.post("http://localhost:9092/youro/api/v1/register", usrData).then((res) => {
+        console.log("register success");
+        toast.success("Registration success")
+    }).catch((res) => {
+        console.error(res.response.data.errorMessage)
+        toast.error('Oops!! ' + res.response.data.errorMessage)
+    });
   }
 
   return (
     <div className="PatientAddress-container">
+      <ToastContainer />
      <h1> youro</h1>
      <div className="policy-container">
         <h2>Terms of Service, Privacy Policy and HIPAA Notice</h2>
