@@ -29,6 +29,7 @@ function App() {
         <Route path='/policy' element={<Policy/>}></Route>
         <Route path='/telehealth-consent' element={<Telehealth/>}></Route>
         <Route path='/terms-conditions' element={<Terms/>}></Route>
+        
      </Routes>
     </Router>
     

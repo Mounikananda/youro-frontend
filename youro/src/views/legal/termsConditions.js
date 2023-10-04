@@ -1,11 +1,13 @@
 import React from "react";
+import "../../styles/Policies.css"
 
 const Terms = () => {
     return (
         <>
+        <div className="policies">
             <h2> Youro Terms of Service
  </h2>
-
+        <div className=".policies-content">  
  <div>
 <h3><strong>&nbsp;</strong></h3>
 <p>BY CLICKING "I AGREE," CHECKING A RELATED BOX TO SIGNIFY YOUR ACCEPTANCE, USING ANY OTHER ACCEPTANCE PROTOCOL PRESENTED THROUGH THE SERVICE (AS DEFINED BELOW), OR OTHERWISE AFFIRMATIVELY ACCEPTING THESE TERMS AND CONDITIONS, YOU ACKNOWLEDGE THAT YOU HAVE READ, ACCEPTED, AND AGREED TO BE BOUND BY THIS AGREEMENT. IF YOU DO NOT AGREE TO THESE TERMS AND CONDITIONS, DO NOT CREATE AN ACCOUNT OR USE THE SERVICE. YOU HEREBY GRANT AGENCY AUTHORITY TO ANY PARTY WHO CLICKS ON THE "I AGREE" BUTTON OR OTHERWISE INDICATES ACCEPTANCE TO THESE TERMS AND CONDITIONS ON YOUR BEHALF.</p>
@@ -149,6 +151,9 @@ const Terms = () => {
 <p>If you have any questions or concerns about this Agreement, please contact us by email at support@youro.com. We will attempt to respond to your questions or concerns promptly after we receive them.</p>
 </div>
 
+    
+       </div>
+       </div> 
         </>
     )
 }

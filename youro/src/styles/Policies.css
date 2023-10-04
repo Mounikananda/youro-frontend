@@ -1,0 +1,17 @@
+@import "../App.css";
+
+.policies
+{
+  justify-content: start;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin: 20px 80px;
+}
+
+.policies-content
+{
+  display: flex;
+  align-items: start;
+  margin: 55px;
+}

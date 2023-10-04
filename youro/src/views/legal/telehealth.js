@@ -1,10 +1,13 @@
 import React from "react";
+import "../../styles/Policies.css"
 
 const Telehealth = () => {
     return (
+         <div className="policies">
         <>
-            <h2> Informed Consent Regarding Use of Telehealth
- </h2>
+            <h2> Informed Consent Regarding Use of Telehealth</h2>
+            
+ 
 
             <p dir="ltr"><span>By indicating your agreement, whether through clicking &ldquo;I Agree,&rdquo; checking a related box, or any other acceptance protocol presented via the Youro platform, you acknowledge that you have read, accepted, and agreed to be bound by this consent. If you disagree, please refrain from creating an account or using our service. You hereby grant agency authority to any party who expresses acceptance on your behalf.</span></p>
 <p dir="ltr"><span>If you are facing a life-threatening situation, such as contemplating suicide, contact 911 or the emergency helpline at 988.</span></p>
@@ -22,6 +25,7 @@ const Telehealth = () => {
 <p><span>&nbsp;</span></p>
 
         </>
+       </div>
     )
 }
 

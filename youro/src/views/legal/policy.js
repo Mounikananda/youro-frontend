@@ -1,11 +1,13 @@
 import React from "react";
+import "../../styles/Policies.css"
+
 
 const Policy = () => {
     return (
-        <>
-            <h2> Privacy Policy</h2>
-
-            <div>
+        <div className="policies">
+         <h2> Privacy Policy</h2>
+        <div >
+            <div className=".policies-content" >
 <p><strong>Introduction</strong></p>
 <p>Youro Health, Inc. and its affiliated entities ("Youro Health," "we," or "us") are the proprietors of the websites, namely<a href="http://www.youro.com/">www.youro.com</a>?. Additionally, we may presently or in the future own and/or operate a Youro mobile application (collectively referred to as the "Platform"). Your utilization of the Platform, any associated content ("Content"), products, or services provided by Youro Health, and any affiliated website, software, or application operated by Youro Health (collectively, including the Platform and the Content, the "Service") is subject to this Privacy Policy, unless explicitly stated otherwise. Terms not defined herein have the same meanings as set forth in the Youro Health Terms and Conditions.</p>
 <p>We are dedicated to upholding the privacy of Service users. This Privacy Policy explains how Youro Health collects, utilizes, and discloses information to provide you with the Service.</p>
@@ -158,7 +160,8 @@ const Policy = () => {
 <p>For inquiries about this Privacy Policy, contact us at privacy@youro.com.</p>
 </div>
 <p>&nbsp;</p>
-        </>
+        </div>
+       </div>
     )
 }
 
