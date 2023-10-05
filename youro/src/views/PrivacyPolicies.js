@@ -14,7 +14,9 @@ const PrivacyPolicy = (props) => {
   const onSubmit = () => {
     let usrData = props.data;
     usrData['userType'] = props.uType;
-    usrData['hasInsurance'] = 'true';
+    usrData['subscription'] = props.subscription;
+    usrData['hasInsurance'] = usrData['hasInsurance'] == undefined ? true : (usrData['hasInsurance'] == 'no' ? false : true);
+    console.clear();
     console.log("usr data :: ");
     console.log(usrData);
     axios.post("http://localhost:9092/youro/api/v1/register", usrData).then((res) => {

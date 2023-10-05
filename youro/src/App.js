@@ -15,6 +15,16 @@ import Terms from './views/legal/termsConditions';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
+
+export const uTypes = {
+  user : 'USER',
+  doctor : 'PROVIDER',
+  admin : 'ADMIN'
+};
+export const subscriptionStatus = {
+  active : 'ACTIVE',
+  inActive : 'INACTIVE'
+}
 function App() {
   return ( 
     <>

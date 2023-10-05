@@ -5,14 +5,9 @@ import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import Patientaddress from "./PatientAddress";
 import PrivacyPolicy from "./PrivacyPolicies";
-
+import { uTypes } from "../App";
+import { subscriptionStatus } from "../App";
 const SignupforMyself = () => {
-
-  const uTypes = {
-    user : 'USER',
-    doctor : 'PROVIDER',
-    admin : 'ADMIN'
-  };
   const {
     register,
     handleSubmit,
@@ -123,7 +118,7 @@ const SignupforMyself = () => {
       }
 
       {step === 1 && <Patientaddress data={data} step2Data={step2Data} />}
-      {step === 2 && <PrivacyPolicy data={data} uType="USER" subscription="ACTIVE"/>}
+      {step === 2 && <PrivacyPolicy data={data} uType={uTypes.user} subscription={subscriptionStatus.active}/>}
 
     </div>
   )
