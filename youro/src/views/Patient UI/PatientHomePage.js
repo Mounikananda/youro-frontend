@@ -15,7 +15,7 @@ import Popmenu from './Popupmenu';
 const PatientHomePage =()=>
 {
   const [isLoading, setIsLoading] = useState(true);
-
+  
   const CarePlan = () => {
   const [data, setData] = useState([]);
    const [activeLoader, setActiveLoader] = useState(false);
