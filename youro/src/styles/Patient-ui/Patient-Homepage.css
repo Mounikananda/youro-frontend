@@ -1,11 +1,21 @@
 @import "../../App.css";
 
 
+
 .hm
 {
   display: flex;
   width: 100%;
   overflow-x: hidden;
+}
+
+.header
+{
+   display: flex;
+   justify-content: space-between;
+   flex-direction: column;
+   /* border: 1px solid black; */
+   margin-left: 20px;
 }
 .sidebar
 {

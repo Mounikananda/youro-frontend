@@ -1,0 +1,38 @@
+
+
+/* Popmenu.css */
+
+/* Style for the button that opens the popup */
+.open-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+
+/* Style for the popup */
+.popup {
+  width: 300px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background-color: white;
+}
+
+/* Style for the close button (X) */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Style for the popup content */
+.popup-content {
+  text-align: center;
+}
+
+/* Add any additional styles you need */

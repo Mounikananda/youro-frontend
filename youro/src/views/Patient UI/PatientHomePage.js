@@ -9,12 +9,12 @@ import SideBar from './SideBar';
 import PatientSymptomChart from './Patient-symptom-chart';
 import Loader from '../../utils/loader';
 import axios from 'axios';
-
+import Popup from 'reactjs-popup';
+import Popmenu from './Popupmenu';
 
 
 const PatientHomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
-
   const uId = 2; //have to configure with the flow to get the patientId from backend
   const CarePlan = () => {
     const [data, setData] = useState([]);
@@ -219,12 +219,37 @@ const PatientHomePage = () => {
 
 
   return (
-    <div className='hm'>
-      <div className='sidebar'>
-        <SideBar />
-      </div>
-      <div className='care-plan'>
-        <h1>youro</h1>
+    <div>
+        {data.map((item) => (
+          <div className='previous-appointment'> 
+           <div>
+            <h3 >{item.time} - {item.name}</h3>
+           </div>
+             <ul key={item.id}>
+             <li>Diagnosisname: {item.diagnosisname}</li>
+             <li style={ {textDecoration:'underline',color:'#9CB189'}}>view careplan and note provided</li>
+             <li>Symptom score: {item.symptomscore}</li>
+              {/* <p>{item.meetup}</p> */}
+             </ul>
+          </div> 
+        ))}
+    </div>
+    ); 
+  }
+
+
+ 
+   return (
+     <div className='hm'>
+        <div className='sidebar'>
+         <SideBar/>
+       </div>
+       <div className='care-plan'>
+        <div className='header'>
+          <h1>youro</h1>
+          <Popmenu/>
+        </div>
+         
         <div className='all-details'>
           <div className='care-plan-details-patient'>
             <h2>Your Care Plan</h2>
