@@ -1,8 +1,11 @@
 import React from "react";
 import "../styles/Home.css";
-import Benefits from '../assets/svgs/Benefits.svg'
+import Benefits from '../assets/svgs/Benefits.svg';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+
+    const navigate = useNavigate();
 
     const handleClick = () => {
         const element = document.getElementById('scroll-words');
@@ -33,7 +36,7 @@ const Home = () => {
                 <div class="flip-card-inner">
                     <div class="flip-card-front">
                     <img src={props.img} alt="Avatar" style={{width: '300px', height: '300px'}} />
-                    <p className="flip-heading">INFERTILITY</p>
+                    <p className="flip-heading">DIAGNOSIS</p>
                     </div>
                     <div class="flip-card-back" style={{width: '300px',}}>
                     <p style={{wordBreak: 'break-word', whiteSpace: 'normal', padding: '20px',}}>{props.info}</p>
@@ -51,14 +54,14 @@ const Home = () => {
             <div className="nav-bar">
                 <div><h1>youro</h1></div>
                 <div className="nav-bar-login">
-                    <div className="btn-login">Login</div>
-                    <div className="btn-filled">Signup</div>
+                    <div className="btn-login" onClick={() => navigate('/login')}>Login</div>
+                    <div className="btn-filled" onClick={() => navigate('/signup')}>Signup</div>
                 </div>
             </div>
             <div className="hero">
                 <div style={{width: "65%"}}>
                 <p className="hero-heading">Your urologic wellness journey starts here</p>
-                <div className="btn-neon" style={{width: 'fit-content'}}>Join now</div>
+                <div className="btn-neon" style={{width: 'fit-content'}} onClick={() => navigate('/signup')}>Join now</div>
                 <p style={{marginTop: "30px", marginBottom: "70px"}}>1-on-1 urologic care, evidence-based clinical excellence, personalized treatments shipped to you - all from the comfort of your home.</p>
                 </div>
                 
@@ -102,7 +105,7 @@ const Home = () => {
                 <div className="diagnosis">
                     <div id="container">
                         <div id="objects">
-                        <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
+                        <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://drrahulyadav.com/wp-content/uploads/2020/02/9.png'/>
                         <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
                         <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
                         <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
@@ -138,7 +141,7 @@ const Home = () => {
 
                 <div style={{width: 'fit-content', margin: '70px auto'}}>
                     <p style={{fontSize: '24px', fontWeight: '700'}}>Take control of your urologic health anytime, anywhere with <span style={{color: 'var(--secondary-color)', }}>youro.</span></p>
-                    <div className="btn-outlined" style={{margin: '0px auto'}}>Join Now</div>
+                    <div className="btn-outlined" style={{margin: '0px auto'}} onClick={() => navigate('/signup')}>Join Now</div>
                 </div>
 
                 <div style={{height: '200px', backgroundColor: 'var(--secondary-color)'}}>
