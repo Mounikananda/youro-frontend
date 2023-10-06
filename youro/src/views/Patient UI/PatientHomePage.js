@@ -8,14 +8,14 @@ import "../../styles/Patient-ui/Patient-Homepage.css";
 import SideBar from './SideBar';
 import PatientSymptomChart from './Patient-symptom-chart';
 import Loader from '../../utils/loader';
-
+import Popup from 'reactjs-popup';
+import Popmenu from './Popupmenu';
 
 
 const PatientHomePage =()=>
 {
   const [isLoading, setIsLoading] = useState(true);
-
-
+  
   const CarePlan = () => {
   const [data, setData] = useState([]);
    const [activeLoader, setActiveLoader] = useState(false);
@@ -133,7 +133,11 @@ const PatientHomePage =()=>
          <SideBar/>
        </div>
        <div className='care-plan'>
-        <h1>youro</h1>
+        <div className='header'>
+          <h1>youro</h1>
+          <Popmenu/>
+        </div>
+         
         <div className='all-details'>
         <div className='care-plan-details-patient'>
           <h2>Your Care Plan</h2>
