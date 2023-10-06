@@ -3,6 +3,7 @@
   --secondary-color: #9CB189;
   --neon-color: #E5FF7E;
   --error-color: #ff0033;
+  --shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .color-secondary {
@@ -35,7 +36,43 @@
 }
 
 .btn-filled:hover {
-  background-color: white;
+  background-color: var(--primary-color);
   color: #404040 !important;
   border: 1px solid #404040 !important;
+  box-shadow: var(--shadow);
+}
+
+.btn-outlined {
+  color: #404040 !important;
+  font-weight: 700;
+  border: 1px solid #404040 !important;
+  border-radius: 15px;
+  border-width: 5;
+  text-align: center;
+  transition: all .2s ease-in;
+  cursor: pointer;
+  padding: 15px 25px;
+  width: fit-content;
+}
+
+.btn-outlined:hover {
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  box-shadow: var(--shadow);
+}
+
+.btn-neon {
+  background-color: var(--neon-color);
+  color: white;
+  border-radius: 15px;
+  text-align: center;
+  transition: all .2s ease-out;
+  cursor: pointer;
+  padding: 15px 25px;
+  font-weight: 700;
+}
+
+.btn-neon:hover {
+  box-shadow: var(--shadow);
 }

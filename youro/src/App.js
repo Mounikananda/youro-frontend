@@ -14,13 +14,15 @@ import Telehealth from './views/legal/telehealth';
 import Terms from './views/legal/termsConditions';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import Home from './views/Home';
 
 function App() {
   return ( 
     <>
      <Router>
      <Routes>
-        <Route path='login' element={<Login/>}></Route>
+        <Route path='/' element={<Home/>}></Route>
+        <Route path='/login' element={<Login/>}></Route>
         <Route path='/signup' element={<Signupoptions/>}></Route>
         <Route path='/signupmyself' element={<Signupformyself/>}></Route>
         <Route path='/signupforfamilymember' element={<SignupforFamilyMember/>}></Route>
