@@ -14,6 +14,8 @@ import Telehealth from './views/legal/telehealth';
 import Terms from './views/legal/termsConditions';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
+import PatientHomePage from './views/Patient UI/PatientHomePage';
+import DoctorHomePage from './views/Doctor UI/Doctor-HomePage';
 
 
 export const uTypes = {
@@ -39,6 +41,8 @@ function App() {
         <Route path='/policy' element={<Policy/>}></Route>
         <Route path='/telehealth-consent' element={<Telehealth/>}></Route>
         <Route path='/terms-conditions' element={<Terms/>}></Route>
+        <Route path='/patient-ui' element={<PatientHomePage/>}></Route>
+        <Route path='/doctor-ui' element={<DoctorHomePage/>}></Route>
      </Routes>
     </Router>
     

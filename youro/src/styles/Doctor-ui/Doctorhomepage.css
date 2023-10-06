@@ -1,0 +1,61 @@
+@import "../../App.css";
+
+
+.hm
+{
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+.sidebar
+{
+  margin-top: 2%;
+}
+.care-plan
+{
+   /* margin-left:15px;
+   margin-top: 40px; */
+   display: flex;
+   width: 100%;
+   flex-direction: column;
+   align-items: flex-start;
+ }
+.care-plan h1
+{
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  /* padding: 10px; */
+}
+
+.all-details
+{
+   display: flex;
+   flex-direction: row;
+   height: 100vh;
+   width: 100%;
+   /* border: 1px solid black; */
+}
+
+.care-plan-details 
+{
+  /* display: flex; */
+  /* flex-direction: column; */
+  /* width: 50%;
+  height: 100vh; */
+  /* display: flex; */
+  /* flex-grow: 0.5; */
+  /* flex: 1; */
+  background-color: white;
+  border-radius: 2%;
+  padding: 1rem;
+  width: 30%;
+  margin: 2%;
+  overflow-y: scroll;
+  scroll-behavior: initial;
+}
+
+/* .list-view
+{
+  border: 1px solid black;
+} */
+
