@@ -13,7 +13,7 @@ const data = [
 
 const PatientSymptomChart = () => {
  return (
-      <div style={{ width: '80%',backgroundColor:'white'}}>
+      <div style={{width: "98%", backgroundColor:'white', borderRadius: '10px'}}>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart
             width={500}
