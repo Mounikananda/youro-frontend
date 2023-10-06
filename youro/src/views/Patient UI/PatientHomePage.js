@@ -15,7 +15,7 @@ import axios from 'axios';
 const PatientHomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
-  const uId = 1; //have to configure with the flow to get the patientId from backend
+  const uId = 2; //have to configure with the flow to get the patientId from backend
   const CarePlan = () => {
     const [data, setData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
@@ -92,14 +92,13 @@ const PatientHomePage = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-
-      const mockData = [
-        { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
-        { id: 2, name: 'John Doe', time: "10-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },
-        { id: 3, name: 'John Doe', time: "11-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis3', symptomscore: '30', meetup: 'new meet' },
-        { id: 4, name: 'John Doe', time: "12-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis4', symptomscore: '40', meetup: 'follow-up' },
-        { id: 5, name: 'John Doe', time: "13-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up' },
-      ];
+      // const mockData = [
+      //   { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
+      //   { id: 2, name: 'John Doe', time: "10-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },
+      //   { id: 3, name: 'John Doe', time: "11-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis3', symptomscore: '30', meetup: 'new meet' },
+      //   { id: 4, name: 'John Doe', time: "12-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis4', symptomscore: '40', meetup: 'follow-up' },
+      //   { id: 5, name: 'John Doe', time: "13-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up' },
+      // ];
       const mockData1 = [
         {
           patientName: "Mr. Mandava",
@@ -112,82 +111,84 @@ const PatientHomePage = () => {
           apptEndTime: "02:00:00",
           apptDate: "2023-11-01",
           status: "SCHEDULED"
+        },
+        {
+          patientName: "Mr. Mandava",
+          doctorName: "Ms. asdf",
+          patientId: "1",
+          doctorId: "9",
+          apptStartTime: "08:00:00",
+          link: "ZOOM LINK",
+          apptId: "7",
+          apptEndTime: "10:00:00",
+          apptDate: "2023-12-03",
+          status: "SCHEDULED"
+        },
+        {
+          patientName: "Mr. Mandava",
+          doctorName: "Mr. asdf",
+          patientId: "1",
+          doctorId: "8",
+          apptStartTime: "11:45:00",
+          link: "ZOOM LINK",
+          apptId: "9",
+          apptEndTime: "14:00:00",
+          apptDate: "2023-12-07",
+          status: "SCHEDULED"
+        },
+        {
+          patientName: "Mr. Mandava",
+          doctorName: "Ms. asdf",
+          patientId: "1",
+          doctorId: "9",
+          apptStartTime: "08:50:00",
+          link: "ZOOM LINK",
+          apptId: "18",
+          apptEndTime: "10:50:00",
+          apptDate: "2021-12-03",
+          status: "CANCELED"
+        },
+        {
+          patientName: "Mr. Mandava",
+          doctorName: "Mr. asdf",
+          patientId: "1",
+          doctorId: "8",
+          apptStartTime: "11:45:00",
+          link: "ZOOM LINK",
+          apptId: "20",
+          apptEndTime: "14:40:00",
+          apptDate: "2022-12-07",
+          status: "COMPLETED"
         }
-        // {
-        //   patientName: "Mr. Mandava",
-        //   doctorName: "Ms. asdf",
-        //   patientId: "1",
-        //   doctorId: "9",
-        //   apptStartTime: "08:00:00",
-        //   link: "ZOOM LINK",
-        //   apptId: "7",
-        //   apptEndTime: "10:00:00",
-        //   apptDate: "2023-12-03",
-        //   status: "SCHEDULED"
-        // },
-        // {
-        //   patientName: "Mr. Mandava",
-        //   doctorName: "Mr. asdf",
-        //   patientId: "1",
-        //   doctorId: "8",
-        //   apptStartTime: "11:45:00",
-        //   link: "ZOOM LINK",
-        //   apptId: "9",
-        //   apptEndTime: "14:00:00",
-        //   apptDate: "2023-12-07",
-        //   status: "SCHEDULED"
-        // },
-        // {
-        //   patientName: "Mr. Mandava",
-        //   doctorName: "Ms. asdf",
-        //   patientId: "1",
-        //   doctorId: "9",
-        //   apptStartTime: "08:50:00",
-        //   link: "ZOOM LINK",
-        //   apptId: "18",
-        //   apptEndTime: "10:50:00",
-        //   apptDate: "2021-12-03",
-        //   status: "CANCELED"
-        // },
-        // {
-        //   patientName: "Mr. Mandava",
-        //   doctorName: "Mr. asdf",
-        //   patientId: "1",
-        //   doctorId: "8",
-        //   apptStartTime: "11:45:00",
-        //   link: "ZOOM LINK",
-        //   apptId: "20",
-        //   apptEndTime: "14:40:00",
-        //   apptDate: "2022-12-07",
-        //   status: "COMPLETED"
-        // }
       ]
 
       setTimeout(() => {
         setData(mockData1);
+        // uId is declared at top
         let uType = "PATIENT";  // PATIENT or PROVIDER or ADMIN
-        let uId = 1;
-        // let apptStatus = "SCHEDULED"; //  COMPLETED or SCHEDULED or CANCELED or UNATTENDED
+        // let appStatus = "SCHEDULED"; //  COMPLETED or SCHEDULED or CANCELED or UNATTENDED
 
         const url = `http://localhost:9092/youro/api/v1/appointments/${uType}/${uId}`;///${apptStatus}
         axios.get(url).then((res) => {
-          console.clear();
-          let today = new Date();
+          let temp = [];
+          const today = new Date();
           let toDate = [today.getFullYear(), today.getMonth(), today.getDate()];
-          let resData = res.data;
-          console.log("got appts :: " + JSON.stringify(resData));
-          console.log(toDate);
+          const resData = res.data;
           for(let itr=0; itr < resData.length; itr++){
-            let inpDateSplit = resData[itr].apptDate.split("-");
-            console.log(inpDateSplit);
-        
-            // if(itr.status != "SCHEDULED"){
-
-            // }
-            // temp.push
+            let inpDateSplit = resData[itr].apptDate.split("-"); //["yyyy", "mm", "dd"]
+            if(parseInt(inpDateSplit[0]) < toDate[0]){
+              temp.push(resData[itr]);
+            }
+            else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) < toDate[1])){
+              temp.push(resData[itr]);
+            }
+            else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) == toDate[1]) && (parseInt(inpDateSplit[2]) <toDate[2])){
+              temp.push(resData[itr]);
+            }
           }
-          setData(res.data);
-          // console.log(data);
+
+          setData(temp);
+          console.log(temp);
         }).catch((res) => {
           console.error(res.response.data.errorMessage)
         });

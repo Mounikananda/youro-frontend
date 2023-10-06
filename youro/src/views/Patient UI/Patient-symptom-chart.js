@@ -12,7 +12,7 @@ let data = [
   { dateTime: 'Page G', symptomScore: 3490 },
 ];
 
-const PatientSymptomChart = () => {
+const PatientSymptomChart = (props) => {
   const [render, canRender] = useState(false)
   let usrId = props.uId;
   // console.clear();
@@ -22,6 +22,7 @@ const PatientSymptomChart = () => {
   axios.get(url).then((res) => {
     console.log("got symptom score :: " + JSON.stringify(res.data));
     data = res.data;
+
     canRender(true);
   }).catch((res) => {
     console.error(res.response.data.errorMessage)
@@ -30,8 +31,8 @@ const PatientSymptomChart = () => {
   return (
     <div>
       {
-        render==true && <>
-          <div style={{width: "98%", backgroundColor:'white', borderRadius: '10px'}}>
+        render == true && data.length > 0 && <>
+          <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px' }}>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart
                 width={500}
@@ -51,6 +52,13 @@ const PatientSymptomChart = () => {
                 <Line type="monotone" dataKey="symptomScore" stroke="#8884d8" fill="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
+          </div>
+        </>
+      }
+      {
+        render == true && data.length == 0 && <>
+          <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
+              No Data Found!
           </div>
         </>
       }
