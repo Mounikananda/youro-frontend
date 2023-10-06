@@ -47,8 +47,7 @@
   justify-content: center;
   border: 0.5px solid black;
   margin: 5%;
-  align-items: center;
   border-radius: 15px;
-  padding: 1.2%;
+  padding-left: 25px;
   font-size: small;  
 }

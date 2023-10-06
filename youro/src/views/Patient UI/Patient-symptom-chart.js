@@ -12,7 +12,7 @@ let data = [
   { dateTime: 'Page G', symptomScore: 3490 },
 ];
 
-const PatientSymptomChart = (props) => {
+const PatientSymptomChart = () => {
   const [render, canRender] = useState(false)
   let usrId = props.uId;
   // console.clear();
@@ -23,7 +23,6 @@ const PatientSymptomChart = (props) => {
     console.log("got symptom score :: " + JSON.stringify(res.data));
     data = res.data;
     canRender(true);
-
   }).catch((res) => {
     console.error(res.response.data.errorMessage)
   });
@@ -32,7 +31,7 @@ const PatientSymptomChart = (props) => {
     <div>
       {
         render==true && <>
-          <div style={{ width: '80%', backgroundColor: 'white' }}>
+          <div style={{width: "98%", backgroundColor:'white', borderRadius: '10px'}}>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart
                 width={500}

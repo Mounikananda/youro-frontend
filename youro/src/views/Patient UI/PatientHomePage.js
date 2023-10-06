@@ -72,6 +72,7 @@ const PatientHomePage = () => {
                   {Object.entries(item[category]).map(([medication, instruction], i) => (
                     <li key={i}>
                       {medication}: {instruction}
+                      {category !== 'Lifestylemodifications' ? `${medication}: ${instruction}` : `${instruction}`}
                     </li>
                   ))}
                 </ul>
