@@ -8,12 +8,12 @@ import Signupoptions from '../Signupoptions';
 
 function SideBar()
 {
-   const [collapse, setCollapse] = useState(false);
+   const [collapse, setCollapse] = useState(true);
   const navigate = useNavigate();
 
-  const toggleSidebar = () => {
-    setCollapse(!collapse);
-  };
+  // const toggleSidebar = () => {
+  //   setCollapse(!collapse);
+  // };
 
   return (
   <div>
@@ -35,7 +35,7 @@ function SideBar()
      <div className='Hamburger'>
       <Hamburger toggled={collapse} toggle={setCollapse} size={40} /> 
       </div>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaHome size={40}/>} active={true} className="Menu-item" >Home</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={true} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaCalendar size={40} />} className="Menu-item" > Appointments</MenuItem>
     <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaFacebookMessenger size={40} />} className="Menu-item" >Chat</MenuItem>
     <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaPrescription size={40}/>} className="Menu-item" > Section-1</MenuItem>

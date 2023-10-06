@@ -22,9 +22,14 @@ body
 
 .Side-bar
 {
-   margin-top: 70px;
+  
+   /* display: flex; */
+   /* height: ; */
+   height: 100vh;
+   overflow-y: auto;
+   display: flex;
+   flex-direction: column;
   /* font-size: 50rem; */
-  /* background-color: var(--secondary-color); */
   /* color: var(--secondary-color); */
 }
 
@@ -33,8 +38,8 @@ body
 .Menu-item
 {
   font-size: large;
-  margin-top: 10px; 
-  margin-bottom: 120px;
+  margin-top: 10%; 
+  margin-bottom: 10%;
   /* margin-left: 2px;
   margin-right: 2px; */
 }

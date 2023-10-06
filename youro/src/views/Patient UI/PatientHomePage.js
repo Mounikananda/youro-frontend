@@ -13,7 +13,9 @@ const PatientHomePage =()=>
 {
    return (
      <div className='hm'>
-       <SideBar/>
+        <div className='sidebar'>
+         <SideBar/>
+       </div>
        <div className='care-plan'>
         <h1>youro</h1>
         <div className='all-details'>

@@ -1,0 +1,54 @@
+@import "../../App.css";
+
+.doctor-div
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 0.5px solid black;
+  margin: 5%;
+  align-items: center;
+  border-radius: 25px;
+  padding: 1.2%;
+  font-size: medium;
+}
+.join-now-button
+{
+  border: none;
+  color: white;
+  background-color: var(--secondary-color);
+  padding: 10px;
+  border-radius: 20px;
+}
+
+.incomplete-appt-div
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 0.5px solid black;
+  margin: 5%;
+  align-items: center;
+  border-radius: 15px;
+  padding: 0.2%;
+  font-size: small; 
+  list-style-type: none;
+}
+
+.list-type
+{
+  list-style-type: none;
+}
+
+.previous-appointment
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 0.5px solid black;
+  margin: 5%;
+  align-items: center;
+  border-radius: 15px;
+  padding: 1.2%;
+  font-size: small;  
+}
