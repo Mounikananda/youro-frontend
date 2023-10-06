@@ -15,7 +15,7 @@ import Popmenu from './Popupmenu';
 
 const PatientHomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const uId = 2; //have to configure with the flow to get the patientId from backend
+  const uId = 1; //have to configure with the flow to get the patientId from backend
   const CarePlan = () => {
     const [data, setData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
@@ -215,30 +215,6 @@ const PatientHomePage = () => {
       </div>
     );
   };
-
-
-
-  return (
-    <div>
-        {data.map((item) => (
-          <div className='previous-appointment'> 
-           <div>
-            <h3 >{item.time} - {item.name}</h3>
-           </div>
-             <ul key={item.id}>
-             <li>Diagnosisname: {item.diagnosisname}</li>
-             <li style={ {textDecoration:'underline',color:'#9CB189'}}>view careplan and note provided</li>
-             <li>Symptom score: {item.symptomscore}</li>
-              {/* <p>{item.meetup}</p> */}
-             </ul>
-          </div> 
-        ))}
-    </div>
-    ); 
-  }
-
-
- 
    return (
      <div className='hm'>
         <div className='sidebar'>
