@@ -7,7 +7,7 @@ const Signupoptions= () => {
 
     const navigate = useNavigate();
     const [page, setPage] = useState(0);
-    const [activeLoader, setActiveLoader] = useState(false)
+    const [activeLoader, setActiveLoader] = useState(false);
 
     return (
         <div>

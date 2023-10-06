@@ -16,8 +16,6 @@ function DoctorHomePage()
 const TodayAppointmentList = () => {
   const [data, setData] = useState([]);
   
-
-
   useEffect(() => {
 
     const mockData = [

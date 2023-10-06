@@ -43,3 +43,12 @@ body
   /* margin-left: 2px;
   margin-right: 2px; */
 }
+
+
+.patient-div
+{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: flex-start;
+}
