@@ -18,6 +18,16 @@ import Home from './views/Home';
 import PatientHomePage from './views/Patient UI/PatientHomePage';
 import DoctorHomePage from './views/Doctor UI/Doctor-HomePage';
 
+
+export const uTypes = {
+  user : 'USER',
+  doctor : 'PROVIDER',
+  admin : 'ADMIN'
+};
+export const subscriptionStatus = {
+  active : 'ACTIVE',
+  inActive : 'INACTIVE'
+}
 function App() {
   return ( 
     <>

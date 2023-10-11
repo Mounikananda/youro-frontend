@@ -22,7 +22,7 @@ const Login= () =>
         toast.success("Successful login")
     }).catch((res) => {
         console.error(res.response.data.errorMessage)
-        toast.error('Oops!! ' + res.response.data.errorMessage)
+        toast.error('Oops!! Please check your username and password' )
     });
   }
 
