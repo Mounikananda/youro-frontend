@@ -17,298 +17,377 @@ import {
     Tooltip,
     Switch
 } from '@mui/material';
-// import Container from '@mui/material/Container';
 
 import { Delete } from '@mui/icons-material';
 import SideBar from '../Patient UI/SideBar';
 import "../../styles/Admin-ui/Admin-HomePage.css";
-const data = [
-    {
-        id: '1',
-        firstName: 'Dylan',
-        middleName: 'Sprouse',
-        lastName: 'Murray',
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '2',
-        firstName: 'Raquel',
-        middleName: 'Hakeem',
-        lastName: 'Kohler',
-        address: '769 Dominic Grove',
-        city: 'Vancouver',
-        state: 'British Columbia',
-        country: 'Canada',
-        isApproved: true
-    },
-    {
-        id: '3',
-        firstName: 'Ervin',
-        middleName: 'Kris',
-        lastName: 'Reinger',
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '4',
-        firstName: 'Brittany',
-        middleName: 'Kathryn',
-        lastName: 'McCullough',
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-        country: 'United States',
-        isApproved: false
-    },
-    {
-        id: '5',
-        firstName: 'Branson',
-        middleName: 'John',
-        lastName: 'Frami',
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '1',
-        firstName: 'Dylan',
-        middleName: 'Sprouse',
-        lastName: 'Murray',
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '2',
-        firstName: 'Raquel',
-        middleName: 'Hakeem',
-        lastName: 'Kohler',
-        address: '769 Dominic Grove',
-        city: 'Vancouver',
-        state: 'British Columbia',
-        country: 'Canada',
-        isApproved: false
-    },
-    {
-        id: '3',
-        firstName: 'Ervin',
-        middleName: 'Kris',
-        lastName: 'Reinger',
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '4',
-        firstName: 'Brittany',
-        middleName: 'Kathryn',
-        lastName: 'McCullough',
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '5',
-        firstName: 'Branson',
-        middleName: 'John',
-        lastName: 'Frami',
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-        country: 'United States',
-        isApproved: false
-    },
-    {
-        id: '1',
-        firstName: 'Dylan',
-        middleName: 'Sprouse',
-        lastName: 'Murray',
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '2',
-        firstName: 'Raquel',
-        middleName: 'Hakeem',
-        lastName: 'Kohler',
-        address: '769 Dominic Grove',
-        city: 'Vancouver',
-        state: 'British Columbia',
-        country: 'Canada',
-        isApproved: true
-    },
-    {
-        id: '3',
-        firstName: 'Ervin',
-        middleName: 'Kris',
-        lastName: 'Reinger',
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '4',
-        firstName: 'Brittany',
-        middleName: 'Kathryn',
-        lastName: 'McCullough',
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-        country: 'United States',
-        isApproved: false
-    },
-    {
-        id: '5',
-        firstName: 'Branson',
-        middleName: 'John',
-        lastName: 'Frami',
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '1',
-        firstName: 'Dylan',
-        middleName: 'Sprouse',
-        lastName: 'Murray',
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '2',
-        firstName: 'Raquel',
-        middleName: 'Hakeem',
-        lastName: 'Kohler',
-        address: '769 Dominic Grove',
-        city: 'Vancouver',
-        state: 'British Columbia',
-        country: 'Canada',
-        isApproved: true
-    },
-    {
-        id: '3',
-        firstName: 'Ervin',
-        middleName: 'Kris',
-        lastName: 'Reinger',
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-        country: 'United States',
-        isApproved: false
-    },
-    {
-        id: '4',
-        firstName: 'Brittany',
-        middleName: 'Kathryn',
-        lastName: 'McCullough',
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '5',
-        firstName: 'Branson',
-        middleName: 'John',
-        lastName: 'Frami',
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '1',
-        firstName: 'Dylan',
-        middleName: 'Sprouse',
-        lastName: 'Murray',
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '2',
-        firstName: 'Raquel',
-        middleName: 'Hakeem',
-        lastName: 'Kohler',
-        address: '769 Dominic Grove',
-        city: 'Vancouver',
-        state: 'British Columbia',
-        country: 'Canada',
-        isApproved: true
-    },
-    {
-        id: '3',
-        firstName: 'Ervin',
-        middleName: 'Kris',
-        lastName: 'Reinger',
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '4',
-        firstName: 'Brittany',
-        middleName: 'Kathryn',
-        lastName: 'McCullough',
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-        country: 'United States',
-        isApproved: true
-    },
-    {
-        id: '5',
-        firstName: 'Branson',
-        middleName: 'John',
-        lastName: 'Frami',
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-        country: 'United States',
-        isApproved: true
-    },
-];
+// const data = [
+//     {
+//         userId: '1',
+//         firstName: 'Dylan',
+//         middleName: 'Sprouse',
+//         lastName: 'Murray',
+//         address: '261 Erdman Ford',
+//         city: 'East Daphne',
+//         state: 'Kentucky',
+//         country: 'United States',
+//         status: "APPROVED"
+
+//     },
+//     {
+//         userId: '2',
+//         firstName: 'Raquel',
+//         middleName: 'Hakeem',
+//         lastName: 'Kohler',
+//         address: '769 Dominic Grove',
+//         city: 'Vancouver',
+//         state: 'British Columbia',
+//         country: 'Canada',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '3',
+//         firstName: 'Ervin',
+//         middleName: 'Kris',
+//         lastName: 'Reinger',
+//         address: '566 Brakus Inlet',
+//         city: 'South Linda',
+//         state: 'West Virginia',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '4',
+//         firstName: 'Brittany',
+//         middleName: 'Kathryn',
+//         lastName: 'McCullough',
+//         address: '722 Emie Stream',
+//         city: 'Lincoln',
+//         state: 'Nebraska',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '5',
+//         firstName: 'Branson',
+//         middleName: 'John',
+//         lastName: 'Frami',
+//         address: '32188 Larkin Turnpike',
+//         city: 'Charleston',
+//         state: 'South Carolina',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '1',
+//         firstName: 'Dylan',
+//         middleName: 'Sprouse',
+//         lastName: 'Murray',
+//         address: '261 Erdman Ford',
+//         city: 'East Daphne',
+//         state: 'Kentucky',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '2',
+//         firstName: 'Raquel',
+//         middleName: 'Hakeem',
+//         lastName: 'Kohler',
+//         address: '769 Dominic Grove',
+//         city: 'Vancouver',
+//         state: 'British Columbia',
+//         country: 'Canada',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '3',
+//         firstName: 'Ervin',
+//         middleName: 'Kris',
+//         lastName: 'Reinger',
+//         address: '566 Brakus Inlet',
+//         city: 'South Linda',
+//         state: 'West Virginia',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '4',
+//         firstName: 'Brittany',
+//         middleName: 'Kathryn',
+//         lastName: 'McCullough',
+//         address: '722 Emie Stream',
+//         city: 'Lincoln',
+//         state: 'Nebraska',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '5',
+//         firstName: 'Branson',
+//         middleName: 'John',
+//         lastName: 'Frami',
+//         address: '32188 Larkin Turnpike',
+//         city: 'Charleston',
+//         state: 'South Carolina',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '1',
+//         firstName: 'Dylan',
+//         middleName: 'Sprouse',
+//         lastName: 'Murray',
+//         address: '261 Erdman Ford',
+//         city: 'East Daphne',
+//         state: 'Kentucky',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '2',
+//         firstName: 'Raquel',
+//         middleName: 'Hakeem',
+//         lastName: 'Kohler',
+//         address: '769 Dominic Grove',
+//         city: 'Vancouver',
+//         state: 'British Columbia',
+//         country: 'Canada',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '3',
+//         firstName: 'Ervin',
+//         middleName: 'Kris',
+//         lastName: 'Reinger',
+//         address: '566 Brakus Inlet',
+//         city: 'South Linda',
+//         state: 'West Virginia',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '4',
+//         firstName: 'Brittany',
+//         middleName: 'Kathryn',
+//         lastName: 'McCullough',
+//         address: '722 Emie Stream',
+//         city: 'Lincoln',
+//         state: 'Nebraska',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '5',
+//         firstName: 'Branson',
+//         middleName: 'John',
+//         lastName: 'Frami',
+//         address: '32188 Larkin Turnpike',
+//         city: 'Charleston',
+//         state: 'South Carolina',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '1',
+//         firstName: 'Dylan',
+//         middleName: 'Sprouse',
+//         lastName: 'Murray',
+//         address: '261 Erdman Ford',
+//         city: 'East Daphne',
+//         state: 'Kentucky',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '2',
+//         firstName: 'Raquel',
+//         middleName: 'Hakeem',
+//         lastName: 'Kohler',
+//         address: '769 Dominic Grove',
+//         city: 'Vancouver',
+//         state: 'British Columbia',
+//         country: 'Canada',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '3',
+//         firstName: 'Ervin',
+//         middleName: 'Kris',
+//         lastName: 'Reinger',
+//         address: '566 Brakus Inlet',
+//         city: 'South Linda',
+//         state: 'West Virginia',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '4',
+//         firstName: 'Brittany',
+//         middleName: 'Kathryn',
+//         lastName: 'McCullough',
+//         address: '722 Emie Stream',
+//         city: 'Lincoln',
+//         state: 'Nebraska',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '5',
+//         firstName: 'Branson',
+//         middleName: 'John',
+//         lastName: 'Frami',
+//         address: '32188 Larkin Turnpike',
+//         city: 'Charleston',
+//         state: 'South Carolina',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '1',
+//         firstName: 'Dylan',
+//         middleName: 'Sprouse',
+//         lastName: 'Murray',
+//         address: '261 Erdman Ford',
+//         city: 'East Daphne',
+//         state: 'Kentucky',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '2',
+//         firstName: 'Raquel',
+//         middleName: 'Hakeem',
+//         lastName: 'Kohler',
+//         address: '769 Dominic Grove',
+//         city: 'Vancouver',
+//         state: 'British Columbia',
+//         country: 'Canada',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '3',
+//         firstName: 'Ervin',
+//         middleName: 'Kris',
+//         lastName: 'Reinger',
+//         address: '566 Brakus Inlet',
+//         city: 'South Linda',
+//         state: 'West Virginia',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+//     {
+//         userId: '4',
+//         firstName: 'Brittany',
+//         middleName: 'Kathryn',
+//         lastName: 'McCullough',
+//         address: '722 Emie Stream',
+//         city: 'Lincoln',
+//         state: 'Nebraska',
+//         country: 'United States',
+//         status: "PENDING"
+//     },
+//     {
+//         userId: '5',
+//         firstName: 'Branson',
+//         middleName: 'John',
+//         lastName: 'Frami',
+//         address: '32188 Larkin Turnpike',
+//         city: 'Charleston',
+//         state: 'South Carolina',
+//         country: 'United States',
+//         status: "APPROVED"
+//     },
+// ];
+const data = []
+// {
+//     "userId": 5,
+//     "email": "doc1@gmail.com",
+//     "password": "12121212",
+//     "userType": "PROVIDER",
+//     "firstName": "doc1st",
+//     "lastName": "asdf",
+//     "gender": "MALE",
+//     "address": "asdf",
+//     "city": "asfd",
+//     "state": "NY",
+//     "zipCode": "14214",
+//     "dateOfBirth": "2003-07-03",
+//     "phone1": "987654321",
+//     "license": "123456",
+//     "specialization": "Diagnosis1",
+//     "status": "APPROVED"
+//   }
 
 const AdminHomePage = () => {
-    // const url = `http://localhost:9092/youro/api/v1/symptomScore/`;
-    // axios.get(url).then((res) => {
-    //     console.log("got symptom score :: " + JSON.stringify(res.data));
-    //     data = res.data;
-    // }).catch((err) => {
-    //     canRender(true);
-    //     console.error(err?.response?.data.errorMessage)
-    // });
+    const [isLoading1, setLoading1] = useState(true);
+    const [tableData, setTableData] = useState([]);
+    const [renderAdmin, canRenderAdmin] = useState(true);
+    const isRendered = useRef(false);
+
+    // const [value, setValue, getValue] = useSetState("");
+    useEffect(() => {
+        if(!isRendered.current){
+            console.log('useEffect');
+            fetchData();
+            isRendered.current = true;
+        }   
+        else{
+            console.log('useEffect re-render');
+            console.log("printing in console",tableData); 
+        }
+    }, [tableData]);
+
+
+    const fetchData = async () => {
+        const url = `http://localhost:9092/youro/api/v1/getAllUsers/PROVIDER`;
+        const res = await axios.get(url);
+        canRenderAdmin(true);
+        setTableData([...res.data]);
+        console.log('Got data');
+        
+        console.log("printing in console",tableData); //empty array
+    };
+
+    const columns = useMemo(
+        () => [
+            {
+                accessorKey: 'userId',
+                header: 'ID',
+                enableColumnOrdering: false,
+                enableEditing: false,
+                size: 50,
+            },
+            {
+                accessorKey: 'firstName',
+                header: 'First Name',
+            },
+            {
+                accessorKey: 'lastName',
+                header: 'Last Name',
+            },
+            {
+                accessorKey: 'state',
+                header: 'State',
+            },
+            {
+                header: "Status",
+                accessorKey: "status",
+                Cell: ({ cell }) => (
+                    <Tooltip arrow placement="right" title="Approve">
+                        <Switch
+                            checked={cell.row.original.status == 'APPROVED'}
+                            onChange={() => handleApproveRenderAndChange(cell, true)}
+                            inputProps={{ 'aria-label': 'controlled' }}
+                        />
+                    </Tooltip>
+                    // cell.row.original.status = cell.row.original.status == 'APPROVED' ? 'PENDING' : 'APPROVED'
+                )
+            }
+        ],
+        [],
+    );
+
 
 
     /**
@@ -320,96 +399,21 @@ const AdminHomePage = () => {
 
     const handleApproveRenderAndChange = (row = { emptyRow: true }, isChange = false) => {
         let temp = tableData;
+        console.log('row => ' + JSON.stringify(row.row.original) + " , " + tableData) ;
         if (isChange) {
-            console.clear();
-            console.log('row => ' + JSON.stringify(row.row.original));
-            for (let i = 0; i < temp.length; i++) {
-                if (row.row.original.id == temp[i].id) {
-                        console.log('i ==>  ' + i + " :: " + temp[i].id + " -> " + temp[i].isApproved);
-                        temp[i].isApproved = !temp[i].isApproved;
-                        setTableData(temp);
-                        return temp[i].isApproved;
+            for (let i = 0; i < tableData.length; i++) {
+                if (row.row.original.userId == tableData[i].userId) {
+                    console.log('i ==>  ' + i + " :: " + tableData[i].userId + " -> " + tableData[i].status);
+                    tableData[i].status = row.row.original.status === 'APPROVED' ? 'PENDING' : 'APPROVED';
+                    row.row.original.status = tableData[i].status;
+                    setTableData([...tableData]);
+                    // isRendered.current = true;
+                    // return temp[i].status === 'APPROVED' ? true : false;
                 }
             }
-            return !row.row.original.isApproved;
-        }
-        else {
-            if (row) {
-                if (row.emptyRow) {
-                    return false;
-                }
-                else {
-                    for (let i = 0; i < data.length; i++) {
-                        if (row.row.id == data[i].id) {
-                            if (!data[i].isApproved) {
-                                console.log('i ==>  ' + i + " :: " + data[i].id + " -> " + data[i].isApproved);
-                                return true;
-                            }
-                        }
-                    }
-                }
-            }
-            return false;
+            // return !row.row.original.isApproved;
         }
     }
-
-    const firstUpdate = useRef(true);
-
-    useEffect(() => {
-        if (firstUpdate.current) {
-            firstUpdate.current = false;
-            // console.log("++++++first update+++++++++");
-            return;
-        }
-        console.log("Not the first update");
-        // Do something
-    });
-
-    const columns = useMemo(
-        () => [
-            {
-                accessorKey: 'id',
-                header: 'ID',
-                enableColumnOrdering: false,
-                enableEditing: false,
-                size: 50,
-            },
-            {
-                accessorKey: 'firstName',
-                header: 'First Name',
-            },
-            {
-                accessorKey: 'middleName',
-                header: 'Middle Name',
-            },
-            {
-                accessorKey: 'lastName',
-                header: 'Last Name',
-            },
-            {
-                accessorKey: 'state',
-                header: 'State',
-            },
-            {
-                header: "Artist Name",
-                accessorKey: "isApproved",
-                Cell: ({ cell }) => (
-                    <Tooltip arrow placement="right" title="Approve">
-                        <Switch
-                            checked={handleApproveRenderAndChange(cell, false)}
-                            onChange={() => handleApproveRenderAndChange(cell, true)}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                        />
-                    </Tooltip>
-                )
-            }
-
-        ],
-        [],
-    );
-    const [render, canRender] = useState(true);
-    // canRender(true);
-    const [tableData, setTableData] = useState(() => data);
 
     const handleDeleteRow = useCallback(
         (row) => {
@@ -420,46 +424,52 @@ const AdminHomePage = () => {
             }
             //send api delete request here, then refetch or update local table data for re-render
             tableData.splice(row.index, 1);
-            setTableData([...tableData]);
+            // setTableData([...tableData]);
         },
         [tableData],
     );
 
 
-    const [checked, setChecked] = React.useState(true);
-    const handleChange1 = useCallback(
-        (event, row) => {
-            if (window.confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)) {
-                console.log(event);
-                setChecked(event.target.checked);
-                return;
-            }
-            else {
-                console.log("asdf");
-            }
-            //send api delete request here, then refetch or update local table data for re-render
-            tableData.splice(row.index, 1);
-            setTableData([...tableData]);
-        },
-        [tableData],
-    );
-
-    const handleChange = (event, row) => {
-        console.log(event);
-        console.log(row);
-        setChecked(event.target.checked);
-    };
+    // const handleChange1 = useCallback(
+    //     (event, row) => {
+    //         if (window.confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)) {
+    //             console.log(event);
+    //             setChecked(event.target.checked);
+    //             return;
+    //         }
+    //         else {
+    //             console.log("asdf");
+    //         }
+    //         //send api delete request here, then refetch or update local table data for re-render
+    //         tableData.splice(row.index, 1);
+    //         setTableData([...tableData]);
+    //     },
+    //     [tableData],
+    // );
 
 
+
+
+    // const [checked, setChecked] = React.useState(true);
+    // const handleChange = (event, row) => {
+    //     console.log(event);
+    //     console.log(row);
+    //     setChecked(event.target.checked);
+    // };
+
+
+    if (!renderAdmin) {
+        return <div className="App">Loading...</div>;
+    }
     return (
         <div>
             {
-                render == true && data.length > 0 && <>
+                renderAdmin == true && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
                             <SideBar />
                         </div>
-                        <div class="admin-ui-table">
+                        <div className="admin-ui-table">
                             <div className='header'>
                                 <h1>youro</h1>
                             </div>
@@ -473,7 +483,7 @@ const AdminHomePage = () => {
                                     },
                                 }}
                                 columns={columns}
-                                data={data}
+                                data={tableData}
                                 enableColumnOrdering
                                 enableRowActions
                                 // enableRowNumbers
@@ -544,14 +554,14 @@ const AdminHomePage = () => {
                 </>
             }
             {
-                render == true && data.length == 0 && <>
+                renderAdmin == true && tableData.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
                 </>
             }
             {
-                render == false && <>
+                renderAdmin == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         API error
                     </div>
