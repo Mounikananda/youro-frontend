@@ -6,7 +6,7 @@ import { FaHome,FaCalendar,FaFacebookMessenger,FaPrescription,FaPowerOff,FaHambu
 import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
 import Signupoptions from '../Signupoptions';
 
-function SideBar()
+function DoctorSideBar()
 {
    const [collapse, setCollapse] = useState(true);
   const navigate = useNavigate();
@@ -36,10 +36,10 @@ function SideBar()
       <Hamburger toggled={collapse} toggle={setCollapse} size={40} /> 
       </div>
     <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={true} className="Menu-item" >Home</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaCalendar size={40} />} className="Menu-item" > Appointments</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaFacebookMessenger size={40} />} className="Menu-item" >Chat</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaPrescription size={40}/>} className="Menu-item" > Section-1</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaPowerOff size={40}/>} className="Menu-item" > Profile</MenuItem>  
+    <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaCalendar size={40} />} className="Menu-item" > Appointments</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor--ui")} icon={<FaFacebookMessenger size={40} />} className="Menu-item" >Chat</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaPrescription size={40}/>} className="Menu-item" > Section-1</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-profile")} icon={<FaPowerOff size={40}/>} className="Menu-item" > Profile</MenuItem>  
     </Menu>
     </Sidebar>
   </div>
@@ -48,4 +48,4 @@ function SideBar()
   );
 }
 
-export default SideBar;
+export default DoctorSideBar;

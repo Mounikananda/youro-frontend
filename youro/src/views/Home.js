@@ -33,7 +33,7 @@ const Home = () => {
                 <div class="flip-card-inner">
                     <div class="flip-card-front">
                     <img src={props.img} alt="Avatar" style={{width: '300px', height: '300px'}} />
-                    <p className="flip-heading">INFERTILITY</p>
+                    <p className="flip-heading">DIAGNOSIS</p>
                     </div>
                     <div class="flip-card-back" style={{width: '300px',}}>
                     <p style={{wordBreak: 'break-word', whiteSpace: 'normal', padding: '20px',}}>{props.info}</p>
@@ -102,7 +102,7 @@ const Home = () => {
                 <div className="diagnosis">
                     <div id="container">
                         <div id="objects">
-                        <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
+                        <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='/Users/vamshi/Desktop/611-youro/youro-frontend/youro/src/assets/icons8-kidney-64.png'/>
                         <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
                         <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>
                         <Flipcard info='Infertility is defined as the failure to conceive after a year of unprotected and unrestricted intercourse. In women over 35, the period is defined as six months. Primary infertility is when a couple has never had children' img='https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'/>

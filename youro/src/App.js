@@ -17,6 +17,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from './views/Home';
 import PatientHomePage from './views/Patient UI/PatientHomePage';
 import DoctorHomePage from './views/Doctor UI/Doctor-HomePage';
+import DoctorProfile from './views/Doctor UI/DoctorProfile';
 
 function App() {
   return ( 
@@ -35,6 +36,7 @@ function App() {
         <Route path='/terms-conditions' element={<Terms/>}></Route>
         <Route path='/patient-ui' element={<PatientHomePage/>}></Route>
         <Route path='/doctor-ui' element={<DoctorHomePage/>}></Route>
+        <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
      </Routes>
     </Router>
     

@@ -41,6 +41,7 @@ const PatientHomePage =()=>
         ]
       }
     ];
+    // fetchdata
     setData(mockData);
     // const fetchData = async () => {
     //   try {
