@@ -3,6 +3,7 @@ import "../styles/login.css";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
+import ForgotPassword from "./ForgotPassword";
 
 const Login= () =>
 {
@@ -13,19 +14,23 @@ const Login= () =>
     formState: { errors },
   } = useForm();
 
+  const [forgot, setForgot] = useState(0)
+
   const onSubmit = (data) =>{
     console.log(data);
     axios.post("http://localhost:9092/youro/api/v1/login", data).then((res) => {
         toast.success("Successful login")
     }).catch((res) => {
         console.error(res.response.data.errorMessage)
-        toast.error('Oops!! ' + res.response.data.errorMessage)
+        toast.error('Oops!! Please check your username and password' )
     });
   }
+
    
    return (
            <div class="Signupfamilymember-container">
             <ToastContainer />
+            {forgot === 0 && <>
              <h1>youro</h1>
              <h2>Login</h2>
              <div className="Login-Form-Container">
@@ -52,11 +57,15 @@ const Login= () =>
                         {errors?.password?.type === "minLength" && <p className="error-text">Password is min 8 characters</p>}
                 </div>
                 <div>
-                <p className="color-secondary" style={{textDecoration: 'underline', cursor: 'pointer'}}>Forgot password?</p>
+                <p className="color-secondary" style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => setForgot(1)}>Forgot password?</p>
                 <div className="btn-filled" style={{marginTop: '40px'}} onClick={handleSubmit(onSubmit)}>Login</div>
                 </div>
+                </div>
+                </>
+            }
 
-             </div>
+            {forgot && <ForgotPassword />}
+             
              
         </div>
     )
