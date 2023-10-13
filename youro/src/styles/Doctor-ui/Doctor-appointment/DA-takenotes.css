@@ -1,0 +1,10 @@
+@import "../../../App.css";
+
+
+.ql-editor {
+  /* min-height: 80%; */
+  display: flex;
+  min-height: 30vh;
+  /* border: 1px solid blue; */
+  /* margin-right: 15%; */
+}

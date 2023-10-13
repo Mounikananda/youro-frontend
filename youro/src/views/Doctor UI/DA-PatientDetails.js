@@ -58,6 +58,7 @@ import PersonalInfo from './DA-personal-info';
 import FileUpload from './DA-Results';
 import Notes from './DA-notes';
 import Orders from './DA-orders';
+import ReactQuillWrapper from './DA-takenote';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -115,6 +116,15 @@ const PatientDetails = (props) => {
   );
 };
 
+  const [showEditor, setShowEditor] = useState(false);
+
+  const handleCreateNoteClick = () => {
+    setShowEditor(!showEditor);
+  };
+
+ const handlenoteclickclose =()=> {
+   setShowEditor(false);
+}
 
   console.log("printing data", props.data[0]);
   return (
@@ -122,14 +132,19 @@ const PatientDetails = (props) => {
 
       <div className='p-all-data'>
         <div className='p-data-col'>
-          <label className='label-p-data' >Name: {'Sri Sai charan'}</label>
+          <label className='label-p-data' >Name: {'Stephen'}</label>
           <label className='label-p-data'>DOB: {'12/12/1999'}</label>
-          <label className='label-p-data'>Patient id: {'123456'}</label> 
+          <label className='label-p-data'>Patient id: {'12346'}</label> 
         </div>
         <div className='p-data-row'>
-          <div>Message</div>
+          <div >Message</div>
           <div>Schedule Appointment</div>
-          <div>Create Note</div>
+          <div onClick={handleCreateNoteClick}>Create Note</div>
+          {/* {showEditor && (
+        <div className="floating-editor">
+            <ReactQuillWrapper/>
+        </div> */}
+      {/* )} */}
         </div>
       </div>
       <div className='p-div-row'>
@@ -209,7 +224,17 @@ const PatientDetails = (props) => {
         <div className="tab-content">follow -up Content Goes Here</div>
       )}
 
-    
+        {showEditor && (
+        <div className="floating-editor">
+            {/* <button >Minimize</button>
+            <button >Maximize</button> */}
+            <div className='notes-title'>
+            <label>Notes</label>
+            <button>X</button>
+           </div>
+          {/* <ReactQuillWrapper /> */}
+            <ReactQuillWrapper />
+        </div> )}
       
 
     </div>
