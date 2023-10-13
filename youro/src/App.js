@@ -18,6 +18,9 @@ import Home from './views/Home';
 import PatientHomePage from './views/Patient UI/PatientHomePage';
 import DoctorHomePage from './views/Doctor UI/Doctor-HomePage';
 import DoctorProfile from './views/Doctor UI/DoctorProfile';
+import DoctorAppointments from './views/Doctor UI/Doctor-appointment';
+import ViewProfile from './views/Doctor UI/View-Profile';
+import DoctorChat from './views/Doctor UI/Doctor-Chat';
 
 
 export const uTypes = {
@@ -47,6 +50,9 @@ function App() {
         <Route path='/patient-ui' element={<PatientHomePage/>}></Route>
         <Route path='/doctor-ui' element={<DoctorHomePage/>}></Route>
         <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
+        <Route path='/doctor-appointment' element={<DoctorAppointments/>}></Route>
+        <Route path='/doctor-view-profile' element={<ViewProfile/>}></Route>
+        <Route path='/doctor-chat' element={<DoctorChat/>}></Route>
      </Routes>
     </Router>
     

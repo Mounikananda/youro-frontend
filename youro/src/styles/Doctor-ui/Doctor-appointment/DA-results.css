@@ -1,0 +1,31 @@
+@import "../../../App.css";
+
+.document-uploader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 2px solid black;
+}
+
+.upload-container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 10px; 
+}
+
+.upload-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.document-list
+{
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  margin: 2%;
+  background-color: white;
+}
+

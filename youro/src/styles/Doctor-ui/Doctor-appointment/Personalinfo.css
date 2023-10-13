@@ -1,0 +1,49 @@
+@import "../../../App.css";
+
+.p-data-row-p
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* height: 60vh; */
+  /* border: 1px solid black; */
+   /* height: 55vh; */
+  background-color: white;
+  /* height: 60vh;  */
+}
+
+.p-data-row-p1
+{
+  align-items: center;
+  justify-content: center;
+  /* height: 38vh; */
+  border: 0.2px solid black;
+  background-color: white;
+  width: 30%;
+  border-radius: 5px;
+  margin: 2%;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.p-data-col-p
+{
+ 
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  flex-direction: column;
+  border: 20px;
+  
+  /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); */
+  
+  /* border: 0.5px solid black; */
+}
+
+.label-info
+{
+  /* border: 1px solid black; */
+  padding: 2%;
+  margin: 3%;
+  
+}
+
