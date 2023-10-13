@@ -88,7 +88,6 @@ const ReactQuillWrapper = ({ onClose }) => {
   return (
     <div className="quill-editor-container">
       <ReactQuill value={text} modules={modules} formats={formats} onChange={handleChange} />
-      <button>submit button</button>
     </div>
   );
 };

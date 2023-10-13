@@ -1,0 +1,7 @@
+@import "../../App.css";
+
+.doctor-chat
+{
+  display: flex;
+  width: 100%;
+}

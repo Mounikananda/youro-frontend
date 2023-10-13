@@ -3,13 +3,13 @@
 
 .d-profile
 {
-   border: 2px solid black;
    display: flex;
 }
 
 .profile-side-bar
 {
    margin-top: 2%;
+   height: 95vh;
 }
 
 /* .my-profile
@@ -86,7 +86,7 @@
 {
   width: 200%;
   padding: 10px;
-  border: 0.2px solid black;
+  /* border: 0.2px solid black; */
   border-radius: 2px;
   background-color: #D9D9D9;
   

@@ -11,6 +11,7 @@ import Loader from '../../utils/loader';
 import axios from 'axios';
 import Popup from 'reactjs-popup';
 import Popmenu from './Popupmenu';
+import SymptomCalculator from './SymptomCalculator';
 
 
 const PatientHomePage = () => {
@@ -72,7 +73,7 @@ const PatientHomePage = () => {
                 <ul>
                   {Object.entries(item[category]).map(([medication, instruction], i) => (
                     <li key={i}>
-                      {medication}: {instruction}
+                      {/* {medication}: {instruction} */}
                       {category !== 'Lifestylemodifications' ? `${medication}: ${instruction}` : `${instruction}`}
                     </li>
                   ))}
@@ -163,38 +164,40 @@ const PatientHomePage = () => {
         }
       ]
 
-      setTimeout(() => {
-        setData(mockData1);
-        // uId is declared at top
-        let uType = "PATIENT";  // PATIENT or PROVIDER or ADMIN
-        // let appStatus = "SCHEDULED"; //  COMPLETED or SCHEDULED or CANCELED or UNATTENDED
+      setData(mockData1);
 
-        const url = `http://localhost:9092/youro/api/v1/appointments/${uType}/${uId}`;///${apptStatus}
-        axios.get(url).then((res) => {
-          let temp = [];
-          const today = new Date();
-          let toDate = [today.getFullYear(), today.getMonth(), today.getDate()];
-          const resData = res.data;
-          for(let itr=0; itr < resData.length; itr++){
-            let inpDateSplit = resData[itr].apptDate.split("-"); //["yyyy", "mm", "dd"]
-            if(parseInt(inpDateSplit[0]) < toDate[0]){
-              temp.push(resData[itr]);
-            }
-            else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) < toDate[1])){
-              temp.push(resData[itr]);
-            }
-            else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) == toDate[1]) && (parseInt(inpDateSplit[2]) <toDate[2])){
-              temp.push(resData[itr]);
-            }
-          }
+      // setTimeout(() => {
+        
+      //   // uId is declared at top
+      //   let uType = "PATIENT";  // PATIENT or PROVIDER or ADMIN
+      //   // let appStatus = "SCHEDULED"; //  COMPLETED or SCHEDULED or CANCELED or UNATTENDED
 
-          setData(temp);
-          console.log(temp);
-        }).catch((res) => {
-          console.error(res.response.data.errorMessage)
-        });
+      //   const url = `http://localhost:9092/youro/api/v1/appointments/${uType}/${uId}`;///${apptStatus}
+      //   axios.get(url).then((res) => {
+      //     let temp = [];
+      //     const today = new Date();
+      //     let toDate = [today.getFullYear(), today.getMonth(), today.getDate()];
+      //     const resData = res.data;
+      //     for(let itr=0; itr < resData.length; itr++){
+      //       let inpDateSplit = resData[itr].apptDate.split("-"); //["yyyy", "mm", "dd"]
+      //       if(parseInt(inpDateSplit[0]) < toDate[0]){
+      //         temp.push(resData[itr]);
+      //       }
+      //       else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) < toDate[1])){
+      //         temp.push(resData[itr]);
+      //       }
+      //       else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) == toDate[1]) && (parseInt(inpDateSplit[2]) <toDate[2])){
+      //         temp.push(resData[itr]);
+      //       }
+      //     }
 
-      }, 1000);
+      //     setData(temp);
+      //     console.log(temp);
+      //   }).catch((res) => {
+      //     console.error(res.response.data.errorMessage)
+      //   });
+
+    //   }, 1000);
 
     }, []);
 
@@ -213,18 +216,52 @@ const PatientHomePage = () => {
             </ul>
           </div>
         ))}
+    </div>
+    ); 
+  }
+
+  const UpcomingAppointments = () => {
+    const [data, setData] = useState([]);
+    
+    useEffect(() => {
+  
+      const mockData = [
+        { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
+        { id: 2, name: 'John Doe', time: "10-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },]
+        
+      setData(mockData);
+    }, []);
+  
+    return (
+      <div>
+          {data.map((item) => (
+            <div className='previous-appointment'> 
+             <div>
+              <h3 >{item.time.split(',')[0]}, {item.patientstime} - {item.name}</h3>
+             </div>
+               <ul key={item.id}>
+               <li>Diagnosisname: {item.diagnosisname}</li>
+               {/* <li>Symptom score: {item.symptomscore}</li> */}
+               <li style={ {textDecoration:'underline',color:'#9CB189', cursor: 'pointer'}} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
+                {/* <p>{item.meetup}</p> */}
+               </ul>
+             <button className='join-now-button' style={{width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer'}}>Join Now</button>
+            </div> 
+          ))}
       </div>
     );
   };
+
+
+  const [open, setOpen] = useState(false);
+
    return (
-     <div className='hm'>
-        <div className='sidebar'>
-         <SideBar/>
-       </div>
+    //  <div className='hm'>
+        
        <div className='care-plan'>
         <div className='header'>
           <h1>youro</h1>
-          <Popmenu/>
+          {/* <Popmenu/> */}
         </div>
          
         <div className='all-details'>
@@ -239,10 +276,11 @@ const PatientHomePage = () => {
             <CarePlan />
           </div>
           <div className='column-data'>
-            <PatientSymptomChart uId={uId} />
+            <PatientSymptomChart uId={uId} retakeSymptomScore={setOpen} />
             <div className='row-data'>
               <div className='care-plan-details-patient-1'>
-                <h3>PlaceHolder for a component </h3>
+                <h3>Upcoming Appointments </h3>
+                <UpcomingAppointments />
 
               </div>
               <div className='care-plan-details-patient-1'>
@@ -252,8 +290,11 @@ const PatientHomePage = () => {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+             
+        {/* </div>   */}
+         <SymptomCalculator open={open} setOpen={setOpen}/>
+       </div>
+      // </div>
   );
 
 }

@@ -5,12 +5,48 @@
 .d-app
 {
   display: flex;
-  
+  flex-direction: row;
 }
 
 .d-calender
 {
+  margin: 5%;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column;
+  /* height: 30vh; */
+  /* align-items: center;
+  
+  justify-content: center; */
 }
+
+.event-creation-form
+{
+  width: 40%;
+  padding: 3%;
+  /* background-color: white; */
+}
+
+.d-calender-form
+{ 
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.event-details-container
+{
+  align-items: center;
+  padding: 2%;
+  width: 50%;
+}
+
+.events-form
+{
+  margin-left: 3%;
+}
+
+
+/* DoctorAppointments.css */
+
+
+

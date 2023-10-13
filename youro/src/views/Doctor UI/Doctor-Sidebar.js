@@ -5,6 +5,8 @@ import "../../styles/Patient-ui/Patient-home.css";
 import { FaHome,FaCalendar,FaFacebookMessenger,FaPrescription,FaPowerOff,FaHamburger } from "react-icons/fa";
 import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
 import Signupoptions from '../Signupoptions';
+import { FaStickyNote } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 
 function DoctorSideBar(props)
 {
@@ -31,9 +33,9 @@ function DoctorSideBar(props)
       </div>
     <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={props.data=='doctor-ui'} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => navigate("/doctor-appointment")} icon={<FaCalendar size={40} />} active={props.data=='doctor-appointment'} className="Menu-item" > Appointments</MenuItem>
-    <MenuItem onClick={() => navigate("/doctor-chat")} icon={<FaFacebookMessenger size={40} />} active={props.data=='doctor-chat'}  className="Menu-item" >Chat</MenuItem>
-    <MenuItem onClick={() => navigate("/doctor-view-profile")} icon={<FaPrescription size={40}/>}  active={props.data=='doctor-view-profile'}  className="Menu-item" > Section-1</MenuItem>
-    <MenuItem onClick={() => navigate("/doctor-profile")} icon={<FaPowerOff size={40}/>} active={props.data=='doctor-profile'} className="Menu-item" > Profile</MenuItem>  
+    <MenuItem onClick={() => navigate("/doctor-chat")} icon={<img src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>} active={props.data=='doctor-chat'}  className="Menu-item" >Chat</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-view-profile")} icon={<FaEdit size={40}/>}  active={props.data=='doctor-view-profile'}  className="Menu-item" > Patient Details</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-profile")} icon={<img src={require('../../assets/Profile_icon.png')} height='40px' alt='home_icon'/>} active={props.data=='doctor-profile'} className="Menu-item" > Profile</MenuItem>  
     </Menu>
     </Sidebar>
   </div>
