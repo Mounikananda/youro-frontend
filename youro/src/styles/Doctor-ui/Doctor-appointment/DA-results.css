@@ -3,29 +3,43 @@
 .document-uploader {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  border: 2px solid black;
+  /* align-items: center; */
+  justify-content: flex-start;
+  /* border: 2px solid black; */
 }
 
-.upload-container {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.upload-docs {
+  /* align-self: flex-end; */
+  /* align-items: center; */
   gap: 10px; 
+  background-color: white;
+  width: 100%;
+  
 }
 
 .upload-label {
   cursor: pointer;
-  display: flex;
-  align-items: center;
+  align-self: flex-end;
+  color: var(--secondary-color);
 }
 
 .document-list
 {
+  align-items: center;
   display: flex;
-  flex-direction: column;
-  padding: 10px;
-  margin: 2%;
-  background-color: white;
+  flex-direction: row;
+  /* align-items: start; */
+  justify-content: space-between;
+  padding: 1%;
+  margin: 2% 0%;
+  height: 5vh;
+  width: 98%;
+  background-color: white; 
+  border-radius: 10px;
+  font-weight: bold;
+}
+.pdf-open
+{
+  color: var(--secondary-color);
 }
 

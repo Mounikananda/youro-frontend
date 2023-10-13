@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import "../../styles/Doctor-ui/Searchbar.css";
-import PatientDetails from './PatientDetails';
+import PatientDetails from './DA-PatientDetails';
 
 
 const SearchBar = () => {

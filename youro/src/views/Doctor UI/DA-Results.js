@@ -19,7 +19,7 @@ const FileUpload = () => {
         className="upload-label"
       >
         <FaUpload />
-        Upload Document
+        Upload new result
       </label>
       <input
         type="file"
@@ -31,14 +31,14 @@ const FileUpload = () => {
       />
 
       {uploadedDocuments.length > 0 && (
-        <div className="document-list">
-          <h2>Uploaded Documents:</h2>
-          <ul>
-            {uploadedDocuments.map((file, index) => (
-              <li key={index}>{file.name}</li>
+        //  <div className='upload-docs'>
+            <div>{uploadedDocuments.map((file, index) => (
+              <div className='document-list' >
+              <p key={index}>{file.name}</p>
+              <p className='pdf-open'>Open</p>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
       )}
     </div>
   );

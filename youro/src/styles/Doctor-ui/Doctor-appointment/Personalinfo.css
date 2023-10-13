@@ -9,7 +9,7 @@
   /* border: 1px solid black; */
    /* height: 55vh; */
   background-color: white;
-  /* height: 60vh;  */
+  height: 60vh; 
 }
 
 .p-data-row-p1
@@ -21,19 +21,20 @@
   background-color: white;
   width: 30%;
   border-radius: 5px;
-  margin: 2%;
+  margin: 1%;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  height: 350px;
 }
 
 .p-data-col-p
 {
  
-  align-items: center;
-  justify-content: center;
+  align-items: start;
+  justify-content: start;
   display: flex;
   flex-direction: column;
   border: 20px;
-  
+  /* height: 40vh; */
   /* box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); */
   
   /* border: 0.5px solid black; */

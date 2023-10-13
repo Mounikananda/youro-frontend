@@ -1,0 +1,17 @@
+@import "../../../App.css";
+
+.notes-doctor
+{
+  height: 60vh;
+  overflow-y: scroll;
+}
+
+.notes-date
+{
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 1%;
+  margin: 2% 0%;
+  border-radius: 10px;
+}

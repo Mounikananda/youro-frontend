@@ -37,13 +37,13 @@
 .p-tabs
 {
   text-align: center;
-  border: 1px solid black;
+  border: 0.5px solid black;
   width: 20%;
   margin: 1% 0%;
   font-weight: bold;
   /* height: 4vh; */
   padding: 1%;
-  border-radius: 5px;
+  border-radius: 3px;
   background-color: white;
   transition: background-color 0.3s;
 }
@@ -73,7 +73,6 @@
 .care-plan-details-doctor-apt
 {
   background-color: white;
-  border-radius: 2%;
   padding: 1rem;
   width: 30%;
   height: 52vh;

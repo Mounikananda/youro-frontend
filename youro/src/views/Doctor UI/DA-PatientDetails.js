@@ -56,6 +56,8 @@ import PreviousAppointments from './PreviousAppointments';
 import IncompleteEncounters from './IncompleteEncounters';
 import PersonalInfo from './DA-personal-info';
 import FileUpload from './DA-Results';
+import Notes from './DA-notes';
+import Orders from './DA-orders';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -196,11 +198,11 @@ const PatientDetails = (props) => {
       )}
      
       {activeTab === 'notes' && (
-        <div className="tab-content"> notes Content Goes Here</div>
+       <Notes/>
       )}
 
       {activeTab === 'orders' && (
-        <div className="tab-content">orders Info Content Goes Here</div>
+        <Orders/>
       )}
 
       {activeTab === 'follow-up' && (

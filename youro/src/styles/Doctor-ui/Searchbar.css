@@ -25,6 +25,7 @@
   height: 80vh;
   overflow-y: scroll;
   width: 100%;
+  margin-left: 1%;
   /* margin: 1%; */
 }
 .label-pd
@@ -41,7 +42,7 @@
   border-radius: 10px;
   padding: 1%;
   /* height: 10vh; */
-  width: 90%;
+  width: 95%;
   margin: 1%;
 }
 

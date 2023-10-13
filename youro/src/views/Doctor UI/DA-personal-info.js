@@ -4,10 +4,11 @@ import "../../styles/Doctor-ui/Doctor-appointment/Personalinfo.css";
 const PersonalInfo =()=>
 {
    return(
+    <div>
     <div className='p-data-row-p' >
        <div className='p-data-row-p1'>
           <div className='p-data-col-p'>
-          <h3>Personal Details</h3>
+          <h3> Personal Details</h3>
           <label className='label-info'>First Name:{'Steven'}</label>
           <label className='label-info'>Last Name:{'Fleming'} </label>
           <label className='label-info'>Email:{'steve@gmail.com'}</label> 
@@ -17,7 +18,7 @@ const PersonalInfo =()=>
          </div>
         <div className='p-data-row-p1'>
         <div className='p-data-col-p'>
-          <h3>Contact Details</h3>
+          <h3> Contact Details</h3>
           <label className='label-info'>Address:{'englewood avenue'}</label>
           <label className='label-info'>City:{'NYC'}</label>
           <label className='label-info'>State:{'NY'}</label>
@@ -26,6 +27,7 @@ const PersonalInfo =()=>
       </div>
       </div>
       </div>
+     </div>
    );
 }
 
