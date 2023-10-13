@@ -417,9 +417,7 @@ const AdminHomePage = () => {
             ) {
                 return;
             }
-            //send api delete request here, then refetch or update local table data for re-render
             tableData.splice(row.index, 1);
-            // setTableData([...tableData]);
         },
         [tableData],
     );
@@ -463,7 +461,7 @@ const AdminHomePage = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps/>
+                                            <AdminPopUps data={{'action': 'delete-doctor', 'step' : 1}}/>
                                         </Tooltip>
                                     </Box>
                                 )}
