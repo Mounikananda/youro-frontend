@@ -15,11 +15,14 @@ import Terms from './views/legal/termsConditions';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import Home from './views/Home';
-import PatientHomePage from './views/Patient UI/PatientHomePage';
+import PatientView from './views/Patient UI/PatientView';
 import DoctorHomePage from './views/Doctor UI/Doctor-HomePage';
 import AdminHomePage from './views/Admin UI/Admin-HomePage';
 import AdminPatientList from './views/Admin UI/Admin-PatientList';
 import DoctorProfile from './views/Doctor UI/DoctorProfile';
+import DoctorAppointments from './views/Doctor UI/Doctor-appointment';
+import ViewProfile from './views/Doctor UI/View-Profile';
+import DoctorChat from './views/Doctor UI/Doctor-Chat';
 
 
 export const uTypes = {
@@ -46,11 +49,14 @@ function App() {
         <Route path='/policy' element={<Policy/>}></Route>
         <Route path='/telehealth-consent' element={<Telehealth/>}></Route>
         <Route path='/terms-conditions' element={<Terms/>}></Route>
-        <Route path='/patient-ui' element={<PatientHomePage/>}></Route>
+        <Route path='/patient-ui' element={<PatientView/>}></Route>
         <Route path='/doctor-ui' element={<DoctorHomePage/>}></Route>
         <Route path='/admin-doctors' element={<AdminHomePage/>}></Route>
         <Route path='/admin-patients' element={<AdminPatientList/>}></Route>
         <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
+        <Route path='/doctor-appointment' element={<DoctorAppointments/>}></Route>
+        <Route path='/doctor-view-profile' element={<ViewProfile/>}></Route>
+        <Route path='/doctor-chat' element={<DoctorChat/>}></Route>
      </Routes>
     </Router>
     

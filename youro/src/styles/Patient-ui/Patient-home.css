@@ -45,8 +45,16 @@ body
   margin-right: 2px; */
 }
 
+.css-aa2pg5 >.ps-menu-button:hover{
+  background-color: #777 !important;
+}
+
+.css-1t8x7v1 >.ps-menu-button:hover {
+  background-color: #777 !important;
+}
+
 .Menu-item:hover {
-  background-color: var(--primary-color);
+  background-color: #777;
 }
 
 
@@ -56,4 +64,134 @@ body
   flex-direction: column;
   align-items: start;
   justify-content: flex-start;
+}
+
+.educate-container {
+  margin-left: 50px;
+  width: 100%;
+}
+
+.educate-column-one {
+  height: 80vh;
+  overflow: auto;
+  border-right: 1px solid;
+}
+
+.educate-column-two {
+  height: 80vh;
+  overflow: auto;
+  width: 75%;
+}
+
+.educate-column-one-name {
+  padding: 30px 100px;
+  border-bottom: 1px solid;
+}
+
+.educate-column-one-name:hover {
+  background-color: var(--secondary-color);
+  cursor: pointer;
+}
+
+.educate-column-one-name-active {
+  background-color: var(--secondary-color);
+}
+
+.educate-container-main {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.educate-iframe {
+  border-radius: 10px;
+  border: none;
+  margin: 30px auto;
+}
+
+.chat-container {
+  margin-top: 50px;
+  margin-left: 50px;
+  width: 100%;
+}
+
+.chat-container-main {
+  width: 100%;
+  padding: 50px;
+  background-color: white;
+  display: flex;
+}
+
+.select-names {
+  border-right: 1px solid;
+  width: 30%;
+  height: 68vh;
+  overflow: auto;
+}
+
+.select-names div{
+  padding: 20px 50px;
+  border-bottom: 1px solid;
+}
+
+.selected-chat-view {
+  display: flex;
+  align-items: end;
+  width: 50%;
+}
+
+.chat-timestamp {
+  margin: 40px auto;
+  width: fit-content;
+  color: #666;
+}
+
+.chat-received-text {
+  padding: 5px 10px;
+    width: fit-content;
+    max-width: 300px;
+    border: 0.5px solid #666;
+    border-radius: 5px;
+    margin: 20px 0px;
+}
+
+.chat-sent-text {
+  padding: 5px 10px;
+  width: fit-content;
+  background-color: var(--secondary-color);
+  color: white;
+  border-radius: 5px;
+  max-width: 300px;
+  margin: 20px 0px 20px auto;
+}
+
+.selected-chat-view input {
+  padding: 10px;
+  border-radius: 10px;
+  border: 0.5px solid #666;
+  font-family: inherit;
+  width: 90%;
+}
+
+.selected-chat-view input:focus{
+  outline: none;
+}
+
+.selected-chat-view span{
+  border-radius: 100%;
+  background-color: var(--secondary-color);
+  cursor: pointer;
+  padding: 5px;
+  color: white !important;
+}
+
+.select-names-active {
+  background-color: var(--secondary-color);
+  color: white;
+}
+
+.select-names div:hover {
+  background-color: var(--secondary-color);
+  color: white;
+  cursor: pointer;
 }

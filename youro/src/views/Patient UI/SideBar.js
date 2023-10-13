@@ -6,7 +6,7 @@ import { FaHome,FaCalendar,FaFacebookMessenger,FaPrescription,FaPowerOff,FaHambu
 import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
 import Signupoptions from '../Signupoptions';
 
-function SideBar()
+function SideBar(props)
 {
    const [collapse, setCollapse] = useState(true);
   const navigate = useNavigate();
@@ -35,11 +35,11 @@ function SideBar()
      <div className='Hamburger'>
       <Hamburger toggled={collapse} toggle={setCollapse} size={40} /> 
       </div>
-    <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={true} className="Menu-item" >Home</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaCalendar size={40} />} className="Menu-item" > Appointments</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaFacebookMessenger size={40} />} className="Menu-item" >Chat</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaPrescription size={40}/>} className="Menu-item" > Section-1</MenuItem>
-    <MenuItem onClick={() => navigate("/patient-ui")} icon={<FaPowerOff size={40}/>} className="Menu-item" > Profile</MenuItem>  
+    <MenuItem onClick={() => props.setActive(0)} icon={<img src={require('../../assets/Homepage_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 0} className="Menu-item" >Home</MenuItem>
+    <MenuItem onClick={() => props.setActive(1)} icon={<img src={require('../../assets/Schedule_icon.png')} height='45px' alt='home_icon'/>} active={props.active === 1} className="Menu-item" > Appointments</MenuItem>
+    <MenuItem onClick={() => props.setActive(2)} icon={<img src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>}active={props.active === 2} className="Menu-item" >Chat</MenuItem>
+    <MenuItem onClick={() => props.setActive(3)} icon={<img src={require('../../assets/Educate_icon.png')} height='35px' alt='home_icon'/>}active={props.active === 3} className="Menu-item" > Educate yourself</MenuItem>
+    <MenuItem onClick={() => props.setActive(4)} icon={<img src={require('../../assets/Profile_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 4} className="Menu-item" > Profile</MenuItem>  
     </Menu>
     </Sidebar>
   </div>

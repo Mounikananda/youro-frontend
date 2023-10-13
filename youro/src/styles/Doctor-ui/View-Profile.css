@@ -1,0 +1,28 @@
+
+
+.d-view-profile
+{
+  display: flex;
+}
+
+.view-side-bar
+{
+  margin-top: 2%;
+}
+.d-components
+{
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  /* border: 1px solid black; */
+  margin: 0.5%;
+  width: 100%;
+}
+
+.search-bar-profile
+{
+  width: 95%;
+  height: 85vh;
+  /* border: 30px solid lawngreen; */
+}

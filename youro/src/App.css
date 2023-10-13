@@ -76,3 +76,19 @@
 .btn-neon:hover {
   box-shadow: var(--shadow);
 }
+
+.congrats-popup-content  {
+  width: fit-content !important;
+  border-radius: 10px;
+  position: relative;
+}
+
+.symptom-popup-content{
+  width: 500px !important;
+  border-radius: 10px;
+  position: relative;
+}
+
+.css-1wvake5{
+  border: none !important;
+}

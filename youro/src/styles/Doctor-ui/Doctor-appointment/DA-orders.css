@@ -1,0 +1,84 @@
+@import "../../../App.css";
+
+
+
+
+.order-div
+{
+  height: 60vh;
+  overflow-y: scroll;
+}
+.orders-row
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+.submit-button
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: end;
+}
+.dropdown-list
+{
+  width: 10%;
+  margin-top: 1%;
+}
+
+#dropdown
+{
+  padding: 3%;
+  align-items: center;
+  font-size: medium;
+  border-radius: 10px;
+  
+}
+
+.order-options
+{
+  /* background-color: var(--secondary-color);
+  border-radius: 10px; */
+}
+
+.button-style
+{
+  border-radius: 10px;
+  margin-top: 1%;
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+}
+
+.orders-checklist
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 1%;
+}
+/* 
+.order-label
+{
+  border: 0.5px solid black;
+  padding: 0% 1%;
+} */
+.orders-3
+{
+  display: flex;
+  flex-direction: row;
+}
+.orders-name
+{ 
+  display: flex;
+  flex-direction: column;
+  border: 0.2px solid black;
+  margin: 1% 0%;
+  width: 100%;
+  height: 45vh;
+} 
+
+/* .order-label
+{
+  padding: 6.5%;
+} */
