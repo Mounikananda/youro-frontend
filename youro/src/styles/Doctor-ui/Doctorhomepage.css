@@ -1,7 +1,7 @@
 @import "../../App.css";
 
 
-.hm
+.hm-doctor
 {
   display: flex;
   width: 100%;
@@ -10,7 +10,7 @@
 {
   margin-top: 2%;
 }
-.care-plan
+.care-plan-doctor
 {
    /* margin-left:15px;
    margin-top: 40px; */
@@ -19,14 +19,14 @@
    flex-direction: column;
    align-items: flex-start;
  }
-.care-plan h1
+.care-plan-doctor h1
 {
   color: var(--secondary-color);
   font-size: 2.5rem;
   /* padding: 10px; */
 }
 
-.all-details
+.all-details-doctor
 {
    display: flex;
    flex-direction: row;
@@ -34,7 +34,7 @@
    /* border: 1px solid black; */
 }
 
-.care-plan-details 
+.care-plan-details-doctor
 {
   /* display: flex; */
   /* flex-direction: column; */
@@ -47,8 +47,11 @@
   border-radius: 2%;
   padding: 1rem;
   width: 30%;
-  margin: 2%;
+  height: 80vh;
+  margin: 15px;
+  border-radius: 20px;
   overflow-y: scroll;
+  
   scroll-behavior: initial;
 }
 
