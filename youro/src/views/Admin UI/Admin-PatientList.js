@@ -19,26 +19,29 @@ import {
 } from '@mui/material';
 
 import { Delete } from '@mui/icons-material';
-import SideBar from '../Patient UI/SideBar';
-import "../../styles/Admin-ui/Admin-HomePage.css";
+import "../../styles/Admin-ui/Admin-PatientList.css";
 import { uTypes } from '../../App';
+import AdminSideBar from './Admin-SideBar';
+import { Link } from 'react-router-dom'
 
 
 const AdminPatientList = () => {
-    const [tableData, setTableData] = useState([]);
-    const [renderAdmin, canRenderAdmin] = useState(true);
-    const isRendered = useRef(false);
+    const [tableDataPats, setTableDataPats] = useState([]);
+    const [renderAdminPats, canRenderAdminPats] = useState(true);
+    const isAdminPatsRendered = useRef(false);
     let count = 0;
+
+
     useEffect(() => {
         count += 1;
-        if (!isRendered.current) {
+        if (!isAdminPatsRendered.current) {
             console.log('useEffect : ' + count);
             fetchData();
-            isRendered.current = true;
+            isAdminPatsRendered.current = true;
         }
         else {
             console.log('useEffect re-render : ' + count);
-            console.log("Data inside useEffect : "+ count + "  =>  "+ tableData);
+            console.log("Data inside useEffect : " + count + "  =>  " + tableDataPats);
         }
     }, []);
 
@@ -46,26 +49,16 @@ const AdminPatientList = () => {
     const fetchData = async () => {
         let type = uTypes.user;
         const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
-        const res = await axios.get(url);
-        canRenderAdmin(true);
-        setTableData(res.data);
-        console.log("Data inside fetchData : "+ count + "  =>  "+ tableData);
-    };
-    
-    const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false) => {
-        console.log('cell => ' + JSON.stringify(cell) + " , " + JSON.stringify(tableData));
-        if (isChange) {
-            for (let i = 0; i < tableData.length; i++) {
-                console.log("----====---------------=-------------=-----------");
-                if (cell.row.original.userId == tableData[i].userId) {
-                    console.log('i ==>  ' + i + " :: " + tableData[i].userId + " -> " + tableData[i].status);
-                    tableData[i]['status'] = cell.row.original.status === 'APPROVED' ? 'PENDING' : 'APPROVED';
-                    setTableData([...tableData]);
-                    isRendered.current = true;
-                }
-            }
+        try {
+            const res = await axios.get(url);
+            canRenderAdminPats(true);
+            setTableDataPats(res.data);
+            console.log("Data inside fetchData : " + count + "  =>  " + tableDataPats);
         }
-    }
+        catch (err) {
+            console.error(err);
+        }
+    };
 
     const columns = useMemo(
         () => [
@@ -88,19 +81,6 @@ const AdminPatientList = () => {
                 accessorKey: 'state',
                 header: 'State',
             },
-            {
-                header: "Status",
-                accessorKey: "status",
-                Cell: ({ cell }) => (
-                    <Tooltip arrow placement="right" title="Approve">
-                        <Switch
-                            checked={cell.row.original.status == 'APPROVED'}
-                            onChange={() => handleApproveRenderAndChange(cell, true)}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                        />
-                    </Tooltip>
-                )
-            }
         ],
         [],
     );
@@ -113,24 +93,24 @@ const AdminPatientList = () => {
                 return;
             }
             //send api delete request here, then refetch or update local table data for re-render
-            tableData.splice(row.index, 1);
-            // setTableData([...tableData]);
+            tableDataPats.splice(row.index, 1);
+            // tableDataPats([...tableDataPats]);
         },
-        [tableData],
+        [tableDataPats],
     );
 
 
 
-    if (!renderAdmin) {
+    if (!renderAdminPats) {
         return <div className="App">Loading...</div>;
     }
     return (
         <div>
             {
-                renderAdmin == true && tableData.length > 0 && <>
+                renderAdminPats == true && tableDataPats.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
-                            <SideBar />
+                            <AdminSideBar data={'admin-patients'} />
                         </div>
                         <div className="admin-ui-table">
                             <div className='header'>
@@ -146,28 +126,22 @@ const AdminPatientList = () => {
                                     },
                                 }}
                                 columns={columns}
-                                data={tableData}
+                                data={tableDataPats}
                                 enableColumnOrdering
-                                enableRowActions
-                                enableEditing={true}
+                                // enableRowActions
+                                // enableEditing={true}
+                                // editingMode={'cell'}
                                 // enableRowNumbers
-                                positionActionsColumn='last'
-                                renderRowActions={({ row }) => (
-                                    <Box sx={{ display: 'flex', gap: '1rem' }}>
-                                        {/* <Tooltip arrow placement="right" title="Approve">
-                                            <Switch
-                                                checked={handleApproveRenderAndChange(row)}
-                                                onChange={(event) => handleChange(event, row)}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                        </Tooltip> */}
-                                        <Tooltip arrow placement="right" title="Delete">
-                                            <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                                <Delete />
-                                            </IconButton>
-                                        </Tooltip>
-                                    </Box>
-                                )}
+                                // positionActionsColumn='last'
+                                // renderRowActions={({ row }) => (
+                                //     <Box sx={{ display: 'flex', gap: '1rem' }}>
+                                //         <Tooltip arrow placement="right" title="Delete">
+                                //             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                                //                 <Delete />
+                                //             </IconButton>
+                                //         </Tooltip>
+                                //     </Box>
+                                // )}
                                 renderDetailPanel={({ row }) => (
                                     <Box
                                         sx={{
@@ -179,7 +153,7 @@ const AdminPatientList = () => {
                                             maxWidth: '100%'
                                         }}
                                     >
-                                        <Container maxWidth={false} sx={{ border: '1px solid', padding: '0', margin: '0px', maxWidth: '100%', bgcolor: "#dff7f7" }}>
+                                        <Container maxWidth={false} sx={{ padding: '0', margin: '0px', maxWidth: '100%' }}>
                                             <div className='row'>
                                                 <div className='col-12'>
                                                     <Typography>Address: {row.original.address}</Typography>
@@ -187,13 +161,16 @@ const AdminPatientList = () => {
                                                     <Typography>State: {row.original.state}</Typography>
                                                     <Typography>Country: {row.original.country}</Typography>
                                                 </div>
-                                                {/* <div className='col-3'>
-                                                    <Tooltip arrow placement="right" title="Delete">
-                                                        <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                                            <Delete />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </div> */}
+                                            </div>
+                                            <div className='row'>
+                                                <div className='col-12' style={{ textAlign: 'end' }}>
+                                                    <Link to={'/admin-patients' } className='view-more-class'>
+                                                        {/* <Link to={{ screen: 'Profile', params: { id: 'jane' } }}>
+                                                            Go to Jane's profile
+                                                            </Link> */}
+                                                        View More{'>>'}
+                                                    </Link>
+                                                </div>
                                             </div>
                                         </Container>
                                     </Box>
@@ -205,8 +182,8 @@ const AdminPatientList = () => {
                                         // },
                                         '& tr:nth-of-type(odd)': {
                                             backgroundColor: "lightgray",
-                                            border: '2px solid',
-                                            borderColor: 'black'
+                                            // border: '2px solid',
+                                            // borderColor: 'black'
                                         },
                                     }),
                                 }}
@@ -218,14 +195,14 @@ const AdminPatientList = () => {
                 </>
             }
             {
-                renderAdmin == true && tableData.length == 0 && <>
+                renderAdminPats == true && tableDataPats.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
                 </>
             }
             {
-                renderAdmin == false && <>
+                renderAdminPats == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         API error
                     </div>

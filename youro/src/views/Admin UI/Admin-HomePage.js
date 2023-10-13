@@ -19,9 +19,11 @@ import {
 } from '@mui/material';
 
 import { Delete } from '@mui/icons-material';
-import SideBar from '../Patient UI/SideBar';
 import "../../styles/Admin-ui/Admin-HomePage.css";
 import { uTypes } from '../../App';
+import AdminSideBar from './Admin-SideBar';
+import { Link } from 'react-router-dom'
+import AdminPopUps from './Admin-PopUps';
 // const data = [
 //     {
 //         userId: '1',
@@ -324,6 +326,8 @@ const AdminHomePage = () => {
     const [renderAdmin, canRenderAdmin] = useState(true);
     const isRendered = useRef(false);
     let count = 0;
+
+
     useEffect(() => {
         count += 1;
         if (!isRendered.current) {
@@ -333,7 +337,7 @@ const AdminHomePage = () => {
         }
         else {
             console.log('useEffect re-render : ' + count);
-            console.log("Data inside useEffect : "+ count + "  =>  "+ tableData);
+            console.log("Data inside useEffect : " + count + "  =>  " + tableData);
         }
     }, []);
 
@@ -341,12 +345,17 @@ const AdminHomePage = () => {
     const fetchData = async () => {
         let type = uTypes.doctor;
         const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
-        const res = await axios.get(url);
-        canRenderAdmin(true);
-        setTableData(res.data);
-        console.log("Data inside fetchData : "+ count + "  =>  "+ tableData);
+        try {
+            const res = await axios.get(url);
+            canRenderAdmin(true);
+            setTableData(res.data);
+            console.log("Data inside fetchData : " + count + "  =>  " + tableData);
+        }
+        catch (err) {
+            console.error(err);
+        }
     };
-    
+
     const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false) => {
         console.log('cell => ' + JSON.stringify(cell) + " , " + JSON.stringify(tableData));
         if (isChange) {
@@ -394,7 +403,8 @@ const AdminHomePage = () => {
                             inputProps={{ 'aria-label': 'controlled' }}
                         />
                     </Tooltip>
-                )
+                ),
+                size: 20,
             }
         ],
         [],
@@ -425,7 +435,7 @@ const AdminHomePage = () => {
                 renderAdmin == true && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
-                            <SideBar />
+                            <AdminSideBar data={'admin-doctors'} />
                         </div>
                         <div className="admin-ui-table">
                             <div className='header'>
@@ -449,17 +459,11 @@ const AdminHomePage = () => {
                                 positionActionsColumn='last'
                                 renderRowActions={({ row }) => (
                                     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                                        {/* <Tooltip arrow placement="right" title="Approve">
-                                            <Switch
-                                                checked={handleApproveRenderAndChange(row)}
-                                                onChange={(event) => handleChange(event, row)}
-                                                inputProps={{ 'aria-label': 'controlled' }}
-                                            />
-                                        </Tooltip> */}
                                         <Tooltip arrow placement="right" title="Delete">
-                                            <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                                            {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
-                                            </IconButton>
+                                            </IconButton> */}
+                                            <AdminPopUps/>
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -474,7 +478,7 @@ const AdminHomePage = () => {
                                             maxWidth: '100%'
                                         }}
                                     >
-                                        <Container maxWidth={false} sx={{ border: '1px solid', padding: '0', margin: '0px', maxWidth: '100%', bgcolor: "#dff7f7" }}>
+                                        <Container maxWidth={false} sx={{ padding: '0', margin: '0px', maxWidth: '100%' }}>
                                             <div className='row'>
                                                 <div className='col-12'>
                                                     <Typography>Address: {row.original.address}</Typography>
@@ -482,13 +486,13 @@ const AdminHomePage = () => {
                                                     <Typography>State: {row.original.state}</Typography>
                                                     <Typography>Country: {row.original.country}</Typography>
                                                 </div>
-                                                {/* <div className='col-3'>
-                                                    <Tooltip arrow placement="right" title="Delete">
-                                                        <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                                            <Delete />
-                                                        </IconButton>
-                                                    </Tooltip>
-                                                </div> */}
+                                            </div>
+                                            <div className='row'>
+                                                <div className='col-12' style={{ textAlign: 'end' }}>
+                                                    <Link to={'/admin-patients' } className='view-more-class'>
+                                                        View More{'>>'}
+                                                    </Link>
+                                                </div>
                                             </div>
                                         </Container>
                                     </Box>
@@ -500,8 +504,8 @@ const AdminHomePage = () => {
                                         // },
                                         '& tr:nth-of-type(odd)': {
                                             backgroundColor: "lightgray",
-                                            border: '2px solid',
-                                            borderColor: 'black'
+                                            // border: '2px solid',
+                                            // borderColor: 'black'
                                         },
                                     }),
                                 }}

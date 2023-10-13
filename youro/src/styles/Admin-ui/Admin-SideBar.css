@@ -1,0 +1,50 @@
+@import "../../App.css";
+
+body
+{ 
+   background-color: var(--primary-color);
+}
+
+.Hamburger
+{
+  background-color: var(--primary-color);
+  /* margin-left: 20px; */
+  /* border: 1px solid black; */
+  padding-left: 20px;
+  padding-bottom: 10px;
+}
+/* .Tab-section
+{
+  display: flex;
+  /* margin: 30px; */
+   /* margin-top: 60px; */
+
+
+.Side-bar
+{
+  
+   /* display: flex; */
+   /* height: ; */
+   height: 95vh;
+   overflow-y: auto;
+   /* display: flex; */
+   flex-direction: column;
+  /* font-size: 50rem; */
+  /* color: var(--secondary-color); */
+}
+
+
+
+.Menu-item
+{
+  font-size: large;
+  margin-top: 30px; 
+  margin-bottom: 30px;
+  color: white;
+  /* margin-left: 2px;
+  margin-right: 2px; */
+}
+
+.Menu-item:hover {
+  background-color: var(--primary-color);
+}
