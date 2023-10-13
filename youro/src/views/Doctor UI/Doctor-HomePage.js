@@ -1,5 +1,5 @@
 import {React, useState ,useEffect} from 'react';
-import SideBar from '../Patient UI/SideBar';
+import SideBar from '../Doctor UI/Doctor-Sidebar';
 import "../../styles/Doctor-ui/Doctorhomepage.css";
 import "../../styles/Doctor-ui/doctor-appointment-div.css";
 import { FaCheckCircle,FaCheck} from "react-icons/fa";
@@ -137,23 +137,23 @@ const IncompleteEncounters=()=>
   
 
   return (
-     <div className='hm'>
+     <div className='hm-doctor'>
         <div className='sidebar'>
          <SideBar/>
        </div>
-       <div className='care-plan'>
+       <div className='care-plan-doctor'>
         <h1>youro</h1>
-        <div className='all-details'>
-        <div className='care-plan-details'>
+        <div className='all-details-doctor'>
+        <div className='care-plan-details-doctor'>
           <h2>Today's Appointments</h2>
           <TodayAppointmentList/>
         </div>
         {isVisible && 
-         <div className='care-plan-details'>
+         <div className='care-plan-details-doctor'>
            <h2>Previous Appointments</h2>
            <PreviousAppointments/>
         </div>}
-        <div className='care-plan-details'>
+        <div className='care-plan-details-doctor'>
           <h2>Incomplete Encounters</h2>
            <IncompleteEncounters/>
         </div>

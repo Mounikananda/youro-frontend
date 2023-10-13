@@ -20,40 +20,40 @@ const PatientHomePage = () => {
     const [data, setData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
 
-    useEffect(() => {
-      const mockData = [
-        {
-          "Prescription": {
-            "Dolo":
-              "take one in the morning and 1 in the evening",
-            "Paracetamol": "take 1 after dinner"
-          },
-          "Supplements": {
-            "Dolo": "take one in the morning and 1 in the evening",
-            "Paracetamol": "take 1 after dinner"
-          },
-          "Lifestylemodifications": [
-            "Make sure to drink 3 - 5 liters of water daily",
-            "Spend at least an hour in the sun",
-            "Don't drink coffee",
-            "Don't smoke",
-            "Don't consume alcohol"
-          ]
-        }
-      ];
-      setData(mockData);
-      // const fetchData = async () => {
-      //   try {
-
-      //     // const response = await fetch('any-api');
-      //     // const result = await response.json();
-      //     setData(mockData);
-      //     setIsLoading(false);
-      //   } catch (error) {
-      //     console.error('Error fetching data:', error);
-      //     setIsLoading(false);
-      //   }
-      // };
+  useEffect(() => {
+    const mockData = [
+      {
+        "Prescription": {
+          "Dolo": 
+          "take one in the morning and 1 in the evening",
+          "Paracetamol": "take 1 after dinner"
+        },
+        "Supplements": {
+          "Dolo": "take one in the morning and 1 in the evening",
+          "Paracetamol": "take 1 after dinner"
+        },
+        "Lifestylemodifications": [
+          "Make sure to drink 3 - 5 liters of water daily",
+          "Spend at least an hour in the sun",
+          "Don't drink coffee",
+          "Don't smoke",
+          "Don't consume alcohol"
+        ]
+      }
+    ];
+    setData(mockData);
+    // const fetchData = async () => {
+    //   try {
+       
+    //     // const response = await fetch('any-api');
+    //     // const result = await response.json();
+    //     setData(mockData);
+    //     setIsLoading(false);
+    //   } catch (error) {
+    //     console.error('Error fetching data:', error);
+    //     setIsLoading(false);
+    //   }
+    // };
 
       // fetchData();
 
