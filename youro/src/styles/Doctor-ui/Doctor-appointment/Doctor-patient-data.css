@@ -81,3 +81,30 @@
   overflow-y: scroll;
   scroll-behavior: initial;
 }
+
+.floating-editor
+{
+   /* position: absolute; */
+  display: flex;
+  flex-direction: column;
+  height: 40vh;
+  position: fixed;
+  bottom: 2vh;
+  right: 20px;
+  z-index: 100;
+  /* margin: 3%; */
+  background-color: white;
+}
+
+.close-button
+{
+  padding-right: 1%;
+}
+
+.notes-title
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0.5%;
+}
