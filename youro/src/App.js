@@ -17,11 +17,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Home from './views/Home';
 import PatientHomePage from './views/Patient UI/PatientHomePage';
 import DoctorHomePage from './views/Doctor UI/Doctor-HomePage';
+import AdminHomePage from './views/Admin UI/Admin-HomePage';
+import AdminPatientList from './views/Admin UI/Admin-PatientList';
 import DoctorProfile from './views/Doctor UI/DoctorProfile';
 
 
 export const uTypes = {
-  user : 'USER',
+  user : 'PATIENT',
   doctor : 'PROVIDER',
   admin : 'ADMIN'
 };
@@ -46,6 +48,8 @@ function App() {
         <Route path='/terms-conditions' element={<Terms/>}></Route>
         <Route path='/patient-ui' element={<PatientHomePage/>}></Route>
         <Route path='/doctor-ui' element={<DoctorHomePage/>}></Route>
+        <Route path='/admin-doctors' element={<AdminHomePage/>}></Route>
+        <Route path='/admin-patients' element={<AdminPatientList/>}></Route>
         <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
      </Routes>
     </Router>
