@@ -21,6 +21,7 @@ import {
 import { Delete } from '@mui/icons-material';
 import SideBar from '../Patient UI/SideBar';
 import "../../styles/Admin-ui/Admin-HomePage.css";
+import { uTypes } from '../../App';
 
 
 const AdminPatientList = () => {
