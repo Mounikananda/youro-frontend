@@ -21,7 +21,7 @@ function SideBar(props)
     <Sidebar backgroundColor="#9CB189" className='Side-bar' collapsed={collapse}>
      
      <Menu menuItemStyles={{
-      button: ({ level, active, disabled,}) => {
+      button: ({active}) => {
         // only apply styles on first level elements of the tree
         if (active==true)
           return {

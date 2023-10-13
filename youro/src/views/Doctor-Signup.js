@@ -123,13 +123,13 @@ const DoctorSignup= () =>
 
                   <div className="doctor-fields">
                   <div className="doctor-input">
-                        <label>Pincode</label>
-                         <input className="input-field-doctor input-border" type="text" {...register("pincode", {
+                        <label>Zipcode</label>
+                         <input className="input-field-doctor input-border" type="text" {...register("zipcode", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.pincode?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.pincode?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                                {errors?.zipcode?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.zipcode?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
                    </div> 
 
                      <div className="doctor-input">
@@ -603,7 +603,7 @@ export default DoctorSignup;
 //                     </div>
 
 //                      <div className="label-input">
-//                        <label>Pincode</label>
+//                        <label>Zipcode</label>
 //                         <input className="input-field" type="text" value={city} onChange={handleRelationEmail}/>
 //                     </div> 
 //                   </div> 

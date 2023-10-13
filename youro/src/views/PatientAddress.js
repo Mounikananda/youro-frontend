@@ -19,10 +19,10 @@ const Patientaddress= (props) =>
 
   const onsubmit = (values) =>
   {
-    const data = Object.assign(values, props.data)
-    console.log("All data:",data);
-    props.step2Data(data)
-   }
+    const allData = Object.assign(values, props.data)
+    console.log("All data:",allData);
+    props.step2Data(allData) //will send the data to parent comp i.e. sign up for my self
+  }
 
    
    return (
@@ -34,7 +34,7 @@ const Patientaddress= (props) =>
                      <div className="address-fields">
                           <div className="label-address">
                                {/* <label>Address</label> */}
-                               <input placeholder="Address" className="input-field input-border" type="text" {...register("Address", {
+                               <input placeholder="Address *" className="input-field input-border" type="text" {...register("Address", {
                                   required: true,
                                   maxLength: 50,
                                 })} />
@@ -43,7 +43,7 @@ const Patientaddress= (props) =>
                           </div>
 
     		     <div className="label-address">
-                        <input placeholder="City" className="input-field input-border" type="text" {...register("City", {
+                        <input placeholder="City *" className="input-field input-border" type="text" {...register("City", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
@@ -52,7 +52,7 @@ const Patientaddress= (props) =>
                      </div>
 
                        <div className="label-address">
-                        <input placeholder="State" className="input-field input-border" type="text" {...register("state", {
+                        <input placeholder="State *" className="input-field input-border" type="text" {...register("state", {
                                   required: true,
                                   maxLength: 32,
                                 })} />
@@ -61,12 +61,12 @@ const Patientaddress= (props) =>
                     </div>
 
                     <div className="label-address">
-                        <input placeholder="Pincode" className="input-field input-border" type="text" {...register("pincode", {
+                        <input placeholder="zipcode *" className="input-field input-border" type="text" {...register("zipcode", {
                                   required: true,
                                   maxLength: 32,
                                 })} />
-                                {errors?.pincode?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.pincode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+                                {errors?.zipcode?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.zipcode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
                     </div>
 
                     <p></p>
