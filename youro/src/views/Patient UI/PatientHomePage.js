@@ -8,8 +8,8 @@ import "../../styles/Patient-ui/Patient-Homepage.css";
 import SideBar from './SideBar';
 import PatientSymptomChart from './Patient-symptom-chart';
 import Loader from '../../utils/loader';
-import Popup from 'reactjs-popup';
 import Popmenu from './Popupmenu';
+import SymptomCalculator from './SymptomCalculator';
 
 
 const PatientHomePage =()=>
@@ -101,9 +101,7 @@ const PatientHomePage =()=>
       { id: 5, name: 'John Doe', time: "13-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up'},
     ];
 
-    setTimeout(() => {
       setData(mockData);
-    }, 1000);
   }, []);
 
   return (
@@ -125,17 +123,48 @@ const PatientHomePage =()=>
     ); 
   }
 
+  const UpcomingAppointments = () => {
+    const [data, setData] = useState([]);
+    
+    useEffect(() => {
+  
+      const mockData = [
+        { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
+        { id: 2, name: 'John Doe', time: "10-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },]
+        
+      setData(mockData);
+    }, []);
+  
+    return (
+      <div>
+          {data.map((item) => (
+            <div className='previous-appointment'> 
+             <div>
+              <h3 >{item.time.split(',')[0]}, {item.patientstime} - {item.name}</h3>
+             </div>
+               <ul key={item.id}>
+               <li>Diagnosisname: {item.diagnosisname}</li>
+               {/* <li>Symptom score: {item.symptomscore}</li> */}
+               <li style={ {textDecoration:'underline',color:'#9CB189', cursor: 'pointer'}} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
+                {/* <p>{item.meetup}</p> */}
+               </ul>
+             <button className='join-now-button' style={{width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer'}}>Join Now</button>
+            </div> 
+          ))}
+      </div>
+    );
+  };
 
- 
+
+  const [open, setOpen] = useState(false);
+
    return (
-     <div className='hm'>
-        <div className='sidebar'>
-         <SideBar/>
-       </div>
+    //  <div className='hm'>
+        
        <div className='care-plan'>
         <div className='header'>
           <h1>youro</h1>
-          <Popmenu/>
+          {/* <Popmenu/> */}
         </div>
          
         <div className='all-details'>
@@ -150,11 +179,11 @@ const PatientHomePage =()=>
             <CarePlan/>
         </div>
              <div className='column-data'>
-               <PatientSymptomChart/>
+               <PatientSymptomChart retakeSymptomScore={setOpen}/>
                <div className='row-data'>
                  <div className='care-plan-details-patient-1'>
-                     <h3>PlaceHolder for a component </h3>
-                    
+                     <h3>Upcoming Appointments </h3>
+                    <UpcomingAppointments />
                   </div>
                   <div className= 'care-plan-details-patient-1'>
                      <h3>Previous Appointments</h3>
@@ -163,8 +192,9 @@ const PatientHomePage =()=>
              </div>
         </div> 
         </div>  
+         <SymptomCalculator open={open} setOpen={setOpen}/>
        </div>
-      </div>
+      // </div>
   );
   
 }
