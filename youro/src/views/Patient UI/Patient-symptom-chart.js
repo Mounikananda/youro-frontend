@@ -15,7 +15,15 @@ const data = [
 const PatientSymptomChart = (props) => {
  return (
       <div style={{width: "98%", backgroundColor:'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative'}}>
-        <h3 style={{position: 'absolute', top: '3px', left: '15px'}}>Prev Symptom Scores</h3>
+        <div style={{position: 'absolute', top: '3px', left: '15px'}}>
+            <h3 style={{display: 'inline-block'}}>Prev Symptom Scores</h3>
+            <select id="d" name="d" className='dropdown-chart'>
+              <option value="d1">Diagnosis 1</option>
+              <option value="d2">Diagnosis 2</option>
+              <option value="d3">Diagnosis 3</option>
+              <option value="d4">Diagnosis 4</option>
+            </select>
+        </div>
         <div style={{position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px'}} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>Retake symptom score</div>
         <ResponsiveContainer width="100%" height="75%">
         <LineChart

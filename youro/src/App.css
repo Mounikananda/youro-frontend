@@ -35,6 +35,19 @@
   padding: 15px 25px;
 }
 
+.btn-filled-disabled {
+  background-color: #9999;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  border-width: 5;
+  text-align: center;
+  transition: all .2s ease-in;
+  cursor: not-allowed;
+  pointer-events: none;
+  padding: 15px 25px;
+}
+
 .btn-filled:hover {
   background-color: var(--primary-color);
   color: #404040 !important;
@@ -91,4 +104,32 @@
 
 .css-1wvake5{
   border: none !important;
+}
+
+input[type='radio']:after {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  top: -2px;
+  left: -1px;
+  position: relative;
+  background-color: #dfdede;
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 2px solid white;
+}
+
+input[type='radio']:checked:after {
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  top: -2px;
+  left: -1px;
+  position: relative;
+  background-color: var(--secondary-color);
+  content: '';
+  display: inline-block;
+  visibility: visible;
+  border: 2px solid var(--secondary-color);
 }
