@@ -1,0 +1,93 @@
+@import "../../App.css";
+
+.admin-ui-table h1
+{
+  color: var(--secondary-color);
+  font-size: 2.5rem;
+  /* padding: 10px; */
+}
+
+.admin-ui-table {
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+
+.header
+{
+   display: flex;
+   justify-content: flex-start; 
+   align-items: center; 
+}
+
+
+.hm
+{
+  display: flex;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+
+.loader-container
+{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 100vh;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 2s linear infinite;
+}
+
+.css-1h2ots1-MuiTableRow-root{
+  background-color: #ffffff !important;
+}
+
+.css-1bvdg79-MuiTableRow-root{
+  background-color:#f3f3f3 ;   
+}
+
+.css-tucewo{
+  justify-content: center;
+}
+
+/* 
+ */
+
+ /* .MuiTableContainer-root {
+  box-shadow: none;
+} */
+
+.MuiTable-root{
+  border-collapse: separate;
+  border-spacing: 0 20px;
+  border: transparent;
+  background-color: var(--primary-color);
+}
+
+ .MuiTable-root td {
+  border-top: 4px solid var(--primary-color);
+  border-bottom: 4px solid var(--primary-color);
+}
+
+.MuiTableRow-root td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+
+.MuiTableRow-root td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+.view-more-class{
+  color: var(--secondary-color);
+  font-weight: bold;
+}
