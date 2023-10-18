@@ -292,7 +292,7 @@ const PatientHomePage = () => {
         </div>
              
         {/* </div>   */}
-         <SymptomCalculator open={open} setOpen={setOpen}/>
+         {open && <SymptomCalculator open={open} setOpen={setOpen}/>}
        </div>
       // </div>
   );
