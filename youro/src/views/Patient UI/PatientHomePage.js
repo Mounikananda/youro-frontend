@@ -260,7 +260,7 @@ const PatientHomePage = () => {
         
        <div className='care-plan'>
         <div className='header'>
-          <h1>youro</h1>
+          <h1 style={{marginLeft: '50px'}}>youro</h1>
           {/* <Popmenu/> */}
         </div>
          
