@@ -13,33 +13,34 @@ const PatientAppointment = (props) => {
     maxDate.setDate(maxDate.getDate() + 28);
     const localizer = momentLocalizer(moment);
     const [val, setVal] = useState(-1);
-    const [event, setEvent] = useState({});
+    const [event, setEvent] = useState(null);
     const [dateSelection, setDateSelection] = useState(new Date());
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [slotsData, setSlotsData] = useState(['10', '10:30', '11', '11:30', '12', '12:30', '13', '13:30']);
 
     useEffect(() => {
-        console.log(dateSelection)
-    }, [dateSelection])
+        console.log(event)
+    }, [event])
 
     const myEvents = [{
         'id': 1,
-        'start': new Date(2023, 9, 13, 10, 0, 0),
-        'end': new Date(2023, 9, 13, 10, 30, 0)
+        'start': new Date(2023, 9, 14, 10, 0, 0),
+        'end': new Date(2023, 9, 14, 10, 30, 0)
       },
       {
         'id': 2,
-        'start': new Date(2023, 9, 13, 10, 30, 0),
-        'end': new Date(2023, 9, 13, 11, 0, 0)
+        'start': new Date(2023, 9, 14, 10, 30, 0),
+        'end': new Date(2023, 9, 14, 11, 0, 0)
       },
       {
         'id': 3,
-        'start': new Date(2023, 9, 13, 12, 0, 0),
-        'end': new Date(2023, 9, 13, 12, 30, 0)
+        'start': new Date(2023, 9, 14, 12, 0, 0),
+        'end': new Date(2023, 9, 14, 12, 30, 0)
       },
       {
         'id': 4,
-        'start': new Date(2023, 9, 13, 13, 0, 0),
-        'end': new Date(2023, 9, 13, 13, 30, 0)
+        'start': new Date(2023, 9, 14, 13, 0, 0),
+        'end': new Date(2023, 9, 14, 13, 30, 0)
       },
     ]
 
@@ -58,34 +59,52 @@ const PatientAppointment = (props) => {
         return { style: { backgroundColor } }
     }
 
+    const getEndTime = (time) => {
+        var hour = parseInt(time.split(":")[0])
+        var minutes = time.split(":")[1]
+
+        if(minutes === '30'){
+            return `${hour+1}`
+        } else {
+            return `${hour}:30`
+        }
+    }
+
+    // const rnFunc = async () => {
+    //     var manySlots = await document.querySelector('[aria-label="October 14, 2023"]');
+    //    await  manySlots.className += "many_slots"
+    // }
+
+    // rnFunc()
+
     return (
-        <div style={{display: 'flex', width: '100%', position: 'relative'}}>
-            <div style={{display: 'flex', width: '75%', justifyContent: 'space-between'}}>
+        <div style={{display: 'flex', width: '100%', position: 'relative', alignItems: 'center'}}>
+            <div style={{display: 'flex', width: '70%', justifyContent: 'space-between'}}>
             <div className="react-calendar-container">
-                <h1 style={{top: '55px', position: 'absolute'}}>Schedule Appointment</h1> 
+                <h1 style={{top: '55px', position: 'absolute', left: '50px'}}>Schedule Appointment</h1> 
                 <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={setDateSelection} value={dateSelection}/>
             </div>
-            <div style={{width: '50%', minWidth: '40%', marginTop: '10px'}} className="big-calendar-container">
-            {dateSelection && 
-            <BigCalendar
-                date={dateSelection}
-                defaultView={Views.DAY}
-                views={['day']}
-                events={myEvents}
-                localizer={localizer}
-                toolbar={true}
-                onSelectEvent={handleSelectEvent}
-                // selectable
-                eventPropGetter={eventPropGetter}
-                // scrollToTime={scrollToTime}
-            />}
+            <div style={{width: '-webkit-fill-available', marginTop: '10px',}} className="slots-container">
+                <p>Available Slots on - <strong style={{textDecoration: 'underline'}}>{dateSelection.toLocaleDateString()}</strong></p>
+                <div className="slots-container-sub">
+                    {slotsData.map((data) => {
+                        return (
+                            <>
+                            <div onClick={(e) => setEvent(data)} className="slot-timings"><span style={{letterSpacing: '1.3px'}}>{data}</span> - <span style={{letterSpacing: '1.3px'}}>{getEndTime(data)}</span></div>
+                            </>
+                            
+                        )                       
+                    })} 
+
+                    {slotsData && !slotsData[0] && <h4 style={{letterSpacing: '2px'}}>No slots Available on selected date. Choose another date</h4>}
+                </div>
             </div>
             
         </div>
-        {event.start && <>
+        {event && <>
                         <div style={{margin: 'auto'}}>
-                        <strong>Selected Date:</strong>&nbsp;&nbsp;{event.start.toDateString()} <br /><br />
-                        <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event.start.toLocaleTimeString()} - {event.end.toLocaleTimeString()}
+                        <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />
+                        <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event} - {getEndTime(event)}
                         <br /><br /><br /><br /><br />
                         <div className="btn-filled" onClick={handleBook}>Book Appointment</div>
 
@@ -104,7 +123,7 @@ const PatientAppointment = (props) => {
                 <h3>Congratulations !!!</h3>
                 <h3>Appointment with Dr. Farah confirmed</h3>
                 <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{height: '100px'}}></img><br/><br/>
-                <p>Appointment at: &nbsp;<strong> {event.start && event.start.toLocaleDateString()}, {event.start && event.start.toLocaleTimeString()}</strong></p>
+                {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
             </div>
         </Popup>
             {/* </div> */}

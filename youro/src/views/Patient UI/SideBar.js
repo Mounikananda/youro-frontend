@@ -33,7 +33,10 @@ function SideBar(props)
     }}
   >
      <div className='Hamburger'>
-      <Hamburger toggled={collapse} toggle={setCollapse} size={40} /> 
+      {/* <Hamburger toggled={collapse} toggle={setCollapse} size={40} />  */}
+      <span class="material-symbols-outlined" style={{fontSize: '40px', cursor: 'pointer'}} onClick={() => setCollapse(!collapse)}>
+        menu
+        </span>
       </div>
     <MenuItem onClick={() => props.setActive(0)} icon={<img src={require('../../assets/Homepage_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 0} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => props.setActive(1)} icon={<img src={require('../../assets/Schedule_icon.png')} height='45px' alt='home_icon'/>} active={props.active === 1} className="Menu-item" > Appointments</MenuItem>
