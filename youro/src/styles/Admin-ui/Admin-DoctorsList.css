@@ -26,6 +26,7 @@
   display: flex;
   width: 100%;
   overflow-x: hidden;
+  height: 100vh;
 }
 
 
@@ -64,6 +65,9 @@
  /* .MuiTableContainer-root {
   box-shadow: none;
 } */
+.MuiPaper-root{
+  margin: 1%;
+}
 
 .MuiTable-root{
   border-collapse: separate;
@@ -89,4 +93,5 @@
 
 .view-more-class{
   color: var(--secondary-color);
+  font-weight: bold;
 }

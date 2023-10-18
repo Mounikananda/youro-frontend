@@ -1,5 +1,8 @@
 @import "../../App.css";
 
+.admin-sidebar{
+    height: 100vh;
+}
 body
 { 
    background-color: var(--primary-color);

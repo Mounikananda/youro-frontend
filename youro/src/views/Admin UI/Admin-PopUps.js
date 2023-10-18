@@ -15,7 +15,8 @@ const AdminPopUps = (props) => {
     const [step, setStep] = useState(props.data.step);
 
     const openPopup = () => {
-        console.log((props.data.step));
+        console.log((props.data));
+        // { 'action': 'delete-doctor', 'step': 1 , 'rowData': row}
         setIsOpen(true);
     };
 
@@ -49,7 +50,7 @@ const AdminPopUps = (props) => {
                         <div className="popup-content-admin">
                             <div className='row'>
                                 <div className='col-12 info-col'>
-                                    <h3 style={{ marginLeft: '5%' }}>Are you sure you want to delete this item?</h3>
+                                    <h3 style={{ marginLeft: '5%' }}>Are you sure you want to delete Dr. {props.data.rowData.firstName} {props.data.rowData.lastName}?</h3>
                                 </div>
                                 <div className='col-12 buttons-col row'>
                                     <div className='col-6'></div>

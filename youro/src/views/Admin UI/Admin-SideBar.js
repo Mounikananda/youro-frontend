@@ -9,7 +9,7 @@ function AdminSideBar(props) {
     const [collapse, setCollapse] = useState(true);
     const navigate = useNavigate();
     return (
-        <div>
+        <div className='admin-sidebar'>
             <div className='Tab-section'>
                 <Sidebar backgroundColor="#9CB189" className='Side-bar' collapsed={collapse}>
 

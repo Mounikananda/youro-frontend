@@ -19,8 +19,8 @@ import {
 } from '@mui/material';
 
 import { Delete } from '@mui/icons-material';
-import "../../styles/Admin-ui/Admin-HomePage.css";
-import { uTypes } from '../../App';
+import "../../styles/Admin-ui/Admin-DoctorsList.css";
+import { USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
@@ -321,7 +321,7 @@ import AdminPopUps from './Admin-PopUps';
 //     "status": "APPROVED"
 //   }
 
-const AdminHomePage = () => {
+const AdminDoctorsList = () => {
     const [tableData, setTableData] = useState([]);
     const [renderAdmin, canRenderAdmin] = useState(true);
     const isRendered = useRef(false);
@@ -343,7 +343,7 @@ const AdminHomePage = () => {
 
 
     const fetchData = async () => {
-        let type = uTypes.doctor;
+        let type = USER_TYPES.doctor;
         const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
         try {
             const res = await axios.get(url);
@@ -450,10 +450,13 @@ const AdminHomePage = () => {
                                 }}
                                 columns={columns}
                                 data={tableData}
+                                enableStickyHeader
                                 enableColumnOrdering
                                 enableRowActions
                                 enableEditing={true}
                                 // enableRowNumbers
+
+                                muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
                                 positionActionsColumn='last'
                                 renderRowActions={({ row }) => (
                                     <Box sx={{ display: 'flex', gap: '1rem' }}>
@@ -461,7 +464,7 @@ const AdminHomePage = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{'action': 'delete-doctor', 'step' : 1}}/>
+                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1 , 'rowData': row.original}} />
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -487,7 +490,7 @@ const AdminHomePage = () => {
                                             </div>
                                             <div className='row'>
                                                 <div className='col-12' style={{ textAlign: 'end' }}>
-                                                    <Link to={'/admin-patients' } className='view-more-class'>
+                                                    <Link to={'/admin-view-doctor'} className='view-more-class'>
                                                         View More{'>>'}
                                                     </Link>
                                                 </div>
@@ -507,7 +510,6 @@ const AdminHomePage = () => {
                                         },
                                     }),
                                 }}
-
                             />
                         </div>
                     </div>
@@ -533,4 +535,4 @@ const AdminHomePage = () => {
 
 };
 
-export default AdminHomePage;
+export default AdminDoctorsList;

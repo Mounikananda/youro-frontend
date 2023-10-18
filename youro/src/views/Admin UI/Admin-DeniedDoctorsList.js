@@ -19,46 +19,70 @@ import {
 } from '@mui/material';
 
 import { Delete } from '@mui/icons-material';
-import "../../styles/Admin-ui/Admin-PatientList.css";
-import { USER_TYPES } from '../../App';
+import "../../styles/Admin-ui/Admin-DoctorsList.css";
+import { DOCTOR_STATUS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
+import AdminPopUps from './Admin-PopUps';
 
-
-const AdminPatientList = () => {
-    const [tableDataPats, setTableDataPats] = useState([]);
-    const [renderAdminPats, canRenderAdminPats] = useState(true);
-    const isAdminPatsRendered = useRef(false);
+const AdminDeniedDoctorsList = () => {
+    const [tableData, setTableData] = useState([]);
+    const [renderAdmin, canRenderAdmin] = useState(true);
+    const isRendered = useRef(false);
     let count = 0;
 
 
     useEffect(() => {
         count += 1;
-        if (!isAdminPatsRendered.current) {
+        if (!isRendered.current) {
             console.log('useEffect : ' + count);
             fetchData();
-            isAdminPatsRendered.current = true;
+            isRendered.current = true;
         }
         else {
             console.log('useEffect re-render : ' + count);
-            console.log("Data inside useEffect : " + count + "  =>  " + tableDataPats);
+            console.log("Data inside useEffect : " + count + "  =>  " + tableData);
         }
     }, []);
 
 
     const fetchData = async () => {
-        let type = USER_TYPES.user;
+        let type = USER_TYPES.doctor;
         const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
         try {
             const res = await axios.get(url);
-            canRenderAdminPats(true);
-            setTableDataPats(res.data);
-            console.log("Data inside fetchData : " + count + "  =>  " + tableDataPats);
+            canRenderAdmin(true);
+            let data= [];
+            for(let i =0; i<res.data.length; i++){
+                console.log(res.data[i]);
+                if(res.data[i].status === DOCTOR_STATUS.denied){
+                    console.log(true);
+                    data.push( res.data[i]);
+                }
+            }
+
+            setTableData(data);
+            console.log("Data inside fetchData : " + count + "  =>  " + data);
         }
         catch (err) {
             console.error(err);
         }
     };
+
+    // const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false) => {
+    //     console.log('cell => ' + JSON.stringify(cell) + " , " + JSON.stringify(tableData));
+    //     if (isChange) {
+    //         for (let i = 0; i < tableData.length; i++) {
+    //             console.log("----====---------------=-------------=-----------");
+    //             if (cell.row.original.userId == tableData[i].userId) {
+    //                 console.log('i ==>  ' + i + " :: " + tableData[i].userId + " -> " + tableData[i].status);
+    //                 tableData[i]['status'] = cell.row.original.status === 'APPROVED' ? 'PENDING' : 'APPROVED';
+    //                 setTableData([...tableData]);
+    //                 isRendered.current = true;
+    //             }
+    //         }
+    //     }
+    // }
 
     const columns = useMemo(
         () => [
@@ -81,6 +105,20 @@ const AdminPatientList = () => {
                 accessorKey: 'state',
                 header: 'State',
             },
+            // {
+            //     header: "Status",
+            //     accessorKey: "status",
+            //     Cell: ({ cell }) => (
+            //         <Tooltip arrow placement="right" title="Approve">
+            //             <Switch
+            //                 checked={cell.row.original.status == 'APPROVED'}
+            //                 onChange={() => handleApproveRenderAndChange(cell, true)}
+            //                 inputProps={{ 'aria-label': 'controlled' }}
+            //             />
+            //         </Tooltip>
+            //     ),
+            //     size: 20,
+            // }
         ],
         [],
     );
@@ -92,25 +130,23 @@ const AdminPatientList = () => {
             ) {
                 return;
             }
-            //send api delete request here, then refetch or update local table data for re-render
-            tableDataPats.splice(row.index, 1);
-            // tableDataPats([...tableDataPats]);
+            tableData.splice(row.index, 1);
         },
-        [tableDataPats],
+        [tableData],
     );
 
 
 
-    if (!renderAdminPats) {
+    if (!renderAdmin) {
         return <div className="App">Loading...</div>;
     }
     return (
         <div>
             {
-                renderAdminPats == true && tableDataPats.length > 0 && <>
+                renderAdmin == true && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
-                            <AdminSideBar data={'admin-patients'} />
+                            <AdminSideBar data={'admin-denied-doctors'} />
                         </div>
                         <div className="admin-ui-table">
                             <div className='header'>
@@ -126,23 +162,22 @@ const AdminPatientList = () => {
                                     },
                                 }}
                                 columns={columns}
-                                data={tableDataPats}
+                                data={tableData}
                                 enableColumnOrdering
-                                muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
-                                // enableRowActions
-                                // enableEditing={true}
-                                // editingMode={'cell'}
+                                enableRowActions
+                                enableEditing={true}
                                 // enableRowNumbers
-                                // positionActionsColumn='last'
-                                // renderRowActions={({ row }) => (
-                                //     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                                //         <Tooltip arrow placement="right" title="Delete">
-                                //             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                //                 <Delete />
-                                //             </IconButton>
-                                //         </Tooltip>
-                                //     </Box>
-                                // )}
+                                positionActionsColumn='last'
+                                renderRowActions={({ row }) => (
+                                    <Box sx={{ display: 'flex', gap: '1rem' }}>
+                                        <Tooltip arrow placement="right" title="Delete">
+                                            {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+                                                <Delete />
+                                            </IconButton> */}
+                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1 , 'rowData': row.original}} />
+                                        </Tooltip>
+                                    </Box>
+                                )}
                                 renderDetailPanel={({ row }) => (
                                     <Box
                                         sx={{
@@ -166,9 +201,6 @@ const AdminPatientList = () => {
                                             <div className='row'>
                                                 <div className='col-12' style={{ textAlign: 'end' }}>
                                                     <Link to={'/admin-patients' } className='view-more-class'>
-                                                        {/* <Link to={{ screen: 'Profile', params: { id: 'jane' } }}>
-                                                            Go to Jane's profile
-                                                            </Link> */}
                                                         View More{'>>'}
                                                     </Link>
                                                 </div>
@@ -195,14 +227,14 @@ const AdminPatientList = () => {
                 </>
             }
             {
-                renderAdminPats == true && tableDataPats.length == 0 && <>
+                renderAdmin == true && tableData.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
                 </>
             }
             {
-                renderAdminPats == false && <>
+                renderAdmin == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         API error
                     </div>
@@ -213,4 +245,4 @@ const AdminPatientList = () => {
 
 };
 
-export default AdminPatientList;
+export default AdminDeniedDoctorsList;
