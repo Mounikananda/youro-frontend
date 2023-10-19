@@ -64,7 +64,9 @@ const DoctorProfile=()=>
       setValue('image', file);
       // Create a preview URL for the selected image
       const previewURL = URL.createObjectURL(file);
+      // print(previewURL,"this is the url created");
       setImagePreview(previewURL);
+
     }
   };
 
@@ -91,12 +93,25 @@ const DoctorProfile=()=>
             
               <div>
                {/* <img  src={'https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'} alt="My Image" width="200" height="150" /> */}
-                {!imagePreview && <input
+                {/* {!imagePreview && <input
                   type="file"
                   accept=".jpg, .jpeg, .png"
                   {...register('image', { required: true })}
                    onChange={handleImageChange}
-                />}
+                />
+                {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
+                } */}
+                {!imagePreview && (
+                   <>
+                   <input
+                    type="file"
+                    accept=".jpg, .jpeg, .png"
+                    {...register('image', { required: 'Image is required' })}
+                    onChange={handleImageChange}
+                    />
+                    {errors.image && <p className="error-text">{errors.image.message}</p>}
+                    </>
+                    )}
                  {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />}
               </div>
           </div>
@@ -195,9 +210,20 @@ const DoctorProfile=()=>
             <div className='p-fields'>
             <label>Date of Birth</label>
             {/* <input className='input-field' type='text'></input> */}
-            <input type="date" className='input-field'
+            {/* <input type="date" className='input-field'
              max={new Date().toISOString().split('T')[0]} 
-            />
+            /> */}
+             <input type="date" className="input-field" {...register("dob", { required: "Date of Birth is required",
+               max: {
+              value: new Date().toISOString().split("T")[0],
+              message: "Date of Birth cannot be in the future",
+               },
+               })}
+               defaultValue="YYYY-MM-DD" // Replace with your desired default value
+             />
+             {errors?.dob?.type === "required" && ( <p className="error-text">{errors?.dob?.message}</p>
+             )}
+            {errors?.dob?.type === "validate" && ( <p className="error-text">{errors?.dob?.message}</p> )}
             </div>
           </div>
             <div className='p-col'>
