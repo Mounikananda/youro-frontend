@@ -356,25 +356,49 @@ function DoctorAppointments() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
 
-  const handleSelectEvent = (event) => {
+  const handleSelectEvent = (event) =>
+ {
     setSelectedEvent(event);
     setShowEventDetails(true);
   };
 
-  const [events, setEvents] = useState([
-    {
-      start: moment().toDate(),
-      end: moment().add(1, "days").toDate(),
-      title: "Stephen Curry",
-      email: "example@example.com",
-    },
-    {
-      start: moment().add(2, "days").toDate(),
-      end: moment().add(3, "days").toDate(),
-      title: "Chris Brown",
-      email: "another@example.com",
-    },
-  ]);
+  // const [events, setEvents] = useState([
+  //   {
+  //     start: moment().toDate(),
+  //     end: moment().add(1, "days").toDate(),
+  //     title: "Stephen Curry",
+  //     email: "example@example.com",
+  //   },
+  //   {
+  //     start: moment().add(2, "days").toDate(),
+  //     end: moment().add(3, "days").toDate(),
+  //     title: "Chris Brown",
+  //     email: "another@example.com",
+  //   },
+  // ]);
+
+  const [events, setEvents] = useState([]);
+
+
+  const event1 = {
+    start: moment().toDate(),
+    end: moment().add(1, "days").toDate(),
+    title: "Stephen Curry",
+    email: "example@example.com",
+  };
+
+  const event2 = {
+    start: moment().add(2, "days").toDate(),
+    end: moment().add(3, "days").toDate(),
+    title: "Chris Brown",
+    email: "another@example.com",
+  };
+
+  const initialEvents = [event1, event2];
+
+  useState(() => {
+    setEvents(initialEvents);
+  }, []);
 
   const [newEvent, setNewEvent] = useState({ start: null, end: null, title: "", email: "" });
 
@@ -403,16 +427,17 @@ function DoctorAppointments() {
               events={events}
               selectable
               onSelectSlot={(slotInfo) => {
+                if (slotInfo.action === "select") {
                 // Handle event creation here
                 setNewEvent({
                   start: slotInfo.start,
                   end: slotInfo.end,
                   title: "",
                   email: "",
-                });
+                })};
               }}
               onSelectEvent={handleSelectEvent}
-              style={{ height: "70vh", backgroundColor: "white",border:"0.5px solid black"}}
+              style={{ height: "60vh", backgroundColor: "white",border:"0.5px solid black"}}
             />
             <div className="events-form">
               {newEvent.start && (
@@ -423,6 +448,7 @@ function DoctorAppointments() {
                     placeholder="Event title"
                     value={newEvent.title}
                     onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                    required
                   />
                   {/* <input
                     type="text"
@@ -449,6 +475,22 @@ function DoctorAppointments() {
               </div>
             </div>
           )}
+          {/* <div className="event-container">
+            <h3>All Events:</h3>
+            {events.map((event, index) => (
+            <div key={index} className="event-item">
+            <p>
+              <strong>Title:</strong> {event.title}
+            </p>
+            <p>
+            <strong>Date:</strong> {event.start.toLocaleString()} - {event.end.toLocaleString()}
+            </p>
+            <p>
+              <strong>Email:</strong> {event.email}
+            </p>
+          </div>
+      ))}
+    </div> */}
         </div>
       </div>
     </div>

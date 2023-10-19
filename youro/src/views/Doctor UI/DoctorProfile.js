@@ -19,7 +19,8 @@ const DoctorProfile=()=>
   const [isPopupVisible, setPopupVisible] = useState(false);
   
 
-  const showPopup = () => {
+  const showPopup = (data) => {
+    console.log(data);
     setPopupVisible(true);
   };
 
@@ -42,16 +43,38 @@ const DoctorProfile=()=>
     register,
     handleSubmit,
     watch,
-    formState: { errors },
+    setValue,
+    formState: { errors }
   } = useForm();
 
-  
-  const onsubmit = (data) =>
+
+  const showdata =(data) =>
   {
-    // const allData = Object.assign(values, props.data)
-    console.log("All data:",data);
-    // props.step2Data(allData) //will send the data to parent comp i.e. sign up for my self
+    console.log(data);
   }
+
+
+   const [imagePreview, setImagePreview] = useState(null);
+
+  
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Set the file value in the form data
+      setValue('image', file);
+      // Create a preview URL for the selected image
+      const previewURL = URL.createObjectURL(file);
+      setImagePreview(previewURL);
+    }
+  };
+
+
+  
+  // const onsubmit = (data) =>
+  // {
+  //   // const allData = Object.assign(values, props.data)
+  //   console.log("All data:",data);
+  // }
 
 
    return (
@@ -67,7 +90,14 @@ const DoctorProfile=()=>
             <h1>My Profile</h1>
             
               <div>
-               <img  src={'https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'} alt="My Image" width="200" height="150" />
+               {/* <img  src={'https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'} alt="My Image" width="200" height="150" /> */}
+                {!imagePreview && <input
+                  type="file"
+                  accept=".jpg, .jpeg, .png"
+                  {...register('image', { required: true })}
+                   onChange={handleImageChange}
+                />}
+                 {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />}
               </div>
           </div>
           <div className='p-col'> 
@@ -108,7 +138,15 @@ const DoctorProfile=()=>
             </div> 
             <div className='p-fields'>
             <label>License Number</label>
-            <input className='input-field' type='text'></input>
+            {/* <input className='input-field' type='text'></input> */}
+             <input defaultValue={'12345678'} className="input-field" type="text" {...register("licensenumber", {
+                    required: true,
+                    maxLength: 32,
+                    minLength: 8
+                  })} ></input>
+                  {errors?.licensenumber?.type === "required" && <p className="error-text">This field is required</p>}
+                  {errors?.licensenumber?.type === "maxLength" && <p className="error-text">License number cannot exceed 32 characters</p>}
+                  {errors?.licensenumber?.type === "minLength" && <p className="error-text">L.Number must be more than 8 characters</p>}
             </div>
           </div>
           <div className='p-col'>
@@ -158,7 +196,7 @@ const DoctorProfile=()=>
             <label>Date of Birth</label>
             {/* <input className='input-field' type='text'></input> */}
             <input type="date" className='input-field'
-             max={new Date().toISOString().split('T')[0]} // Set the max date to today
+             max={new Date().toISOString().split('T')[0]} 
             />
             </div>
           </div>
@@ -178,17 +216,20 @@ const DoctorProfile=()=>
          
          {/* {handleSubmit((onsubmit))} */}
           <div className='p-buttons-col'>
-           <button className='btn-filled' onClick={showPopup}>Save</button>
-           <button className='cancel-button'>Cancel</button>
+           <button className='btn-filled' onClick={handleSubmit(showdata)}>Update</button>
+           {/* <button className='cancel-button'>Cancel</button> */}
           </div>
 
       {isPopupVisible && (
         <div className="popup-container">
+           <div className="popup-background"></div>
           <div className="popup-content">
             <p>Do you want to make changes to your profile?</p>
             <div className='popup-button'>
-            <button onClick={handleYes}>Yes</button>
-            <button onClick={handleNo}>No</button>
+            <div>
+            <button onClick={handleYes} className='btn-filled'>Yes</button></div>
+            <div>
+            <button onClick={handleNo} className='cancel-button'>No</button></div>
             </div>
           </div>
         </div>
