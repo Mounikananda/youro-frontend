@@ -5,7 +5,6 @@ import axios from 'axios';
 
 
 const SymptomCalculator = (props) => {
-
     const [chooseDiagnosis, setChooseDiagnosis] = useState(true);
 
     const [questionnare, setQuestionnare] = useState([{ question: 'How are you?', options: ['Good', 'Bad', 'Neutral', 'None'], questionId: '1' },
@@ -98,7 +97,6 @@ const SymptomCalculator = (props) => {
         // console.log("handleResponse START");
         var userResponses = { ...userResponse }
         userResponses[questionnare[questionNum].questionId] = {option: option, weight: questionnare[questionNum].weight};
-        setChecked(false);
         setUserResponse(userResponses);
         // console.log("handleResponse END");
         // console.log("====^^^===");
