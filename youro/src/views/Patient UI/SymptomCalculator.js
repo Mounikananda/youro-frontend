@@ -6,14 +6,6 @@ import axios from 'axios';
 
 const SymptomCalculator = (props) => {
 
-    const diagnosisNames1 = [{ diagosisId: '1', diagnosisName: 'Diagnosis 1' },
-                            { diagosisId: '2', diagnosisName: 'Diagnosis 2' },
-                            { diagosisId: '3', diagnosisName: 'Diagnosis 3' },
-                            { diagosisId: '4', diagnosisName: 'Diagnosis 4' },
-                            { diagosisId: '5', diagnosisName: 'Diagnosis 5' },
-                            { diagosisId: '6', diagnosisName: 'Diagnosis 6' },
-                            { diagosisId: '7', diagnosisName: 'Diagnosis 7' },
-                            { diagosisId: '8', diagnosisName: 'Diagnosis 8' }];
     const [chooseDiagnosis, setChooseDiagnosis] = useState(true);
 
     const [questionnare, setQuestionnare] = useState([{ question: 'How are you?', options: ['Good', 'Bad', 'Neutral', 'None'], questionId: '1' },
@@ -24,99 +16,101 @@ const SymptomCalculator = (props) => {
 
     const [selDiag, setDiagId] = useState('');
     const [diagnosisNames, setDiagnoses] = useState([]);
-    const [radioChecked, setChecked] = useState(false);
 
     useEffect(() => {
         fetchAllDiagnoses();
     }, [])
 
     const fetchQuesByDiagId = async () => {
-        // console.log(selDiag);
-        console.log("====^^^===");
-        console.log("fetchQuesByDiagId START");
+        // console.log("====^^^===");
+        // console.log("fetchQuesByDiagId START");
         const url = `http://localhost:9092/youro/api/v1/getQuestionsBydiagId/${selDiag}`;
         try {
             const res = await axios.get(url);
-            console.log("res : " + "  =>  " + JSON.stringify(res));
             setQuestionnare(res.data);
         }
         catch (err) {
             console.error(err);
         }
-        console.log("fetchQuesByDiagId END");
-        console.log("====^^^===");
+        // console.log("fetchQuesByDiagId END");
+        // console.log("====^^^===");
     };
 
     const fetchAllDiagnoses = async () => {
-        console.log("====^^^===");
-        console.log("fetchAllDiagnoses START");
+        // console.log("====^^^===");
+        // console.log("fetchAllDiagnoses START");
         const url = `http://localhost:9092/youro/api/v1/getAllDiagnoses`;
         try {
             const res = await axios.get(url);
-            console.log("res : " + "  =>  " + JSON.stringify(res.data));
             setDiagnoses(res.data);
         }
         catch (err) {
             console.error(err);
         }
-        console.log("fetchAllDiagnoses END");
-        console.log("====^^^===");
+        // console.log("fetchAllDiagnoses END");
+        // console.log("====^^^===");
     };
 
+    const saveNewSymptomScore = async (data) => {
+        // console.log("====^^^===");
+        // console.log("saveNewSymptomScore START");
+        const url = `http://localhost:9092/youro/api/v1/saveNewSymptomScore`;
+        try {
+            const res = await axios.post(url, data);
+            setDiagnoses(res.data);
+        }
+        catch (err) {
+            console.error(err);
+        }
+        // console.log("saveNewSymptomScore END");
+        // console.log("====^^^===");
+    };
+
+
     const handleNext = () => {
-        console.log("====^^^===");
-        console.log("handleNext START");
+        // console.log("====^^^===");
+        // console.log("handleNext START");
         if (chooseDiagnosis) {
-            console.log("daig true : ");
             setChooseDiagnosis(false);
             fetchQuesByDiagId();
 
         } else {
-            console.log("daig false : ");
-            console.log("user Res: " + JSON.stringify(userResponse));
             if (questionNum + 1 < questionnare.length) {
                 setQuestionNum(questionNum + 1)
             } else {
-                // Post user response data
-                // axios.post()
-                console.log(radioChecked);
-                console.log(userResponse);
-                console.log(selDiag);
                 const now = new Date();
-                console.log(now);
                 const temp = {
-                    dateTime: now,
-                    diagnosisID: selDiag,
+                    takenDate: now,
+                    diagnosisId: selDiag,
                     questionData: userResponse,
                     patientId: '1',
                 }
+                saveNewSymptomScore(temp);
                 props.setOpen(false)
             }
         }
-        console.log("handleNext END");
-        console.log("====^^^===");
+        // console.log("handleNext END");
+        // console.log("====^^^===");
     }
 
     const handleResponse = (questionNum, option) => {
-        console.log("====^^^===");
-        console.log("handleResponse START");
-        console.log("hand res : " + selDiag);
+        // console.log("====^^^===");
+        // console.log("handleResponse START");
         var userResponses = { ...userResponse }
         userResponses[questionnare[questionNum].questionId] = {option: option, weight: questionnare[questionNum].weight};
         setChecked(false);
         setUserResponse(userResponses);
-        console.log("handleResponse END");
-        console.log("====^^^===");
+        // console.log("handleResponse END");
+        // console.log("====^^^===");
     }
 
     const handleDiagChange = (event) => {
-        console.log("====^^^===");
-        console.log("handleDiagChange START");
-        console.log("hand diag chng : ");
+        // console.log("====^^^===");
+        // console.log("handleDiagChange START");
         console.log(event.target.value);
         setDiagId(event.target.value);
-        console.log("handleDiagChange END");
-        console.log("====^^^===");
+        // console.log("handleDiagChange END");
+        // console.log("====^^^===");
     }
 
     return (
