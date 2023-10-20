@@ -151,7 +151,7 @@ const SymptomCalculator = (props) => {
                                 <>
                                     <input type="radio" id="html"
                                         name={questionnare[questionNum].questionId}
-                                        checked = { userResponse[questionnare[questionNum].questionId] && userResponse[questionnare[questionNum].questionId][option] && (userResponse[questionnare[questionNum].questionId][option] === option) }
+                                        checked = { userResponse[questionnare[questionNum].questionId] && userResponse[questionnare[questionNum].questionId]['option'] && (userResponse[questionnare[questionNum].questionId]['option'] === option) }
                                         onChange={() => handleResponse(questionNum, option)} />
 
                                     <label for="html" style={{ marginLeft: '10px' }}>{option}</label><br /><br />

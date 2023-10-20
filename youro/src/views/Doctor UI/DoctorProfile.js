@@ -343,7 +343,7 @@ const DoctorProfile = () => {
             {isPopupVisible && (
               <div className="popup-container">
                 <div className="popup-background"></div>
-                <div className="popup-content">
+                <div className="popup-content-local">
                   <p>Do you want to make changes to your profile?</p>
                   <div className='popup-button'>
                     <div>

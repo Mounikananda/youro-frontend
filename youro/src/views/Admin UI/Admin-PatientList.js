@@ -31,6 +31,285 @@ const AdminPatientList = () => {
     const isAdminPatsRendered = useRef(false);
     let count = 0;
 
+    const data = [
+        {
+            userId: '1',
+            firstName: 'Dylan',
+            middleName: 'Sprouse',
+            lastName: 'Murray',
+            address: '261 Erdman Ford',
+            city: 'East Daphne',
+            state: 'Kentucky',
+            country: 'United States',
+            status: "APPROVED"
+    
+        },
+        {
+            userId: '2',
+            firstName: 'Raquel',
+            middleName: 'Hakeem',
+            lastName: 'Kohler',
+            address: '769 Dominic Grove',
+            city: 'Vancouver',
+            state: 'British Columbia',
+            country: 'Canada',
+            status: "APPROVED"
+        },
+        {
+            userId: '3',
+            firstName: 'Ervin',
+            middleName: 'Kris',
+            lastName: 'Reinger',
+            address: '566 Brakus Inlet',
+            city: 'South Linda',
+            state: 'West Virginia',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '4',
+            firstName: 'Brittany',
+            middleName: 'Kathryn',
+            lastName: 'McCullough',
+            address: '722 Emie Stream',
+            city: 'Lincoln',
+            state: 'Nebraska',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '5',
+            firstName: 'Branson',
+            middleName: 'John',
+            lastName: 'Frami',
+            address: '32188 Larkin Turnpike',
+            city: 'Charleston',
+            state: 'South Carolina',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '1',
+            firstName: 'Dylan',
+            middleName: 'Sprouse',
+            lastName: 'Murray',
+            address: '261 Erdman Ford',
+            city: 'East Daphne',
+            state: 'Kentucky',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '2',
+            firstName: 'Raquel',
+            middleName: 'Hakeem',
+            lastName: 'Kohler',
+            address: '769 Dominic Grove',
+            city: 'Vancouver',
+            state: 'British Columbia',
+            country: 'Canada',
+            status: "PENDING"
+        },
+        {
+            userId: '3',
+            firstName: 'Ervin',
+            middleName: 'Kris',
+            lastName: 'Reinger',
+            address: '566 Brakus Inlet',
+            city: 'South Linda',
+            state: 'West Virginia',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '4',
+            firstName: 'Brittany',
+            middleName: 'Kathryn',
+            lastName: 'McCullough',
+            address: '722 Emie Stream',
+            city: 'Lincoln',
+            state: 'Nebraska',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '5',
+            firstName: 'Branson',
+            middleName: 'John',
+            lastName: 'Frami',
+            address: '32188 Larkin Turnpike',
+            city: 'Charleston',
+            state: 'South Carolina',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '1',
+            firstName: 'Dylan',
+            middleName: 'Sprouse',
+            lastName: 'Murray',
+            address: '261 Erdman Ford',
+            city: 'East Daphne',
+            state: 'Kentucky',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '2',
+            firstName: 'Raquel',
+            middleName: 'Hakeem',
+            lastName: 'Kohler',
+            address: '769 Dominic Grove',
+            city: 'Vancouver',
+            state: 'British Columbia',
+            country: 'Canada',
+            status: "PENDING"
+        },
+        {
+            userId: '3',
+            firstName: 'Ervin',
+            middleName: 'Kris',
+            lastName: 'Reinger',
+            address: '566 Brakus Inlet',
+            city: 'South Linda',
+            state: 'West Virginia',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '4',
+            firstName: 'Brittany',
+            middleName: 'Kathryn',
+            lastName: 'McCullough',
+            address: '722 Emie Stream',
+            city: 'Lincoln',
+            state: 'Nebraska',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '5',
+            firstName: 'Branson',
+            middleName: 'John',
+            lastName: 'Frami',
+            address: '32188 Larkin Turnpike',
+            city: 'Charleston',
+            state: 'South Carolina',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '1',
+            firstName: 'Dylan',
+            middleName: 'Sprouse',
+            lastName: 'Murray',
+            address: '261 Erdman Ford',
+            city: 'East Daphne',
+            state: 'Kentucky',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '2',
+            firstName: 'Raquel',
+            middleName: 'Hakeem',
+            lastName: 'Kohler',
+            address: '769 Dominic Grove',
+            city: 'Vancouver',
+            state: 'British Columbia',
+            country: 'Canada',
+            status: "APPROVED"
+        },
+        {
+            userId: '3',
+            firstName: 'Ervin',
+            middleName: 'Kris',
+            lastName: 'Reinger',
+            address: '566 Brakus Inlet',
+            city: 'South Linda',
+            state: 'West Virginia',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '4',
+            firstName: 'Brittany',
+            middleName: 'Kathryn',
+            lastName: 'McCullough',
+            address: '722 Emie Stream',
+            city: 'Lincoln',
+            state: 'Nebraska',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '5',
+            firstName: 'Branson',
+            middleName: 'John',
+            lastName: 'Frami',
+            address: '32188 Larkin Turnpike',
+            city: 'Charleston',
+            state: 'South Carolina',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '1',
+            firstName: 'Dylan',
+            middleName: 'Sprouse',
+            lastName: 'Murray',
+            address: '261 Erdman Ford',
+            city: 'East Daphne',
+            state: 'Kentucky',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '2',
+            firstName: 'Raquel',
+            middleName: 'Hakeem',
+            lastName: 'Kohler',
+            address: '769 Dominic Grove',
+            city: 'Vancouver',
+            state: 'British Columbia',
+            country: 'Canada',
+            status: "APPROVED"
+        },
+        {
+            userId: '3',
+            firstName: 'Ervin',
+            middleName: 'Kris',
+            lastName: 'Reinger',
+            address: '566 Brakus Inlet',
+            city: 'South Linda',
+            state: 'West Virginia',
+            country: 'United States',
+            status: "APPROVED"
+        },
+        {
+            userId: '4',
+            firstName: 'Brittany',
+            middleName: 'Kathryn',
+            lastName: 'McCullough',
+            address: '722 Emie Stream',
+            city: 'Lincoln',
+            state: 'Nebraska',
+            country: 'United States',
+            status: "PENDING"
+        },
+        {
+            userId: '5',
+            firstName: 'Branson',
+            middleName: 'John',
+            lastName: 'Frami',
+            address: '32188 Larkin Turnpike',
+            city: 'Charleston',
+            state: 'South Carolina',
+            country: 'United States',
+            status: "APPROVED"
+        },
+    ];
+
 
     useEffect(() => {
         count += 1;
@@ -38,6 +317,7 @@ const AdminPatientList = () => {
             console.log('useEffect : ' + count);
             fetchData();
             isAdminPatsRendered.current = true;
+            setTableDataPats(data);
         }
         else {
             console.log('useEffect re-render : ' + count);
@@ -113,8 +393,8 @@ const AdminPatientList = () => {
                             <AdminSideBar data={'admin-patients'} />
                         </div>
                         <div className="admin-ui-table">
-                            <div className='header'>
-                                <h1>youro</h1>
+                        <div className='header'>
+                                <h1 style={{marginLeft: '15px'}}>youro</h1>
                             </div>
                             <MaterialReactTable
                                 displayColumnDefOptions={{
@@ -165,11 +445,12 @@ const AdminPatientList = () => {
                                             </div>
                                             <div className='row'>
                                                 <div className='col-12' style={{ textAlign: 'end' }}>
-                                                    <Link to={'/admin-patients' } className='view-more-class'>
+                                                    <Link to={'/admin-view-patient' } className='view-more-class'>
                                                         {/* <Link to={{ screen: 'Profile', params: { id: 'jane' } }}>
                                                             Go to Jane's profile
                                                             </Link> */}
                                                         View More{'>>'}
+                                                        
                                                     </Link>
                                                 </div>
                                             </div>

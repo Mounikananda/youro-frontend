@@ -25,6 +25,8 @@ import ViewProfile from './views/Doctor UI/View-Profile';
 import DoctorChat from './views/Doctor UI/Doctor-Chat';
 import AdminDeniedDoctorsList from './views/Admin UI/Admin-DeniedDoctorsList';
 import AdminViewDoctorProfile from './views/Admin UI/Admin-ViewDoctorProfile';
+import AdminViewPatientProfile from './views/Admin UI/Admin-ViewPatientProfile';
+import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 
 
 export const USER_TYPES = {
@@ -66,6 +68,8 @@ function App() {
         <Route path='/doctor-chat' element={<DoctorChat/>}></Route>
         <Route path='/admin-denied-doctors' element={<AdminDeniedDoctorsList/>}></Route>
         <Route path='/admin-view-doctor' element={<AdminViewDoctorProfile/>}></Route>
+        <Route path='/admin-view-patient' element={<AdminViewPatientProfile/>}></Route>
+        <Route path='manage-approved-medicine' element={<AdminMaintainenceList />}></Route>
      </Routes>
     </Router>
     

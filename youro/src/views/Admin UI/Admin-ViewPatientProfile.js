@@ -26,7 +26,7 @@ import { Link } from 'react-router-dom';
 import PreviousAppointments from '../Doctor UI/PreviousAppointments';
 import IncompleteEncounters from '../Doctor UI/IncompleteEncounters';
 
-const AdminViewDoctorProfile = () => {
+const AdminViewPatientProfile = () => {
 
 
     const TodayAppointmentList = (props) => {
@@ -52,22 +52,20 @@ const AdminViewDoctorProfile = () => {
 
         return (
             <div>
-                {data.map((item) => (
-                    <div className='doctor-div'>
-                        <div>
-                            <h3 style={{ textDecoration: 'underline' }}>{item.name}</h3>
-                        </div>
-                        <ul key={item.id}>
-                            <li>Date : {item.time}</li>
-                            <li>Time : {item.patientstime}</li>
-                            <li>Diagnosisname: {item.diagnosisname}</li>
-                            <li>Symptom score: {item.symptomscore}</li>
-                            <li>Meet-type: {item.meetup}</li>
-                            {/* <p>{item.meetup}</p> */}
-                        </ul>
-                    </div>
-                ))}
-            </div>
+            {data.map((item) => (
+                <div className='previous-appointment'> 
+                <div>
+                <h3 >{item.time.split(',')[0]}, {item.patientstime} - {item.name}</h3>
+                </div>
+                <ul key={item.id}>
+                <li>Diagnosisname: {item.diagnosisname}</li>
+                {/* <li>Symptom score: {item.symptomscore}</li> */}
+                <li style={ {textDecoration:'underline',color:'#9CB189', cursor: 'pointer'}} >Symptom score: {item.symptomscore}</li>
+                    {/* <p>{item.meetup}</p> */}
+                </ul>
+                </div> 
+            ))}
+        </div>
         );
     };
 
@@ -76,7 +74,7 @@ const AdminViewDoctorProfile = () => {
         <div>
             <div className='hm'>
                 <div className='sidebar'>
-                    <AdminSideBar data={'admin-doctors'} />
+                    <AdminSideBar data={'admin-patients'} />
                 </div>
                 <div className="admin-view-doctor-container" style={{width: '100%'}}>
                     <div className='admin-view-doctor-header'>
@@ -95,27 +93,29 @@ const AdminViewDoctorProfile = () => {
                             </div>
                             <div className='admin-details-view'>
 
-                                <img  style={{margin: '15px auto 30px auto', borderRadius: '5px', display: 'block'}} src='https://demo.cherrytheme.com/gems/wp-content/uploads/2018/11/our-team-04.jpg' alt="Preview" width="150" height="150" />
+                                <img  style={{margin: '15px auto 30px auto', borderRadius: '5px', display: 'block'}} src='https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=600' alt="Preview" width="150" height="150" />
                                 <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                                    <div style={{width: '35%'}}>
+                                    <div style={{width: '45%'}}>
                                         <p>First Name:</p>
                                         <p>Last Name:</p>
                                         <p>Email</p>
-                                        <p>Mobile Number:</p><br />
-                                        <p>License Number:</p><br />
+                                        <p>Mobile Number:</p>
                                         <p>Gender:</p>
                                         <p>Date of Birth:</p>
+                                        <p>Subscription Plan: </p>
+                                        <p>Subscription Ends On:</p>
                                         <p>Address: </p>
 
                                     </div>
-                                    <div style={{width: '60%'}}>
-                                        <p><strong>Dr. Gulliame Farah</strong></p>
+                                    <div style={{width: '50%'}}>
+                                        <p><strong>Mr. Alan Hunt</strong></p>
                                         <p><strong>XXXXXXXX</strong></p>
                                         <p><strong>Farah2000@gmail.com</strong></p>
-                                        <p><strong>716-819-9000</strong></p><br />
-                                        <p><strong>XXXXXXXX</strong></p><br />
+                                        <p><strong>716-819-9000</strong></p>
                                         <p><strong>Male</strong></p>
                                         <p><strong>12/12/2000</strong></p>
+                                        <p><strong>Yearly plan</strong></p>
+                                        <p><strong>12/12/2023</strong></p>
                                         <p><strong>XXXXXXXXXXXXXXXX</strong></p>
                                     </div>
 
@@ -131,4 +131,4 @@ const AdminViewDoctorProfile = () => {
 
 };
 
-export default AdminViewDoctorProfile;
+export default AdminViewPatientProfile;

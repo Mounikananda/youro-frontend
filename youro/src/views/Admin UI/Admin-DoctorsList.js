@@ -24,284 +24,284 @@ import { USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
-// const data = [
-//     {
-//         userId: '1',
-//         firstName: 'Dylan',
-//         middleName: 'Sprouse',
-//         lastName: 'Murray',
-//         address: '261 Erdman Ford',
-//         city: 'East Daphne',
-//         state: 'Kentucky',
-//         country: 'United States',
-//         status: "APPROVED"
+const data = [
+    {
+        userId: '1',
+        firstName: 'Dylan',
+        middleName: 'Sprouse',
+        lastName: 'Murray',
+        address: '261 Erdman Ford',
+        city: 'East Daphne',
+        state: 'Kentucky',
+        country: 'United States',
+        status: "APPROVED"
 
-//     },
-//     {
-//         userId: '2',
-//         firstName: 'Raquel',
-//         middleName: 'Hakeem',
-//         lastName: 'Kohler',
-//         address: '769 Dominic Grove',
-//         city: 'Vancouver',
-//         state: 'British Columbia',
-//         country: 'Canada',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '3',
-//         firstName: 'Ervin',
-//         middleName: 'Kris',
-//         lastName: 'Reinger',
-//         address: '566 Brakus Inlet',
-//         city: 'South Linda',
-//         state: 'West Virginia',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '4',
-//         firstName: 'Brittany',
-//         middleName: 'Kathryn',
-//         lastName: 'McCullough',
-//         address: '722 Emie Stream',
-//         city: 'Lincoln',
-//         state: 'Nebraska',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '5',
-//         firstName: 'Branson',
-//         middleName: 'John',
-//         lastName: 'Frami',
-//         address: '32188 Larkin Turnpike',
-//         city: 'Charleston',
-//         state: 'South Carolina',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '1',
-//         firstName: 'Dylan',
-//         middleName: 'Sprouse',
-//         lastName: 'Murray',
-//         address: '261 Erdman Ford',
-//         city: 'East Daphne',
-//         state: 'Kentucky',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '2',
-//         firstName: 'Raquel',
-//         middleName: 'Hakeem',
-//         lastName: 'Kohler',
-//         address: '769 Dominic Grove',
-//         city: 'Vancouver',
-//         state: 'British Columbia',
-//         country: 'Canada',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '3',
-//         firstName: 'Ervin',
-//         middleName: 'Kris',
-//         lastName: 'Reinger',
-//         address: '566 Brakus Inlet',
-//         city: 'South Linda',
-//         state: 'West Virginia',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '4',
-//         firstName: 'Brittany',
-//         middleName: 'Kathryn',
-//         lastName: 'McCullough',
-//         address: '722 Emie Stream',
-//         city: 'Lincoln',
-//         state: 'Nebraska',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '5',
-//         firstName: 'Branson',
-//         middleName: 'John',
-//         lastName: 'Frami',
-//         address: '32188 Larkin Turnpike',
-//         city: 'Charleston',
-//         state: 'South Carolina',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '1',
-//         firstName: 'Dylan',
-//         middleName: 'Sprouse',
-//         lastName: 'Murray',
-//         address: '261 Erdman Ford',
-//         city: 'East Daphne',
-//         state: 'Kentucky',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '2',
-//         firstName: 'Raquel',
-//         middleName: 'Hakeem',
-//         lastName: 'Kohler',
-//         address: '769 Dominic Grove',
-//         city: 'Vancouver',
-//         state: 'British Columbia',
-//         country: 'Canada',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '3',
-//         firstName: 'Ervin',
-//         middleName: 'Kris',
-//         lastName: 'Reinger',
-//         address: '566 Brakus Inlet',
-//         city: 'South Linda',
-//         state: 'West Virginia',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '4',
-//         firstName: 'Brittany',
-//         middleName: 'Kathryn',
-//         lastName: 'McCullough',
-//         address: '722 Emie Stream',
-//         city: 'Lincoln',
-//         state: 'Nebraska',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '5',
-//         firstName: 'Branson',
-//         middleName: 'John',
-//         lastName: 'Frami',
-//         address: '32188 Larkin Turnpike',
-//         city: 'Charleston',
-//         state: 'South Carolina',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '1',
-//         firstName: 'Dylan',
-//         middleName: 'Sprouse',
-//         lastName: 'Murray',
-//         address: '261 Erdman Ford',
-//         city: 'East Daphne',
-//         state: 'Kentucky',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '2',
-//         firstName: 'Raquel',
-//         middleName: 'Hakeem',
-//         lastName: 'Kohler',
-//         address: '769 Dominic Grove',
-//         city: 'Vancouver',
-//         state: 'British Columbia',
-//         country: 'Canada',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '3',
-//         firstName: 'Ervin',
-//         middleName: 'Kris',
-//         lastName: 'Reinger',
-//         address: '566 Brakus Inlet',
-//         city: 'South Linda',
-//         state: 'West Virginia',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '4',
-//         firstName: 'Brittany',
-//         middleName: 'Kathryn',
-//         lastName: 'McCullough',
-//         address: '722 Emie Stream',
-//         city: 'Lincoln',
-//         state: 'Nebraska',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '5',
-//         firstName: 'Branson',
-//         middleName: 'John',
-//         lastName: 'Frami',
-//         address: '32188 Larkin Turnpike',
-//         city: 'Charleston',
-//         state: 'South Carolina',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '1',
-//         firstName: 'Dylan',
-//         middleName: 'Sprouse',
-//         lastName: 'Murray',
-//         address: '261 Erdman Ford',
-//         city: 'East Daphne',
-//         state: 'Kentucky',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '2',
-//         firstName: 'Raquel',
-//         middleName: 'Hakeem',
-//         lastName: 'Kohler',
-//         address: '769 Dominic Grove',
-//         city: 'Vancouver',
-//         state: 'British Columbia',
-//         country: 'Canada',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '3',
-//         firstName: 'Ervin',
-//         middleName: 'Kris',
-//         lastName: 'Reinger',
-//         address: '566 Brakus Inlet',
-//         city: 'South Linda',
-//         state: 'West Virginia',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-//     {
-//         userId: '4',
-//         firstName: 'Brittany',
-//         middleName: 'Kathryn',
-//         lastName: 'McCullough',
-//         address: '722 Emie Stream',
-//         city: 'Lincoln',
-//         state: 'Nebraska',
-//         country: 'United States',
-//         status: "PENDING"
-//     },
-//     {
-//         userId: '5',
-//         firstName: 'Branson',
-//         middleName: 'John',
-//         lastName: 'Frami',
-//         address: '32188 Larkin Turnpike',
-//         city: 'Charleston',
-//         state: 'South Carolina',
-//         country: 'United States',
-//         status: "APPROVED"
-//     },
-// ];
+    },
+    {
+        userId: '2',
+        firstName: 'Raquel',
+        middleName: 'Hakeem',
+        lastName: 'Kohler',
+        address: '769 Dominic Grove',
+        city: 'Vancouver',
+        state: 'British Columbia',
+        country: 'Canada',
+        status: "APPROVED"
+    },
+    {
+        userId: '3',
+        firstName: 'Ervin',
+        middleName: 'Kris',
+        lastName: 'Reinger',
+        address: '566 Brakus Inlet',
+        city: 'South Linda',
+        state: 'West Virginia',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '4',
+        firstName: 'Brittany',
+        middleName: 'Kathryn',
+        lastName: 'McCullough',
+        address: '722 Emie Stream',
+        city: 'Lincoln',
+        state: 'Nebraska',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '5',
+        firstName: 'Branson',
+        middleName: 'John',
+        lastName: 'Frami',
+        address: '32188 Larkin Turnpike',
+        city: 'Charleston',
+        state: 'South Carolina',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '1',
+        firstName: 'Dylan',
+        middleName: 'Sprouse',
+        lastName: 'Murray',
+        address: '261 Erdman Ford',
+        city: 'East Daphne',
+        state: 'Kentucky',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '2',
+        firstName: 'Raquel',
+        middleName: 'Hakeem',
+        lastName: 'Kohler',
+        address: '769 Dominic Grove',
+        city: 'Vancouver',
+        state: 'British Columbia',
+        country: 'Canada',
+        status: "PENDING"
+    },
+    {
+        userId: '3',
+        firstName: 'Ervin',
+        middleName: 'Kris',
+        lastName: 'Reinger',
+        address: '566 Brakus Inlet',
+        city: 'South Linda',
+        state: 'West Virginia',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '4',
+        firstName: 'Brittany',
+        middleName: 'Kathryn',
+        lastName: 'McCullough',
+        address: '722 Emie Stream',
+        city: 'Lincoln',
+        state: 'Nebraska',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '5',
+        firstName: 'Branson',
+        middleName: 'John',
+        lastName: 'Frami',
+        address: '32188 Larkin Turnpike',
+        city: 'Charleston',
+        state: 'South Carolina',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '1',
+        firstName: 'Dylan',
+        middleName: 'Sprouse',
+        lastName: 'Murray',
+        address: '261 Erdman Ford',
+        city: 'East Daphne',
+        state: 'Kentucky',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '2',
+        firstName: 'Raquel',
+        middleName: 'Hakeem',
+        lastName: 'Kohler',
+        address: '769 Dominic Grove',
+        city: 'Vancouver',
+        state: 'British Columbia',
+        country: 'Canada',
+        status: "PENDING"
+    },
+    {
+        userId: '3',
+        firstName: 'Ervin',
+        middleName: 'Kris',
+        lastName: 'Reinger',
+        address: '566 Brakus Inlet',
+        city: 'South Linda',
+        state: 'West Virginia',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '4',
+        firstName: 'Brittany',
+        middleName: 'Kathryn',
+        lastName: 'McCullough',
+        address: '722 Emie Stream',
+        city: 'Lincoln',
+        state: 'Nebraska',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '5',
+        firstName: 'Branson',
+        middleName: 'John',
+        lastName: 'Frami',
+        address: '32188 Larkin Turnpike',
+        city: 'Charleston',
+        state: 'South Carolina',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '1',
+        firstName: 'Dylan',
+        middleName: 'Sprouse',
+        lastName: 'Murray',
+        address: '261 Erdman Ford',
+        city: 'East Daphne',
+        state: 'Kentucky',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '2',
+        firstName: 'Raquel',
+        middleName: 'Hakeem',
+        lastName: 'Kohler',
+        address: '769 Dominic Grove',
+        city: 'Vancouver',
+        state: 'British Columbia',
+        country: 'Canada',
+        status: "APPROVED"
+    },
+    {
+        userId: '3',
+        firstName: 'Ervin',
+        middleName: 'Kris',
+        lastName: 'Reinger',
+        address: '566 Brakus Inlet',
+        city: 'South Linda',
+        state: 'West Virginia',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '4',
+        firstName: 'Brittany',
+        middleName: 'Kathryn',
+        lastName: 'McCullough',
+        address: '722 Emie Stream',
+        city: 'Lincoln',
+        state: 'Nebraska',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '5',
+        firstName: 'Branson',
+        middleName: 'John',
+        lastName: 'Frami',
+        address: '32188 Larkin Turnpike',
+        city: 'Charleston',
+        state: 'South Carolina',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '1',
+        firstName: 'Dylan',
+        middleName: 'Sprouse',
+        lastName: 'Murray',
+        address: '261 Erdman Ford',
+        city: 'East Daphne',
+        state: 'Kentucky',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '2',
+        firstName: 'Raquel',
+        middleName: 'Hakeem',
+        lastName: 'Kohler',
+        address: '769 Dominic Grove',
+        city: 'Vancouver',
+        state: 'British Columbia',
+        country: 'Canada',
+        status: "APPROVED"
+    },
+    {
+        userId: '3',
+        firstName: 'Ervin',
+        middleName: 'Kris',
+        lastName: 'Reinger',
+        address: '566 Brakus Inlet',
+        city: 'South Linda',
+        state: 'West Virginia',
+        country: 'United States',
+        status: "APPROVED"
+    },
+    {
+        userId: '4',
+        firstName: 'Brittany',
+        middleName: 'Kathryn',
+        lastName: 'McCullough',
+        address: '722 Emie Stream',
+        city: 'Lincoln',
+        state: 'Nebraska',
+        country: 'United States',
+        status: "PENDING"
+    },
+    {
+        userId: '5',
+        firstName: 'Branson',
+        middleName: 'John',
+        lastName: 'Frami',
+        address: '32188 Larkin Turnpike',
+        city: 'Charleston',
+        state: 'South Carolina',
+        country: 'United States',
+        status: "APPROVED"
+    },
+];
 // {
 //     "userId": 5,
 //     "email": "doc1@gmail.com",
@@ -334,6 +334,7 @@ const AdminDoctorsList = () => {
             console.log('useEffect : ' + count);
             fetchData();
             isRendered.current = true;
+            setTableData(data)
         }
         else {
             console.log('useEffect re-render : ' + count);
@@ -437,7 +438,7 @@ const AdminDoctorsList = () => {
                         </div>
                         <div className="admin-ui-table">
                             <div className='header'>
-                                <h1>youro</h1>
+                                <h1 style={{marginLeft: '15px'}}>youro</h1>
                             </div>
                             <MaterialReactTable
                                 displayColumnDefOptions={{

@@ -423,7 +423,7 @@ function DoctorAppointments() {
             <Calendar
               localizer={localizer}
               defaultDate={new Date()}
-              defaultView="month"
+              defaultView="week"
               events={events}
               selectable
               onSelectSlot={(slotInfo) => {
