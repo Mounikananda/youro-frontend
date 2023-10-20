@@ -320,7 +320,7 @@ import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import DoctorSideBar from "./Doctor-Sidebar";
 import "../../styles/Doctor-ui/Doctor-appointment/Doctor-Appointment-page.css";
-import "/Users/vamshi/Desktop/611-youro/youro-frontend/youro/src/index.css"
+import "../../index.css"
 
 
 const localizer = momentLocalizer(moment);
