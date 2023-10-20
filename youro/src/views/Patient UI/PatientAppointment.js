@@ -25,9 +25,7 @@ const PatientAppointment = (props) => {
 
     const [open, setOpen] = useState(false);
 
-    // const [slotsData, setSlotsData] = useState(['10', '10:30', '11', '11:30', '12', '12:30', '13', '13:30']);
     // slots in a day
-
     const [slotsData, setSlotsData] = useState([]);
     // {doctorId: 1, gender: 'MALE', startTime: '09:00:00'},{doctorId: 34, gender: 'MALE', startTime: '14:00:00'}
 
