@@ -42,7 +42,7 @@ const Patientaddress= (props) =>
                                 {errors?.Address?.type === "maxLength" && <p className="error-text">Address cannot exceed 40 characters</p>}
                           </div>
 
-    		     <div className="label-address">
+    		             <div className="label-address">
                         <input placeholder="City *" className="input-field input-border" type="text" {...register("City", {
                                   required: true,
                                   maxLength: 32,

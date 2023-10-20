@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import "../../styles/Doctor-ui/Searchbar.css";
 import PatientDetails from './DA-PatientDetails';
-
+import { FaChevronLeft } from 'react-icons/fa';
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -85,14 +85,22 @@ const SearchBar = () => {
    return (
     <div className='search-bar'>
       <div className='search-input'>
+        <div className='back-button'>
+         {showdetails && (
+            <button className="btn-filled">
+            <FaChevronLeft /> Back
+            </button>
+            )}
+         </div>
         <input
           className='search-input-field' 
           type="search"
-          placeholder="Search here by name,email id"
+          placeholder="Search here by name"
           onChange={handleChange}
           onKeyDown={handlesearchdetails}
           value={searchInput}
         />
+         {/* <span class="icon">🔍</span> */}
       </div>
       <div className='patient-details'>
         {showdetails ? (
