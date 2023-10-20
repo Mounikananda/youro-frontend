@@ -75,6 +75,10 @@ const AdminMaintainenceList = () => {
         }
     }, []);
 
+    useEffect(() => {
+        console.log(tableData)
+    }, [tableData])
+
 
     const fetchData = async () => {
         let type = USER_TYPES.doctor;
@@ -90,8 +94,9 @@ const AdminMaintainenceList = () => {
         }
     };
 
-    const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false) => {
-        console.log('cell => ' + JSON.stringify(cell) + " , " + JSON.stringify(tableData));
+    const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false,) => {
+        console.log('cell => ' + JSON.stringify(cell) + " , " + 'table Data =>' + JSON.stringify(tableData));
+        console.log(tableData)
         if (isChange) {
             var data = [...tableData]
             for (let i = 0; i < tableData.length; i++) {
@@ -107,8 +112,7 @@ const AdminMaintainenceList = () => {
         }
     }
 
-    const columns = useMemo(
-        () => [
+    const columns = [
             {
                 accessorKey: 'medicineId',
                 header: 'ID',
@@ -135,16 +139,14 @@ const AdminMaintainenceList = () => {
                     <Tooltip arrow placement="right" title="Approve">
                         <Switch
                             checked={cell.row.original.approved}
-                            onChange={() => handleApproveRenderAndChange(cell, true)}
-                            inputProps={{ 'aria-label': 'controlled' }}
+                            onClick={() => handleApproveRenderAndChange(cell, true)}
+                            inputProps={{ 'aria-label': 'controlled', 'data': tableData }}
                         />
                     </Tooltip>
                 ),
                 size: 20,
             }
-        ],
-        [],
-    );
+        ]
 
     const handleDeleteRow = useCallback(
         (row) => {
