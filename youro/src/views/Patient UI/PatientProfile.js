@@ -7,11 +7,25 @@ const PatientProfile = () => {
         register,
         handleSubmit,
         watch,
+        setValue,
         formState: { errors },
       } = useForm();
 
-    const [edit, setEdit] = useState(false)
+  const [imagePreview, setImagePreview] = useState(null);
 
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Set the file value in the form data
+      setValue('image', file);
+      // Create a preview URL for the selected image
+      const previewURL = URL.createObjectURL(file);
+      // print(previewURL,"this is the url created");
+      setImagePreview(previewURL);
+
+    }
+  };
 
     return (
         <>
@@ -19,11 +33,31 @@ const PatientProfile = () => {
             <h1>Profile Information</h1>
             <div>
                 
-               <div className="Form-myself-Container" style={{width: '50%', marginLeft: '0px', marginTop: '50px'}}>
+               <div className="Form-myself-Container" style={{width: '50%', margin: '50px auto'}}>
+
+                <div>
+                <>
+                  <label for='imgupload'>
+                    <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                </label>
+                <input
+                      type="file"
+                      id="imgupload"
+                      accept=".jpg, .jpeg, .png"
+                      {...register('image')}
+                      onChange={handleImageChange}
+                      style={{display: 'none'}}
+                    />
+                
+                </>                
+
+                </div>
+
+
                      <div className="required-fields">
                           <div className="myself-input">
                                <label>First Name</label>
-                               <input className="input-field input-border" disabled={!edit} type="text" {...register("firstName", {
+                               <input className="input-field input-border" type="text" {...register("firstName", {
                                   required: true,
                                   maxLength: 32,
                                   value: 'Sri Sai Charan'
@@ -34,7 +68,7 @@ const PatientProfile = () => {
 
     		     <div className="myself-input">
                          <label>Last Name</label>
-                        <input className="input-field input-border" disabled={!edit} type="text" {...register("lastName", {
+                        <input className="input-field input-border" type="text" {...register("lastName", {
                                   required: true,
                                   maxLength: 32,
                                   value: 'Kachavarapu'
@@ -47,7 +81,7 @@ const PatientProfile = () => {
                     <div className="required-fields">
                        <div className="myself-input">
                         <label>Email</label>
-                        <input className="input-field1 input-border" disabled={!edit} type="text" {...register("email", {
+                        <input className="input-field1 input-border" type="text" {...register("email", {
                                   required: true,
                                   maxLength: 32,
                                   value: 'charan@gmail.com',
@@ -66,8 +100,7 @@ const PatientProfile = () => {
 
 
                         {/* <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> */}
-                        {edit ? <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> 
-                        : <div className="next-button btn-filled" onClick={() => setEdit(true)}>Edit</div>}
+                        <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> 
                     </div>
 
                     
