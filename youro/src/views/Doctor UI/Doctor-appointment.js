@@ -315,11 +315,13 @@
 
 
 import React, { useState } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer,Views} from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import DoctorSideBar from "./Doctor-Sidebar";
 import "../../styles/Doctor-ui/Doctor-appointment/Doctor-Appointment-page.css";
+import "../../index.css"
+
 
 const localizer = momentLocalizer(moment);
 
@@ -355,12 +357,23 @@ const splitEventIfNecessary = (event) => {
 function DoctorAppointments() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
+  const [createvent,setcreatevent] = useState(true);
 
+  
+  const handlecreatevent_boolen=() =>
+  {
+    setNewEvent({ start: null, end: null, title: "", email: "" });
+  }
   const handleSelectEvent = (event) =>
  {
     setSelectedEvent(event);
     setShowEventDetails(true);
   };
+
+ const hidedetails =() =>
+{ 
+   setShowEventDetails(false);
+}
 
   // const [events, setEvents] = useState([
   //   {
@@ -394,6 +407,7 @@ function DoctorAppointments() {
     email: "another@example.com",
   };
 
+
   const initialEvents = [event1, event2];
 
   useState(() => {
@@ -405,10 +419,20 @@ function DoctorAppointments() {
   function handleEventCreation() {
     if(newEvent)
     {
-    const eventsToSplit = splitEventIfNecessary(newEvent);
-    console.log("new event",eventsToSplit);
-    setEvents((prevEvents) => [...prevEvents, ...eventsToSplit]);
+      if(newEvent.title.length===0)
+      {
+      newEvent.title="Available";
+      }
+      // newEvent.start={moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a')};
+      // newEvent.start = moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a');
+      console.log("printing new event",newEvent);
+      console.log("printing date",newEvent.start);
+      console.log("printing fetch ",event1.start);
+    // const eventsToSplit = splitEventIfNecessary(newEvent);
+    // console.log("new event",eventsToSplit);
+    setEvents((prevEvents) => [...prevEvents, newEvent]);
     setNewEvent({ start: null, end: null, title: "", email: "" });
+    setcreatevent(false);
     }
   }
 
@@ -423,7 +447,7 @@ function DoctorAppointments() {
             <Calendar
               localizer={localizer}
               defaultDate={new Date()}
-              defaultView="week"
+              defaultView={Views.WEEK}
               events={events}
               selectable
               onSelectSlot={(slotInfo) => {
@@ -437,42 +461,82 @@ function DoctorAppointments() {
                 })};
               }}
               onSelectEvent={handleSelectEvent}
-              style={{ height: "60vh", backgroundColor: "white",border:"0.5px solid black"}}
+              style={{ height: "85vh"}}
+              components={{
+                   month: {
+                  dateHeader: ({ label, date }) => (
+                   <div className="current-month">
+                     {label}
+                   </div>
+                  ),
+                 },
+                 day: {
+                   event: ({ event }) => (
+                    <div className="day-view">
+                    {event.title}
+                   </div>
+                    ),
+                   },
+                 week: {
+                  event: ({ event }) => (
+                  <div className="week-view">
+                   {event.title}
+                  </div>
+                   ),
+                 },
+                 
+              }}
             />
             <div className="events-form">
-              {newEvent.start && (
+              {newEvent.start &&  (
+                 <div className="popup-container-apt">
+                 <div className="popup-background-apt"></div>
                 <div className="event-creation-form">
-                  <input
-                    type="text"
-                    className="available-input"
-                    placeholder="Event title"
-                    value={newEvent.title}
-                    onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                    required
-                  />
+                  <p><span style={{fontWeight:'bold'}}>Adding Slot</span></p>
+                  <p><span style={{ fontWeight: 'bold' }}>Start:</span>{moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                  <p><span style={{ fontWeight: 'bold' }}>end:</span>{moment(newEvent.end).format('MMMM Do YYYY, h:mm:ss a')}</p> 
+                  {/* <p><span style={{ fontWeight: 'bold' }}>End:</span>{newEvent.start.Date}</p> */}
                   {/* <input
                     type="text"
                     placeholder="Event email"
                     value={newEvent.email}
                     onChange={(e) => setNewEvent({ ...newEvent, email: e.target.value })}
                   /> */}
+                  <div className="slot-buttons">
                   <button className="add-availability" onClick={handleEventCreation}>
-                    Add Availability
+                    Add
                   </button>
+                  <button className="add-availability" onClick={handlecreatevent_boolen}>Hide</button>
+                  </div>
+                </div>
                 </div>
               )}
             </div>
           </div>
           {showEventDetails && (
+             <div className="popup-container-apt">
+            <div className="popup-background-apt"></div>
             <div className="event-details-container">
               <div className="event-details">
-                <h3>Patient Name:{selectedEvent.title}</h3>
+                {selectedEvent.title==="Available" ? (<h3>Available Slot</h3>):
+                  (<h3>{selectedEvent.title}</h3> )}
                 <p>
-                  <strong>Date:</strong>{" "}
-                  {selectedEvent.start.toLocaleString()} - {selectedEvent.end.toLocaleString()}
+                  {/* <strong>Date:</strong>{" "} */}
+                   {/* <p>start:{selectedEvent.start}</p> */}
+                   <p>start:{moment(selectedEvent.start).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                   <p>end:{moment(selectedEvent.end).format('MMMM Do YYYY, h:mm:ss a')}</p>
+                   {/* <p>end:{selectedEvent.end.toLocaleString()}</p> */}
                 </p>
-                <p>Email: {selectedEvent.email}</p>
+                {selectedEvent.title!=="Available" ? (<p>Email: {selectedEvent.email}</p>):<></>}
+                <div className="slot-buttons">
+                {selectedEvent.title==="Available" ? 
+                     (<div><button className="remove-button"> Remove availablity</button></div>):
+                    (<div><button className="remove-button"> Cancel Appointment</button></div>)
+                }
+                <button className="hide-button" onClick={hidedetails}>Hide</button>
+                </div>
               </div>
+            </div>
             </div>
           )}
           {/* <div className="event-container">

@@ -30,6 +30,7 @@ function DoctorSideBar(props)
   >
      <div className='Hamburger'>
       <Hamburger toggled={collapse} toggle={setCollapse} size={40} /> 
+      {/* <span class="material-symbols-outlined" style={{fontSize: '40px', cursor: 'pointer'}} onClick={() => setCollapse(!collapse)}></span> */}
       </div>
     <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={props.data=='doctor-ui'} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => navigate("/doctor-appointment")} icon={<FaCalendar size={40} />} active={props.data=='doctor-appointment'} className="Menu-item" > Appointments</MenuItem>

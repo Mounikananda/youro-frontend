@@ -8,6 +8,68 @@ html, body {
   height: 100%;
 }
 
+
+.rbc-toolbar-label
+{ 
+  font-size: 150%;
+  font-family: sans-serif;
+}
+
+/* .rbc-month-view
+{
+  background-color: aqua;
+  border: 10px solid saddlebrown;
+} */
+.rbc-month-header
+{
+  /* background: rgb(59 130 246 / 0.5); */
+  /* color: white;  */
+  background: #d4d4d4;
+  padding-top: 1%;
+  font-size: 100%;
+
+  /* border: 1px solid black;  */
+  /* margin-bottom: 0.5%; */
+}
+
+/* .rbc-toolbar-label
+{
+  background: blueviolet;
+  color: white; 
+} */
+
+.rbc-toolbar .button
+{
+   /* border: 0.5px solid black; */
+   border: none;
+   margin: 10%;
+  /* background-color: rgb(59 130 246 / 0.5); */
+   /* border: 2px solid black; */
+}
+.rbc-btn-group > button:first-child:not(:last-child) {
+   border: none;
+}
+.rbc-btn-group > button:not(:first-child):not(:last-child) {
+  border: none;
+}
+.rbc-btn-group > button:not(:first-child):not(:last-child) {
+  border: none;
+}
+.rbc-btn-group > button:last-child:not(:first-child) {
+  border: none;
+}
+
+.rbc-toolbar
+{
+   /* background: blueviolet; */
+  /* color: white;  */
+  background: var(--secondary-color);
+  padding: 2%;
+  /* display: flex; */
+  /* font-weight: bold; */
+  /* flex-direction: row; */
+}
+
 body {
   margin: 0;
   font-family: 'Comfortaa', 'Segoe UI', 'Roboto', 'Oxygen',

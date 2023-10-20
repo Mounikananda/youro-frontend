@@ -37,6 +37,23 @@ const DoctorProfile = () => {
     // Handle 'No' button action
     hidePopup();
   };
+ 
+  
+  const apiData = {
+  image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
+    type: 'image/png',
+  }),
+  firstName: 'vamshi',
+  lastName: 'j',
+  email: 'vamshivj12@gmail.com',
+  licensenumber: '12345678',
+  Address: '123456',
+  City: 'vamshivj1208',
+  dob: '2023-10-20',
+  state: 'NY',
+  zipcode: '14214',
+  password: 'vamshivj1208',
+};
 
 
   const {
