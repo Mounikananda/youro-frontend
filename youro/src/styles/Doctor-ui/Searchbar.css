@@ -16,6 +16,18 @@
   margin-right: 5%; */
 } 
 
+.back-button-1 
+{
+  background-color: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  border-width: 5;
+  text-align: center;
+  transition: all .2s ease-in;
+  cursor: pointer;
+  padding: 15px 25px;
+}
 
 .search-input-field {
   align-self: flex-end;

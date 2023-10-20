@@ -38,6 +38,22 @@ const DoctorProfile=()=>
     hidePopup();
   };
  
+  
+  const apiData = {
+  image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
+    type: 'image/png',
+  }),
+  firstName: 'vamshi',
+  lastName: 'j',
+  email: 'vamshivj12@gmail.com',
+  licensenumber: '12345678',
+  Address: '123456',
+  City: 'vamshivj1208',
+  dob: '2023-10-20',
+  state: 'NY',
+  zipcode: '14214',
+  password: 'vamshivj1208',
+};
 
    const {
     register,
@@ -121,7 +137,7 @@ const DoctorProfile=()=>
             </div> */}
             <div className='p-fields'>
             <label>First Name(Legal first name)</label>
-            <input  defaultValue={'vamshi'} className='input-field' type='text' 
+            <input  defaultValue={apiData.firstName} className='input-field' type='text' 
               {...register("firstName", {
                     required: true,
                     maxLength: 32,
@@ -131,7 +147,7 @@ const DoctorProfile=()=>
             </div>
             <div className='p-fields'>
             <label>Last Name</label>
-             <input defaultValue={'j'} className="input-field input-border" type="text" {...register("lastName", {
+             <input defaultValue={apiData.lastName} className="input-field input-border" type="text" {...register("lastName", {
                     required: true,
                     maxLength: 32,
                   })} />
@@ -142,7 +158,7 @@ const DoctorProfile=()=>
           <div className='p-col'>
             <div className='p-fields'>
             <label>Email</label>
-            <input defaultValue={'vamshivj12@gmail.com'} className="input-field input-border" type="text" {...register("email", {
+            <input defaultValue={apiData.email} className="input-field input-border" type="text" {...register("email", {
                     required: true,
                     maxLength: 32,
                     pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/
@@ -154,10 +170,10 @@ const DoctorProfile=()=>
             <div className='p-fields'>
             <label>License Number</label>
             {/* <input className='input-field' type='text'></input> */}
-             <input defaultValue={'12345678'} className="input-field" type="text" {...register("licensenumber", {
+             <input defaultValue={apiData.licensenumber} className="input-field" type="text" {...register("licensenumber", {
                     required: true,
                     maxLength: 32,
-                    minLength: 8
+                    minLength: 8 
                   })} ></input>
                   {errors?.licensenumber?.type === "required" && <p className="error-text">This field is required</p>}
                   {errors?.licensenumber?.type === "maxLength" && <p className="error-text">License number cannot exceed 32 characters</p>}
@@ -167,7 +183,7 @@ const DoctorProfile=()=>
           <div className='p-col'>
            <div className='p-fields'>
             <label>Address</label>
-             <input defaultValue={'123456'} className="input-field input-border" type="text" {...register("Address", {
+             <input defaultValue={apiData.Address} className="input-field input-border" type="text" {...register("Address", {
                                   required: true,
                                   maxLength: 50,
                                 })} />
@@ -177,7 +193,7 @@ const DoctorProfile=()=>
             </div>
             <div className='p-fields'>
             <label>City </label>
-             <input defaultValue={'vamshivj1208'} className="input-field input-border" type="text" {...register("City", {
+             <input defaultValue={apiData.City} className="input-field input-border" type="text" {...register("City", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
@@ -189,7 +205,7 @@ const DoctorProfile=()=>
            <div className='p-fields'>
            <label>State</label>
            {/* <input className='input-field' type='text'></input> */}
-            <input defaultValue={'NY'} className="input-field input-border" type="text" {...register("state", {
+            <input defaultValue={apiData.state} className="input-field input-border" type="text" {...register("state", {
                                   required: true,
                                   maxLength: 32,
                                 })} />
@@ -198,7 +214,7 @@ const DoctorProfile=()=>
            </div>
            <div className='p-fields'>
             <label>Zipcode</label>
-            <input defaultValue={'14214'} className="input-field input-border" type="text" {...register("zipcode", {
+            <input defaultValue={apiData.zipcode} className="input-field input-border" type="text" {...register("zipcode", {
                required: true,
                maxLength: 32,
                })} />
@@ -215,11 +231,11 @@ const DoctorProfile=()=>
             /> */}
              <input type="date" className="input-field" {...register("dob", { required: "Date of Birth is required",
                max: {
-              value: new Date().toISOString().split("T")[0],
+               value: new Date().toISOString().split("T")[0], 
               message: "Date of Birth cannot be in the future",
                },
                })}
-               defaultValue="YYYY-MM-DD" // Replace with your desired default value
+               defaultValue={apiData.dob}// Replace with your desired default value
              />
              {errors?.dob?.type === "required" && ( <p className="error-text">{errors?.dob?.message}</p>
              )}
@@ -229,7 +245,7 @@ const DoctorProfile=()=>
             <div className='p-col'>
             <div className='p-fields'>
            <label>Your Password</label>
-             <input defaultValue={'vamshivj1208'} className="password-input" type="password" {...register("password", {
+             <input defaultValue={apiData.password} className="password-input" type="password" {...register("password", {
                     required: true,
                     maxLength: 32,
                     minLength: 8
