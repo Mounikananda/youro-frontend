@@ -75,10 +75,6 @@ const AdminMaintainenceList = () => {
         }
     }, []);
 
-    useEffect(() => {
-        console.log(tableData)
-    }, [tableData])
-
 
     const fetchData = async () => {
         let type = USER_TYPES.doctor;
@@ -95,14 +91,10 @@ const AdminMaintainenceList = () => {
     };
 
     const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false,) => {
-        console.log('cell => ' + JSON.stringify(cell) + " , " + 'table Data =>' + JSON.stringify(tableData));
-        console.log(tableData)
         if (isChange) {
             var data = [...tableData]
             for (let i = 0; i < tableData.length; i++) {
-                console.log("----====---------------=-------------=-----------");
                 if (cell.row.original.medicineId == tableData[i].medicineId) {
-                    console.log('i ==>  ' + i + " :: " + tableData[i].userId + " -> " + tableData[i].status);
                     data[i].approved = cell.row.original.approved ? '' : new Date().toLocaleDateString();
                     setTableData([...data]);
                     
