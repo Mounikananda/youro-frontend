@@ -416,24 +416,32 @@ function DoctorAppointments() {
 
   const [newEvent, setNewEvent] = useState({ start: null, end: null, title: "", email: "" });
 
-  function handleEventCreation() {
-    if(newEvent)
-    {
-      if(newEvent.title.length===0)
-      {
-      newEvent.title="Available";
-      }
-      // newEvent.start={moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a')};
-      // newEvent.start = moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a');
-      console.log("printing new event",newEvent);
-      console.log("printing date",newEvent.start);
-      console.log("printing fetch ",event1.start);
-    // const eventsToSplit = splitEventIfNecessary(newEvent);
-    // console.log("new event",eventsToSplit);
+  function handleEventCreation(slotInfo) {
+    // if(newEvent)
+    // {
+    //   if(newEvent.title.length===0)
+    //   {
+    //   newEvent.title="Available";
+    //   }
+    //   // newEvent.start={moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a')};
+    //   // newEvent.start = moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a');
+    //   console.log("printing new event",newEvent);
+    //   console.log("printing date",newEvent.start);
+    //   console.log("printing fetch ",event1.start);
+    // // const eventsToSplit = splitEventIfNecessary(newEvent);
+    // // console.log("new event",eventsToSplit);
+    // setEvents((prevEvents) => [...prevEvents, newEvent]);
+    // setNewEvent({ start: null, end: null, title: "", email: "" });
+    // setcreatevent(false);
+    // }
+     const newEvent = {
+     start: slotInfo.start,
+     end: slotInfo.end,
+    title: "Available", 
+    email: "", 
+      };
     setEvents((prevEvents) => [...prevEvents, newEvent]);
     setNewEvent({ start: null, end: null, title: "", email: "" });
-    setcreatevent(false);
-    }
   }
 
   return (
@@ -447,47 +455,24 @@ function DoctorAppointments() {
             <Calendar
               localizer={localizer}
               defaultDate={new Date()}
-              defaultView={Views.WEEK}
+              defaultView="week"
               events={events}
               selectable
               onSelectSlot={(slotInfo) => {
                 if (slotInfo.action === "select") {
+                   handleEventCreation(slotInfo);
                 // Handle event creation here
-                setNewEvent({
-                  start: slotInfo.start,
-                  end: slotInfo.end,
-                  title: "",
-                  email: "",
-                })};
-              }}
+                // setNewEvent({
+                //   start: slotInfo.start,
+                //   end: slotInfo.end,
+                //   title: "",
+                //   email: "",
+                // })};
+              }}}
               onSelectEvent={handleSelectEvent}
               style={{ height: "85vh"}}
-              components={{
-                   month: {
-                  dateHeader: ({ label, date }) => (
-                   <div className="current-month">
-                     {label}
-                   </div>
-                  ),
-                 },
-                 day: {
-                   event: ({ event }) => (
-                    <div className="day-view">
-                    {event.title}
-                   </div>
-                    ),
-                   },
-                 week: {
-                  event: ({ event }) => (
-                  <div className="week-view">
-                   {event.title}
-                  </div>
-                   ),
-                 },
-                 
-              }}
-            />
-            <div className="events-form">
+              />
+            {/* <div className="events-form">
               {newEvent.start &&  (
                  <div className="popup-container-apt">
                  <div className="popup-background-apt"></div>
@@ -502,7 +487,7 @@ function DoctorAppointments() {
                     value={newEvent.email}
                     onChange={(e) => setNewEvent({ ...newEvent, email: e.target.value })}
                   /> */}
-                  <div className="slot-buttons">
+                  {/* <div className="slot-buttons">
                   <button className="add-availability" onClick={handleEventCreation}>
                     Add
                   </button>
@@ -510,8 +495,8 @@ function DoctorAppointments() {
                   </div>
                 </div>
                 </div>
-              )}
-            </div>
+              )} */}
+            {/* </div> */}
           </div>
           {showEventDetails && (
              <div className="popup-container-apt">
