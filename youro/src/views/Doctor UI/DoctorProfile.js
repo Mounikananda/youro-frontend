@@ -19,7 +19,6 @@ const DoctorProfile = () => {
 
   const [isPopupVisible, setPopupVisible] = useState(false);
 
-
   const showPopup = (data) => {
     console.log(data);
     setPopupVisible(true);
@@ -48,14 +47,42 @@ const DoctorProfile = () => {
     formState: { errors }
   } = useForm();
 
+  
+  useEffect(() => {
+    console.log("doctor profile : landing");
+    fetchProfileData();
+  }, []);
+
+  let usrData = {
+    image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
+      type: 'image/png',
+    }),
+    firstName: 'vamshi',
+    lastName: 'j',
+    email: 'vamshivj12@gmail.com',
+    license: '12345678',
+    address: '123456',
+    city: 'vamshivj1208',
+    dateOfBirth: '2023-10-20',
+    state: 'NY',
+    zipCode: '14214',
+    password: 'vamshivj1208',
+  };
+
+
+  // const [userData, setUserData] = useState({});
+
 
   const showdata = (data) => {
     console.clear();
     console.log("TEST log");
     console.log(data);
+    const userId = 36;
+
     // api call here
     //setImagePreview
   }
+
 
 
   const [imagePreview, setImagePreview] = useState(null);
@@ -75,22 +102,27 @@ const DoctorProfile = () => {
   };
 
 
-  useEffect(() => {
-    console.log("doctor profile : landing");
-    fetchProfileData();
-  }, []);
-
-
-  const [userData, setUserData] = useState({});
-
   const fetchProfileData = async () => {
     // after getting the data -> set defaultValues in html
     const emailId = 'doc2@gmail.com';
-    const url = `http://localhost:9092/youro/api/v1/getUser/${emailId}`;
+    const url = `http://localhost:9092/youro/api/v1/provider/getUser/${emailId}`;
     try {
       const res = await axios.get(url);
       console.log(res.data);
-      setUserData(res.data);
+      usrData.firstName = res.data.firstName;
+    }
+    catch (err) {
+      console.error(err);
+    }
+  };
+
+  const updateProfileData = async (data) => {
+    // after getting the data -> set defaultValues in html
+    const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+    try {
+      const res = await axios.post(url, data);
+      console.log(res.data);
+      // usrData = res.data;
     }
     catch (err) {
       console.error(err);
@@ -152,7 +184,7 @@ const DoctorProfile = () => {
             </div> */}
               <div className='p-fields'>
                 <label>First Name(Legal first name)</label>
-                <input defaultValue={userData.firstName} className='input-field' type='text'
+                <input defaultValue={usrData.firstName} className='input-field' type='text'
                   {...register("firstName", {
                     // required: true,
                     maxLength: 32,
@@ -165,7 +197,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>Last Name</label>
-                <input defaultValue={userData.lastName} className="input-field input-border" type="text" {...register("lastName", {
+                <input defaultValue={usrData.lastName} className="input-field input-border" type="text" {...register("lastName", {
                   // required: true,
                   maxLength: 32,
                   validate: {
@@ -179,7 +211,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Email</label>
-                <input defaultValue={userData.email} className="input-field input-border" type="text" {...register("email", {
+                <input defaultValue={usrData.email} className="input-field input-border" type="text" {...register("email", {
                   // required: true,
                   maxLength: 32,
                   pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/,
@@ -194,7 +226,7 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>License Number</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={userData.license} className="input-field" type="text" {...register("licensenumber", {
+                <input defaultValue={usrData.license} className="input-field" type="text" {...register("licensenumber", {
                   // required: true,
                   maxLength: 32,
                   minLength: 8,
@@ -210,7 +242,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Address</label>
-                <input defaultValue={userData.address} className="input-field input-border" type="text" {...register("Address", {
+                <input defaultValue={usrData.address} className="input-field input-border" type="text" {...register("Address", {
                   // required: true,
                   maxLength: 50,
                   validate: {
@@ -223,7 +255,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>City </label>
-                <input defaultValue={userData.city} className="input-field input-border" type="text" {...register("City", {
+                <input defaultValue={usrData.city} className="input-field input-border" type="text" {...register("City", {
                   // required: true,
                   maxLength: 32,
                   validate: {
@@ -238,7 +270,7 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>State</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={userData.state} className="input-field input-border" type="text" {...register("state", {
+                <input defaultValue={usrData.state} className="input-field input-border" type="text" {...register("state", {
                   // required: true,
                   maxLength: 32,
                   validate: {
@@ -250,7 +282,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>Zipcode</label>
-                <input defaultValue={userData.zipCode} className="input-field input-border" type="text" {...register("zipcode", {
+                <input defaultValue={usrData.zipCode} className="input-field input-border" type="text" {...register("zipcode", {
                   // required: true,
                   maxLength: 32,
                   validate: {
@@ -278,7 +310,7 @@ const DoctorProfile = () => {
                     checkRequired: (value) => value !== "" || "This field is required",
                   },
                 })}
-                  defaultValue={userData.dateOfBirth} // Replace with your desired default value
+                  defaultValue={usrData.dateOfBirth} // Replace with your desired default value
                 />
                 {errors?.dob?.type === "required" && (<p className="error-text">{errors?.dob?.message}</p>
                 )}
@@ -288,7 +320,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Your Password</label>
-                <input defaultValue={userData.password} className="password-input" type="password" {...register("password", {
+                <input defaultValue={usrData.password} className="password-input" type="password" {...register("password", {
                   // required: true,
                   maxLength: 32,
                   minLength: 8,
