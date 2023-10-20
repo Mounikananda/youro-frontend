@@ -9,6 +9,8 @@ import DoctorSideBar from './Doctor-Sidebar';
 import { useForm } from "react-hook-form";
 import axios from 'axios';
 
+import { ToastContainer, toast } from 'react-toastify';
+
 // import SideBar from '../Patient UI/SideBar';
 
 
@@ -37,23 +39,6 @@ const DoctorProfile = () => {
     // Handle 'No' button action
     hidePopup();
   };
- 
-  
-  const apiData = {
-  image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
-    type: 'image/png',
-  }),
-  firstName: 'vamshi',
-  lastName: 'j',
-  email: 'vamshivj12@gmail.com',
-  licensenumber: '12345678',
-  Address: '123456',
-  City: 'vamshivj1208',
-  dob: '2023-10-20',
-  state: 'NY',
-  zipcode: '14214',
-  password: 'vamshivj1208',
-};
 
 
   const {
@@ -64,27 +49,59 @@ const DoctorProfile = () => {
     formState: { errors }
   } = useForm();
 
-  
+  // const [userState, setUserState] = useState({
+  //   image: new File([''], '', {
+  //     type: 'image/png',
+  //   }),
+  //   firstName: '',
+  //   lastName: '',
+  //   email: '',
+  //   license: '',
+  //   address: '',
+  //   city: '',
+  //   dateOfBirth: '',
+  //   state: '',
+  //   zipCode: '',
+  //   password: '',
+  // });
+
   useEffect(() => {
     console.log("doctor profile : landing");
     fetchProfileData();
   }, []);
 
   let usrData = {
-    image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
+    image: new File([''], '', {
       type: 'image/png',
     }),
-    firstName: 'vamshi',
-    lastName: 'j',
-    email: 'vamshivj12@gmail.com',
-    license: '12345678',
-    address: '123456',
-    city: 'vamshivj1208',
-    dateOfBirth: '2023-10-20',
-    state: 'NY',
-    zipCode: '14214',
-    password: 'vamshivj1208',
+    firstName: '',
+    lastName: '',
+    email: '',
+    license: '',
+    address: '',
+    city: '',
+    dateOfBirth: '',
+    state: '',
+    zipCode: '',
+    password: '',
   };
+
+
+  // let usrData1 = {
+  //   image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
+  //     type: 'image/png',
+  //   }),
+  //   firstName: 'vamshi',
+  //   lastName: 'j',
+  //   email: 'vamshivj12@gmail.com',
+  //   license: '12345678',
+  //   address: '123456',
+  //   city: 'vamshivj1208',
+  //   dateOfBirth: '2023-10-20',
+  //   state: 'NY',
+  //   zipCode: '14214',
+  //   password: 'vamshivj1208',
+  // };
 
 
   // const [userData, setUserData] = useState({});
@@ -95,6 +112,7 @@ const DoctorProfile = () => {
     console.log("TEST log");
     console.log(data);
     const userId = 36;
+    toast.success("Successful login");
 
     // api call here
     //setImagePreview
@@ -126,7 +144,20 @@ const DoctorProfile = () => {
     try {
       const res = await axios.get(url);
       console.log(res.data);
-      usrData.firstName = res.data.firstName;
+      usrData = res.data;
+      // console.log(usrData);
+      // setUserState(res.data);
+      setValue("firstName", res.data.firstName);
+      setValue("lastName", res.data.lastName);
+      setValue("email", res.data.email);
+      setValue("license", res.data.license);
+      setValue("address", res.data.address);
+      setValue("city", res.data.city);
+      setValue("state", res.data.state);
+      setValue("zipCode", res.data.zipCode);
+      setValue("dateOfBirth", res.data.dateOfBirth);
+      setValue("password", res.data.password);
+      // get the hook form current state
     }
     catch (err) {
       console.error(err);
@@ -164,6 +195,7 @@ const DoctorProfile = () => {
           <h1>youro</h1>
           <div className='profile-details'>
             <div className='my-profile'>
+              <ToastContainer />
               <h1>My Profile</h1>
 
               <div>
@@ -183,9 +215,9 @@ const DoctorProfile = () => {
                       accept=".jpg, .jpeg, .png"
                       {...register('image', {
                         // required: 'Image is required'
-                        validate: {
-                          checkRequired: (value) => value !== "" || "This field is required",
-                        },
+                        // validate: {
+                        //   checkRequired: (value) => value !== "" || "This field is required",
+                        // },
                       })}
                       onChange={handleImageChange}
                     />
@@ -201,25 +233,26 @@ const DoctorProfile = () => {
             </div> */}
               <div className='p-fields'>
                 <label>First Name(Legal first name)</label>
-                <input defaultValue={usrData.firstName} className='input-field' type='text'
-                  {...register("firstName", {
-                    // required: true,
-                    maxLength: 32,
-                    validate: {
-                      checkRequired: (value) => value !== "" || "This field is required",
-                    },
-                  })} />
+                <input defaultValue={"default"} className='input-field' type='text'
+                    {...register("firstName", {
+                      required: true,
+                      maxLength: 32,
+                      // validate: {
+                      //   checkRequired: (value) => value !== "" || "This field is required",
+                      // },
+                    })} />
+                
                 {errors?.firstName?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.firstName?.type === "maxLength" && <p className="error-text">First name cannot exceed 32 characters</p>}
               </div>
               <div className='p-fields'>
                 <label>Last Name</label>
-                <input defaultValue={usrData.lastName} className="input-field input-border" type="text" {...register("lastName", {
-                  // required: true,
+                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("lastName", {
+                  required: true,
                   maxLength: 32,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
                 {errors?.lastName?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.lastName?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
@@ -228,13 +261,13 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Email</label>
-                <input defaultValue={usrData.email} className="input-field input-border" type="text" {...register("email", {
-                  // required: true,
+                <input defaultValue={"default@gamil.com"} className="input-field input-border" type="text" {...register("email", {
+                  required: true,
                   maxLength: 32,
                   pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
                 {errors?.email?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.email?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
@@ -243,71 +276,71 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>License Number</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={usrData.license} className="input-field" type="text" {...register("licensenumber", {
-                  // required: true,
+                <input defaultValue={"defaulta"} className="input-field" type="text" {...register("license", {
+                  required: true,
                   maxLength: 32,
                   minLength: 8,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} ></input>
-                {errors?.licensenumber?.type === "required" && <p className="error-text">This field is required</p>}
-                {errors?.licensenumber?.type === "maxLength" && <p className="error-text">License number cannot exceed 32 characters</p>}
-                {errors?.licensenumber?.type === "minLength" && <p className="error-text">L.Number must be more than 8 characters</p>}
+                {errors?.license?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.license?.type === "maxLength" && <p className="error-text">License number cannot exceed 32 characters</p>}
+                {errors?.license?.type === "minLength" && <p className="error-text">L.Number must be more than 8 characters</p>}
               </div>
             </div>
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Address</label>
-                <input defaultValue={usrData.address} className="input-field input-border" type="text" {...register("Address", {
-                  // required: true,
+                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("address", {
+                  required: true,
                   maxLength: 50,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
-                {errors?.Address?.type === "required" && <p className="error-text">This field is required</p>}
-                {errors?.Address?.type === "maxLength" && <p className="error-text">Address cannot exceed 40 characters</p>}
+                {errors?.address?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.address?.type === "maxLength" && <p className="error-text">Address cannot exceed 40 characters</p>}
                 {/* <input className='input-field' type='text'></input> */}
               </div>
               <div className='p-fields'>
                 <label>City </label>
-                <input defaultValue={usrData.city} className="input-field input-border" type="text" {...register("City", {
-                  // required: true,
+                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("city", {
+                  required: true,
                   maxLength: 32,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
-                {errors?.City?.type === "required" && <p className="error-text">This field is required</p>}
-                {errors?.City?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                {errors?.city?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.city?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
               </div>
             </div>
             <div className='p-col'>
               <div className='p-fields'>
                 <label>State</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={usrData.state} className="input-field input-border" type="text" {...register("state", {
-                  // required: true,
+                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("state", {
+                  required: true,
                   maxLength: 32,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
                 {errors?.state?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.state?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
               </div>
               <div className='p-fields'>
                 <label>Zipcode</label>
-                <input defaultValue={usrData.zipCode} className="input-field input-border" type="text" {...register("zipcode", {
-                  // required: true,
+                <input defaultValue={"12345"} className="input-field input-border" type="text" {...register("zipCode", {
+                  required: true,
                   maxLength: 32,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
-                {errors?.zipcode?.type === "required" && <p className="error-text">This field is required</p>}
-                {errors?.zipcode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+                {errors?.zipCode?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.zipCode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
               </div>
             </div>
             <div className='p-col'>
@@ -317,33 +350,33 @@ const DoctorProfile = () => {
                 {/* <input type="date" className='input-field'
              max={new Date().toISOString().split('T')[0]} 
             /> */}
-                <input type="date" className="input-field" {...register("dob", {
-                  // required: "Date of Birth is required",
+                <input type="date" className="input-field" {...register("dateOfBirth", {
+                  required: "Date of Birth is required",
                   max: {
                     value: new Date().toISOString().split("T")[0],
                     message: "Date of Birth cannot be in the future",
                   },
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })}
-                  defaultValue={usrData.dateOfBirth} // Replace with your desired default value
+                  defaultValue={"01-01-1111"} // Replace with your desired default value
                 />
-                {errors?.dob?.type === "required" && (<p className="error-text">{errors?.dob?.message}</p>
+                {errors?.dateOfBirth?.type === "required" && (<p className="error-text">{errors?.dateOfBirth?.message}</p>
                 )}
-                {errors?.dob?.type === "validate" && (<p className="error-text">{errors?.dob?.message}</p>)}
+                {errors?.dateOfBirth?.type === "validate" && (<p className="error-text">{errors?.dateOfBirth?.message}</p>)}
               </div>
             </div>
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Your Password</label>
-                <input defaultValue={usrData.password} className="password-input" type="password" {...register("password", {
-                  // required: true,
+                <input defaultValue={"password"} className="password-input" type="password" {...register("password", {
+                  required: true,
                   maxLength: 32,
                   minLength: 8,
-                  validate: {
-                    checkRequired: (value) => value !== "" || "This field is required",
-                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} ></input>
                 {errors?.password?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.password?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
