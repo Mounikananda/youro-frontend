@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import Popup from 'reactjs-popup';
-import { USER_TYPES } from '../../App';
 import axios from 'axios';
 
 

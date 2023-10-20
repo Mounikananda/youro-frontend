@@ -6,6 +6,7 @@ import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import axios from 'axios';
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -15,7 +16,7 @@ const PatientAppointment = (props) => {
 
     const localizer = momentLocalizer(moment);
 
-    const [val, setVal] = useState(-1);
+    // const [val, setVal] = useState(-1);
 
     const [event, setEvent] = useState(null);
 
@@ -24,12 +25,16 @@ const PatientAppointment = (props) => {
 
     const [open, setOpen] = useState(false);
 
-    const [slotsData, setSlotsData] = useState(['10', '10:30', '11', '11:30', '12', '12:30', '13', '13:30']);
+    // const [slotsData, setSlotsData] = useState(['10', '10:30', '11', '11:30', '12', '12:30', '13', '13:30']);
     // slots in a day
 
+    const [slotsData, setSlotsData] = useState([]);
+    // {doctorId: 1, gender: 'MALE', startTime: '09:00:00'},{doctorId: 34, gender: 'MALE', startTime: '14:00:00'}
+
     useEffect(() => {
-        console.log(event)
-    }, [event])
+        console.log("pat appts : landing");
+        console.log(event);
+    }, [])
 
     // const handleSelectEvent = (event) => {
     //     setVal(event.id)
@@ -38,8 +43,32 @@ const PatientAppointment = (props) => {
     // }
 
     const handleBook = () => {
-        setOpen(true)
+        setOpen(true);
     }
+
+    const saveNewAppointment = async (eve) => {
+        // console.log("====^^^===");
+        // console.log("saveNewAppointment START");
+        const now = new Date();
+        const url = `http://localhost:9092/youro/api/v1/saveNewAppointment/${eve}`;
+        try {
+            console.log(event);
+            console.log(getEndTime(event));
+            console.log("scheduled");
+            console.log(dateSelection);
+            console.log(now);
+            for(let i=0; i<slotsData.length; i++){
+                // have to compare the slot timings with the selected slot i.e. event/SetEvent
+            }
+            const res = await axios.post(url);
+            console.log(res.data);
+        }
+        catch (err) {
+            console.error(err);
+        }
+        // console.log("saveNewAppointment END");
+        // console.log("====^^^===");
+    };
 
     // const eventPropGetter = (event) => {
     //     const backgroundColor = event.id === val  ? 'var(--neon-color)' : 'var(--secondary-color)';
@@ -64,12 +93,33 @@ const PatientAppointment = (props) => {
 
     // rnFunc()
 
+    const fetchAvailableSlotsByDate = async (eve) => {
+        const url = `http://localhost:9092/youro/api/v1/getAvailableSlotsByDate/${eve}`;
+        try {
+            const res = await axios.get(url);
+            setSlotsData(res.data);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    };
+
+    const handleSelectSlot = (startTime) => {
+        setEvent(startTime);
+    }
+    const handleDateSelection = (eve) => {
+        // event is directly the date
+        setDateSelection(eve);
+        setEvent(false);
+        fetchAvailableSlotsByDate(eve);
+    };
+
     return (
         <div style={{ display: 'flex', width: '100%', position: 'relative', alignItems: 'center' }}>
             <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
                 <div className="react-calendar-container">
                     <h1 style={{ top: '55px', position: 'absolute', left: '50px' }}>Schedule Appointment</h1>
-                    <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={setDateSelection} value={dateSelection} />
+                    <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
                 </div>
                 <div style={{ width: '-webkit-fill-available', marginTop: '10px', }} className="slots-container">
                     <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
@@ -77,7 +127,11 @@ const PatientAppointment = (props) => {
                         {slotsData.map((data) => {
                             return (
                                 <>
-                                    <div onClick={(e) => setEvent(data)} className="slot-timings"><span style={{ letterSpacing: '1.3px' }}>{data}</span> - <span style={{ letterSpacing: '1.3px' }}>{getEndTime(data)}</span></div>
+                                    <div onClick={(e) => handleSelectSlot(data.startTime) } className="slot-timings">
+                                        <span style={{ letterSpacing: '1.3px' }}>{data.startTime}</span>
+                                        -
+                                        <span style={{ letterSpacing: '1.3px' }}>{getEndTime(data.startTime)}</span>
+                                    </div>
                                 </>
 
                             )
