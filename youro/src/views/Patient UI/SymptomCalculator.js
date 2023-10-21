@@ -81,7 +81,7 @@ const SymptomCalculator = (props) => {
                     takenDate: now,
                     diagnosisId: selDiag,
                     questionData: userResponse,
-                    patientId: '1',
+                    patientId: 1,
                 }
                 saveNewSymptomScore(temp);
                 props.setOpen(false)
