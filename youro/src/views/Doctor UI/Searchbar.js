@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import "../../styles/Doctor-ui/Searchbar.css";
 import PatientDetails from './DA-PatientDetails';
 import { FaChevronLeft } from 'react-icons/fa';
+import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -9,21 +10,26 @@ const SearchBar = () => {
   const [showdetails,setshowdetails] = useState(false);
 
   const [patientData, setPatientData] = useState(null);
-
+  const navigate = useNavigate();
 
   const handleViewMore = (data) => 
   {
     setshowdetails(true);
     setPatientData(data);
-    
+    setSearchInput('');
   };
 
   const handlesearchdetails =(e) =>
   {
     if (e.key === 'Enter') {
-      setshowdetails(false);
+      setshowdetails(false)
     }
   };
+
+const hitback =()=>
+{
+  setshowdetails(false);
+}
 
 
 
@@ -85,13 +91,15 @@ const SearchBar = () => {
    return (
     <div className='search-bar'>
       <div className='search-input'>
-        <div className='back-button'>
+        <>
+         <div className='back-button'>
          {showdetails && (
-            <button className="btn-filled">
+            <button className="back-button-1" onClick={() => hitback()}>
             <FaChevronLeft /> Back
             </button>
             )}
          </div>
+        </>
         <input
           className='search-input-field' 
           type="search"
