@@ -489,7 +489,7 @@ function DoctorAppointments() {
         </div>
         <div className="d-calender">
           <div className="d-calender-form">
-            {/* <Calendar
+            <Calendar
               localizer={localizer}
               defaultDate={new Date()}
               defaultView="week"
@@ -508,51 +508,8 @@ function DoctorAppointments() {
               }}
               onSelectEvent={handleSelectEvent}
               style={{ height: "85vh"}}
-              components={{
-                   month: {
-                  dateHeader: ({ label, date }) => (
-                   <div className="current-month">
-                     {label}
-                   </div>
-                  ),
-                 },
-                 day: {
-                   event: ({ event }) => (
-                    <div className="day-view">
-                    {event.title}
-                   </div>
-                    ),
-                   },
-                 week: {
-                  event: ({ event }) => (
-                  <div className="week-view">
-                   {event.title}
-                  </div>
-                   ),
-                 },
-                 
-              }}
-            /> */}
-            <Calendar
-              localizer={localizer}
-              defaultDate={new Date()}
-              defaultView="week"
-              events={events}
-              selectable
-              onSelectSlot={(slotInfo) => {
-                if (slotInfo.action === "select") {
-                   handleEventCreation(slotInfo);
-                // Handle event creation here
-                // setNewEvent({
-                //   start: slotInfo.start,
-                //   end: slotInfo.end,
-                //   title: "",
-                //   email: "",
-                // })};
-              }}}
-              onSelectEvent={handleSelectEvent}
-              style={{ height: "85vh"}}
-              />
+             
+            />
             <div className="events-form">
               {newEvent.start && (
                 <div className="popup-container-apt">
