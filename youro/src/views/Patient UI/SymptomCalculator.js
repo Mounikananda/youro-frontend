@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Popup from 'reactjs-popup';
 import axios from 'axios';
+import Cookies from 'js-cookie';
 
 
 const SymptomCalculator = (props) => {
@@ -10,10 +11,12 @@ const SymptomCalculator = (props) => {
     { question: 'What is your name?', options: ['Alan Hunt', 'Farah', 'Both', 'None'], questionId: '2' }])
     const [questionNum, setQuestionNum] = useState(0);
 
-    const [userResponse, setUserResponse] = useState({});
+    const [userResponse, setUserResponse] = useState([]);
 
     const [selDiag, setDiagId] = useState('');
     const [diagnosisNames, setDiagnoses] = useState([]);
+    const [symptomScore, setSymptomScore] = useState(-1);
+    const [symptomScorePage, setSymptomScorePage] = useState(false);
 
     useEffect(() => {
         fetchAllDiagnoses();
@@ -22,25 +25,46 @@ const SymptomCalculator = (props) => {
                 "questionId": 3003,
                 "question": "Question 1",
                 "options": [
-                    "Option 1",
-                    "Option 2"
+                    {
+                        "oId": 1,
+                        "oName": "Option 1"
+                    },
+                    {
+                        "oId": 2,
+                        "oName": "Option 2"
+                    }
                 ]
             },
             {
                 "questionId": 3004,
                 "question": "Question 2",
                 "options": [
-                    "Option 1",
-                    "Option 2"
+                    {
+                        "oId": 3,
+                        "oName": "Option 1"
+                    },
+                    {
+                        "oId": 4,
+                        "oName": "Option 2"
+                    }
                 ]
             },
             {
                 "questionId": 3005,
                 "question": "Question 3",
                 "options": [
-                    "Option 1",
-                    "Option 2",
-                    "Option 3"
+                    {
+                        "oId": 5,
+                        "oName": "Option 1"
+                    },
+                    {
+                        "oId": 6,
+                        "oName": "Option 2"
+                    },
+                    {
+                        "oId": 7,
+                        "oName": "Option 3"
+                    }
                 ]
             }
         ])
@@ -80,9 +104,11 @@ const SymptomCalculator = (props) => {
         // console.log("====^^^===");
         // console.log("saveNewSymptomScore START");
         const url = `http://localhost:9092/youro/api/v1/saveNewSymptomScore`;
+        setSymptomScorePage(true)
         try {
             const res = await axios.post(url, data);
             setDiagnoses(res.data);
+            // setSymptomScorePage(true)
         }
         catch (err) {
             console.error(err);
@@ -105,13 +131,12 @@ const SymptomCalculator = (props) => {
             } else {
                 const now = new Date();
                 const temp = {
-                    takenDate: now,
                     diagnosisId: selDiag,
                     questionData: userResponse,
-                    patientId: 1,
+                    patientId: Cookies.get('U_id'),
                 }
                 saveNewSymptomScore(temp);
-                props.setOpen(false)
+                // props.setOpen(false)
             }
         }
         // console.log("handleNext END");
@@ -121,8 +146,8 @@ const SymptomCalculator = (props) => {
     const handleResponse = (questionNum, option) => {
         // console.log("====^^^===");
         // console.log("handleResponse START");
-        var userResponses = { ...userResponse }
-        userResponses[questionnare[questionNum].questionId] = {option: option, weight: questionnare[questionNum].weight};
+        var userResponses = [ ...userResponse ]
+        userResponses.push({qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option]});
         setUserResponse(userResponses);
         // console.log("handleResponse END");
         // console.log("====^^^===");
@@ -142,7 +167,7 @@ const SymptomCalculator = (props) => {
             open={props.open}
             modal
             closeOnDocumentClick={false}
-            onClose={() => props.setOpen(false)}
+            onClose={() => { props.setOpen(false)}}
             className="symptom-popup">
 
             <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { props.setOpen(false) }}>
@@ -153,8 +178,8 @@ const SymptomCalculator = (props) => {
             <div style={{ padding: '30px 50px' }}>
 
                 <div style={{ textAlign: 'center' }}>
-                    <h2>Symptom Calculator</h2>
-                    {chooseDiagnosis ? <p>Choose the diagnosis</p> : <p>Question {questionNum + 1} out of {questionnare.length}</p>}
+                    {!symptomScorePage && <><h2>Symptom Calculator</h2>
+                    {chooseDiagnosis ? <p>Choose the diagnosis</p> : <p>Question {questionNum + 1} out of {questionnare.length}</p>}</> }
                     <br />
                 </div>
 
@@ -171,31 +196,38 @@ const SymptomCalculator = (props) => {
                         })}
 
                     </div>}
-                    {(!chooseDiagnosis) ? <>
+                    {(!chooseDiagnosis) ? (symptomScorePage ? <div style={{ textAlign: 'center' }}>
+                    <h2>Your Symptom Score</h2>
+                    <h4><h1 style={{display: 'inline-block'}}>80</h1 >/100</h4><br>
+                    </br>
+                    <p>Diagnosis Name: <strong>HHHHH</strong></p>
+                    </div> : 
+                     <>
                         <p>{questionnare[questionNum].question}</p>
                         {questionnare[questionNum].options.map((option) => {
                             return (
                                 <>
                                     <input type="radio" id="html"
                                         name={questionnare[questionNum].questionId}
-                                        checked = { userResponse[questionnare[questionNum].questionId] && userResponse[questionnare[questionNum].questionId]['option'] && (userResponse[questionnare[questionNum].questionId]['option'] === option) }
+                                        checked = { userResponse[questionNum] && (userResponse[questionNum]['optionsData'][0].oName === option.oName) }
                                         onChange={() => handleResponse(questionNum, option)} />
 
-                                    <label for="html" style={{ marginLeft: '10px' }}>{option}</label><br /><br />
+                                    <label for="html" style={{ marginLeft: '10px' }}>{option.oName}</label><br /><br />
                                 </>
                             )
                         })}
 
-                    </> : ''}
+                    </> ): ''}
                 </div>
 
-
-                <div className={!chooseDiagnosis && !userResponse[questionnare[questionNum].questionId] ? "btn-filled-disabled" : "btn-filled"}
+                {! symptomScorePage && <div className={!chooseDiagnosis && !userResponse[questionNum] ? "btn-filled-disabled" : "btn-filled"}
                     style={{ width: 'fit-content', marginLeft: 'auto', marginTop: '20px' }}
                     onClick={handleNext}>
                     {chooseDiagnosis || questionNum + 1 < questionnare.length ? 'Next' : 'Submit'}
                 </div>
+}
 
+                
             </div>
 
 
