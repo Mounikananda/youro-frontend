@@ -27,11 +27,118 @@ const PatientAppointment = (props) => {
 
     // slots in a day
     const [slotsData, setSlotsData] = useState([]);
-    // {doctorId: 1, gender: 'MALE', startTime: '09:00:00'},{doctorId: 34, gender: 'MALE', startTime: '14:00:00'}
+    const [slotsOnDate, setSlotsOnDate] = useState();
+    const [selectedInfo, setSelectedInfo] = useState();
 
     useEffect(() => {
-        console.log("pat appts : landing");
-        console.log(event);
+        setSlotsData([
+            {
+                "date": "2023-10-27",
+                "noOfSlots": 14,
+                "slotInfo": [
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T21:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T14:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 2,
+                        "startTime": "19:30:00",
+                        "doctorIds": [
+                            1,
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T13:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T10:00:00.000+00:00",
+                        "doctorIds": [
+                            1
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T20:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "04:30:00",
+                        "doctorIds": [
+                            1
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T20:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "08:00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T19:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "14:00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T15:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T14:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 2,
+                        "startTime": "1970-01-02T01:00:00.000+00:00",
+                        "doctorIds": [
+                            1,
+                            34
+                        ]
+                    }
+                ]
+            }
+        ])
     }, [])
 
     // const handleSelectEvent = (event) => {
@@ -41,7 +148,9 @@ const PatientAppointment = (props) => {
     // }
 
     const handleBook = () => {
+
         setOpen(true);
+        console.log(selectedInfo.doctorIds[Math.floor(Math.random()*selectedInfo.doctorIds.length)])
     }
 
     const saveNewAppointment = async (eve) => {
@@ -81,7 +190,7 @@ const PatientAppointment = (props) => {
         var minutes = time.split(":")[1]
 
         if (minutes === '30') {
-            return `${hour + 1}`
+            return `${hour + 1}:00`
         } else {
             return `${hour}:30`
         }
@@ -94,25 +203,33 @@ const PatientAppointment = (props) => {
 
     // rnFunc()
 
-    const fetchAvailableSlotsByDate = async (eve) => {
-        const url = `http://localhost:9092/youro/api/v1/getAvailableSlotsByDate/${eve}`;
-        try {
-            const res = await axios.get(url);
-            setSlotsData(res.data);
+    const getSlots = (eve) => {
+        var flag = 0
+        for(var i = 0; i<slotsData.length; i++){
+            if(slotsData[i].date === eve){
+                flag = 1;
+                console.log(slotsData[i])
+                setSlotsOnDate(slotsData[i]);
+                break
+            }
         }
-        catch (err) {
-            console.error(err);
-        }
-    };
 
-    const handleSelectSlot = (startTime) => {
-        setEvent(startTime);
+        if (flag === 0){
+            setSlotsOnDate(null);
+        }
     }
+
+    const handleSelectSlot = (startTime, info) => {
+        setEvent(startTime);
+        setSelectedInfo(info)
+    }
+
     const handleDateSelection = (eve) => {
         // event is directly the date
         setDateSelection(eve);
+        var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + eve.getDate()
+        getSlots(date)
         setEvent(false);
-        fetchAvailableSlotsByDate(eve);
     };
 
     return (
@@ -125,20 +242,21 @@ const PatientAppointment = (props) => {
                 <div style={{ width: '-webkit-fill-available', marginTop: '10px', }} className="slots-container">
                     <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
                     <div className="slots-container-sub">
-                        {slotsData.map((data) => {
+                        {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
+                            var startTime = data['startTime'].includes("T") ? data['startTime'].split('T')[1].split(':')[0] + ':' + data['startTime'].split('T')[1].split(':')[1] : data['startTime'].split(':')[0] + ':' + data['startTime'].split(':')[1];
                             return (
                                 <>
-                                    <div onClick={(e) => handleSelectSlot(data.startTime) } className="slot-timings">
-                                        <span style={{ letterSpacing: '1.3px' }}>{data.startTime}</span>
+                                    <div onClick={(e) => handleSelectSlot(startTime, data) } className="slot-timings">
+                                        <span style={{ letterSpacing: '1.3px' }}>{startTime}</span>
                                         -
-                                        <span style={{ letterSpacing: '1.3px' }}>{getEndTime(data.startTime)}</span>
+                                        <span style={{ letterSpacing: '1.3px' }}>{getEndTime(startTime)}</span>
                                     </div>
                                 </>
 
                             )
                         })}
 
-                        {slotsData && !slotsData[0] && <h4 style={{ letterSpacing: '2px' }}>No slots Available on selected date. Choose another date</h4>}
+                        {!slotsOnDate && <h4 style={{ letterSpacing: '2px' }}>No slots Available on selected date. Choose another date</h4>}
                     </div>
                 </div>
             </div>

@@ -64,7 +64,7 @@ const Login= () =>
                 </>
             }
 
-            {forgot && <ForgotPassword />}
+            {forgot === 1 && <ForgotPassword />}
              
              
         </div>

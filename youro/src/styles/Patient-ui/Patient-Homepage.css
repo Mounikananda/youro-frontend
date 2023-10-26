@@ -144,7 +144,8 @@
     padding: 10px;
     margin: 10px 15px;
     transition: all .2s;
-    width: 79px;
+    width: 100px;
+    text-align: center;
 }
 
 .slot-timings:hover {

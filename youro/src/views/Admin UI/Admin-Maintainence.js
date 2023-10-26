@@ -123,6 +123,12 @@ const AdminMaintainenceList = () => {
             {
                 accessorKey: 'approved',
                 header: 'Approved On',
+                Cell: ({cell}) => (
+                    <span style={{width: 'fit-content', margin: '0px auto'}}>
+                    {cell.row.original.approved ? cell.row.original.approved : '-'}
+                    </span>
+                    
+                )
             },
             {
                 header: "Status",
