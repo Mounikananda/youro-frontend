@@ -18,8 +18,11 @@ const PrivacyPolicy = (props) => {
     let usrData = props.data;
     usrData['userType'] = props.uType;
     usrData['phoneNumber'] = '';
-    usrData['subscriptionStatus'] = props.subscription;
-    usrData['hasInsurance'] = usrData['hasInsurance'] == undefined ? true : (usrData['hasInsurance'] == 'no' ? false : true);
+    if(props.uType== 'PATIENT'){  
+      usrData['subscriptionStatus'] = props.subscription;
+      usrData['hasInsurance'] = usrData['hasInsurance'] == undefined ? true : (usrData['hasInsurance'] == 'no' ? false : true);
+    }
+    
     delete usrData.confirmPassword;
     console.log("usr data :: ");
     console.log(usrData);
