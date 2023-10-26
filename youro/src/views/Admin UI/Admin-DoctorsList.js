@@ -372,8 +372,7 @@ const AdminDoctorsList = () => {
         }
     }
 
-    const columns = useMemo(
-        () => [
+    const columns = [
             {
                 accessorKey: 'userId',
                 header: 'ID',
@@ -407,9 +406,7 @@ const AdminDoctorsList = () => {
                 ),
                 size: 20,
             }
-        ],
-        [],
-    );
+        ];
 
     const handleDeleteRow = useCallback(
         (row) => {
