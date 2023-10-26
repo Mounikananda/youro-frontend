@@ -4,6 +4,10 @@ import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import ForgotPassword from "./ForgotPassword";
+import Cookies from "js-cookie";
+
+import { useNavigate } from 'react-router-dom';
+import { COOKIE_KEYS } from "../App";
 
 const Login= () =>
 {
@@ -14,12 +18,29 @@ const Login= () =>
     formState: { errors },
   } = useForm();
 
+
+  
+  const navigate = useNavigate();
   const [forgot, setForgot] = useState(0)
 
   const onSubmit = (data) =>{
     console.log(data);
     axios.post("http://localhost:9092/youro/api/v1/login", data).then((res) => {
-        toast.success("Successful login")
+        toast.success("Successful login");
+        console.log(res);
+        Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
+        Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
+        Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
+        // Cookies.remove('name');
+        if(res.data.uType === 'PATIENT'){
+          navigate("/patient-ui");
+        }
+        else if(res.data.uType === 'PROVIDER'){
+          navigate("/doctor-ui");
+        }
+        else{
+          navigate("/admin-doctors");
+        }
     }).catch((res) => {
         console.error(res.response.data.errorMessage)
         toast.error('Oops!! Please check your username and password' )
