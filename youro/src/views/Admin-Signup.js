@@ -2,11 +2,15 @@
 import "../styles/AdminSignup.css"
 import React,{useState} from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
+import { USER_TYPES } from "../App";
+import PrivacyPolicy from "./PrivacyPolicies";
 
 const AdminSignup= () =>
 {
-
+  
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState({});
 
   const {
     register,
@@ -14,16 +18,20 @@ const AdminSignup= () =>
     watch,
     formState: { errors },
   } = useForm();
-   
-  const navigate = useNavigate();
+   const navigate=useNavigate();
+
   const onsubmit = (data) =>
   {
-    console.log(data);
-    navigate("/patientaddress",{state:data})
-   }
+    setStep(1)
+    setData(data)
+    console.log("All data:",data);
+  }
 
 
    return (
+          <div>
+          {
+           step === 0 && <>
            <div class="Admin-container">
              <h1>youro</h1>
              <p className="h3">Membership/Sign-up gives you direct access to our team of<br/> urological providers with same or next day appointments.  </p>
@@ -53,21 +61,21 @@ const AdminSignup= () =>
                     <div className="admin-fields">
                         <div className="admin-input">
                          <label>Email</label>
-                        <input className="input-field-admin input-border" type="text" {...register("lastName", {
+                        <input className="input-field-admin input-border" type="text" {...register("email", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.lastName?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.lastName?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                                {errors?.email?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.email?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
                      </div>
                       <div className="admin-input">
                          <label>Phone Number</label>
-                        <input className="input-field-admin input-border" type="text" {...register("lastName", {
+                        <input className="input-field-admin input-border" type="text" {...register("phoneNumber", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.lastName?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.lastName?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                                {errors?.phoneNumber?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.phoneNumber?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
                      </div>
                     </div>
 
@@ -111,6 +119,10 @@ const AdminSignup= () =>
                    <button className="next-button">Next</button>
                 </div> */}
         </div>
+        </div>
+        </>
+        }
+         {step === 1 && <PrivacyPolicy data={data} uType={USER_TYPES.admin} />}
         </div>
     )
 }
