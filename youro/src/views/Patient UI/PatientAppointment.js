@@ -40,16 +40,132 @@ const PatientAppointment = (props) => {
                 "slotInfo": [
                     {
                         "noOfDoctors": 1,
-                        "startTime": "Wed Nov 01 2023 00:00:00 GMT-0400 (EDT)",
+                        "startTime": "1970-01-01T21:00:00.000+00:00",
                         "doctorIds": [
                             34
                         ]
                     },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T14:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 2,
+                        "startTime": "19:30:00",
+                        "doctorIds": [
+                            1,
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T13:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T10:00:00.000+00:00",
+                        "doctorIds": [
+                            1
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T20:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "04:30:00",
+                        "doctorIds": [
+                            1
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T20:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "08:00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T19:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "14:00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T15:00:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 1,
+                        "startTime": "1970-01-01T14:30:00.000+00:00",
+                        "doctorIds": [
+                            34
+                        ]
+                    },
+                    {
+                        "noOfDoctors": 2,
+                        "startTime": "1970-01-02T01:00:00.000+00:00",
+                        "doctorIds": [
+                            1,
+                            34
+                        ]
+                    }
                 ]
             }
-        ])
+        ]);
+        fetch15DaysSlots();
     }, [])
 
+    const fetch15DaysSlots = async () => {
+        console.log("====^^^===");
+        console.log("fetch15DaysSlots START");
+        const url = `http://localhost:9092/youro/api/v1/getAvailableSlotsByDate`;
+        const token = Cookies.get(COOKIE_KEYS.token);
+        const config = {
+            headers: { 
+                Authorization: token,
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods':'*',
+            }
+        };
+        try {
+            const res = await axios.get(url, config);
+            console.log(res);   
+        }
+        catch (err) {
+            console.error(err);
+        }
+        console.log("fetch15DaysSlots END");
+        console.log("====^^^===");
+    }
     // const handleSelectEvent = (event) => {
     //     setVal(event.id)
     //     setEvent(event)
@@ -63,13 +179,18 @@ const PatientAppointment = (props) => {
     }
 
     const saveNewAppointment = async () => {
-        const token  = Cookies.get(COOKIE_KEYS.token);
-
-        // yet to finish
-
         // console.log("====^^^===");
         // console.log("saveNewAppointment START");
         const now = new Date();
+        const token = Cookies.get(COOKIE_KEYS.token);
+        const config = {
+            headers: { 
+                "Authorization": `Bearer ${token}`,
+                "Cache-Control": "no-cache",
+                'Content-Type': 'application/json',
+                "Access-Control-Allow-Origin": "*",
+            }
+        };
         const url = `http://localhost:9092/youro/api/v1/saveNewAppointment/`;
         try {
             const startDateTime = new Date();
@@ -77,15 +198,23 @@ const PatientAppointment = (props) => {
 
             console.log(startDateTime); //14:00:00
             // console.log(getEndTime(event)); //14:30
-            console.log(selectedInfo); 
+            console.log(selectedInfo);
             console.log("scheduled"); //scheduled
+            console.log(selectedInfo.startTime.split(':')[0]);
+            // dateSelection.setHours()
             console.log(dateSelection); //Mon Oct 23 2023 00:00:00 GMT-0400 (Eastern Daylight Time)
             console.log(now); //Fri Oct 20 2023 12:11:42 GMT-0400 (Eastern Daylight Time)
-            
+
             // for(let i=0; i<slotsData.length; i++){
             //     // have to compare the slot timings with the selected slot i.e. event/SetEvent
             // }
-            const res = await axios.post(url);
+            const temp = {
+                docId: selectedInfo.doctorIds[0],
+                patId: Cookies.get(COOKIE_KEYS.userId),
+                startTime: "Fri Oct 27 2023 04:30:00 GMT-0400 (EDT)",
+                endTime: "Fri Oct 27 2023 05:00:00 GMT-0400 (EDT)"
+            };
+            const res = await axios.post(url,temp, config);
             console.log(res.data);
         }
         catch (err) {
@@ -120,8 +249,8 @@ const PatientAppointment = (props) => {
 
     const getSlots = (eve) => {
         var flag = 0
-        for(var i = 0; i<slotsData.length; i++){
-            if(slotsData[i].date === eve){
+        for (var i = 0; i < slotsData.length; i++) {
+            if (slotsData[i].date === eve) {
                 flag = 1;
                 console.log(slotsData[i])
                 setSlotsOnDate(slotsData[i]);
@@ -129,7 +258,7 @@ const PatientAppointment = (props) => {
             }
         }
 
-        if (flag === 0){
+        if (flag === 0) {
             setSlotsOnDate(null);
         }
     }
@@ -158,11 +287,10 @@ const PatientAppointment = (props) => {
                     <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
                     <div className="slots-container-sub">
                         {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
-                            var time = data['startTime'].split(" ")[4];
-                            var startTime = time.split(':')[0] + ':' + time.split(':')[1];
+                            var startTime = data['startTime'].includes("T") ? data['startTime'].split('T')[1].split(':')[0] + ':' + data['startTime'].split('T')[1].split(':')[1] : data['startTime'].split(':')[0] + ':' + data['startTime'].split(':')[1];
                             return (
                                 <>
-                                    <div onClick={(e) => handleSelectSlot(startTime, data) } className="slot-timings">
+                                    <div onClick={(e) => handleSelectSlot(startTime, data)} className="slot-timings">
                                         <span style={{ letterSpacing: '1.3px' }}>{startTime}</span>
                                         -
                                         <span style={{ letterSpacing: '1.3px' }}>{getEndTime(startTime)}</span>

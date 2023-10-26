@@ -34,21 +34,21 @@ const Patientaddress= (props) =>
                      <div className="address-fields">
                           <div className="label-address">
                                {/* <label>Address</label> */}
-                               <input placeholder="Address *" className="input-field input-border" type="text" {...register("Address", {
+                               <input placeholder="Address *" className="input-field input-border" type="text" {...register("address", {
                                   required: true,
                                   maxLength: 50,
                                 })} />
-                                {errors?.Address?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.Address?.type === "maxLength" && <p className="error-text">Address cannot exceed 40 characters</p>}
+                                {errors?.address?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.address?.type === "maxLength" && <p className="error-text">Address cannot exceed 40 characters</p>}
                           </div>
 
     		             <div className="label-address">
-                        <input placeholder="City *" className="input-field input-border" type="text" {...register("City", {
+                        <input placeholder="City *" className="input-field input-border" type="text" {...register("city", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.City?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.City?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                                {errors?.city?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.city?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
                      </div>
 
                        <div className="label-address">
@@ -61,23 +61,23 @@ const Patientaddress= (props) =>
                     </div>
 
                     <div className="label-address">
-                        <input placeholder="zipcode *" className="input-field input-border" type="text" {...register("zipcode", {
+                        <input placeholder="zipcode *" className="input-field input-border" type="text" {...register("zipCode", {
                                   required: true,
                                   maxLength: 32,
                                 })} />
-                                {errors?.zipcode?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.zipcode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+                                {errors?.zipCode?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.zipCode?.type === "maxLength" && <p className="error-text">Zip code cannot exceed 5 characters</p>}
                     </div>
 
                     <p></p>
                   <div className="label-address">
                        <label>Date of Birth</label>
-                        <input placeholder="MM/DD/YYY" className="input-field input-border" type="text" {...register("dob", {
+                        <input placeholder="YYYY-MM-DD" className="input-field input-border" type="date" {...register("dateOfBirth", {
                                   required: true,
                                   maxLength: 32,
                                 })} />
-                                {errors?.dob?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.dob?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+                                {errors?.dateOfBirth?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.dateOfBirth?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
                         
                    </div>
 
@@ -87,12 +87,12 @@ const Patientaddress= (props) =>
                        <label>Legal Sex</label>
                        <p>For billing purpose ,which sex does your insurance record has?</p>
                        <div>
-                       <input {...register("sex",{required:true})} type="radio" value="male" />male
+                       <input {...register("gender",{required:true})} type="radio" value="MALE" />male
                       </div>
 			<div>
-			<input {...register("sex",{required:true})} type="radio" value="female" />female
+			<input {...register("gender",{required:true})} type="radio" value="FEMALE" />female
 			</div>
-                        {errors?.sex?.type ==="required" && <p className="error-text">This field is required</p>}
+                        {errors?.gender?.type ==="required" && <p className="error-text">This field is required</p>}
                       </div>
 		      </div>
                     

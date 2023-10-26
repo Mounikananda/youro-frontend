@@ -20,10 +20,11 @@ import {
 
 import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
-import { USER_TYPES } from '../../App';
+import { COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
+import Cookies from "js-cookie";
 const data = [
     {
         userId: '1',
@@ -345,12 +346,23 @@ const AdminDoctorsList = () => {
 
     const fetchData = async () => {
         let type = USER_TYPES.doctor;
+        const token = Cookies.get(COOKIE_KEYS.token).trim();
+        console.log("token in admin doctors list :: "+token.trim());
+        const config = {
+            headers: { 
+                Authorization: 'Bearer '+token,
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods':'*',
+                'Content-Type': 'application/json'
+            }
+        };
         const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url, config);
             canRenderAdmin(true);
             setTableData(res.data);
-            console.log("Data inside fetchData : " + count + "  =>  " + tableData);
+            console.log("Data inside fetchData : ");
+            console.log(res);
         }
         catch (err) {
             console.error(err);

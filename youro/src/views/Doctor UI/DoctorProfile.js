@@ -108,7 +108,6 @@ const DoctorProfile = () => {
 
 
   const showdata = (data) => {
-    console.clear();
     console.log("TEST log");
     console.log(data);
     const userId = 36;

@@ -2,6 +2,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const PrivacyPolicy = (props) => {
   const {
@@ -10,21 +11,26 @@ const PrivacyPolicy = (props) => {
     watch,
     formState: { errors },
   } = useForm();
+  
+  const navigate = useNavigate();
 
   const onSubmit = () => {
     let usrData = props.data;
     usrData['userType'] = props.uType;
-    usrData['subscription'] = props.subscription;
+    usrData['phoneNumber'] = '';
+    usrData['subscriptionStatus'] = props.subscription;
     usrData['hasInsurance'] = usrData['hasInsurance'] == undefined ? true : (usrData['hasInsurance'] == 'no' ? false : true);
-    // console.clear();
+    delete usrData.confirmPassword;
     console.log("usr data :: ");
     console.log(usrData);
     axios.post("http://localhost:9092/youro/api/v1/register", usrData).then((res) => {
         console.log("register success");
+        console.log(res);
+        navigate("/login");
         toast.success("Registration success")
-    }).catch((res) => {
-        console.error(res.response.data.errorMessage)
-        toast.error('Oops!! ' + res.response.data.errorMessage)
+    }).catch((err) => {
+        console.error(err.response.data.errorMessage)
+        toast.error('Oops!! ' + err.response.data.errorMessage)
     });
   }
 

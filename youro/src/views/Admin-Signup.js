@@ -16,11 +16,11 @@ const AdminSignup= () =>
   } = useForm();
    
   const navigate = useNavigate();
-  // const onsubmit = (data) =>
-  // {
-  //   console.log(data);
-  //   navigate("/patientaddress",{state:data})
-  //  }
+  const onsubmit = (data) =>
+  {
+    console.log(data);
+    navigate("/patientaddress",{state:data})
+   }
 
 
    return (

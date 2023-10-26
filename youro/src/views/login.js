@@ -31,7 +31,8 @@ const Login= () =>
         Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
         Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
         Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
-        // Cookies.remove('name');
+
+
         if(res.data.uType === 'PATIENT'){
           navigate("/patient-ui");
         }
