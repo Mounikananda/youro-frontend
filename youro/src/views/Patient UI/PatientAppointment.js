@@ -7,6 +7,8 @@ import 'reactjs-popup/dist/index.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
+import Cookies from "js-cookie";
+import { COOKIE_KEYS } from "../../App";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -56,10 +58,12 @@ const PatientAppointment = (props) => {
 
     const handleBook = () => {
         setOpen(true);
-        console.log(selectedInfo.doctorIds[Math.floor(Math.random()*selectedInfo.doctorIds.length)])
+        console.log(selectedInfo); //.doctorIds[Math.floor(Math.random()*selectedInfo.doctorIds.length)]
+        saveNewAppointment();
     }
 
     const saveNewAppointment = async () => {
+        const token  = Cookies.get(COOKIE_KEYS.token);
 
         // yet to finish
 
@@ -68,17 +72,21 @@ const PatientAppointment = (props) => {
         const now = new Date();
         const url = `http://localhost:9092/youro/api/v1/saveNewAppointment/`;
         try {
-            console.log(event); //14:00:00
-            console.log(getEndTime(event)); //14:30
+            const startDateTime = new Date();
+            // startDateTime.setTime()
+
+            console.log(startDateTime); //14:00:00
+            // console.log(getEndTime(event)); //14:30
+            console.log(selectedInfo); 
             console.log("scheduled"); //scheduled
             console.log(dateSelection); //Mon Oct 23 2023 00:00:00 GMT-0400 (Eastern Daylight Time)
             console.log(now); //Fri Oct 20 2023 12:11:42 GMT-0400 (Eastern Daylight Time)
-
+            
             // for(let i=0; i<slotsData.length; i++){
             //     // have to compare the slot timings with the selected slot i.e. event/SetEvent
             // }
             const res = await axios.post(url);
-            // console.log(res.data);
+            console.log(res.data);
         }
         catch (err) {
             console.error(err);

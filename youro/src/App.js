@@ -43,6 +43,12 @@ export const DOCTOR_STATUS = {
   pending : 'PENDING',
   denied : 'DENIED'
 };
+
+export const COOKIE_KEYS = {
+  token: 'TOKEN',
+  userId: 'U_ID',
+  userType: 'U_TYPE'
+}
 function App() {
   return ( 
     <>
