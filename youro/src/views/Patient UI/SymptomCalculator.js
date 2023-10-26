@@ -17,6 +17,33 @@ const SymptomCalculator = (props) => {
 
     useEffect(() => {
         fetchAllDiagnoses();
+        setQuestionnare([
+            {
+                "questionId": 3003,
+                "question": "Question 1",
+                "options": [
+                    "Option 1",
+                    "Option 2"
+                ]
+            },
+            {
+                "questionId": 3004,
+                "question": "Question 2",
+                "options": [
+                    "Option 1",
+                    "Option 2"
+                ]
+            },
+            {
+                "questionId": 3005,
+                "question": "Question 3",
+                "options": [
+                    "Option 1",
+                    "Option 2",
+                    "Option 3"
+                ]
+            }
+        ])
     }, [])
 
     const fetchQuesByDiagId = async () => {

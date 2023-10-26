@@ -40,104 +40,11 @@ const PatientAppointment = (props) => {
                 "slotInfo": [
                     {
                         "noOfDoctors": 1,
-                        "startTime": "1970-01-01T21:00:00.000+00:00",
+                        "startTime": "Wed Nov 01 2023 00:00:00 GMT-0400 (EDT)",
                         "doctorIds": [
                             34
                         ]
                     },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T14:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 2,
-                        "startTime": "19:30:00",
-                        "doctorIds": [
-                            1,
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T13:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T10:00:00.000+00:00",
-                        "doctorIds": [
-                            1
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T20:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "04:30:00",
-                        "doctorIds": [
-                            1
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T20:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "08:00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T19:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "14:00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T15:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T14:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 2,
-                        "startTime": "1970-01-02T01:00:00.000+00:00",
-                        "doctorIds": [
-                            1,
-                            34
-                        ]
-                    }
                 ]
             }
         ])
@@ -251,7 +158,8 @@ const PatientAppointment = (props) => {
                     <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
                     <div className="slots-container-sub">
                         {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
-                            var startTime = data['startTime'].includes("T") ? data['startTime'].split('T')[1].split(':')[0] + ':' + data['startTime'].split('T')[1].split(':')[1] : data['startTime'].split(':')[0] + ':' + data['startTime'].split(':')[1];
+                            var time = data['startTime'].split(" ")[4];
+                            var startTime = time.split(':')[0] + ':' + time.split(':')[1];
                             return (
                                 <>
                                     <div onClick={(e) => handleSelectSlot(startTime, data) } className="slot-timings">
