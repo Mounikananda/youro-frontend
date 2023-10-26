@@ -9,6 +9,7 @@ html, body {
 }
 
 
+/* doctor appointment calender css inbuilt css changed here starting with .rbc */
 .rbc-toolbar-label
 { 
   font-size: 150%;
@@ -20,14 +21,15 @@ html, body {
   background-color: aqua;
   border: 10px solid saddlebrown;
 } */
+
 .rbc-month-header
 {
+
   /* background: rgb(59 130 246 / 0.5); */
   /* color: white;  */
   background: #d4d4d4;
   padding-top: 1%;
   font-size: 100%;
-
   /* border: 1px solid black;  */
   /* margin-bottom: 0.5%; */
 }
@@ -37,7 +39,15 @@ html, body {
   background: blueviolet;
   color: white; 
 } */
+.rbc-events-container 
+{
+  width:100%;
+}
 
+.rbc-timeslot-group
+{
+  min-height:12vh !important;
+} 
 .rbc-toolbar .button
 {
    /* border: 0.5px solid black; */
@@ -58,6 +68,9 @@ html, body {
 .rbc-btn-group > button:last-child:not(:first-child) {
   border: none;
 }
+/* .rbc-btn-group:last-child{
+  display: none;
+} */
 
 .rbc-toolbar
 {

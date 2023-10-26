@@ -3,10 +3,14 @@ import React,{useState} from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from 'react-router-dom';
 import "../styles/DoctorSignup.css"
+import { USER_TYPES } from "../App";
+import PrivacyPolicy from "./PrivacyPolicies";
 const DoctorSignup= () =>
 {
 
   const navigate = useNavigate();
+  const [step, setStep] = useState(0);
+  const [data, setData] = useState({});
 
   const {
     register,
@@ -17,12 +21,16 @@ const DoctorSignup= () =>
    
   const onsubmit = (data) =>
   {
+    setStep(1)
+    setData(data)
     console.log("All data:",data);
-   }
+  }
 
    return (
+          <div>
+          {
+            step === 0 && <>
            <div class="DoctorSignup-container">
-            
              <h1>youro</h1>
              <p className="h3">Membership/Sign-up gives you direct access to our team of<br/> urological providers with same or next day appointments.  </p>
                <div className="Form-Doctorsignup">
@@ -134,7 +142,7 @@ const DoctorSignup= () =>
 
                      <div className="doctor-input">
                         <label>Date of Birth</label>
-                         <input placeholder="MM/DD/YYYY" className="input-field-doctor input-border" type="text" {...register("dob", {
+                         <input placeholder="MM/DD/YYYY" className="input-field-doctor input-border" type="date" {...register("dob", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
@@ -197,8 +205,14 @@ const DoctorSignup= () =>
 		 <div className="button-container">
                    <button className="next-button">Next</button>
                 </div> */}
+    
         </div>
         </div>
+       </>
+         }
+        {step === 1 && <PrivacyPolicy data={data} uType={USER_TYPES.doctor} />}
+      
+       </div>
     )
 }
 

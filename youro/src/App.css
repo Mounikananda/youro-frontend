@@ -113,9 +113,6 @@
   margin-bottom: 50px;
 }
 
-.rbc-btn-group:last-child{
-  display: none;
-}
 
 
 input[type='radio']:after {
