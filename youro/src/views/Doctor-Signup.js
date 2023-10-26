@@ -71,12 +71,12 @@ const DoctorSignup= () =>
 
                    <div className="doctor-input">
                         <label>Phone Number</label>
-                        <input className="input-field-doctor input-border" type="text" {...register("PhoneNumber", {
+                        <input className="input-field-doctor input-border" type="text" {...register("phoneNumber", {
                                   required: true,
                                   maxLength: 10,
                                 })}/>
-                                {errors?.PhoneNumber?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.PhoneNumber?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 10 characters</p>}
+                                {errors?.phoneNumber?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.phoneNumber?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 10 characters</p>}
                                
                    </div>
                    </div>
@@ -95,12 +95,12 @@ const DoctorSignup= () =>
 
                      <div className="doctor-input">
                         <label>Address </label>
-                         <input className="input-field-doctor input-border" type="text" {...register("Address", {
+                         <input className="input-field-doctor input-border" type="text" {...register("address", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.Address?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.Address?.type === "maxLength" && <p className="error-text">Address cannot exceed 32 characters</p>}
+                                {errors?.address?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.address?.type === "maxLength" && <p className="error-text">Address cannot exceed 32 characters</p>}
                   
                    </div>  
                      
@@ -132,22 +132,22 @@ const DoctorSignup= () =>
                   <div className="doctor-fields">
                   <div className="doctor-input">
                         <label>Zipcode</label>
-                         <input className="input-field-doctor input-border" type="text" {...register("zipcode", {
+                         <input className="input-field-doctor input-border" type="text" {...register("zipCode", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.zipcode?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.zipcode?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                                {errors?.zipCode?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.zipCode?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
                    </div> 
 
                      <div className="doctor-input">
                         <label>Date of Birth</label>
-                         <input placeholder="MM/DD/YYYY" className="input-field-doctor input-border" type="date" {...register("dob", {
+                         <input placeholder="MM/DD/YYYY" className="input-field-doctor input-border" type="date" {...register("dateOfBirth", {
                                   required: true,
                                   maxLength: 32,
                                 })}/>
-                                {errors?.dob?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.dob?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+                                {errors?.dateOfBirth?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.dateOfBirth?.type === "maxLength" && <p className="error-text">Date Of Birth cannot exceed 32 characters</p>}
                    </div>  
                      
                   </div> 
@@ -159,9 +159,9 @@ const DoctorSignup= () =>
                                   required: true,
                                 })}>
                           <option value="">Select</option>
-                          <option value="Male">Male</option>
-                          <option value="Female">Female</option>
-                          <option value="Other">Other</option>
+                          <option value="MALE">Male</option>
+                          <option value="FEMALE">Female</option>
+                          <option value="OTHER">Other</option>
                         </select>
                         {errors?.gender && <p className="error-text">This field is required</p>}
                    </div> 
