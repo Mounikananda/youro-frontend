@@ -209,7 +209,7 @@ const AdminMaintainenceList = () => {
             toast.success('Added successfully!!');
         }).catch((err) => {
             console.error(err);
-            toast.error('Error adding prescription');
+            toast.error(err.response.data.errorMessage);
         });
     }
 
