@@ -13,23 +13,36 @@ import { COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 
 
-
-// const components =
-// {
-//   event:(props)=>{
-//      console.log("advance css components for calender",props);
-//      const eventtype=props.title;
-//      if(eventtype==="Available")
-//       {
-//         return (<div style={{background:"#7abacf",color:"white"}}>{props.title}</div>)
-//       } 
-//      else
-//       {
-//         return (<div style={{background:"#265985",color:"white"}}>{props.title}</div>) 
-//        }
-//      return null;
-//   }
-// };
+// #d7b8b9
+const components =
+{
+  event:(props)=>{
+     console.log("advance css components for calender",props);
+     const eventtype=props.title;
+     const centerTextStyles = {
+      background: eventtype === "Available" ? "#745edf" : "#8A6767",
+      color: "white",
+      height: "100%",
+      textAlign: "center",
+      display: "flex", 
+      alignItems: "center", 
+      justifyContent: "center", 
+    };
+    return <div style={centerTextStyles}>{props.title}</div>; 
+    //  if(eventtype==="Available")
+    //   {
+    //     return (
+    //              <div style={{background:"#745edf",color:"white",
+    //                   height:"100%",textAlign:"center"}}>{props.title}</div>
+    //           )
+    //   } 
+    //  else
+    //   {
+    //     return (<div style={{background:"#8A6767",color:"white",height:"100%",textAlign:"center"}}>{props.title}</div>) 
+    //    }
+    //  return null;
+  }
+};
 
 const localizer = momentLocalizer(moment);
 
@@ -327,7 +340,7 @@ function DoctorAppointments() {
               }}
               onSelectEvent={handleSelectEvent}
               style={{ height: "85vh" }}   
-              // components={components}
+              components={components}
             />
             <div className="events-form">
               {newEvent.start && (

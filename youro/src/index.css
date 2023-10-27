@@ -72,7 +72,13 @@ html, body {
 /* .rbc-btn-group:last-child{
   display: none;
 } */
-
+.rbc-event
+{
+  padding: 0 !important;
+  border: none !important;
+  border-radius: 5px !important;
+  background-color: transparent !important;
+}
 .rbc-event-label
 {
    display: none !important;
