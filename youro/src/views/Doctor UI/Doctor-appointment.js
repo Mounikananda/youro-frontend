@@ -425,4 +425,3 @@ function DoctorAppointments() {
 }
 
 export default DoctorAppointments;
-

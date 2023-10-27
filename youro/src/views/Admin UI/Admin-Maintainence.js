@@ -51,6 +51,7 @@ const AdminMaintainenceList = () => {
     const [tableData, setTableData] = useState([]);
     const [renderAdmin, canRenderAdmin] = useState(true);
     const [open, setOpen] = useState(false);
+    const [addDiagnosis, setAddDiagnosis] = useState(false);
     const isRendered = useRef(false);
     let count = 0;
 
@@ -180,7 +181,11 @@ const AdminMaintainenceList = () => {
                             <div className='header'>
                                 <h1 style={{marginLeft: '15px'}}>youro</h1>
                             </div>
-                            <div className='btn-filled' style={{width: 'fit-content', marginLeft: '15px'}} onClick={() => setOpen(true)}>+ Add new medicine</div>
+                            <div style={{display: 'flex'}}>
+                                <div className='btn-filled' style={{width: 'fit-content', marginLeft: '15px'}} onClick={() => {setOpen(true); setAddDiagnosis(false)}}>+ Add new medicine</div>
+                                <div className='btn-filled' style={{width: 'fit-content', marginLeft: '15px'}} onClick={() => {setOpen(true); setAddDiagnosis(true)}}>+ Add new diagnosis</div>
+                            </div>
+              
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -249,48 +254,73 @@ const AdminMaintainenceList = () => {
                         close
                     </span>
                 </div>
-                <div style={{ padding: '50px 20px' }}>
+                {!addDiagnosis && <>
+                    <div style={{ padding: '50px 20px' }}>
+                    <div style={{width: '300px'}}>
+
+                    </div>
+                    <div className="">
+                                <label>Medicine Name :</label>
+                                <input className="input-field-doctor input-border" type="text" style={{width: '94%'}} {...register("medicineName", {
+                                    required: true,
+                                    maxLength: 32,
+                                    })} />
+                                    {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
+                                    {errors?.medicineName?.type === "maxLength" && <p className="error-text">Medicine Name cannot exceed 32 characters</p>}
+                            </div><br/>
+                        <div className="">
+                            <label>Category :</label><br />
+                            <select style={{width: '100%'}} className="input-field input-border" id="gender" {...register("category", {
+                                    required: true,
+                                    })}>
+                            <option value="">Select</option>
+                            <option value="category 1">Category 1</option>
+                            <option value="category 2">Category 2</option>
+                            <option value="category 3">Category 3</option>
+                            </select>
+                            {errors?.category && <p className="error-text">This field is required</p>}
+                    </div> <br ></br>
+                    <div className="">
+                            <label>Diagnosis :</label><br />
+                            <select style={{width: '100%'}} className="input-field input-border" id="gender" {...register("category", {
+                                    required: true,
+                                    })}>
+                            <option value="">Select</option>
+                            <option value="category 1">Diagnosis 1</option>
+                            <option value="category 2">Diagnosis 2</option>
+                            <option value="category 3">Diagnosis 3</option>
+                            </select>
+                            {errors?.category && <p className="error-text">This field is required</p>}
+                    </div> 
+                    </div>
+
+                    <div>
+                        <div className='btn-filled' style={{width: 'fit-content', margin: '0px auto 50px auto'}} onClick={() => setOpen(false)}>Add medicine</div>
+                    </div>
+                </>}
+
+                {addDiagnosis && <>
+                    <div style={{ padding: '50px 20px' }}>
                     <div style={{width: '300px'}}>
 
                     </div>
                 <div className="">
-                               <label>Medicine Name :</label>
+                               <label>Diagnosis Name :</label>
                                <input className="input-field-doctor input-border" type="text" style={{width: '94%'}} {...register("medicineName", {
                                   required: true,
                                   maxLength: 32,
                                 })} />
                                 {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
                                 {errors?.medicineName?.type === "maxLength" && <p className="error-text">Medicine Name cannot exceed 32 characters</p>}
-                          </div><br/>
-                    <div className="">
-                        <label>Category :</label><br />
-                          <select style={{width: '100%'}} className="input-field input-border" id="gender" {...register("category", {
-                                  required: true,
-                                })}>
-                          <option value="">Select</option>
-                          <option value="category 1">Category 1</option>
-                          <option value="category 2">Category 2</option>
-                          <option value="category 3">Category 3</option>
-                        </select>
-                        {errors?.category && <p className="error-text">This field is required</p>}
-                   </div> <br ></br>
-                   <div className="">
-                        <label>Diagnosis :</label><br />
-                          <select style={{width: '100%'}} className="input-field input-border" id="gender" {...register("category", {
-                                  required: true,
-                                })}>
-                          <option value="">Select</option>
-                          <option value="category 1">Diagnosis 1</option>
-                          <option value="category 2">Diagnosis 2</option>
-                          <option value="category 3">Diagnosis 3</option>
-                        </select>
-                        {errors?.category && <p className="error-text">This field is required</p>}
-                   </div> 
+                          </div>
+                    
                 </div>
 
                 <div>
-                    <div className='btn-filled' style={{width: 'fit-content', margin: '0px auto 50px auto'}} onClick={() => setOpen(false)}>Add medicine</div>
+                    <div className='btn-filled' style={{width: 'fit-content', margin: '0px auto 50px auto'}} onClick={() => setOpen(false)}>Add diagnosis</div>
                 </div>
+                </>}
+                
             </Popup>
         </div>
     );
