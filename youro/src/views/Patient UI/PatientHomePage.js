@@ -12,11 +12,33 @@ import axios from 'axios';
 import Popup from 'reactjs-popup';
 import Popmenu from './Popupmenu';
 import SymptomCalculator from './SymptomCalculator';
+import Cookies from "js-cookie";
+import { COOKIE_KEYS } from '../../App';
 
 
 const PatientHomePage = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const uId = 1; //have to configure with the flow to get the patientId from backend
+  const uId = Cookies.get(COOKIE_KEYS.userId);//1; 
+  const [prevAppts, setPrevAppts] = useState([]);
+  const [upComingAppts, setUpcomingAppts] = useState([]);
+  useEffect(() => {
+    fetchPrevAndUpcomingAppointments();
+  }, []);
+
+  const fetchPrevAndUpcomingAppointments = async () => {
+    const tempId = Cookies.get(COOKIE_KEYS.userId);
+    const url = `http://localhost:9092/youro/api/v1/appointments/${uId}`;
+    try {
+      const res = await axios.get(url);
+      console.log(res);
+      setPrevAppts(res.data.previousAppointments);
+      setUpcomingAppts(res.data.upComingAppointments);
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
   const CarePlan = () => {
     const [data, setData] = useState([]);
     const [activeLoader, setActiveLoader] = useState(false);
@@ -86,120 +108,82 @@ const PatientHomePage = () => {
     );
   };
 
-
-
-
-
   const PreviousAppointments = () => {
-    const [data, setData] = useState([]);
+    // const [data, setData] = useState([]);
 
-    useEffect(() => {
-      const mockData1 = [
-        {
-          patientName: "Mr. Mandava",
-          doctorName: "Ms. asdf",
-          patientId: "1",
-          doctorId: "10",
-          apptStartTime: "00:00:00",
-          link: "ZOOM LINK",
-          apptId: "1",
-          apptEndTime: "02:00:00",
-          apptDate: "2023-11-01",
-          status: "SCHEDULED"
-        },
-        {
-          patientName: "Mr. Mandava",
-          doctorName: "Ms. asdf",
-          patientId: "1",
-          doctorId: "9",
-          apptStartTime: "08:00:00",
-          link: "ZOOM LINK",
-          apptId: "7",
-          apptEndTime: "10:00:00",
-          apptDate: "2023-12-03",
-          status: "SCHEDULED"
-        },
-        {
-          patientName: "Mr. Mandava",
-          doctorName: "Mr. asdf",
-          patientId: "1",
-          doctorId: "8",
-          apptStartTime: "11:45:00",
-          link: "ZOOM LINK",
-          apptId: "9",
-          apptEndTime: "14:00:00",
-          apptDate: "2023-12-07",
-          status: "SCHEDULED"
-        },
-        {
-          patientName: "Mr. Mandava",
-          doctorName: "Ms. asdf",
-          patientId: "1",
-          doctorId: "9",
-          apptStartTime: "08:50:00",
-          link: "ZOOM LINK",
-          apptId: "18",
-          apptEndTime: "10:50:00",
-          apptDate: "2021-12-03",
-          status: "CANCELED"
-        },
-        {
-          patientName: "Mr. Mandava",
-          doctorName: "Mr. asdf",
-          patientId: "1",
-          doctorId: "8",
-          apptStartTime: "11:45:00",
-          link: "ZOOM LINK",
-          apptId: "20",
-          apptEndTime: "14:40:00",
-          apptDate: "2022-12-07",
-          status: "COMPLETED"
-        }
-      ]
+    // useEffect(() => {
+    //   const mockData1 = [
+    //     {
+    //       patientName: "Mr. Mandava",
+    //       doctorName: "Ms. asdf",
+    //       patientId: "1",
+    //       doctorId: "10",
+    //       apptStartTime: "00:00:00",
+    //       link: "ZOOM LINK",
+    //       apptId: "1",
+    //       apptEndTime: "02:00:00",
+    //       apptDate: "2023-11-01",
+    //       status: "SCHEDULED"
+    //     },
+    //     {
+    //       patientName: "Mr. Mandava",
+    //       doctorName: "Ms. asdf",
+    //       patientId: "1",
+    //       doctorId: "9",
+    //       apptStartTime: "08:00:00",
+    //       link: "ZOOM LINK",
+    //       apptId: "7",
+    //       apptEndTime: "10:00:00",
+    //       apptDate: "2023-12-03",
+    //       status: "SCHEDULED"
+    //     },
+    //     {
+    //       patientName: "Mr. Mandava",
+    //       doctorName: "Mr. asdf",
+    //       patientId: "1",
+    //       doctorId: "8",
+    //       apptStartTime: "11:45:00",
+    //       link: "ZOOM LINK",
+    //       apptId: "9",
+    //       apptEndTime: "14:00:00",
+    //       apptDate: "2023-12-07",
+    //       status: "SCHEDULED"
+    //     },
+    //     {
+    //       patientName: "Mr. Mandava",
+    //       doctorName: "Ms. asdf",
+    //       patientId: "1",
+    //       doctorId: "9",
+    //       apptStartTime: "08:50:00",
+    //       link: "ZOOM LINK",
+    //       apptId: "18",
+    //       apptEndTime: "10:50:00",
+    //       apptDate: "2021-12-03",
+    //       status: "CANCELED"
+    //     },
+    //     {
+    //       patientName: "Mr. Mandava",
+    //       doctorName: "Mr. asdf",
+    //       patientId: "1",
+    //       doctorId: "8",
+    //       apptStartTime: "11:45:00",
+    //       link: "ZOOM LINK",
+    //       apptId: "20",
+    //       apptEndTime: "14:40:00",
+    //       apptDate: "2022-12-07",
+    //       status: "COMPLETED"
+    //     }
+    //   ]
 
-      setData(mockData1);
-
-      // setTimeout(() => {
-        
-      //   // uId is declared at top
-      //   let uType = "PATIENT";  // PATIENT or PROVIDER or ADMIN
-      //   // let appStatus = "SCHEDULED"; //  COMPLETED or SCHEDULED or CANCELED or UNATTENDED
-
-      //   const url = `http://localhost:9092/youro/api/v1/appointments/${uType}/${uId}`;///${apptStatus}
-      //   axios.get(url).then((res) => {
-      //     let temp = [];
-      //     const today = new Date();
-      //     let toDate = [today.getFullYear(), today.getMonth(), today.getDate()];
-      //     const resData = res.data;
-      //     for(let itr=0; itr < resData.length; itr++){
-      //       let inpDateSplit = resData[itr].apptDate.split("-"); //["yyyy", "mm", "dd"]
-      //       if(parseInt(inpDateSplit[0]) < toDate[0]){
-      //         temp.push(resData[itr]);
-      //       }
-      //       else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) < toDate[1])){
-      //         temp.push(resData[itr]);
-      //       }
-      //       else if((parseInt(inpDateSplit[0]) == toDate[0]) && (parseInt(inpDateSplit[1]) == toDate[1]) && (parseInt(inpDateSplit[2]) <toDate[2])){
-      //         temp.push(resData[itr]);
-      //       }
-      //     }
-
-      //     setData(temp);
-      //     console.log(temp);
-      //   }).catch((res) => {
-      //     console.error(res.response.data.errorMessage)
-      //   });
-
-    //   }, 1000);
-
-    }, []);
+    //   setData(mockData1);
+    // }, []);
 
     return (
       <div className="previous-appointment-wrapper">
-        {data.map((item) => (
+        {prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
-              <h3 >{item.apptStartTime} - {item.doctorName}</h3>
+              <h3 >{item.apptDate} - {item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
@@ -227,13 +211,14 @@ const PatientHomePage = () => {
   
     return (
       <div>
-          {data.map((item) => (
+          {upComingAppts.map((item) => (
             <div className='previous-appointment'> 
              <div>
-              <h3 >{item.time.split(',')[0]}, {item.patientstime} - {item.name}</h3>
+              <h3>{item.apptDate} - {item.apptStartTime}</h3>
+              <h3>{item.patientName}</h3>
              </div>
-               <ul key={item.id}>
-               <li>Diagnosisname: {item.diagnosisname}</li>
+               <ul key={item.apptId}>
+               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
                {/* <li>Symptom score: {item.symptomscore}</li> */}
                <li style={ {textDecoration:'underline',color:'#9CB189', cursor: 'pointer'}} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
                 {/* <p>{item.meetup}</p> */}
