@@ -181,7 +181,7 @@ const PatientHomePage = () => {
     return (
       <div className="previous-appointment-wrapper">
         {
-          prevAppts.length == 0 && <>
+          (prevAppts== null ||prevAppts.length == 0) && <>
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <h3><i>No record of appointments</i></h3>
             </div>
@@ -189,7 +189,7 @@ const PatientHomePage = () => {
         }
 
         {
-        prevAppts.map((item) => (
+        prevAppts && prevAppts.length> 0 &&  prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
               <h3 >{item.apptDate} - {item.doctorName}</h3>
@@ -222,7 +222,7 @@ const PatientHomePage = () => {
     return (
       <div>
         {
-          upComingAppts.length == 0 && <>
+          (upComingAppts== null ||upComingAppts.length == 0) && <>
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <h3><i>No upcoming appointments</i></h3>
             </div>
@@ -231,11 +231,11 @@ const PatientHomePage = () => {
 
         {
         
-        upComingAppts.map((item) => (
+        upComingAppts && upComingAppts.length> 0 && upComingAppts.map((item) => (
           <div className='previous-appointment'>
             <div>
               <h3>{item.apptDate} - {item.apptStartTime}</h3>
-              <h3>{item.patientName}</h3>
+              <h3>{item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}

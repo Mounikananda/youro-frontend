@@ -65,11 +65,12 @@ const PatientAppointment = (props) => {
 
             for (var i = 0; i < res.data.length; i++) {
                 var date = new Date(res.data[i].date);
+                date.setDate(date.getDate() + 1);
                 var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
-                console.log(formattedDate);
-                if (res.data[i].noOfSlots > 10) {
+                console.log(date.toLocaleDateString());
+                if (res.data[i].noOfSlots > 5) {
                     rnFunc(formattedDate, "many_slots")
-                } else if (res.data[i].noOfSlots < 10 && res.data[i].noOfSlots > 0) {
+                } else if (res.data[i].noOfSlots < 5 && res.data[i].noOfSlots > 0) {
                     rnFunc(formattedDate, "few_slots")
                 } else {
                     rnFunc(formattedDate, "no_slots")
@@ -94,6 +95,7 @@ const PatientAppointment = (props) => {
         saveNewAppointment();
     }
 
+    const [newApptDocName, setNewApptDocName] = useState('');
     const saveNewAppointment = async () => {
         // console.log("====^^^===");
         // console.log("saveNewAppointment START");
@@ -117,6 +119,7 @@ const PatientAppointment = (props) => {
             console.log(temp);
             const res = await axios.post(url, temp);
             console.log(res.data); //{message: 'Doctor Name'}
+            setNewApptDocName(res.data.message);
         }
         catch (err) {
             console.error(err);
@@ -234,7 +237,7 @@ const PatientAppointment = (props) => {
                 </div>
                 <div style={{ padding: '50px 20px', textAlign: 'center' }}>
                     <h3>Congratulations !!!</h3>
-                    <h3>Appointment with Dr. Farah confirmed</h3>
+                    <h3>Appointment confirmed with {newApptDocName}</h3>
                     <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{ height: '100px' }}></img><br /><br />
                     {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
                 </div>
