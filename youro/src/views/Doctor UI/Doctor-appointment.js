@@ -314,52 +314,31 @@
 // export default DoctorAppointments;
 
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import DoctorSideBar from "./Doctor-Sidebar";
 import "../../styles/Doctor-ui/Doctor-appointment/Doctor-Appointment-page.css";
 import "../../index.css";
-import axios from 'axios';
+import axios, { all } from 'axios';
+import { appendErrors } from "react-hook-form";
+import { COOKIE_KEYS } from "../../App";
+import Cookies from "js-cookie";
 
 
 const localizer = momentLocalizer(moment);
-
-const calculateDurationInMinutes = (start, end) => {
-  const diff = moment(end).diff(moment(start), "minutes");
-  return diff;
-};
-
-const splitEventIfNecessary = (event) => {
-  const duration = calculateDurationInMinutes(event.start, event.end);
-  if (duration > 30) {
-    const eventsToSplit = [];
-    let currentStart = moment(event.start);
-
-    while (currentStart.isBefore(event.end)) {
-      const currentEnd = moment(currentStart).add(30, "minutes");
-      if (currentEnd.isAfter(event.end)) {
-        currentEnd = moment(event.end);
-      }
-      eventsToSplit.push({
-        ...event,
-        start: currentStart.toDate(),
-        end: currentEnd.toDate(),
-      });
-      currentStart = currentEnd;
-    }
-    return eventsToSplit;
-  } else {
-    return [event];
-  }
-};
 
 function DoctorAppointments() {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [createvent, setcreatevent] = useState(true);
+  const [selectslot, setselectslot] = useState("Available");
 
+
+  const handleSelectChange = (event) => {
+    setselectslot(event.target.value);
+  }
 
   const handlecreatevent_boolen = () => {
     setNewEvent({ start: null, end: null, title: "", email: "" });
@@ -374,6 +353,8 @@ function DoctorAppointments() {
     // console.log(selectedEvent);
     setShowEventDetails(false);
   }
+
+
 
   // const [events, setEvents] = useState([
   //   {
@@ -391,8 +372,11 @@ function DoctorAppointments() {
   // ]);
 
   const [events, setEvents] = useState([]);
+  const [calenderapt, setcalenderapt] = useState([]);
+  
+  // console.log(User)
 
-
+  // const clear_events =
   const event1 = {
     start: moment().toDate(),
     end: moment().add(1, "days").toDate(),
@@ -411,45 +395,217 @@ function DoctorAppointments() {
     doctorId: 34
   };
 
-
   const initialEvents = [event1, event2];
 
-  useState(() => {
-    setEvents(initialEvents);
+  const apt = {
+
+    // "appoitments": [
+    // {
+    // "apptId": 1,
+    // "patientId": 1,
+    // "doctorName": "Ms. doc6th asdf",
+    // "patientName": "Mr. Ravi Mandava",
+    // "doctorId": 10,
+    // "apptDate": null,
+    // "apptStartTime": "Wed Nov 01 2023 00:00:00 GMT-0400 (EDT)",
+    // "apptEndTime": "Wed Nov 01 2023 02:00:00 GMT-0400 (EDT)",
+    // "link": "ZOOM LINK",
+    // "followUpId": 0
+    // },
+    // {
+    // "apptId": 2,
+    // "patientId": 2,
+    // "doctorName": "Mr. Ravi Mandava",
+    // "patientName": "Ms. Sai Hyd",
+    // "doctorId": 1,
+    // "apptDate": null,
+    // "apptStartTime": "Mon Oct 23 2023 08:00:00 GMT-0400 (EDT)",
+    // "apptEndTime": "Mon Oct 23 2023 08:30:00 GMT-0400 (EDT)",
+    // "link": "ZOOM LINK",
+    // "followUpId": 0
+    // }
+    // ],
+    // "docAvail": [
+    // {
+    // "doctorId": 1,
+    // "status":"Available",
+    // "startTime": "Mon Oct 23 2023 19:30:00 GMT-0400 (EDT)",
+    // "endTime": "Mon Oct 23 2023 20:00:00 GMT-0400 (EDT)"
+    // },
+    // {
+    // "doctorId": 1,
+    // "status":"Available",
+    // "startTime": "Mon Oct 23 2023 04:30:00 GMT-0400 (EDT)",
+    // "endTime": "Mon Oct 23 2023 05:00:00 GMT-0400 (EDT)"
+    // }
+    // ]
+  };
+
+  const doctid = Cookies.get(COOKIE_KEYS.userId);
+  const fetching_api_data = async () => {
+
+    //  let type = USER_TYPES.doctor;
+    let all_events = [];
+    let doc_events=[];
+
+    const url = `http://localhost:9092/youro/api/v1/getAvailability/${doctid}`;
+    try {
+
+      const res = await axios.get(url);
+      console.log("checking doc availability", res.data);
+      // const res.data = res.data;
+     
+      
+      if (res.data && res.data.appoitments) {
+        res.data.appoitments.forEach((appointment) => {
+          const event = {
+            start: new Date(appointment.apptStartTime),
+            end: new Date(appointment.apptEndTime),
+            title: appointment.patientName,
+            id: appointment.apptId,
+          };
+          all_events.push(event);
+        });
+      }
+
+      console.log("All events",res.data.appoitments);
+      if (res.data && res.data.docAvail) {
+        res.data.docAvail.forEach((availability) => {
+          const event = {
+            start: new Date(availability.startTime),
+            end: new Date(availability.endTime),
+            title: availability.status,
+            id: availability.doctorId,
+          };
+           doc_events.push(event);
+        });
+      }
+
+     console.log("all events of docavail ",all_events)
+
+      // console.log("printing all events", all_events);
+      setEvents(all_events);
+      console.log("printing events after fetching", all_events);
+    } catch (error) {
+      console.error(error);
+    }
+
+    // try {
+    //     const res = await axios.get(url);
+
+    //     console.log("checking doc availability",res.data);
+    //     const doc_appt=res.data;
+
+    //     doc_appt.appoitments.forEach(appointment => {
+    //       const event = {
+    //       start: new Date(appointment.apptStartTime),
+    //       end: new Date(appointment.apptEndTime),
+    //       title: appointment.patientName,
+    //       };
+    //       all_events.push(event);
+    //     });
+
+
+    //     apt.docAvail.forEach(availability => {
+    //     const event = {
+    //     start: new Date(availability.startTime),
+    //     end: new Date(availability.endTime),
+    //     title: availability.status,
+    //     };  
+    //       all_events.push(event);
+    //     });
+
+    //     // console.log("printing all events",all_events);
+    //     setEvents(all_events);
+    //     console.log("printing events after fetching",all_events)    
+    //     // // console.log("checking variable data",doc_appt.appoitments);
+    //     // // canRenderAdmin(true);
+    //     // // setTableData(res.data);s
+    //     // setcalenderapt(doc_appt);
+    //     // // setcalenderapt((prevData) => {
+    //     // //       console.log("all calender appointments", prevData);
+    //     // //       return res.data; // Make sure to return the new state
+    //     // // });
+    //     // console.log("all calender appointments",calenderapt);
+    //     // console.log("Data inside fetchData : " + count + "  =>  " + tableData);
+    // }
+    // catch (err) {
+    //     console.error(err);
+    // }
+
+    // apt.appoitments.forEach(appointment => {
+    //   const event = {
+    //     start: new Date(appointment.apptStartTime),
+    //     end: new Date(appointment.apptEndTime),
+    //     title: appointment.patientName,
+    //   };
+    //   all_events.push(event);
+    // });
+
+
+    // apt.docAvail.forEach(availability => {
+    //   const event = {
+    //     start: new Date(availability.startTime),
+    //     end: new Date(availability.endTime),
+    //     title: availability.status,
+    //   };
+    //   all_events.push(event);
+    // });
+
+    // console.log("printing all events",all_events);
+    // setEvents(all_events);
+  }
+
+
+
+  useEffect(() => {
+    // setEvents(initialEvents);
+    fetching_api_data();
   }, []);
 
-  const [newEvent, setNewEvent] = useState({ start: null, end: null, title: "", email: "" });
+  const [newEvent, setNewEvent] = useState({ start: null, end: null, id: ""});
 
-  function handleEventCreation() {
+  function handleEventCreation(slotInfo) {
     if (newEvent) {
-      if (newEvent.title.length === 0) {
-        newEvent.title = "Available";
-      }
+
+      // if (newEvent.title.length === 0) {
+      //   newEvent.title = selectslot;
+      // }
+      setNewEvent({
+        start: slotInfo.start,
+        end: slotInfo.end,
+        doctid: doctid,
+      })
+      // newEvent.start = slotInfo.start;
+      // newEvent.end = slotInfo.end;
+      console.log("new event details", newEvent);
       // newEvent.start={moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a')};
       // newEvent.start = moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a');
-      console.log("printing new event", newEvent);
-      console.log("printing date", newEvent.start);
-      console.log("printing fetch ", event1.start);
+      // console.log("printing new event", newEvent);
+      // console.log("printing date", newEvent.start);
+      // console.log("printing fetch ", event1.start);
       saveNewSchedule();
       // const eventsToSplit = splitEventIfNecessary(newEvent);
       // console.log("new event",eventsToSplit);
-      setEvents((prevEvents) => [...prevEvents, newEvent]);
-      setNewEvent({ start: null, end: null, title: "", email: "" });
+      // setEvents((prevEvents) => [...prevEvents, newEvent]);
+      // setNewEvent({ start: null, end: null, title: "", email: "" });
       setcreatevent(false);
     }
   }
 
   function handleCancelAppt(selectedEvent) {
+
+    const url= `http://localhost:9092/youro/api/v1/cancelAppointment/2/1`
     console.log(selectedEvent);
     handleCancelApptAPI(selectedEvent);
     hidedetails();
-    
+
   }
 
   const handleCancelApptAPI = async (selectedEvent) => {
     console.log('handleCancelApptAPI :: ');
 
-    console.log(typeof(selectedEvent.apptId));
+    console.log(typeof (selectedEvent.apptId));
     const url = `http://localhost:9092/youro/api/v1/cancelAppointment/${selectedEvent.apptId}/${selectedEvent.docId}`;
     try {
       const res = await axios.put(url);
@@ -461,24 +617,50 @@ function DoctorAppointments() {
   };
 
   const saveNewSchedule = async () => {
-    // axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
-    const url = `http://localhost:9092/youro/api/v1/addDoctorAvailability`;
-    const doctorId = '4';
-    const temp = {
-      stateTime: newEvent.start + "",
-      endTime: newEvent.end + "",
-      // status : 'AVAILABLE',
-      dotId: doctorId
-    };
-    console.log(temp);
-    try {
-      const res = await axios.put(url, temp);
-      console.log(res);
+
+    console.log("showing what slot is selected",selectslot);
+    if (selectslot == "Available") {
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+      const url = `http://localhost:9092/youro/api/v1/addDoctorAvailability`;
+
+      const temp = {
+        startTime: newEvent.start + "",
+        endTime: newEvent.end + "",
+        docId: doctid
+      };
+      console.log(temp);
+      try {
+        const res = await axios.put(url,temp);
+        console.log(res);
+        console.log("posting available data", res);
+        fetching_api_data();
+      }
+      catch (err) {
+        console.error(err);
+      }
     }
-    catch (err) {
-      console.error(err);
+    else if(selectslot=="UnAvailable")
+    {
+      axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+      const url = `http://localhost:9092/youro/api/v1/removeDoctorAvailability`;
+      const temp = {
+        startTime: newEvent.start + "",
+        endTime: newEvent.end + "",
+        docId: doctid
+      };
+      console.log(temp);
+      try {
+        const res = await axios.put(url,temp);
+        console.log(res);
+        console.log("posting unavailable data", res);
+        fetching_api_data();
+      }
+      catch (err) {
+        console.error(err);
+      }
+    } 
     }
-  };
+  // };
 
 
   return (
@@ -492,23 +674,29 @@ function DoctorAppointments() {
             <Calendar
               localizer={localizer}
               defaultDate={new Date()}
-              defaultView="week"
+              defaultView={"week"}
               events={events}
               selectable
               onSelectSlot={(slotInfo) => {
-                if (slotInfo.action === "select") {
-                  // Handle event creation here
-                  setNewEvent({
-                    start: slotInfo.start,
-                    end: slotInfo.end,
-                    title: "",
-                    email: "",
-                  })
-                };
+                if (slotInfo.action === 'select') {
+                  const currentTime = new Date();
+                  const selectedSlotStart = new Date(slotInfo.start);
+                  console.log(selectedSlotStart, currentTime)
+                  if (slotInfo.start >= currentTime) {
+                    // Handle event creation here
+                    // setNewEvent({
+                    //   start: slotInfo.start,
+                    //   end: slotInfo.end,
+                    //   title: "",
+                    //   email: "",
+                    // })
+                    handleEventCreation(slotInfo);
+                  }
+                }
               }}
               onSelectEvent={handleSelectEvent}
-              style={{ height: "85vh"}}
-             
+              style={{ height: "85vh" }}
+
             />
             <div className="events-form">
               {newEvent.start && (
@@ -516,6 +704,15 @@ function DoctorAppointments() {
                   <div className="popup-background-apt"></div>
                   <div className="event-creation-form">
                     <p><span style={{ fontWeight: 'bold' }}>Adding Slot</span></p>
+                    <select
+                      style={{ width: '85%' }} className="input-field input-border"
+                      value={selectslot}
+                      onChange={handleSelectChange}
+                    >
+                      {/* <option value="no-option">Select</option>  */}
+                      <option value="Available">Available</option>
+                      <option value="UnAvailable">UnAvailable</option>
+                    </select>
                     <p><span style={{ fontWeight: 'bold' }}>Start:</span>{moment(newEvent.start).format('MMMM Do YYYY, h:mm:ss a')}</p>
                     <p><span style={{ fontWeight: 'bold' }}>end:</span>{moment(newEvent.end).format('MMMM Do YYYY, h:mm:ss a')}</p>
                     {/* <p><span style={{ fontWeight: 'bold' }}>End:</span>{newEvent.start.Date}</p> */}
@@ -541,7 +738,7 @@ function DoctorAppointments() {
               <div className="popup-background-apt"></div>
               <div className="event-details-container">
                 <div className="event-details">
-                  {selectedEvent.title === "Available" ? (<h3>Available Slot</h3>) :
+                  {selectedEvent.title === "Available" || selectedEvent.title === "UnAvailable" ? (<h3>Available Slot</h3>) :
                     (<h3>{selectedEvent.title}</h3>)}
                   <p>
                     {/* <strong>Date:</strong>{" "} */}
@@ -550,9 +747,8 @@ function DoctorAppointments() {
                     <p>end:{moment(selectedEvent.end).format('MMMM Do YYYY, h:mm:ss a')}</p>
                     {/* <p>end:{selectedEvent.end.toLocaleString()}</p> */}
                   </p>
-                  {selectedEvent.title !== "Available" ? (<p>Email: {selectedEvent.email}</p>) : <></>}
                   <div className="slot-buttons">
-                    {selectedEvent.title === "Available" ?
+                    {selectedEvent.title === "Available" || selectedEvent.title === "UnAvailable" ?
                       (<div><button className="remove-button" > Remove availablity</button></div>) :
                       (<div><button className="remove-button" onClick={() => handleCancelAppt(selectedEvent)}> Cancel Appointment</button></div>)
                     }
