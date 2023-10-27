@@ -14,7 +14,7 @@ const PatientAppointment = (props) => {
     const minDate = new Date();
     const maxDate = new Date();
 
-    maxDate.setDate(maxDate.getDate() + 28);
+    maxDate.setDate(maxDate.getDate() + 15);
 
     const localizer = momentLocalizer(moment);
 
@@ -32,115 +32,8 @@ const PatientAppointment = (props) => {
     const [selectedInfo, setSelectedInfo] = useState();
 
     useEffect(() => {
-        setSlotsData([
-            {
-                "date": "2023-10-27",
-                "noOfSlots": 14,
-                "slotInfo": [
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T21:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T14:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 2,
-                        "startTime": "19:30:00",
-                        "doctorIds": [
-                            1,
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T13:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T10:00:00.000+00:00",
-                        "doctorIds": [
-                            1
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T20:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "04:30:00",
-                        "doctorIds": [
-                            1
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T20:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "08:00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T19:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "14:00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T15:00:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 1,
-                        "startTime": "1970-01-01T14:30:00.000+00:00",
-                        "doctorIds": [
-                            34
-                        ]
-                    },
-                    {
-                        "noOfDoctors": 2,
-                        "startTime": "1970-01-02T01:00:00.000+00:00",
-                        "doctorIds": [
-                            1,
-                            34
-                        ]
-                    }
-                ]
-            }
-        ]);
         fetch15DaysSlots();
+
     }, [])
 
     const fetch15DaysSlots = async () => {
@@ -160,6 +53,25 @@ const PatientAppointment = (props) => {
             // console.log("got data ");
             // console.log(res);
             setSlotsData(res.data);
+
+            const rnFunc = async (formattedDate, classname) => {
+                var manySlots = await document.querySelector(`[aria-label="${formattedDate}"]`);
+                // manySlots.className += "many_slots"
+                manySlots.classList.add(classname);
+            }
+        
+
+            for(var i = 0; i<res.data.length; i++){
+                var date = new Date(res.data[i].date);
+                    var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
+                if(res.data[i].slotInfo > 10){                    
+                    rnFunc(formattedDate, "many_slots")
+                } else if (res.data[i].slotInfo < 10 && res.data[i].slotInfo > 0 ) {
+                    rnFunc(formattedDate, "few_slots")
+                } else {
+                    rnFunc(formattedDate, "no_slots")
+                }
+            }
         }
         catch (err) {
             console.error(err);
@@ -229,12 +141,6 @@ const PatientAppointment = (props) => {
         }
     }
 
-    // const rnFunc = async () => {
-    //     var manySlots = await document.querySelector('[aria-label="October 14, 2023"]');
-    //    await  manySlots.className += "many_slots"
-    // }
-
-    // rnFunc()
 
     const getSlots = (eve) => {
         // console.log("getSlots start");

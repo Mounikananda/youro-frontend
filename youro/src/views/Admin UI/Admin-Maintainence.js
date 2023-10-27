@@ -34,7 +34,7 @@ const data = [
         medicineName: 'Paracetomal',
         category: 'Supplement',
         approved: '12/12/2022',
-
+        diagnosis: 'Diagnosis 1'
     },
     {
         medicineId: '2',
@@ -42,6 +42,7 @@ const data = [
         medicineName: 'Vitamin C',
         category: 'Vitamins',
         approved: '',
+        diagnosis: 'Diagnosis 2'
     },
 ];
 
@@ -119,6 +120,10 @@ const AdminMaintainenceList = () => {
             {
                 accessorKey: 'category',
                 header: 'Category',
+            },
+            {
+                accessorKey: 'diagnosis',
+                header: 'Diagnosis',
             },
             {
                 accessorKey: 'approved',
@@ -266,6 +271,18 @@ const AdminMaintainenceList = () => {
                           <option value="category 1">Category 1</option>
                           <option value="category 2">Category 2</option>
                           <option value="category 3">Category 3</option>
+                        </select>
+                        {errors?.category && <p className="error-text">This field is required</p>}
+                   </div> <br ></br>
+                   <div className="">
+                        <label>Diagnosis :</label><br />
+                          <select style={{width: '100%'}} className="input-field input-border" id="gender" {...register("category", {
+                                  required: true,
+                                })}>
+                          <option value="">Select</option>
+                          <option value="category 1">Diagnosis 1</option>
+                          <option value="category 2">Diagnosis 2</option>
+                          <option value="category 3">Diagnosis 3</option>
                         </select>
                         {errors?.category && <p className="error-text">This field is required</p>}
                    </div> 
