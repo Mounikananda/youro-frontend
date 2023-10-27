@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Popup from 'reactjs-popup';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { COOKIE_KEYS } from "../../App";
 
 
 const SymptomCalculator = (props) => {
@@ -20,69 +21,70 @@ const SymptomCalculator = (props) => {
 
     useEffect(() => {
         fetchAllDiagnoses();
-        setQuestionnare([
-            {
-                "questionId": 3003,
-                "question": "Question 1",
-                "options": [
-                    {
-                        "oId": 1,
-                        "oName": "Option 1"
-                    },
-                    {
-                        "oId": 2,
-                        "oName": "Option 2"
-                    }
-                ]
-            },
-            {
-                "questionId": 3004,
-                "question": "Question 2",
-                "options": [
-                    {
-                        "oId": 3,
-                        "oName": "Option 1"
-                    },
-                    {
-                        "oId": 4,
-                        "oName": "Option 2"
-                    }
-                ]
-            },
-            {
-                "questionId": 3005,
-                "question": "Question 3",
-                "options": [
-                    {
-                        "oId": 5,
-                        "oName": "Option 1"
-                    },
-                    {
-                        "oId": 6,
-                        "oName": "Option 2"
-                    },
-                    {
-                        "oId": 7,
-                        "oName": "Option 3"
-                    }
-                ]
-            }
-        ])
+        // setQuestionnare([
+        //     {
+        //         "questionId": 3003,
+        //         "question": "Question 1",
+        //         "options": [
+        //             {
+        //                 "oId": 1,
+        //                 "oName": "Option 1"
+        //             },
+        //             {
+        //                 "oId": 2,
+        //                 "oName": "Option 2"
+        //             }
+        //         ]
+        //     },
+        //     {
+        //         "questionId": 3004,
+        //         "question": "Question 2",
+        //         "options": [
+        //             {
+        //                 "oId": 3,
+        //                 "oName": "Option 1"
+        //             },
+        //             {
+        //                 "oId": 4,
+        //                 "oName": "Option 2"
+        //             }
+        //         ]
+        //     },
+        //     {
+        //         "questionId": 3005,
+        //         "question": "Question 3",
+        //         "options": [
+        //             {
+        //                 "oId": 5,
+        //                 "oName": "Option 1"
+        //             },
+        //             {
+        //                 "oId": 6,
+        //                 "oName": "Option 2"
+        //             },
+        //             {
+        //                 "oId": 7,
+        //                 "oName": "Option 3"
+        //             }
+        //         ]
+        //     }
+        // ])
     }, [])
 
     const fetchQuesByDiagId = async () => {
-        // console.log("====^^^===");
-        // console.log("fetchQuesByDiagId START");
+        console.log("====^^^===");
+        console.log("fetchQuesByDiagId START");
         const url = `http://localhost:9092/youro/api/v1/getQuestionsBydiagId/${selDiag}`;
         try {
             const res = await axios.get(url);
+            console.log(res);
             setQuestionnare(res.data);
         }
         catch (err) {
             console.error(err);
         }
-        // console.log("fetchQuesByDiagId END");
-        // console.log("====^^^===");
+        console.log("fetchQuesByDiagId END");
+        console.log("====^^^===");
     };
 
     const fetchAllDiagnoses = async () => {
@@ -119,12 +121,12 @@ const SymptomCalculator = (props) => {
 
 
     const handleNext = () => {
-        // console.log("====^^^===");
-        // console.log("handleNext START");
+        console.log("====^^^===");
+        console.log("handleNext START");
+        console.log(userResponse);
         if (chooseDiagnosis) {
             setChooseDiagnosis(false);
             fetchQuesByDiagId();
-
         } else {
             if (questionNum + 1 < questionnare.length) {
                 setQuestionNum(questionNum + 1)
@@ -133,24 +135,34 @@ const SymptomCalculator = (props) => {
                 const temp = {
                     diagnosisId: selDiag,
                     questionData: userResponse,
-                    patientId: Cookies.get('U_id'),
+                    patientId: Cookies.get(COOKIE_KEYS.userId),
                 }
                 saveNewSymptomScore(temp);
                 // props.setOpen(false)
             }
         }
-        // console.log("handleNext END");
-        // console.log("====^^^===");
+        console.log("handleNext END");
+        console.log("====^^^===");
     }
 
     const handleResponse = (questionNum, option) => {
-        // console.log("====^^^===");
-        // console.log("handleResponse START");
-        var userResponses = [ ...userResponse ]
-        userResponses.push({qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option]});
+        console.log("====^^^===");
+        console.log("handleResponse START");
+        var userResponses = [ ...userResponse];
+        console.log(userResponses);
+        console.log(userResponse[questionNum]);
+        if(userResponse[questionNum]){
+            console.log('data in questionNum index already exists');
+            userResponses.pop();
+            userResponses.push({qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option]});
+        }
+        else{
+            userResponses.push({qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option]});
+        }
         setUserResponse(userResponses);
-        // console.log("handleResponse END");
-        // console.log("====^^^===");
+        console.log(userResponses);
+        console.log("handleResponse END");
+        console.log("====^^^===");
     }
 
     const handleDiagChange = (event) => {
@@ -180,7 +192,7 @@ const SymptomCalculator = (props) => {
                 <div style={{ textAlign: 'center' }}>
                     {!symptomScorePage && <><h2>Symptom Calculator</h2>
                     {chooseDiagnosis ? <p>Choose the diagnosis</p> : <p>Question {questionNum + 1} out of {questionnare.length}</p>}</> }
-                    <br />
+                    <br /> 
                 </div>
 
                 <div style={{ textAlign: 'start' }}>
