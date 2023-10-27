@@ -42,10 +42,10 @@ const PatientAppointment = (props) => {
         const url = `http://localhost:9092/youro/api/v1/getAvailableSlotsByDate`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
-            headers: { 
+            headers: {
                 Authorization: token,
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods':'*',
+                'Access-Control-Allow-Methods': '*',
             }
         };
         try {
@@ -55,18 +55,21 @@ const PatientAppointment = (props) => {
             setSlotsData(res.data);
 
             const rnFunc = async (formattedDate, classname) => {
+                console.log(formattedDate + " :: " + classname);
+                console.log(`[aria-label="${formattedDate}"]`);
                 var manySlots = await document.querySelector(`[aria-label="${formattedDate}"]`);
                 // manySlots.className += "many_slots"
                 manySlots.classList.add(classname);
             }
-        
 
-            for(var i = 0; i<res.data.length; i++){
+
+            for (var i = 0; i < res.data.length; i++) {
                 var date = new Date(res.data[i].date);
-                    var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
-                if(res.data[i].slotInfo > 10){                    
+                var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
+                console.log(formattedDate);
+                if (res.data[i].noOfSlots > 10) {
                     rnFunc(formattedDate, "many_slots")
-                } else if (res.data[i].slotInfo < 10 && res.data[i].slotInfo > 0 ) {
+                } else if (res.data[i].noOfSlots < 10 && res.data[i].noOfSlots > 0) {
                     rnFunc(formattedDate, "few_slots")
                 } else {
                     rnFunc(formattedDate, "no_slots")
@@ -96,7 +99,7 @@ const PatientAppointment = (props) => {
         // console.log("saveNewAppointment START");
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
-            headers: { 
+            headers: {
                 "Authorization": `Bearer ${token}`,
                 "Cache-Control": "no-cache",
                 'Content-Type': 'application/json',
@@ -112,7 +115,7 @@ const PatientAppointment = (props) => {
                 startTime: selectedInfo.startTime + ''
             };
             console.log(temp);
-            const res = await axios.post(url,temp);
+            const res = await axios.post(url, temp);
             console.log(res.data); //{message: 'Doctor Name'}
         }
         catch (err) {
@@ -173,7 +176,7 @@ const PatientAppointment = (props) => {
         // console.log(eve);
         setDateSelection(eve);
         // console.log(eve.getDate() > 10);
-        var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0'+eve.getDate()));
+        var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0' + eve.getDate()));
         getSlots(date);
         setEvent(false);
         // console.log("handleDateSelection end");
