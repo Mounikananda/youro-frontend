@@ -41,6 +41,7 @@ html, body {
 } */
 .rbc-events-container 
 {
+  
   width:100%;
 }
 
@@ -71,6 +72,11 @@ html, body {
 /* .rbc-btn-group:last-child{
   display: none;
 } */
+
+.rbc-event-label
+{
+   display: none !important;
+}
 
 .rbc-toolbar
 {
