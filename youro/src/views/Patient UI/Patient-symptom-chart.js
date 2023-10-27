@@ -20,10 +20,10 @@ const PatientSymptomChart = (props) => {
 
   const showScoreForSelectedDiagnosis = (value) => {
     // console.log("showScoreForSelectedDiagnosis :: " + value);
-    if(value !== '') {
+    if (value !== '') {
       let temp = [];
-      for (let i=0;i<data.length;i++) {
-        if(data[i].diagnosisId == value){
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].diagnosisId == value) {
           temp.push(data[i]);
         }
       }
@@ -82,35 +82,39 @@ const PatientSymptomChart = (props) => {
 
             {
               selectedOption == '' && <>
-                    <h3 style={{ display: 'inline-block' }}>Please select a diagnosis to view the score</h3>
+                <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <h3><i>Please select a diagnosis to view the score</i></h3>
+                </div>
               </>
             }
             {
-              selectedOption != '' && selectedScore.length> 0 && <>
-              <ResponsiveContainer width="100%" height="75%">
-              <LineChart
-                width={500}
-                height={200}
-                data={selectedScore}
-                margin={{
-                  top: 10,
-                  right: 30,
-                  left: 0,
-                  bottom: 0,
-                }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="dateTime" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="symptomScore" stroke="#8884d8" fill="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
+              selectedOption != '' && selectedScore.length > 0 && <>
+                <ResponsiveContainer width="100%" height="75%">
+                  <LineChart
+                    width={500}
+                    height={200}
+                    data={selectedScore}
+                    margin={{
+                      top: 10,
+                      right: 30,
+                      left: 0,
+                      bottom: 0,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="dateTime" />
+                    <YAxis />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="symptomScore" stroke="#8884d8" fill="#8884d8" />
+                  </LineChart>
+                </ResponsiveContainer>
               </>
             }
             {
               selectedOption != '' && selectedScore.length == 0 && <>
-              <h3 style={{ display: 'inline-block' }}>No Record of Symptom Score for this diagnosis</h3>
+                <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <h3><i>No Record of Symptom Score for this diagnosis</i></h3>
+                </div>
               </>
             }
           </div>
@@ -125,7 +129,7 @@ const PatientSymptomChart = (props) => {
           </div>
         </>
       }
-    </div>
+    </div >
   );
 
 };
