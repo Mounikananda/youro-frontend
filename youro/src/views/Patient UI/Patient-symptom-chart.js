@@ -66,7 +66,7 @@ const PatientSymptomChart = (props) => {
   return (
     <div>
       {
-        render == true && data.length > 0 && <>
+        render == true && <>
           <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}>
             <div style={{ position: 'absolute', top: '3px', left: '15px' }}>
               <h3 style={{ display: 'inline-block' }}>Prev Symptom Scores</h3>
@@ -80,7 +80,17 @@ const PatientSymptomChart = (props) => {
             </div>
             <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>Retake symptom score</div>
 
-            {
+            {data.length == 0 && <>
+          {/* <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}> */}
+            <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+              <h3 >No Record of Symptom Score</h3>
+            </div>
+          {/* </div> */}
+        </>
+      }
+
+          {data.length > 0 && <>
+{
               selectedOption == '' && <>
                 <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                   <h3><i>Please select a diagnosis to view the score</i></h3>
@@ -117,18 +127,12 @@ const PatientSymptomChart = (props) => {
                 </div>
               </>
             }
+</>}
+            
           </div>
         </>
       }
-      {
-        render == true && data.length == 0 && <>
-          <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}>
-            <div style={{ position: 'absolute', top: '3px', left: '15px' }}>
-              <h3 style={{ display: 'inline-block' }}>No Record of Symptom Score</h3>
-            </div>
-          </div>
-        </>
-      }
+      
     </div >
   );
 
