@@ -11,7 +11,9 @@ import axios from 'axios';
 
 import { ToastContainer, toast } from 'react-toastify';
 
-// import SideBar from '../Patient UI/SideBar';
+
+import Cookies from "js-cookie";
+import { COOKIE_KEYS } from '../../App';
 
 
 
@@ -46,10 +48,16 @@ const DoctorProfile = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors }
+    formState: { errors, isDirty }
   } = useForm();
 
-  // const [userState, setUserState] = useState({
+
+  useEffect(() => {
+    console.log("doctor profile : landing");
+    fetchProfileData();
+  }, []);
+
+  // let usrData = {
   //   image: new File([''], '', {
   //     type: 'image/png',
   //   }),
@@ -63,56 +71,13 @@ const DoctorProfile = () => {
   //   state: '',
   //   zipCode: '',
   //   password: '',
-  // });
-
-  useEffect(() => {
-    console.log("doctor profile : landing");
-    fetchProfileData();
-  }, []);
-
-  let usrData = {
-    image: new File([''], '', {
-      type: 'image/png',
-    }),
-    firstName: '',
-    lastName: '',
-    email: '',
-    license: '',
-    address: '',
-    city: '',
-    dateOfBirth: '',
-    state: '',
-    zipCode: '',
-    password: '',
-  };
-
-
-  // let usrData1 = {
-  //   image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
-  //     type: 'image/png',
-  //   }),
-  //   firstName: 'vamshi',
-  //   lastName: 'j',
-  //   email: 'vamshivj12@gmail.com',
-  //   license: '12345678',
-  //   address: '123456',
-  //   city: 'vamshivj1208',
-  //   dateOfBirth: '2023-10-20',
-  //   state: 'NY',
-  //   zipCode: '14214',
-  //   password: 'vamshivj1208',
   // };
-
-
-  // const [userData, setUserData] = useState({});
 
 
   const showdata = (data) => {
     console.log("TEST log");
     console.log(data);
-    const userId = 36;
-    toast.success("Successful login");
-
+    updateProfileData(data);
     // api call here
     //setImagePreview
   }
@@ -138,14 +103,12 @@ const DoctorProfile = () => {
 
   const fetchProfileData = async () => {
     // after getting the data -> set defaultValues in html
-    const emailId = 'doc2@gmail.com';
-    const url = `http://localhost:9092/youro/api/v1/provider/getUser/${emailId}`;
+    // const emailId = 'doc2@gmail.com';
+    const uId = Cookies.get(COOKIE_KEYS.userId);
+    const url = `http://localhost:9092/youro/api/v1/getUser/${uId}`;
     try {
       const res = await axios.get(url);
       console.log(res.data);
-      usrData = res.data;
-      // console.log(usrData);
-      // setUserState(res.data);
       setValue("firstName", res.data.firstName);
       setValue("lastName", res.data.lastName);
       setValue("email", res.data.email);
@@ -156,6 +119,7 @@ const DoctorProfile = () => {
       setValue("zipCode", res.data.zipCode);
       setValue("dateOfBirth", res.data.dateOfBirth);
       setValue("password", res.data.password);
+      setValue("newPassword", '');
       // get the hook form current state
     }
     catch (err) {
@@ -165,14 +129,23 @@ const DoctorProfile = () => {
 
   const updateProfileData = async (data) => {
     // after getting the data -> set defaultValues in html
+    console.log(isDirty);
     const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
-    try {
-      const res = await axios.post(url, data);
-      console.log(res.data);
-      // usrData = res.data;
-    }
-    catch (err) {
-      console.error(err);
+    console.log(data.newPassword == '');
+    
+    let temp = data;
+    temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
+    delete temp.newPassword;  
+    console.log(temp);
+    if(isDirty){
+      try {
+        const res = await axios.put(url, temp);
+        console.log(res.data);
+        toast.success("Update success!!");
+      }
+      catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -369,18 +342,18 @@ const DoctorProfile = () => {
             </div>
             <div className='p-col'>
               <div className='p-fields'>
-                <label>Your Password</label>
-                <input defaultValue={"password"} className="password-input" type="password" {...register("password", {
-                  required: true,
+                <label>Set New Password</label>
+                <input defaultValue={""} className="password-input" type="password" {...register("newPassword", {
+                  required: false,
                   maxLength: 32,
                   minLength: 8,
                   // validate: {
                   //   checkRequired: (value) => value !== "" || "This field is required",
                   // },
                 })} ></input>
-                {errors?.password?.type === "required" && <p className="error-text">This field is required</p>}
-                {errors?.password?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
-                {errors?.password?.type === "minLength" && <p className="error-text">Password length must be more than 8 characters</p>}
+                {/* {errors?.password?.type === "required" && <p className="error-text">This field is required</p>} */}
+                {errors?.newPassword?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
+                {errors?.newPassword?.type === "minLength" && <p className="error-text">Password length must be more than 8 characters</p>}
               </div>
             </div>
 

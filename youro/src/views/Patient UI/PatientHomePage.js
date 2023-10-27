@@ -26,7 +26,6 @@ const PatientHomePage = () => {
   }, []);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const tempId = Cookies.get(COOKIE_KEYS.userId);
     const url = `http://localhost:9092/youro/api/v1/appointments/${uId}`;
     try {
       const res = await axios.get(url);
@@ -180,7 +179,15 @@ const PatientHomePage = () => {
 
     return (
       <div className="previous-appointment-wrapper">
-        {prevAppts.map((item) => (
+        {
+          (prevAppts==null || prevAppts.length == 0) && <>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <h3><i>No record of appointments</i></h3>
+            </div>
+          </>
+        }
+
+        {prevAppts && prevAppts.length!= 0 &&  prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
               <h3 >{item.apptDate} - {item.doctorName}</h3>
@@ -211,7 +218,15 @@ const PatientHomePage = () => {
   
     return (
       <div>
-          {upComingAppts.map((item) => (
+        {
+          (upComingAppts==null || upComingAppts.length == 0) && <>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <h3><i>No record of appointments</i></h3>
+            </div>
+          </>
+        }
+
+          {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
             <div className='previous-appointment'> 
              <div>
               <h3>{item.apptDate} - {item.apptStartTime}</h3>
