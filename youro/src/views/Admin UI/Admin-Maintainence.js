@@ -27,6 +27,8 @@ import AdminPopUps from './Admin-PopUps';
 import Popup from 'reactjs-popup';
 import { useForm } from "react-hook-form";
 
+import { ToastContainer, toast } from 'react-toastify';
+
 const data = [
     {
         medicineId: '1',
@@ -34,7 +36,7 @@ const data = [
         medicineName: 'Paracetomal',
         category: 'Supplement',
         approved: '12/12/2022',
-
+        diagnosis: 'Diagnosis 1'
     },
     {
         medicineId: '2',
@@ -42,6 +44,7 @@ const data = [
         medicineName: 'Vitamin C',
         category: 'Vitamins',
         approved: '',
+        diagnosis: 'Diagnosis 2'
     },
 ];
 
@@ -50,6 +53,7 @@ const AdminMaintainenceList = () => {
     const [tableData, setTableData] = useState([]);
     const [renderAdmin, canRenderAdmin] = useState(true);
     const [open, setOpen] = useState(false);
+    const [addDiagnosis, setAddDiagnosis] = useState(false);
     const isRendered = useRef(false);
     let count = 0;
 
@@ -58,7 +62,7 @@ const AdminMaintainenceList = () => {
         handleSubmit,
         watch,
         formState: { errors },
-      } = useForm();
+    } = useForm();
 
 
     useEffect(() => {
@@ -67,7 +71,7 @@ const AdminMaintainenceList = () => {
             console.log('useEffect : ' + count);
             fetchData();
             isRendered.current = true;
-            setTableData(data)
+            // setTableData(data)
         }
         else {
             console.log('useEffect re-render : ' + count);
@@ -75,15 +79,26 @@ const AdminMaintainenceList = () => {
         }
     }, []);
 
-
+// diagId, name, info
     const fetchData = async () => {
-        let type = USER_TYPES.doctor;
-        const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
+        const url = `http://localhost:9092/youro/api/v1/getAllPrescriptions`;
         try {
             const res = await axios.get(url);
+            console.log(res);
             canRenderAdmin(true);
-            setTableData(res.data);
-            console.log("Data inside fetchData : " + count + "  =>  " + tableData);
+            
+            let tempData  = [];
+            for(let i=0; i<res.data.length; i++){
+                let temp = {
+                    medicineId: res.data[i].presId,
+                    medicineName: res.data[i].name,
+                    category: res.data[i].presType,
+                    diagnosis: res.data[i].diagnosis.name
+                };
+                tempData.push(temp);
+            }
+            setTableData(tempData);
+            // console.log("Data inside fetchData : " + count + "  =>  " + tableData);
         }
         catch (err) {
             console.error(err);
@@ -97,7 +112,7 @@ const AdminMaintainenceList = () => {
                 if (cell.row.original.medicineId == tableData[i].medicineId) {
                     data[i].approved = cell.row.original.approved ? '' : new Date().toLocaleDateString();
                     setTableData([...data]);
-                    
+
                     isRendered.current = true;
                 }
             }
@@ -105,46 +120,50 @@ const AdminMaintainenceList = () => {
     }
 
     const columns = [
-            {
-                accessorKey: 'medicineId',
-                header: 'ID',
-                enableColumnOrdering: false,
-                enableEditing: false,
-                size: 50,
-            },
-            {
-                accessorKey: 'medicineName',
-                header: 'Medicine Name',
-            },
-            {
-                accessorKey: 'category',
-                header: 'Category',
-            },
-            {
-                accessorKey: 'approved',
-                header: 'Approved On',
-                Cell: ({cell}) => (
-                    <span style={{width: 'fit-content', margin: '0px auto'}}>
-                    {cell.row.original.approved ? cell.row.original.approved : '-'}
-                    </span>
-                    
-                )
-            },
-            {
-                header: "Status",
-                accessorKey: "status",
-                Cell: ({ cell }) => (
-                    <Tooltip arrow placement="right" title="Approve">
-                        <Switch
-                            checked={cell.row.original.approved}
-                            onClick={() => handleApproveRenderAndChange(cell, true)}
-                            inputProps={{ 'aria-label': 'controlled', 'data': tableData }}
-                        />
-                    </Tooltip>
-                ),
-                size: 20,
-            }
-        ]
+        {
+            accessorKey: 'medicineId',
+            header: 'ID',
+            enableColumnOrdering: false,
+            enableEditing: false,
+            size: 50,
+        },
+        {
+            accessorKey: 'medicineName',
+            header: 'Medicine Name',
+        },
+        {
+            accessorKey: 'category',
+            header: 'Category',
+        },
+        {
+            accessorKey: 'diagnosis',
+            header: 'Diagnosis',
+        },
+        // {
+        //     accessorKey: 'approved',
+        //     header: 'Approved On',
+        //     Cell: ({ cell }) => (
+        //         <span style={{ width: 'fit-content', margin: '0px auto' }}>
+        //             {cell.row.original.approved ? cell.row.original.approved : '-'}
+        //         </span>
+
+        //     )
+        // },
+        // {
+        //     header: "Status",
+        //     accessorKey: "status",
+        //     Cell: ({ cell }) => (
+        //         <Tooltip arrow placement="right" title="Approve">
+        //             <Switch
+        //                 checked={cell.row.original.approved}
+        //                 onClick={() => handleApproveRenderAndChange(cell, true)}
+        //                 inputProps={{ 'aria-label': 'controlled', 'data': tableData }}
+        //             />
+        //         </Tooltip>
+        //     ),
+        //     size: 20,
+        // }
+    ]
 
     const handleDeleteRow = useCallback(
         (row) => {
@@ -158,7 +177,52 @@ const AdminMaintainenceList = () => {
         [tableData],
     );
 
+    const [selecDiag, setDiag] = useState('');
 
+    const handleAddDiagnosis = () => {
+        setOpen(false);
+        console.log(selecDiag);
+        const temp = {
+            name: selecDiag,
+            info: 'Hardcoded info for now'
+        };
+        axios.post("http://localhost:9092/youro/api/v1/addDiagnosis", temp).then((res) => {
+            console.log(res);
+            toast.success('Added successfully!!');
+        }).catch((err) => {
+            console.error(err);
+            toast.error('Error adding diagnosis');
+        });
+    }
+
+    const handleAddPrescription = (data) => {
+        setOpen(false);
+        console.log(data);
+        const temp = {
+            name: data.medicineName,
+            type: data.category,
+            diagnosisId: parseInt(data.diagnosis)
+        };
+
+        axios.post("http://localhost:9092/youro/api/v1/addPrescription", temp).then((res) => {
+            console.log(res);
+            toast.success('Added successfully!!');
+        }).catch((err) => {
+            console.error(err);
+            toast.error(err.response.data.errorMessage);
+        });
+    }
+
+
+    const [diagnosisData, setDiagnosisData] = useState([]);
+    const fetchAllDiagnosis = () => {
+        axios.get("http://localhost:9092/youro/api/v1/getAllDiagnoses").then((res) => {
+            console.log(res);
+            setDiagnosisData(res.data);
+        }).catch((err) => {
+            console.error(err);
+        });
+    }
 
     if (!renderAdmin) {
         return <div className="App">Loading...</div>;
@@ -173,9 +237,13 @@ const AdminMaintainenceList = () => {
                         </div>
                         <div className="admin-ui-table">
                             <div className='header'>
-                                <h1 style={{marginLeft: '15px'}}>youro</h1>
+                                <h1 style={{ marginLeft: '15px' }}>youro</h1>
                             </div>
-                            <div className='btn-filled' style={{width: 'fit-content', marginLeft: '15px'}} onClick={() => setOpen(true)}>+ Add new medicine</div>
+                            <div style={{ display: 'flex' }}>
+                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(false); fetchAllDiagnosis(); }}>+ Add new medicine</div>
+                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(true) }}>+ Add new diagnosis</div>
+                            </div>
+                            <ToastContainer />
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -201,11 +269,11 @@ const AdminMaintainenceList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1 , 'rowData': row.original}} />
+                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
                                         </Tooltip>
                                     </Box>
                                 )}
-                                
+
                                 muiTableBodyProps={{
                                     sx: () => ({
                                         // '& tr:nth-of-type(even)': {
@@ -244,36 +312,78 @@ const AdminMaintainenceList = () => {
                         close
                     </span>
                 </div>
-                <div style={{ padding: '50px 20px' }}>
-                    <div style={{width: '300px'}}>
+                {!addDiagnosis && <>
+                    <div style={{ padding: '50px 20px' }}>
+                        <div style={{ width: '300px' }}>
+
+                        </div>
+                        <div className="">
+                            <label>Medicine Name :</label>
+                            <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} {...register("medicineName", {
+                                required: true,
+                                maxLength: 32,
+                            })} />
+                            {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
+                            {errors?.medicineName?.type === "maxLength" && <p className="error-text">Medicine Name cannot exceed 32 characters</p>}
+                        </div><br />
+                        <div className="">
+                            <label>Category :</label><br />
+                            <select style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("category", {
+                                required: true,
+                            })}>
+                                <option value="">Select</option>
+                                <option value="LAB">LAB</option>
+                                <option value="VITAMINS">VITAMINS</option>
+                                <option value="MEDICINES">MEDICINES</option>
+                                <option value="IMAGING">IMAGING</option>
+                                <option value="LIFESTYLE">LIFESTYLE</option>
+                                <option value="MEDIA">MEDIA</option>
+                            </select>
+                            {errors?.category && <p className="error-text">This field is required</p>}
+                        </div> <br ></br>
+                        <div className="">
+                            <label>Diagnosis :</label><br />
+                            <select style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
+                                required: true,
+                            })}>
+                                <option value="">Select</option>
+                                {
+                                    diagnosisData.map((result) => (<option value={result.diagId}>{result.name}</option>))
+                                }
+                            </select>
+
+                            {errors?.diagnosis && <p className="error-text">This field is required</p>}
+                        </div>
+                    </div>
+
+                    <div>
+                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={ handleSubmit(handleAddPrescription)}>Add medicine</div>
+                    </div>
+                </>}
+
+                {addDiagnosis && <>
+                    <div style={{ padding: '50px 20px' }}>
+                        <div style={{ width: '300px' }}>
+
+                        </div>
+                        <div className="">
+                            <label>Diagnosis Name :</label>
+                            <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} onChange={(e) => setDiag(e.target.value)} />
+                            {/* {...register("medicineName", {
+                                required: true,
+                                maxLength: 32,
+                            })} */}
+                            {/* {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.medicineName?.type === "maxLength" && <p className="error-text">Medicine Name cannot exceed 32 characters</p>} */}
+                        </div>
 
                     </div>
-                <div className="">
-                               <label>Medicine Name :</label>
-                               <input className="input-field-doctor input-border" type="text" style={{width: '94%'}} {...register("medicineName", {
-                                  required: true,
-                                  maxLength: 32,
-                                })} />
-                                {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.medicineName?.type === "maxLength" && <p className="error-text">Medicine Name cannot exceed 32 characters</p>}
-                          </div><br/>
-                    <div className="">
-                        <label>Category :</label><br />
-                          <select style={{width: '100%'}} className="input-field input-border" id="gender" {...register("category", {
-                                  required: true,
-                                })}>
-                          <option value="">Select</option>
-                          <option value="category 1">Category 1</option>
-                          <option value="category 2">Category 2</option>
-                          <option value="category 3">Category 3</option>
-                        </select>
-                        {errors?.category && <p className="error-text">This field is required</p>}
-                   </div> 
-                </div>
 
-                <div>
-                    <div className='btn-filled' style={{width: 'fit-content', margin: '0px auto 50px auto'}} onClick={() => setOpen(false)}>Add medicine</div>
-                </div>
+                    <div>
+                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={() => handleAddDiagnosis()}>Add diagnosis</div>
+                    </div>
+                </>}
+
             </Popup>
         </div>
     );

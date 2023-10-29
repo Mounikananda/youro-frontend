@@ -204,6 +204,18 @@
   font-family: inherit !important;
 }
 
+.many_slots {
+  border-bottom: 4px solid green;
+}
+
+.few_slots {
+  border-bottom: 4px solid yellow;
+}
+
+.no_slots {
+  border-bottom: 4px solid red;
+}
+
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
