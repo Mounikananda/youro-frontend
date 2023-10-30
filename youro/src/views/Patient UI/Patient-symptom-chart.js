@@ -78,69 +78,19 @@ const PatientSymptomChart = (props) => {
                 }
               </select>
             </div>
-            <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>Retake symptom score</div>
-            {/* 
-   
-            {
-              data.length == 0 && <>
-                <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}>
-                  <div style={{ position: 'absolute', top: '3px', left: '15px' }}>
-                    <h3 style={{ display: 'inline-block' }}>TEST MSG</h3>
-                  </div>
-                </div>
-              </>
-            }
-            {
-              data.length > 0 && <>
-                {
-                  selectedOption == '' && <>
-                    <h3 style={{ display: 'inline-block' }}>Please select a diagnosis to view the score</h3>
-                  </>
-                }
-                {
-                  selectedOption != '' && selectedScore.length > 0 && <>
-                    <ResponsiveContainer width="100%" height="75%">
-                      <LineChart
-                        width={500}
-                        height={200}
-                        data={selectedScore}
-                        margin={{
-                          top: 10,
-                          right: 30,
-                          left: 0,
-                          bottom: 0,
-                        }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="dateTime" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="symptomScore" stroke="#8884d8" fill="#8884d8" />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </>
-                }
-                {
-                  selectedOption != '' && selectedScore.length == 0 && <>
-                    <h3 style={{ display: 'inline-block' }}>No Record of Symptom Score for this diagnosis</h3>
-                  </>
-                }
-              </>
-            }
-          </div>
-        </>
-      }
-    </div>
-*/}
+            <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>
+              Retake symptom score
+            </div>
+
             {data.length == 0 && <>
               {/* <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}> */}
               {/* <div style={{width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
               <h3 >No Record of Symptom Score</h3>
             </div> */}
-              <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}>
-                <div style={{ position: 'absolute', top: '3px', left: '15px' }}>
-                  <h3 style={{ display: 'inline-block' }}>TEST MSG</h3>
-                </div>
+              <div style={{ width: "98%", borderRadius: '10px', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {/* <div style={{ position: 'absolute', top: '3px', left: '15px' }}> */}
+                <h3 style={{ display: 'inline-block', fontStyle: 'italic' }}>No Record of Symptom Score</h3>
+                {/* </div> */}
               </div>
               {/* </div> */}
             </>
