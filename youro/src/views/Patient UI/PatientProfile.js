@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import { COOKIE_KEYS } from "../../App";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
+import Youroheader from "../Youro-header";
 
 const PatientProfile = () => {
 
@@ -57,6 +58,7 @@ const PatientProfile = () => {
   return (
     <>
       <div style={{ marginTop: '50px', marginLeft: '50px', width: '100%' }}>
+        {/* <Youroheader/> */}
         <h1>Profile Information</h1>
         <div>
 

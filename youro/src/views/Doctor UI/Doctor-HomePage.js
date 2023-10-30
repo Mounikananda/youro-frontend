@@ -6,6 +6,8 @@ import { FaCheckCircle,FaCheck} from "react-icons/fa";
 import DoctorSideBar from '../Doctor UI/Doctor-Sidebar';
 import PreviousAppointments from './PreviousAppointments';
 import IncompleteEncounters from './IncompleteEncounters';
+import Youroheader from '../Youro-header';
+import { USER_TYPES } from '../../App';
 
 function DoctorHomePage()
 {
@@ -144,7 +146,8 @@ const TodayAppointmentList = () => {
          <DoctorSideBar data={'doctor-ui'} />
        </div>
        <div className='care-plan-doctor'>
-        <h1>youro</h1>
+         <Youroheader />
+         {/* <h1>youro</h1> */}
         <div className='all-details-doctor'>
         <div className='care-plan-details-doctor'>
           <h2>Today's Appointments</h2>

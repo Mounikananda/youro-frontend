@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import Youroheader from "../Youro-header";
 
 const PatientEducate = () => {
 
@@ -6,6 +7,7 @@ const PatientEducate = () => {
 
     return (
         <div className="educate-container">
+            <Youroheader/>
             <h1 style={{marginTop: '80px'}}>Educate Yourself</h1>
             <div className="educate-container-main">
                 <div className="educate-column-one">

@@ -9,6 +9,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from "../../App";
+import Youroheader from "../Youro-header";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -186,13 +187,18 @@ const PatientAppointment = (props) => {
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%', position: 'relative', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection:"column",width:"100%"}} >
+            <div style={{margin:"0% 2%"}}>
+            <Youroheader/>
+           </div>
+        <div style={{ display: 'flex', width: '100%', flexDirection:"row", alignItems: 'start' }}>
             <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
+              
                 <div className="react-calendar-container">
-                    <h1 style={{ top: '55px', position: 'absolute', left: '50px' }}>Schedule Appointment</h1>
+                    <h1 style={{margin:"0% 7%"}}>Schedule Appointment</h1>
                     <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
                 </div>
-                <div style={{ width: '-webkit-fill-available', marginTop: '10px', }} className="slots-container">
+                <div style={{ width: '-webkit-fill-available', marginTop: '50px', }} className="slots-container">
                     <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
                     <div className="slots-container-sub">
                         {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
@@ -243,6 +249,7 @@ const PatientAppointment = (props) => {
                 </div>
             </Popup>
         </div>
+       </div>
 
     )
 }

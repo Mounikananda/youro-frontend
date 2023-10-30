@@ -28,6 +28,7 @@ import Popup from 'reactjs-popup';
 import { useForm } from "react-hook-form";
 
 import { ToastContainer, toast } from 'react-toastify';
+import Youroheader from '../Youro-header';
 
 const data = [
     {
@@ -236,8 +237,12 @@ const AdminMaintainenceList = () => {
                             <AdminSideBar data={'manage-approved-medicine'} />
                         </div>
                         <div className="admin-ui-table">
-                            <div className='header'>
+                            {/* <div className='header'>
                                 <h1 style={{ marginLeft: '15px' }}>youro</h1>
+                            </div> */}
+                             <div className='header' style={{marginLeft: '15px'}}>
+                                {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
+                                 <Youroheader/>
                             </div>
                             <div style={{ display: 'flex' }}>
                                 <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(false); fetchAllDiagnosis(); }}>+ Add new medicine</div>

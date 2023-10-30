@@ -23,6 +23,7 @@ import "../../styles/Admin-ui/Admin-PatientList.css";
 import { USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
+import Youroheader from '../Youro-header';
 
 
 const AdminPatientList = () => {
@@ -393,8 +394,12 @@ const AdminPatientList = () => {
                             <AdminSideBar data={'admin-patients'} />
                         </div>
                         <div className="admin-ui-table">
-                        <div className='header'>
+                        {/* <div className='header'>
                                 <h1 style={{marginLeft: '15px'}}>youro</h1>
+                            </div> */}
+                             <div className='header' style={{marginLeft: '15px'}}>
+                                {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
+                                 <Youroheader/>
                             </div>
                             <MaterialReactTable
                                 displayColumnDefOptions={{

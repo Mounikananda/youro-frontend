@@ -23,6 +23,7 @@ import { Delete } from '@mui/icons-material';
 import { USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom';
+import Youroheader from '../Youro-header';
 
 const AdminHome = () => {
     const [renderAdmin, canRenderAdmin] = useState(true);
@@ -139,7 +140,8 @@ const AdminHome = () => {
                         </div>
                         <div className="admin-ui-table">
                             <div className='header'>
-                                <h1>youro</h1>
+                                {/* <h1>youro</h1> */}
+                                <Youroheader/>
                             </div>
                             <MaterialReactTable
                                 displayColumnDefOptions={{

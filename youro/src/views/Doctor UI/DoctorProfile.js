@@ -8,8 +8,11 @@ import { FaPen } from "react-icons/fa";
 import DoctorSideBar from './Doctor-Sidebar';
 import { useForm } from "react-hook-form";
 import axios from 'axios';
-
+import imageCompression from 'browser-image-compression';
 import { ToastContainer, toast } from 'react-toastify';
+import Youroheader from '../Youro-header';
+import { COOKIE_KEYS } from '../../App';
+import Cookies from "js-cookie";
 
 // import SideBar from '../Patient UI/SideBar';
 
@@ -20,6 +23,8 @@ import { ToastContainer, toast } from 'react-toastify';
 const DoctorProfile = () => {
 
   const [isPopupVisible, setPopupVisible] = useState(false);
+
+ 
 
   const showPopup = (data) => {
     console.log(data);
@@ -68,7 +73,9 @@ const DoctorProfile = () => {
   useEffect(() => {
     console.log("doctor profile : landing");
     fetchProfileData();
+    get_profile_pic();
   }, []);
+
 
   let usrData = {
     image: new File([''], '', {
@@ -86,6 +93,9 @@ const DoctorProfile = () => {
     password: '',
   };
 
+  const doctor_id= Cookies.get(COOKIE_KEYS.userId);
+
+  console.log("doctor details",doctor_id);
 
   // let usrData1 = {
   //   image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
@@ -120,20 +130,112 @@ const DoctorProfile = () => {
 
 
   const [imagePreview, setImagePreview] = useState(null);
+  const [toggle_image,setToggle_image]= useState(true);
+  
+  
+  const toggle_profile_image=()=>
+  {
+     setToggle_image(!toggle_image);
+  }
+
+   const get_profile_pic = async ()=>
+  {
+   
+    console.log("came to profile pic method");
+    const get_url=`http://localhost:9092/youro/api/v1/getDp/${doctor_id}`;
+
+    // try {
+    //   const res = await axios.get(get_url);
+    //   console.log("getting get_api pic ");
+    //   console.log(res.data);
+    //   // const imageURL = res.data.imageURL;
+    //   // setImagePreview('data:image/jpeg;base64,' + res.data.eventFlyer);
+    //   // const arrayBufferView = new Uint8Array(res.data);
+    //   setImagePreview('data:image/jpeg;base64,' + res.data);
+    //   // const blob = new Blob([arrayBufferView], { type: 'image/jpeg' });
+    //   // const dataUrl = URL.createObjectURL(blob);
+    //   // console.log(res.data);
+    //   // setImagePreview(dataUrl);
+    //   // usrData = res.data;
+    // }
+    // catch (err) {
+    //   console.log("getting get_api error pic ");
+    //   console.error(err);
+    // }
+
+    try {
+        const response = await axios.get(get_url, {
+          responseType: 'arraybuffer', // This is important to specify
+        });
+
+        if (response.status === 200) {
+          const arrayBuffer = new Uint8Array(response.data);
+          const base64Image = btoa(
+            new Uint8Array(arrayBuffer).reduce(
+              (data, byte) => data + String.fromCharCode(byte),
+              ''
+            )
+          );
+
+          setImagePreview(`data:image/jpeg;base64,${base64Image}`);
+         }
+        }
+
+     catch (err) {
+      console.log("getting get_api error pic ");
+      console.error(err);
+    }
+     }
 
 
-  const handleImageChange = (e) => {
+  const handleImageChange = async(e) => {
     const file = e.target.files[0];
     if (file) {
+
+      const options = {
+          maxSizeMB: 5,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true
+        }
+      const compressedFile = await imageCompression(file,options);
       // Set the file value in the form data
-      setValue('image', file);
-      // Create a preview URL for the selected image
-      const previewURL = URL.createObjectURL(file);
-      // print(previewURL,"this is the url created");
-      setImagePreview(previewURL);
+      setValue('image', compressedFile);
+      // const url=`http://localhost:9092/youro/api/v1/uploadDp`
+      // const profile_pic= await 
+      // // Create a preview URL for the selected image
+      // const previewURL = URL.createObjectURL(file);
+     
+      console.log("doctor id",doctor_id);    
+      // let profile_pic = {
+      //       "imageFile": file,
+      //       "userId": doctor_id
+      // }
+      const formData = new FormData();
+      formData.append('userId', doctor_id);
+      formData.append('imageFile', compressedFile);
+
+      const url = `http://localhost:9092/youro/api/v1/uploadDp`;
+      console.log("profile pic dic",formData);
+    try {
+      const res = await axios.post(url,formData);
+      console.log("uploading pic ");
+      console.log(res.data);
+      console.log("going to profile pic method");
+      get_profile_pic();
+      // usrData = res.data;
+    }
+    catch (err) {
+      console.log("uploading pic ");
+      console.error(err);
+    }
+      
+    
+
+  };
+      // // print(previewURL,"this is the url created");
+      // setImagePreview(previewURL);
 
     }
-  };
 
 
   const fetchProfileData = async () => {
@@ -191,7 +293,7 @@ const DoctorProfile = () => {
       </div>
       <div className="d-container">
         <div className='profile-column'>
-          <h1>youro</h1>
+          <Youroheader/>
           <div className='profile-details'>
             <div className='my-profile'>
               <ToastContainer />
@@ -208,9 +310,9 @@ const DoctorProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                    <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                    <img onClick={toggle_profile_image} src={(toggle_image || imagePreview) ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
                 </label>
-                {!imagePreview && (
+                {!toggle_image && (
                   <>
                      <input
                       type="file"

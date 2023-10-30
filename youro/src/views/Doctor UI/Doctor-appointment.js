@@ -11,6 +11,7 @@ import axios, { all } from 'axios';
 import { appendErrors } from "react-hook-form";
 import { COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
+import Youroheader from "../Youro-header";
 
 
 // #d7b8b9
@@ -314,6 +315,7 @@ function DoctorAppointments() {
           <DoctorSideBar data={'doctor-appointment'} />
         </div>
         <div className="d-calender">
+          <Youroheader/>
           <div className="d-calender-form">
             <Calendar
               localizer={localizer}
@@ -339,7 +341,7 @@ function DoctorAppointments() {
                 }
               }}
               onSelectEvent={handleSelectEvent}
-              style={{ height: "85vh" }}   
+              style={{ height: "80vh" }}   
               components={components}
             />
             <div className="events-form">

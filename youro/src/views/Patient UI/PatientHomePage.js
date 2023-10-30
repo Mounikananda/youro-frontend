@@ -14,6 +14,7 @@ import Popmenu from './Popupmenu';
 import SymptomCalculator from './SymptomCalculator';
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from '../../App';
+import Youroheader from '../Youro-header';
 
 
 const PatientHomePage = () => {
@@ -259,11 +260,14 @@ const PatientHomePage = () => {
     //  <div className='hm'>
 
     <div className='care-plan'>
-      <div className='header'>
+      {/* <div className='header'>
         <h1 style={{ marginLeft: '50px' }}>youro</h1>
-        {/* <Popmenu/> */}
-      </div>
-
+         <Popmenu/> 
+         </div>  */}
+        <div style={{width:"100%",margin:"0% 2%"}}>
+      <Youroheader/>
+       </div>
+       
       <div className='all-details'>
         <div className='care-plan-details-patient'>
           <h2>Your Care Plan</h2>
