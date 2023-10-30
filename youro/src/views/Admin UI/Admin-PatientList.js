@@ -387,7 +387,7 @@ const AdminPatientList = () => {
     return (
         <div>
             {
-                renderAdminPats == true && tableDataPats.length > 0 && <>
+                renderAdminPats == true && tableDataPats && tableDataPats.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'admin-patients'} />
@@ -476,7 +476,7 @@ const AdminPatientList = () => {
                 </>
             }
             {
-                renderAdminPats == true && tableDataPats.length == 0 && <>
+                renderAdminPats == true && tableDataPats && tableDataPats.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
@@ -485,7 +485,7 @@ const AdminPatientList = () => {
             {
                 renderAdminPats == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        API error
+                        Error Fetching Data!
                     </div>
                 </>
             }

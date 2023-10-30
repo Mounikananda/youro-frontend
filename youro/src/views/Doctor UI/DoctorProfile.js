@@ -20,6 +20,13 @@ import { COOKIE_KEYS } from '../../App';
 
 
 const DoctorProfile = () => {
+  const navigate = useNavigate();
+ const handleLogout = () => {
+    Cookies.remove(COOKIE_KEYS.userId);
+    Cookies.remove(COOKIE_KEYS.token);
+    Cookies.remove(COOKIE_KEYS.userType);
+    navigate('/');
+  }
 
   const [isPopupVisible, setPopupVisible] = useState(false);
 
@@ -360,6 +367,13 @@ const DoctorProfile = () => {
             {/* {handleSubmit((onsubmit))} */}
             <div className='p-buttons-col'>
               <button className='btn-filled' onClick={handleSubmit(showdata)}>Update</button>
+
+              <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
+                <span class="material-symbols-outlined" style={{ marginRight: '15px' }}>
+                  logout
+                </span>
+                Logout
+              </div>
               {/* <button className='cancel-button'>Cancel</button> */}
             </div>
 
