@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import "../../styles/Admin-ui/Admin-PopUps.css";
@@ -9,8 +9,9 @@ import {
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Delete } from '@mui/icons-material';
+import axios from 'axios';
 
-const AdminPopUps = (props) => {
+const AdminPopUps = ( (props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(props.data.step);
 
@@ -21,10 +22,34 @@ const AdminPopUps = (props) => {
     };
 
     const closePopup = () => {
+        softDeleteUser();
         setStep(1);
         setIsOpen(false);
     };
 
+    const softDeleteUser = async () => {
+        console.log('in softDeleteUser::' + props.data.rowData['userId']);
+        const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+        try {
+            // const temp = {
+            //     userId: props.data.rowData['userId'],
+            //     softDelete: true
+            // };
+            const temp = props.data.rowData;
+            temp.softDelete = true;
+            console.log(temp);
+            const res = await axios.put(url,temp);
+            console.log(res.data); 
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    const handleConfirmDelete = () => {
+        softDeleteUser();
+        handleSubmit();
+    }
     const handleSubmit = () => {
         let temp = step == 1 ? 2 : (step == 2 ? 3 : -1);
         console.log(temp);
@@ -89,7 +114,7 @@ const AdminPopUps = (props) => {
                                         <Button onClick={closePopup} variant="outlined" style={{ marginRight: '10px' }} >
                                             Cancel
                                         </Button>
-                                        <Button onClick={handleSubmit} variant="contained" color="error" startIcon={<DeleteIcon />}>
+                                        <Button onClick={handleConfirmDelete} variant="contained" color="error" startIcon={<DeleteIcon />}>
                                             Confirm
                                         </Button>
                                     </div>
@@ -129,6 +154,6 @@ const AdminPopUps = (props) => {
             }
         </div>
     );
-};
+});
 
 export default AdminPopUps;

@@ -55,7 +55,7 @@ const AdminDeniedDoctorsList = () => {
             let data= [];
             for(let i =0; i<res.data.length; i++){
                 console.log(res.data[i]);
-                if(res.data[i].status === DOCTOR_STATUS.denied){
+                if(res.data[i].softDelete === true){ //res.data[i].status === DOCTOR_STATUS.denied &&
                     console.log(true);
                     data.push( res.data[i]);
                 }
@@ -143,7 +143,7 @@ const AdminDeniedDoctorsList = () => {
     return (
         <div>
             {
-                renderAdmin == true && tableData.length > 0 && <>
+                renderAdmin == true && tableData && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'admin-denied-doctors'} />
@@ -174,7 +174,7 @@ const AdminDeniedDoctorsList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1 , 'rowData': row.original}} />
+                                            <AdminPopUps data={{ 'action': 'delete-denied-doctor', 'step': 1 , 'rowData': row.original}} />
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -227,7 +227,7 @@ const AdminDeniedDoctorsList = () => {
                 </>
             }
             {
-                renderAdmin == true && tableData.length == 0 && <>
+                renderAdmin == true && tableData && tableData.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
@@ -236,7 +236,7 @@ const AdminDeniedDoctorsList = () => {
             {
                 renderAdmin == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        API error
+                        Error Fetching Data!
                     </div>
                 </>
             }

@@ -230,7 +230,7 @@ const AdminMaintainenceList = () => {
     return (
         <div>
             {
-                renderAdmin == true && tableData.length > 0 && <>
+                renderAdmin == true && tableData && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'manage-approved-medicine'} />
@@ -269,7 +269,8 @@ const AdminMaintainenceList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
+                                            <AdminPopUps data={{ 'action': 'delete-medication', 'step': 1 , 'rowData': row.original}} />
+                                            {/* delete-medication - have to add condition in admin pop up and write api integration */}
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -293,7 +294,7 @@ const AdminMaintainenceList = () => {
                 </>
             }
             {
-                renderAdmin == true && tableData.length == 0 && <>
+                renderAdmin == true && tableData && tableData.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
@@ -302,7 +303,7 @@ const AdminMaintainenceList = () => {
             {
                 renderAdmin == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        API error
+                        Error Fetching Data!
                     </div>
                 </>
             }
