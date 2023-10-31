@@ -26,7 +26,7 @@ import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
 import Popup from 'reactjs-popup';
 import { useForm } from "react-hook-form";
-
+import { Oval } from 'react-loader-spinner';
 import { ToastContainer, toast } from 'react-toastify';
 import Youroheader from '../Youro-header';
 
@@ -52,7 +52,8 @@ const data = [
 
 const AdminMaintainenceList = () => {
     const [tableData, setTableData] = useState([]);
-    const [renderAdmin, canRenderAdmin] = useState(true);
+    const [renderAdmin, canRenderAdmin] = useState(false);
+    const [renderapidata,cannotrenderapidata]=useState(false);
     const [open, setOpen] = useState(false);
     const [addDiagnosis, setAddDiagnosis] = useState(false);
     const isRendered = useRef(false);
@@ -102,6 +103,7 @@ const AdminMaintainenceList = () => {
             // console.log("Data inside fetchData : " + count + "  =>  " + tableData);
         }
         catch (err) {
+            renderapidata(true);
             console.error(err);
         }
     };
@@ -225,13 +227,11 @@ const AdminMaintainenceList = () => {
         });
     }
 
-    if (!renderAdmin) {
-        return <div className="App">Loading...</div>;
-    }
+ 
     return (
         <div>
             {
-                renderAdmin == true && tableData.length > 0 && <>
+                
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'manage-approved-medicine'} />
@@ -249,6 +249,7 @@ const AdminMaintainenceList = () => {
                                 <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(true) }}>+ Add new diagnosis</div>
                             </div>
                             <ToastContainer />
+                        {renderAdmin == true && tableData && tableData.length > 0 ? (
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -274,7 +275,8 @@ const AdminMaintainenceList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
+                                            <AdminPopUps data={{ 'action': 'delete-prescription', 'step': 1 , 'rowData': row.original}} />
+                                            {/* delete-medication - have to add condition in admin pop up and write api integration */}
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -291,14 +293,21 @@ const AdminMaintainenceList = () => {
                                         },
                                     }),
                                 }}
-                            />
+                            />) : renderapidata? (<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}}>
+                        Error Fetching Data!
+                    </div>):!renderAdmin ? ( <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} ><Oval/></div>):
+                          renderAdmin==true && tableData && tableData.length == 0 && <>
+                     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',} }>
+                         No Data Found!
+                     </div>
+                       </>};
                         </div>
                     </div>
 
-                </>
+             
             }
-            {
-                renderAdmin == true && tableData.length == 0 && <>
+            {/* {
+                renderAdmin == true && tableData && tableData.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
@@ -307,10 +316,10 @@ const AdminMaintainenceList = () => {
             {
                 renderAdmin == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        API error
+                        Error Fetching Data!
                     </div>
                 </>
-            }
+            } */}
             <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
                 <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpen(false) }}>
                     <span class="material-symbols-outlined">

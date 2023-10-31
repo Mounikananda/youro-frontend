@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { MaterialReactTable } from 'material-react-table';
+import { Oval } from 'react-loader-spinner';
 import {
     Box,
     Typography,
@@ -26,6 +27,13 @@ import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
 import Cookies from "js-cookie";
 import Youroheader from '../Youro-header';
+
+
+import Popup from 'reactjs-popup';
+import 'reactjs-popup/dist/index.css';
+import "../../styles/Admin-ui/Admin-PopUps.css";
+// import Button from '@mui/material/Button';
+import DeleteIcon from '@mui/icons-material/Delete';
 const data = [
     {
         userId: '1',
@@ -323,10 +331,14 @@ const data = [
 //     "status": "APPROVED"
 //   }
 
+
+
 const AdminDoctorsList = () => {
     const [tableData, setTableData] = useState([]);
-    const [renderAdmin, canRenderAdmin] = useState(true);
+    const [renderAdmin, canRenderAdmin] = useState(false);
+    const [renderapidata,cannotrenderapidata]=useState(false);
     const isRendered = useRef(false);
+    // const parentRef = useRef();
     let count = 0;
 
 
@@ -336,7 +348,7 @@ const AdminDoctorsList = () => {
             console.log('useEffect : ' + count);
             fetchData();
             isRendered.current = true;
-            setTableData(data)
+            // setTableData(data)
         }
         else {
             console.log('useEffect re-render : ' + count);
@@ -348,30 +360,39 @@ const AdminDoctorsList = () => {
     const fetchData = async () => {
         let type = USER_TYPES.doctor;
         const token = Cookies.get(COOKIE_KEYS.token).trim();
-        console.log("token in admin doctors list :: "+token.trim());
+        console.log("token in admin doctors list :: " + token.trim());
         const config = {
-            headers: { 
-                Authorization: 'Bearer '+token,
+            headers: {
+                Authorization: 'Bearer ' + token,
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods':'*',
+                'Access-Control-Allow-Methods': '*',
                 'Content-Type': 'application/json'
             }
         };
         const url = `http://localhost:9092/youro/api/v1/getAllUsers/${type}`;
         try {
             const res = await axios.get(url, config);
-            canRenderAdmin(true);
+            canRenderAdmin(true); 
+            for (let i = 0; i < res.data.length; i++) {
+                console.log(res.data[i]);
+                if (res.data[i].softDelete !== true) {
+                    console.log(true);
+                    data.push(res.data[i]);
+                }
+            }
             setTableData(res.data);
             console.log("Data inside fetchData : ");
             console.log(res);
         }
         catch (err) {
+             //setfetcher true
+            cannotrenderapidata(true);
             console.error(err);
         }
     };
 
     const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false) => {
-        console.log('cell => ' + JSON.stringify(cell) + " , " + JSON.stringify(tableData));
+        // console.log('cell => ' + JSON.stringify(cell) + " , " + JSON.stringify(tableData));
         if (isChange) {
             for (let i = 0; i < tableData.length; i++) {
                 console.log("----====---------------=-------------=-----------");
@@ -380,46 +401,63 @@ const AdminDoctorsList = () => {
                     tableData[i]['status'] = cell.row.original.status === 'APPROVED' ? 'PENDING' : 'APPROVED';
                     setTableData([...tableData]);
                     isRendered.current = true;
+                    updateDoctorStatus(cell.row.original);
                 }
             }
         }
     }
 
+    const updateDoctorStatus = async (rowData) => {
+        console.log('in updateDoctorStatus::');
+        console.log(rowData);
+        const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+        try {
+            // const temp = rowData;
+            // console.log(temp);
+            // const res = await axios.put(url, temp);
+            // console.log(res);
+            // fetchData();
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
     const columns = [
-            {
-                accessorKey: 'userId',
-                header: 'ID',
-                enableColumnOrdering: false,
-                enableEditing: false,
-                size: 50,
-            },
-            {
-                accessorKey: 'firstName',
-                header: 'First Name',
-            },
-            {
-                accessorKey: 'lastName',
-                header: 'Last Name',
-            },
-            {
-                accessorKey: 'state',
-                header: 'State',
-            },
-            {
-                header: "Status",
-                accessorKey: "status",
-                Cell: ({ cell }) => (
-                    <Tooltip arrow placement="right" title="Approve">
-                        <Switch
-                            checked={cell.row.original.status == 'APPROVED'}
-                            onChange={() => handleApproveRenderAndChange(cell, true)}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                        />
-                    </Tooltip>
-                ),
-                size: 20,
-            }
-        ];
+        {
+            accessorKey: 'userId',
+            header: 'ID',
+            enableColumnOrdering: false,
+            enableEditing: false,
+            size: 50,
+        },
+        {
+            accessorKey: 'firstName',
+            header: 'First Name',
+        },
+        {
+            accessorKey: 'lastName',
+            header: 'Last Name',
+        },
+        {
+            accessorKey: 'state',
+            header: 'State',
+        },
+        {
+            header: "Status",
+            accessorKey: "status",
+            Cell: ({ cell }) => (
+                <Tooltip arrow placement="right" title="Approve">
+                    <Switch
+                        checked={cell.row.original.status == 'APPROVED'}
+                        onChange={() => handleApproveRenderAndChange(cell, true)}
+                        inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                </Tooltip>
+            ),
+            size: 20,
+        }
+    ];
 
     const handleDeleteRow = useCallback(
         (row) => {
@@ -435,13 +473,10 @@ const AdminDoctorsList = () => {
 
 
 
-    if (!renderAdmin) {
-        return <div className="App">Loading...</div>;
-    }
+    
     return (
         <div>
             {
-                renderAdmin == true && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'admin-doctors'} />
@@ -451,6 +486,7 @@ const AdminDoctorsList = () => {
                                 {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
                                  <Youroheader/>
                             </div>
+                        {renderAdmin == true && tableData && tableData.length > 0 ? (
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -476,7 +512,7 @@ const AdminDoctorsList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1 , 'rowData': row.original}} />
+                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -523,25 +559,30 @@ const AdminDoctorsList = () => {
                                     }),
                                 }}
                             />
+                        
+                          ):  renderapidata? (<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}}>
+                        Error Fetching Data!
+                    </div>):!renderAdmin ? ( <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} ><Oval/></div>):
+                          renderAdmin==true && tableData && tableData.length == 0 && <>
+                     <div style={{ textAlign:'center',width: "98%", borderRadius: '10px', height: '70vh' }}>
+                         No Data Found!
+                     </div>
+                       </>
+                        }
                         </div>
+                       
                     </div>
 
-                </>
+                // </>
             }
             {
-                renderAdmin == true && tableData.length == 0 && <>
-                    <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        No Data Found!
-                    </div>
-                </>
-            }
-            {
-                renderAdmin == false && <>
-                    <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        API error
-                    </div>
-                </>
-            }
+                // tableData && tableData.length == 0 && <>
+                //     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
+                //         No Data Found!
+                //     </div>
+                // </>
+            } 
+         
         </div>
     );
 

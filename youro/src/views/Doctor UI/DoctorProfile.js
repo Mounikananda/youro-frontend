@@ -14,13 +14,22 @@ import Youroheader from '../Youro-header';
 import { COOKIE_KEYS } from '../../App';
 import Cookies from "js-cookie";
 
-// import SideBar from '../Patient UI/SideBar';
+
+import Cookies from "js-cookie";
+import { COOKIE_KEYS } from '../../App';
 
 
 
 
 
 const DoctorProfile = () => {
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    Cookies.remove(COOKIE_KEYS.userId);
+    Cookies.remove(COOKIE_KEYS.token);
+    Cookies.remove(COOKIE_KEYS.userType);
+    navigate('/');
+  }
 
   const [isPopupVisible, setPopupVisible] = useState(false);
 
@@ -54,7 +63,13 @@ const DoctorProfile = () => {
     formState: { errors }
   } = useForm();
 
-  // const [userState, setUserState] = useState({
+
+  useEffect(() => {
+    console.log("doctor profile : landing");
+    fetchProfileData();
+  }, []);
+
+  // let usrData = {
   //   image: new File([''], '', {
   //     type: 'image/png',
   //   }),
@@ -114,15 +129,10 @@ const DoctorProfile = () => {
   // };
 
 
-  // const [userData, setUserData] = useState({});
-
-
   const showdata = (data) => {
     console.log("TEST log");
     console.log(data);
-    const userId = 36;
-    toast.success("Successful login");
-
+    updateProfileData(data);
     // api call here
     //setImagePreview
   }
@@ -240,14 +250,12 @@ const DoctorProfile = () => {
 
   const fetchProfileData = async () => {
     // after getting the data -> set defaultValues in html
-    const emailId = 'doc2@gmail.com';
-    const url = `http://localhost:9092/youro/api/v1/provider/getUser/${emailId}`;
+    // const emailId = 'doc2@gmail.com';
+    const uId = Cookies.get(COOKIE_KEYS.userId);
+    const url = `http://localhost:9092/youro/api/v1/getUser/${uId}`;
     try {
       const res = await axios.get(url);
       console.log(res.data);
-      usrData = res.data;
-      // console.log(usrData);
-      // setUserState(res.data);
       setValue("firstName", res.data.firstName);
       setValue("lastName", res.data.lastName);
       setValue("email", res.data.email);
@@ -258,20 +266,53 @@ const DoctorProfile = () => {
       setValue("zipCode", res.data.zipCode);
       setValue("dateOfBirth", res.data.dateOfBirth);
       setValue("password", res.data.password);
+      setValue("newPassword", '');
       // get the hook form current state
+      setInitEmail(res.data.email);
     }
     catch (err) {
       console.error(err);
     }
   };
 
+  const [initEmail, setInitEmail] = useState('');
+
   const updateProfileData = async (data) => {
-    // after getting the data -> set defaultValues in html
     const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+    console.log(data.newPassword == '');
+
+    let temp = data;
+    if (temp.newPassword == '') {
+      delete temp.password;
+    }
+    else {
+      temp.password = temp.newPassword;
+    }
+    temp.userId = Cookies.get(COOKIE_KEYS.userId);
+    delete temp.newPassword;
+    console.log(temp);
+    if (initEmail == temp.email) {
+      delete temp.email;
+      console.log("delete email attr from temp");
+      console.log(temp);
+    }
     try {
-      const res = await axios.post(url, data);
+      const res = await axios.put(url, temp);
       console.log(res.data);
-      // usrData = res.data;
+      console.log(temp.email);
+      if (initEmail != temp.email) {
+        if (res.data.email == initEmail) {
+          setValue("email", initEmail);
+          toast.error("Changes saved successfully except for the email!! Try Again with another email");
+        }
+        else{
+          toast.success("Changes saved!!");
+        }
+      }
+      else {
+        toast.success("Update success!!");
+      }
+      // toast.success("Update success!!");
     }
     catch (err) {
       console.error(err);
@@ -314,19 +355,19 @@ const DoctorProfile = () => {
                 </label>
                 {!toggle_image && (
                   <>
-                     <input
+                    <input
                       type="file"
                       id="imgupload"
                       accept=".jpg, .jpeg, .png"
                       {...register('image')}
                       onChange={handleImageChange}
-                      style={{display: 'none'}}
+                      style={{ display: 'none' }}
                     />
                     {errors.image && <p className="error-text">{errors.image.message}</p>}
                   </>
                 )}
                 {/* {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />} */}
-                
+
               </div>
             </div>
             <div className='p-col'>
@@ -335,21 +376,21 @@ const DoctorProfile = () => {
             </div> */}
               <div className='p-fields'>
                 <label>First Name(Legal first name)</label>
-                <input defaultValue={"default"} className='input-field' type='text'
-                    {...register("firstName", {
-                      required: true,
-                      maxLength: 32,
-                      // validate: {
-                      //   checkRequired: (value) => value !== "" || "This field is required",
-                      // },
-                    })} />
-                
+                <input defaultValue={""} className='input-field' type='text'
+                  {...register("firstName", {
+                    required: true,
+                    maxLength: 32,
+                    // validate: {
+                    //   checkRequired: (value) => value !== "" || "This field is required",
+                    // },
+                  })} />
+
                 {errors?.firstName?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.firstName?.type === "maxLength" && <p className="error-text">First name cannot exceed 32 characters</p>}
               </div>
               <div className='p-fields'>
                 <label>Last Name</label>
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("lastName", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("lastName", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -363,7 +404,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Email</label>
-                <input defaultValue={"default@gamil.com"} className="input-field input-border" type="text" {...register("email", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("email", {
                   required: true,
                   maxLength: 32,
                   pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/,
@@ -378,7 +419,7 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>License Number</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={"defaulta"} className="input-field" type="text" {...register("license", {
+                <input defaultValue={""} className="input-field" type="text" {...register("license", {
                   required: true,
                   maxLength: 32,
                   minLength: 8,
@@ -394,7 +435,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Address</label>
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("address", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("address", {
                   required: true,
                   maxLength: 50,
                   // validate: {
@@ -407,7 +448,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>City </label>
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("city", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("city", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -422,7 +463,7 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>State</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("state", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("state", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -434,7 +475,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>Zipcode</label>
-                <input defaultValue={"12345"} className="input-field input-border" type="text" {...register("zipCode", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("zipCode", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -462,7 +503,7 @@ const DoctorProfile = () => {
                   //   checkRequired: (value) => value !== "" || "This field is required",
                   // },
                 })}
-                  defaultValue={"01-01-1111"} // Replace with your desired default value
+                  defaultValue={""} // Replace with your desired default value
                 />
                 {errors?.dateOfBirth?.type === "required" && (<p className="error-text">{errors?.dateOfBirth?.message}</p>
                 )}
@@ -471,24 +512,31 @@ const DoctorProfile = () => {
             </div>
             <div className='p-col'>
               <div className='p-fields'>
-                <label>Your Password</label>
-                <input defaultValue={"password"} className="password-input" type="password" {...register("password", {
-                  required: true,
+                <label>Set New Password</label>
+                <input defaultValue={""} className="password-input" type="password" {...register("newPassword", {
+                  required: false,
                   maxLength: 32,
                   minLength: 8,
                   // validate: {
                   //   checkRequired: (value) => value !== "" || "This field is required",
                   // },
                 })} ></input>
-                {errors?.password?.type === "required" && <p className="error-text">This field is required</p>}
-                {errors?.password?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
-                {errors?.password?.type === "minLength" && <p className="error-text">Password length must be more than 8 characters</p>}
+                {/* {errors?.password?.type === "required" && <p className="error-text">This field is required</p>} */}
+                {errors?.newPassword?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
+                {errors?.newPassword?.type === "minLength" && <p className="error-text">Password length must be more than 8 characters</p>}
               </div>
             </div>
 
             {/* {handleSubmit((onsubmit))} */}
             <div className='p-buttons-col'>
               <button className='btn-filled' onClick={handleSubmit(showdata)}>Update</button>
+
+              <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
+                <span class="material-symbols-outlined" style={{ marginRight: '15px' }}>
+                  logout
+                </span>
+                Logout
+              </div>
               {/* <button className='cancel-button'>Cancel</button> */}
             </div>
 

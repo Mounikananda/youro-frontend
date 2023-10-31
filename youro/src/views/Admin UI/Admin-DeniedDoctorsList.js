@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { MaterialReactTable } from 'material-react-table';
+import { Oval } from 'react-loader-spinner';
 import {
     Box,
     Typography,
@@ -28,7 +29,8 @@ import Youroheader from '../Youro-header';
 
 const AdminDeniedDoctorsList = () => {
     const [tableData, setTableData] = useState([]);
-    const [renderAdmin, canRenderAdmin] = useState(true);
+    const [renderAdmin, canRenderAdmin] = useState(false);
+    const [renderapidata,cannotrenderapidata]=useState(false);
     const isRendered = useRef(false);
     let count = 0;
 
@@ -56,7 +58,7 @@ const AdminDeniedDoctorsList = () => {
             let data= [];
             for(let i =0; i<res.data.length; i++){
                 console.log(res.data[i]);
-                if(res.data[i].status === DOCTOR_STATUS.denied){
+                if(res.data[i].softDelete === true){ //res.data[i].status === DOCTOR_STATUS.denied &&
                     console.log(true);
                     data.push( res.data[i]);
                 }
@@ -66,6 +68,7 @@ const AdminDeniedDoctorsList = () => {
             console.log("Data inside fetchData : " + count + "  =>  " + data);
         }
         catch (err) {
+            cannotrenderapidata(true);
             console.error(err);
         }
     };
@@ -138,13 +141,10 @@ const AdminDeniedDoctorsList = () => {
 
 
 
-    if (!renderAdmin) {
-        return <div className="App">Loading...</div>;
-    }
+  
     return (
         <div>
             {
-                renderAdmin == true && tableData.length > 0 && <>
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'admin-denied-doctors'} />
@@ -157,6 +157,7 @@ const AdminDeniedDoctorsList = () => {
                                 {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
                                  <Youroheader/>
                             </div>
+                        {renderAdmin == true && tableData && tableData.length > 0 ? (
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -179,7 +180,7 @@ const AdminDeniedDoctorsList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1 , 'rowData': row.original}} />
+                                            <AdminPopUps data={{ 'action': 'delete-denied-doctor', 'step': 1 , 'rowData': row.original}} />
                                         </Tooltip>
                                     </Box>
                                 )}
@@ -226,13 +227,22 @@ const AdminDeniedDoctorsList = () => {
                                     }),
                                 }}
                             />
+                        ):  renderapidata? (<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}}>
+                        Error Fetching Data!
+                    </div>):!renderAdmin ? ( <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} ><Oval/></div>):
+                          renderAdmin==true && tableData && tableData.length == 0 && <>
+                     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',} }>
+                         No Data Found!
+                     </div>
+                       </>
+                       };
                         </div>
                     </div>
 
-                </>
+                
             }
             {
-                renderAdmin == true && tableData.length == 0 && <>
+                renderAdmin == true && tableData && tableData.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
                     </div>
@@ -241,7 +251,7 @@ const AdminDeniedDoctorsList = () => {
             {
                 renderAdmin == false && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        API error
+                        Error Fetching Data!
                     </div>
                 </>
             }

@@ -5,6 +5,7 @@ import { COOKIE_KEYS } from "../../App";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Youroheader from "../Youro-header";
+import { ToastContainer, toast } from 'react-toastify';
 
 const PatientProfile = () => {
 
@@ -16,17 +17,32 @@ const PatientProfile = () => {
     formState: { errors },
   } = useForm();
 
+
+  const [initEmail, setInitEmail] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
 
   useEffect(() => {
-
+    fetchProfileData();
   }, []);
 
   const fetchProfileData = async () => {
     const uID = Cookies.get(COOKIE_KEYS.userId);
-    const url = `http://localhost:9092/youro/api/v1/`;
+    const url = `http://localhost:9092/youro/api/v1/getUser/${uID}`;
     try {
       const res = await axios.get(url);
+      console.log(res.data);
+      setValue("firstName", res.data.firstName);
+      setValue("lastName", res.data.lastName);
+      setValue("email", res.data.email);
+      setInitEmail(res.data.email);
+      // setValue("license", res.data.license);
+      // setValue("address", res.data.address);
+      // setValue("city", res.data.city);
+      // setValue("state", res.data.state);
+      // setValue("zipCode", res.data.zipCode);
+      // setValue("dateOfBirth", res.data.dateOfBirth);
+      // setValue("password", res.data.password);
+      // setValue("newPassword", '');
     }
     catch (err) {
       console.error(err);
@@ -55,10 +71,53 @@ const PatientProfile = () => {
     navigate('/');
   }
 
+  const showdata = (data) => {
+    console.log("TEST log");
+    console.log(data);
+    updateProfileData(data);
+    // api call here
+    //setImagePreview
+  }
+
+
+  const updateProfileData = async (data) => {
+    const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+    let temp = data;
+    temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
+    delete temp.newPassword;
+    temp.userId = Cookies.get(COOKIE_KEYS.userId);
+    console.log(temp);
+    try {
+      if(initEmail == temp.email){
+        delete temp.email;
+        console.log("delete email attr from temp");
+        console.log(temp);
+      }
+      const res = await axios.put(url, temp);
+      console.log(res.data);
+      if (initEmail != temp.email) {
+        if (res.data.email == initEmail) {
+          setValue("email", initEmail);
+          toast.error("Changes saved successfully except for the email!! Try Again with another email");
+        }
+        else{
+          toast.success("Changes saved!!");
+        }
+      }
+      else {
+        toast.success("Update success!!");
+      }
+    }
+    catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <>
       <div style={{ marginTop: '50px', marginLeft: '50px', width: '100%' }}>
         {/* <Youroheader/> */}
+      <ToastContainer />
         <h1>Profile Information</h1>
         <div>
 
@@ -133,7 +192,7 @@ const PatientProfile = () => {
 
 
               {/* <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> */}
-              <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div>
+              <div className="next-button btn-filled" onClick={handleSubmit(showdata)}>Update</div>
             </div>
 
 

@@ -60,7 +60,7 @@ const PatientAppointment = (props) => {
                 console.log(`[aria-label="${formattedDate}"]`);
                 var manySlots = await document.querySelector(`[aria-label="${formattedDate}"]`);
                 // manySlots.className += "many_slots"
-                manySlots.classList.add(classname);
+                manySlots?.classList?.add(classname);
             }
 
 

@@ -1,6 +1,6 @@
 import {React, useState ,useEffect} from 'react';
 
-const PreviousAppointments=()=>
+const PreviousAppointments=(props)=>
 {
   const [data, setData] = useState([]);
 
@@ -15,21 +15,22 @@ const PreviousAppointments=()=>
     ];
 
     setTimeout(() => {
-      setData(mockData);
+      setData(props.data);
     }, 1000);
   }, []);
 
+
   return (
     <div>
-        {data.map((item) => (
+        {data && data.length> 0 && data.map((item) => (
           <div className='previous-appointment'> 
            <div>
-            <h3 >{item.time} - {item.name}</h3>
+            <h3 >{item.apptStartTime} - {item.patientName}</h3>
            </div>
-             <ul key={item.id}>
-             <li>Diagnosisname: {item.diagnosisname}</li>
+             <ul key={item.apptId}>
+             {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
              <li style={ {textDecoration:'underline',color:'#9CB189'}}>view careplan and note provided</li>
-             <li>Symptom score: {item.symptomscore}</li>
+             {/* <li>Symptom score: {item.symptomscore}</li> */}
               {/* <p>{item.meetup}</p> */}
              </ul>
           </div> 
