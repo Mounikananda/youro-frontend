@@ -54,7 +54,7 @@ function AdminSideBar(props) {
                         <MenuItem onClick={() => navigate("/admin-patients")} icon={<FaUsers size={40} />} active={props.data === 'admin-patients'} className="Menu-item" > Patients</MenuItem>
                         <MenuItem onClick={() => navigate("/admin-denied-doctors")} icon={<FaBan size={40} />} active={props.data === 'admin-denied-doctors'} className="Menu-item" >Chat</MenuItem>
                         <MenuItem onClick={() => navigate("/manage-approved-medicine")} icon={<FaNotesMedical size={40} />} active={props.data === 'manage-approved-medicine'} className="Menu-item" > Section-1</MenuItem>
-                        <MenuItem onClick={() => navigate("/admin-profile")} icon={<FaPowerOff size={40} />} active={props.data === 'admin-profile'} className="Menu-item" > Profile</MenuItem>
+                        {/* <MenuItem onClick={() => navigate("/admin-profile")} icon={<FaPowerOff size={40} />} active={props.data === 'admin-profile'} className="Menu-item" > Profile</MenuItem> */}
                          <MenuItem onClick={handleLogout} className="Menu-item" icon={<FaSignOutAlt size={40} color='white'/>} >Logout</MenuItem>
                     </Menu>
                 </Sidebar>
