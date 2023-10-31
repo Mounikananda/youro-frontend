@@ -94,11 +94,16 @@ const PatientProfile = () => {
       }
       const res = await axios.put(url, temp);
       console.log(res.data);
-      if(initEmail != temp.email && res.data.email == initEmail){
-        toast.success("Detailed updated successfully but not emailID");
-        toast.error("Try with another email!!");
+      if (initEmail != temp.email) {
+        if (res.data.email == initEmail) {
+          setValue("email", initEmail);
+          toast.error("Changes saved successfully except for the email!! Try Again with another email");
+        }
+        else{
+          toast.success("Changes saved!!");
+        }
       }
-      else{
+      else {
         toast.success("Update success!!");
       }
     }

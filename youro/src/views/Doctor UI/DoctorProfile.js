@@ -159,11 +159,17 @@ const DoctorProfile = () => {
     try {
       const res = await axios.put(url, temp);
       console.log(res.data);
-      if(initEmail != temp.email && res.data.email == initEmail){
-        toast.success("Detailed updated successfully but not emailID");
-        toast.error("Try with another email!!");
+      console.log(temp.email);
+      if (initEmail != temp.email) {
+        if (res.data.email == initEmail) {
+          setValue("email", initEmail);
+          toast.error("Changes saved successfully except for the email!! Try Again with another email");
+        }
+        else{
+          toast.success("Changes saved!!");
+        }
       }
-      else{
+      else {
         toast.success("Update success!!");
       }
       // toast.success("Update success!!");
@@ -230,7 +236,7 @@ const DoctorProfile = () => {
             </div> */}
               <div className='p-fields'>
                 <label>First Name(Legal first name)</label>
-                <input defaultValue={"default"} className='input-field' type='text'
+                <input defaultValue={""} className='input-field' type='text'
                   {...register("firstName", {
                     required: true,
                     maxLength: 32,
@@ -244,7 +250,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>Last Name</label>
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("lastName", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("lastName", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -258,7 +264,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Email</label>
-                <input defaultValue={"default@gamil.com"} className="input-field input-border" type="text" {...register("email", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("email", {
                   required: true,
                   maxLength: 32,
                   pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/,
@@ -273,7 +279,7 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>License Number</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={"defaulta"} className="input-field" type="text" {...register("license", {
+                <input defaultValue={""} className="input-field" type="text" {...register("license", {
                   required: true,
                   maxLength: 32,
                   minLength: 8,
@@ -289,7 +295,7 @@ const DoctorProfile = () => {
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Address</label>
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("address", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("address", {
                   required: true,
                   maxLength: 50,
                   // validate: {
@@ -302,7 +308,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>City </label>
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("city", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("city", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -317,7 +323,7 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>State</label>
                 {/* <input className='input-field' type='text'></input> */}
-                <input defaultValue={"default"} className="input-field input-border" type="text" {...register("state", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("state", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -329,7 +335,7 @@ const DoctorProfile = () => {
               </div>
               <div className='p-fields'>
                 <label>Zipcode</label>
-                <input defaultValue={"12345"} className="input-field input-border" type="text" {...register("zipCode", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("zipCode", {
                   required: true,
                   maxLength: 32,
                   // validate: {
@@ -357,7 +363,7 @@ const DoctorProfile = () => {
                   //   checkRequired: (value) => value !== "" || "This field is required",
                   // },
                 })}
-                  defaultValue={"01-01-1111"} // Replace with your desired default value
+                  defaultValue={""} // Replace with your desired default value
                 />
                 {errors?.dateOfBirth?.type === "required" && (<p className="error-text">{errors?.dateOfBirth?.message}</p>
                 )}
