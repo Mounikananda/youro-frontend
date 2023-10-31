@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useRef, useMemo, useEffect, useCallback } from "react";
 import { MaterialReactTable } from 'material-react-table';
+import { Oval } from 'react-loader-spinner';
 import {
     Box,
     Typography,
@@ -27,7 +28,8 @@ import { Link } from 'react-router-dom'
 
 const AdminPatientList = () => {
     const [tableDataPats, setTableDataPats] = useState([]);
-    const [renderAdminPats, canRenderAdminPats] = useState(true);
+    const [renderAdminPats, canRenderAdminPats] = useState(false);
+    const [renderapidata,cannotrenderapidata]=useState(false); 
     const isAdminPatsRendered = useRef(false);
     let count = 0;
 
@@ -336,6 +338,7 @@ const AdminPatientList = () => {
             console.log("Data inside fetchData : " + count + "  =>  " + tableDataPats);
         }
         catch (err) {
+            cannotrenderapidata(true);
             console.error(err);
         }
     };
@@ -381,13 +384,13 @@ const AdminPatientList = () => {
 
 
 
-    if (!renderAdminPats) {
-        return <div className="App">Loading...</div>;
-    }
+    // if (!renderAdminPats) {
+    //     return <div className="App">Loading...</div>;
+    // }
     return (
         <div>
             {
-                renderAdminPats == true && tableDataPats && tableDataPats.length > 0 && <>
+                
                     <div className='hm'>
                         <div className='sidebar'>
                             <AdminSideBar data={'admin-patients'} />
@@ -396,6 +399,7 @@ const AdminPatientList = () => {
                         <div className='header'>
                                 <h1 style={{marginLeft: '15px'}}>youro</h1>
                             </div>
+                         {renderAdminPats == true && tableDataPats && tableDataPats.length > 0 ? (
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -470,12 +474,21 @@ const AdminPatientList = () => {
                                     }),
                                 }}
                             />
+                            ): renderapidata? (<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} >
+                                Error Fetching Data!
+                    </div>): !renderAdminPats ? ( <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} ><Oval/></div>):
+                          renderAdminPats==true && tableDataPats && tableDataPats.length == 0 && <>
+                     <div style={{ textAlign:'center',width: "98%", borderRadius: '10px', height: '70vh' }}>
+                         No Data Found!
+                     </div>
+                        </>
+                           };
                         </div>
                     </div>
 
-                </>
+                // </>
             }
-            {
+            {/* {
                 renderAdminPats == true && tableDataPats && tableDataPats.length == 0 && <>
                     <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
                         No Data Found!
@@ -488,7 +501,7 @@ const AdminPatientList = () => {
                         Error Fetching Data!
                     </div>
                 </>
-            }
+            } */}
         </div>
     );
 
