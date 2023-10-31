@@ -83,7 +83,7 @@ const AdminMaintainenceList = () => {
 
 // diagId, name, info
     const fetchData = async () => {
-        const url = `http://localhost:9092/youro/api/v1/getAllPrescriptions`;
+        const url = `http://52.14.33.154:9092/youro/api/v1/getAllPrescriptions`;
         try {
             const res = await axios.get(url);
             console.log(res);
@@ -189,7 +189,7 @@ const AdminMaintainenceList = () => {
             name: selecDiag,
             info: 'Hardcoded info for now'
         };
-        axios.post("http://localhost:9092/youro/api/v1/addDiagnosis", temp).then((res) => {
+        axios.post("http://52.14.33.154:9092/youro/api/v1/addDiagnosis", temp).then((res) => {
             console.log(res);
             toast.success('Added successfully!!');
         }).catch((err) => {
@@ -207,7 +207,7 @@ const AdminMaintainenceList = () => {
             diagnosisId: parseInt(data.diagnosis)
         };
 
-        axios.post("http://localhost:9092/youro/api/v1/addPrescription", temp).then((res) => {
+        axios.post("http://52.14.33.154:9092/youro/api/v1/addPrescription", temp).then((res) => {
             console.log(res);
             toast.success('Added successfully!!');
         }).catch((err) => {
@@ -219,7 +219,7 @@ const AdminMaintainenceList = () => {
 
     const [diagnosisData, setDiagnosisData] = useState([]);
     const fetchAllDiagnosis = () => {
-        axios.get("http://localhost:9092/youro/api/v1/getAllDiagnoses").then((res) => {
+        axios.get("http://52.14.33.154:9092/youro/api/v1/getAllDiagnoses").then((res) => {
             console.log(res);
             setDiagnosisData(res.data);
         }).catch((err) => {

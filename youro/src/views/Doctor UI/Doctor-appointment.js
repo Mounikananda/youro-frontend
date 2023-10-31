@@ -134,7 +134,7 @@ function DoctorAppointments() {
     let all_events = [];
     // let doc_events=[];
 
-    const url = `http://localhost:9092/youro/api/v1/getAvailability/${doctid}`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/getAvailability/${doctid}`;
     try {
 
       const res = await axios.get(url);
@@ -215,7 +215,7 @@ function DoctorAppointments() {
 
   // function handleCancelAppt(selectedEvent) {
 
-  //   const url= `http://localhost:9092/youro/api/v1/cancelAppointment/2/1`
+  //   const url= `http://52.14.33.154:9092/youro/api/v1/cancelAppointment/2/1`
   //   console.log(selectedEvent);
   //   handleCancelApptAPI(selectedEvent);
   //   hidedetails();
@@ -225,7 +225,7 @@ function DoctorAppointments() {
   const RemoveAvailability= async (selectedEvent) =>
   {
      axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
-     const url = `http://localhost:9092/youro/api/v1/removeDoctorAvailability`;
+     const url = `http://52.14.33.154:9092/youro/api/v1/removeDoctorAvailability`;
       console.log(selectedEvent);
       const temp = {
         startTime: selectedEvent.start + "",
@@ -248,7 +248,7 @@ function DoctorAppointments() {
     console.log('handleCancelApptAPI :: ',selectedEvent);
 
     console.log(typeof (selectedEvent.apptId));
-    const url = `http://localhost:9092/youro/api/v1/cancelAppointment/${selectedEvent.id}/${doctid}`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/cancelAppointment/${selectedEvent.id}/${doctid}`;
     try {
       const res = await axios.put(url);
       console.log(res);
@@ -265,7 +265,7 @@ function DoctorAppointments() {
     console.log("showing what slot is selected",selectslot);
     if (selectslot == "Available") {
       axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
-      const url = `http://localhost:9092/youro/api/v1/addDoctorAvailability`;
+      const url = `http://52.14.33.154:9092/youro/api/v1/addDoctorAvailability`;
 
       const temp = {
         startTime: newEvent.start + "",
@@ -287,7 +287,7 @@ function DoctorAppointments() {
     {
        RemoveAvailability(newEvent); 
       // axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
-      // const url = `http://localhost:9092/youro/api/v1/removeDoctorAvailability`;
+      // const url = `http://52.14.33.154:9092/youro/api/v1/removeDoctorAvailability`;
       // const temp = {
       //   startTime: newEvent.start + "",
       //   endTime: newEvent.end + "",

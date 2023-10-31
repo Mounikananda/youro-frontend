@@ -38,7 +38,7 @@ const PatientSymptomChart = (props) => {
   }, []);
 
   const fetchPrevSymptomScore = () => {
-    const url = `http://localhost:9092/youro/api/v1/symptomScore/${usrId}`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/symptomScore/${usrId}`;
     axios.get(url).then((res) => {
       // console.log("got symptom score :: " + JSON.stringify(res.data));
       setData(res.data);
@@ -51,7 +51,7 @@ const PatientSymptomChart = (props) => {
   const fetchAllDiagnoses = async () => {
     // console.log("====^^^===");
     // console.log("fetchAllDiagnoses START");
-    const url = `http://localhost:9092/youro/api/v1/getAllDiagnoses`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/getAllDiagnoses`;
     try {
       const res = await axios.get(url);
       setDiagnoses(res.data);

@@ -25,7 +25,7 @@ const Login= () =>
 
   const onSubmit = (data) =>{
     console.log(data);
-    axios.post("http://localhost:9092/youro/api/v1/login", data).then((res) => {
+    axios.post("http://52.14.33.154:9092/youro/api/v1/login", data).then((res) => {
         toast.success("Successful login");
         console.log(res);
         Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });

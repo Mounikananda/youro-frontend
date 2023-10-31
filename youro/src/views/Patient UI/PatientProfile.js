@@ -27,7 +27,7 @@ const PatientProfile = () => {
 
   const fetchProfileData = async () => {
     const uID = Cookies.get(COOKIE_KEYS.userId);
-    const url = `http://localhost:9092/youro/api/v1/getUser/${uID}`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/getUser/${uID}`;
     try {
       const res = await axios.get(url);
       console.log(res.data);
@@ -81,7 +81,7 @@ const PatientProfile = () => {
 
 
   const updateProfileData = async (data) => {
-    const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/provider/updateProfile`;
     let temp = data;
     temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
     delete temp.newPassword;

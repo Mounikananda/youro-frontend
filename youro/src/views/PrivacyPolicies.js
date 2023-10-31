@@ -26,7 +26,7 @@ const PrivacyPolicy = (props) => {
     delete usrData.confirmPassword;
     console.log("usr data :: ");
     console.log(usrData);
-    axios.post("http://localhost:9092/youro/api/v1/register", usrData).then((res) => {
+    axios.post("http://52.14.33.154:9092/youro/api/v1/register", usrData).then((res) => {
         console.log("register success");
         console.log(res);
         navigate("/login");

@@ -74,7 +74,7 @@ const SymptomCalculator = (props) => {
     const fetchQuesByDiagId = async () => {
         console.log("====^^^===");
         console.log("fetchQuesByDiagId START");
-        const url = `http://localhost:9092/youro/api/v1/getQuestionsBydiagId/${selDiag}`;
+        const url = `http://52.14.33.154:9092/youro/api/v1/getQuestionsBydiagId/${selDiag}`;
         try {
             const res = await axios.get(url);
             console.log(res);
@@ -90,7 +90,7 @@ const SymptomCalculator = (props) => {
     const fetchAllDiagnoses = async () => {
         // console.log("====^^^===");
         // console.log("fetchAllDiagnoses START");
-        const url = `http://localhost:9092/youro/api/v1/getAllDiagnoses`;
+        const url = `http://52.14.33.154:9092/youro/api/v1/getAllDiagnoses`;
         try {
             const res = await axios.get(url);
             setDiagnoses(res.data);
@@ -106,7 +106,7 @@ const SymptomCalculator = (props) => {
     const saveNewSymptomScore = async (data) => {
         // console.log("====^^^===");
         // console.log("saveNewSymptomScore START");
-        const url = `http://localhost:9092/youro/api/v1/saveSymptomScore`;
+        const url = `http://52.14.33.154:9092/youro/api/v1/saveSymptomScore`;
         setSymptomScorePage(true)
         try {
             // console.log(data);

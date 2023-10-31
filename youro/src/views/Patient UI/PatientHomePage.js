@@ -27,7 +27,7 @@ const PatientHomePage = () => {
   }, []);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = `http://localhost:9092/youro/api/v1/appointments/${uId}`;
+    const url = `http://52.14.33.154:9092/youro/api/v1/appointments/${uId}`;
     try {
       const res = await axios.get(url);
       console.log(res);

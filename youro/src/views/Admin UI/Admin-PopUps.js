@@ -29,7 +29,7 @@ const AdminPopUps = ((props) => {
 
     const softDeleteUser = async () => {
         console.log('in softDeleteUser::' + props.data.rowData['userId']);
-        const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
+        const url = `http://52.14.33.154:9092/youro/api/v1/provider/updateProfile`;
         try {
             // const temp = {
             //     userId: props.data.rowData['userId'],
@@ -49,7 +49,7 @@ const AdminPopUps = ((props) => {
     const deletePrescription = async () => {
         // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
         console.log('in deletePrescription::' + props.data.rowData['medicineId']);
-        const url = `http://localhost:9092/youro/api/v1/deletePrescription/${props.data.rowData['medicineId']}`;
+        const url = `http://52.14.33.154:9092/youro/api/v1/deletePrescription/${props.data.rowData['medicineId']}`;
         try {
             const res = await axios.delete(url);
             console.log(res.data);
