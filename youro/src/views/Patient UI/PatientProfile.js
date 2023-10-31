@@ -115,8 +115,8 @@ const PatientProfile = () => {
 
   return (
     <>
-      <div style={{ marginTop: '50px', marginLeft: '50px', width: '100%' }}>
-        {/* <Youroheader/> */}
+      <div style={{ marginTop: '10px', marginLeft: '50px', width: '100%' }}>
+        <Youroheader/>
       <ToastContainer />
         <h1>Profile Information</h1>
         <div>
@@ -181,14 +181,14 @@ const PatientProfile = () => {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', width: '94%', marginTop: '50px', marginLeft: '0px', marginRight: 'auto' }}>
+            <div style={{ display: 'flex', justifyContent: 'center', width: '94%', marginTop: '50px', marginLeft: '0px', marginRight: 'auto' }}>
 
-              <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
+              {/* <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
                 <span class="material-symbols-outlined" style={{ marginRight: '15px' }}>
                   logout
                 </span>
                 Logout
-              </div>
+              </div> */}
 
 
               {/* <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> */}

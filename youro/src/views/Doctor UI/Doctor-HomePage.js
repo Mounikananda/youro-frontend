@@ -12,6 +12,7 @@ import { USER_TYPES } from '../../App';
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from '../../App';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function DoctorHomePage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -19,8 +20,13 @@ function DoctorHomePage() {
   const toggleVisibility = () => {
     setIsVisible(true);
   };
+   const navigate=useNavigate(); 
 
   useEffect(() => {
+    // if(Cookies.get(COOKIE_KEYS.userType) != 'PROVIDER')
+    //   {
+    //      navigate("/");  
+    //   }
     fetchPrevAndUpcomingAppointments();
   }, []);
 

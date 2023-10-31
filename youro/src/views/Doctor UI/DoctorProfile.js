@@ -135,7 +135,7 @@ const DoctorProfile = () => {
 
 
   const [imagePreview, setImagePreview] = useState(null);
-  const [toggle_image,setToggle_image]= useState(true);
+  const [toggle_image,setToggle_image]= useState(false);
   
   
   const toggle_profile_image=()=>
@@ -298,7 +298,8 @@ const DoctorProfile = () => {
       if (initEmail != temp.email) {
         if (res.data.email == initEmail) {
           setValue("email", initEmail);
-          toast.error("Changes saved successfully except for the email!! Try Again with another email");
+          toast.success("Changes saved!!");
+          // toast.error("Changes saved successfully except for the email!! Try Again with another email");
         }
         else{
           toast.success("Changes saved!!");
@@ -346,9 +347,9 @@ const DoctorProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                    <img onClick={toggle_profile_image} src={(toggle_image || imagePreview) ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                    <img  src={ imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
                 </label>
-                {!toggle_image && (
+                
                   <>
                     <input
                       type="file"
@@ -360,7 +361,7 @@ const DoctorProfile = () => {
                     />
                     {errors.image && <p className="error-text">{errors.image.message}</p>}
                   </>
-                )}
+          
                 {/* {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />} */}
 
               </div>
@@ -526,12 +527,12 @@ const DoctorProfile = () => {
             <div className='p-buttons-col'>
               <button className='btn-filled' onClick={handleSubmit(showdata)}>Update</button>
 
-              <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
+              {/* <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
                 <span class="material-symbols-outlined" style={{ marginRight: '15px' }}>
                   logout
                 </span>
                 Logout
-              </div>
+              </div> */}
               {/* <button className='cancel-button'>Cancel</button> */}
             </div>
 
