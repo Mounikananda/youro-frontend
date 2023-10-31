@@ -152,16 +152,16 @@ const SymptomCalculator = (props) => {
     const handleResponse = (questionNum, option) => {
         console.log("====^^^===");
         console.log("handleResponse START");
-        var userResponses = [ ...userResponse];
+        var userResponses = [...userResponse];
         console.log(userResponses);
         console.log(userResponse[questionNum]);
-        if(userResponse[questionNum]){
+        if (userResponse[questionNum]) {
             console.log('data in questionNum index already exists');
             userResponses.pop();
-            userResponses.push({qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option]});
+            userResponses.push({ qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option] });
         }
-        else{
-            userResponses.push({qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option]});
+        else {
+            userResponses.push({ qId: questionnare[questionNum].questionId, question: questionnare[questionNum].question, optionsData: [option] });
         }
         setUserResponse(userResponses);
         console.log(userResponses);
@@ -183,7 +183,7 @@ const SymptomCalculator = (props) => {
             open={props.open}
             modal
             closeOnDocumentClick={false}
-            onClose={() => { props.setOpen(false)}}
+            onClose={() => { props.setOpen(false) }}
             className="symptom-popup">
 
             <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { props.setOpen(false) }}>
@@ -195,15 +195,25 @@ const SymptomCalculator = (props) => {
 
                 <div style={{ textAlign: 'center' }}>
                     {!symptomScorePage && <><h2>Symptom Calculator</h2>
-                    {chooseDiagnosis ? <p>Choose the diagnosis</p> : <p>Question {questionNum + 1} out of {questionnare.length}</p>}</> }
-                    <br /> 
+                        {questionnare.length == 0 &&
+                            <>
+                                <div>
+                                    No questions related to this Diagnosis
+                                </div>
+                            </>
+                        }
+                        {questionnare.length > 0 && <>
+                            {chooseDiagnosis ? <p>Choose the diagnosis</p> : <p>Question {questionNum + 1} out of {questionnare.length}</p>}
+                        </>
+                        }</>}
+                    <br />
                 </div>
 
                 <div style={{ textAlign: 'start' }}>
-                    {chooseDiagnosis && <div style={{ display: "flex", flexWrap: 'wrap' }}>
+                    {chooseDiagnosis && <div style={{ display: "flex", flexWrap: 'wrap', maxHeight: '30vh', overflowY: 'scroll' }}>
                         {diagnosisNames.map((diagosis) => {
                             return (
-                                <div style={{ width: '200px' }}>
+                                <div style={{ maxWidth: '200px', minWidth: '150px' }}>
                                     <input type="radio" id="html" name="diagnosis" value={diagosis.diagId}
                                         onChange={handleDiagChange} />
                                     <label for="html" style={{ marginLeft: '10px' }}>{diagosis.name}</label><br /><br />
@@ -213,37 +223,37 @@ const SymptomCalculator = (props) => {
 
                     </div>}
                     {(!chooseDiagnosis) ? (symptomScorePage ? <div style={{ textAlign: 'center' }}>
-                    <h2>Your Symptom Score</h2>
-                    <h4><h1 style={{display: 'inline-block'}}>{newScore.score}</h1 ></h4><br>
-                    </br>
-                    <p>Diagnosis Name: <strong>{newScore.diagName}</strong></p>
-                    </div> : 
-                     <>
-                        <p>{questionnare[questionNum].question}</p>
-                        {questionnare[questionNum].options.map((option) => {
-                            return (
-                                <>
-                                    <input type="radio" id="html"
-                                        name={questionnare[questionNum].questionId}
-                                        checked = { userResponse[questionNum] && (userResponse[questionNum]['optionsData'][0].oName === option.oName) }
-                                        onChange={() => handleResponse(questionNum, option)} />
+                        <h2>Your Symptom Score</h2>
+                        <h4><h1 style={{ display: 'inline-block' }}>{newScore.score}</h1 ></h4><br>
+                        </br>
+                        <p>Diagnosis Name: <strong>{newScore.diagName}</strong></p>
+                    </div> :
+                        <>
+                            <p>{questionnare[questionNum]?.question}</p>
+                            {questionnare[questionNum]?.options.map((option) => {
+                                return (
+                                    <>
+                                        <input type="radio" id="html"
+                                            name={questionnare[questionNum].questionId}
+                                            checked={userResponse[questionNum] && (userResponse[questionNum]['optionsData'][0].oName === option.oName)}
+                                            onChange={() => handleResponse(questionNum, option)} />
 
-                                    <label for="html" style={{ marginLeft: '10px' }}>{option.oName}</label><br /><br />
-                                </>
-                            )
-                        })}
+                                        <label for="html" style={{ marginLeft: '10px' }}>{option.oName}</label><br /><br />
+                                    </>
+                                )
+                            })}
 
-                    </> ): ''}
+                        </>) : ''}
                 </div>
 
-                {! symptomScorePage && <div className={!chooseDiagnosis && !userResponse[questionNum] ? "btn-filled-disabled" : "btn-filled"}
+                {!symptomScorePage && <div className={!chooseDiagnosis && !userResponse[questionNum] ? "btn-filled-disabled" : "btn-filled"}
                     style={{ width: 'fit-content', marginLeft: 'auto', marginTop: '20px' }}
                     onClick={handleNext}>
                     {chooseDiagnosis || questionNum + 1 < questionnare.length ? 'Next' : 'Submit'}
                 </div>
-}
+                }
 
-                
+
             </div>
 
 

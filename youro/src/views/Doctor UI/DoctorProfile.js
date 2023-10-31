@@ -21,7 +21,7 @@ import { COOKIE_KEYS } from '../../App';
 
 const DoctorProfile = () => {
   const navigate = useNavigate();
- const handleLogout = () => {
+  const handleLogout = () => {
     Cookies.remove(COOKIE_KEYS.userId);
     Cookies.remove(COOKIE_KEYS.token);
     Cookies.remove(COOKIE_KEYS.userType);
@@ -55,7 +55,7 @@ const DoctorProfile = () => {
     handleSubmit,
     watch,
     setValue,
-    formState: { errors, isDirty }
+    formState: { errors }
   } = useForm();
 
 
@@ -128,31 +128,48 @@ const DoctorProfile = () => {
       setValue("password", res.data.password);
       setValue("newPassword", '');
       // get the hook form current state
+      setInitEmail(res.data.email);
     }
     catch (err) {
       console.error(err);
     }
   };
 
+  const [initEmail, setInitEmail] = useState('');
+
   const updateProfileData = async (data) => {
-    // after getting the data -> set defaultValues in html
-    console.log(isDirty);
     const url = `http://localhost:9092/youro/api/v1/provider/updateProfile`;
     console.log(data.newPassword == '');
-    
+
     let temp = data;
-    temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
-    delete temp.newPassword;  
+    if (temp.newPassword == '') {
+      delete temp.password;
+    }
+    else {
+      temp.password = temp.newPassword;
+    }
+    temp.userId = Cookies.get(COOKIE_KEYS.userId);
+    delete temp.newPassword;
     console.log(temp);
-    if(isDirty){
-      try {
-        const res = await axios.put(url, temp);
-        console.log(res.data);
+    if (initEmail == temp.email) {
+      delete temp.email;
+      console.log("delete email attr from temp");
+      console.log(temp);
+    }
+    try {
+      const res = await axios.put(url, temp);
+      console.log(res.data);
+      if(initEmail != temp.email && res.data.email == initEmail){
+        toast.success("Detailed updated successfully but not emailID");
+        toast.error("Try with another email!!");
+      }
+      else{
         toast.success("Update success!!");
       }
-      catch (err) {
-        console.error(err);
-      }
+      // toast.success("Update success!!");
+    }
+    catch (err) {
+      console.error(err);
     }
   };
 
@@ -188,23 +205,23 @@ const DoctorProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                    <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                  <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
                 </label>
                 {!imagePreview && (
                   <>
-                     <input
+                    <input
                       type="file"
                       id="imgupload"
                       accept=".jpg, .jpeg, .png"
                       {...register('image')}
                       onChange={handleImageChange}
-                      style={{display: 'none'}}
+                      style={{ display: 'none' }}
                     />
                     {errors.image && <p className="error-text">{errors.image.message}</p>}
                   </>
                 )}
                 {/* {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />} */}
-                
+
               </div>
             </div>
             <div className='p-col'>
@@ -214,14 +231,14 @@ const DoctorProfile = () => {
               <div className='p-fields'>
                 <label>First Name(Legal first name)</label>
                 <input defaultValue={"default"} className='input-field' type='text'
-                    {...register("firstName", {
-                      required: true,
-                      maxLength: 32,
-                      // validate: {
-                      //   checkRequired: (value) => value !== "" || "This field is required",
-                      // },
-                    })} />
-                
+                  {...register("firstName", {
+                    required: true,
+                    maxLength: 32,
+                    // validate: {
+                    //   checkRequired: (value) => value !== "" || "This field is required",
+                    // },
+                  })} />
+
                 {errors?.firstName?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.firstName?.type === "maxLength" && <p className="error-text">First name cannot exceed 32 characters</p>}
               </div>

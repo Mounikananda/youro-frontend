@@ -269,7 +269,7 @@ const AdminMaintainenceList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-medication', 'step': 1 , 'rowData': row.original}} />
+                                            <AdminPopUps data={{ 'action': 'delete-prescription', 'step': 1 , 'rowData': row.original}} />
                                             {/* delete-medication - have to add condition in admin pop up and write api integration */}
                                         </Tooltip>
                                     </Box>

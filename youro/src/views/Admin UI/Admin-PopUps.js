@@ -11,7 +11,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Delete } from '@mui/icons-material';
 import axios from 'axios';
 
-const AdminPopUps = ( (props) => {
+const AdminPopUps = ((props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(props.data.step);
 
@@ -22,7 +22,7 @@ const AdminPopUps = ( (props) => {
     };
 
     const closePopup = () => {
-        softDeleteUser();
+        // softDeleteUser();
         setStep(1);
         setIsOpen(false);
     };
@@ -38,8 +38,21 @@ const AdminPopUps = ( (props) => {
             const temp = props.data.rowData;
             temp.softDelete = true;
             console.log(temp);
-            const res = await axios.put(url,temp);
-            console.log(res.data); 
+            const res = await axios.put(url, temp);
+            console.log(res.data);
+        }
+        catch (err) {
+            console.error(err);
+        }
+    }
+
+    const deletePrescription = async () => {
+        // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
+        console.log('in deletePrescription::' + props.data.rowData['medicineId']);
+        const url = `http://localhost:9092/youro/api/v1/deletePrescription/${props.data.rowData['medicineId']}`;
+        try {
+            const res = await axios.delete(url);
+            console.log(res.data);
         }
         catch (err) {
             console.error(err);
@@ -51,10 +64,19 @@ const AdminPopUps = ( (props) => {
         handleSubmit();
     }
     const handleSubmit = () => {
-        let temp = step == 1 ? 2 : (step == 2 ? 3 : -1);
-        console.log(temp);
-        setStep(temp);
-        console.log(step);
+        console.log(props.data.rowData);
+        if (props.data.action === 'delete-prescription') {
+            console.log(props.data.rowData);
+
+            deletePrescription();
+            setIsOpen(false);
+        }
+        else if (props.data.action === 'delete-doctor') {
+            let temp = step == 1 ? 2 : (step == 2 ? 3 : -1);
+            console.log(temp);
+            setStep(temp);
+            console.log(step);
+        }
     };
 
     return (
@@ -147,6 +169,37 @@ const AdminPopUps = ( (props) => {
                                         </Button>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </Popup>
+                </>
+            }
+            {
+                props.data.action == 'delete-prescription' &&
+                <>
+                    <Popup
+                        open={isOpen}
+                        closeOnDocumentClick
+                        onClose={closePopup}
+                        modal
+                    >
+                        <div className="popup-content-admin">
+                            <div className='row'>
+                                <div className='col-12 info-col'>
+                                    <h3 style={{ marginLeft: '5%' }}>Are you sure you want to delete this prescription?</h3>
+                                </div>
+                                <div className='col-12 buttons-col row'>
+                                    <div className='col-6'></div>
+                                    <div className='col-6'>
+                                        <Button onClick={closePopup} variant="outlined" style={{ marginRight: '10px' }} >
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleSubmit} variant="contained" color="error" startIcon={<DeleteIcon />}>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
+                                {/* <div className='col-12'></div> */}
                             </div>
                         </div>
                     </Popup>
