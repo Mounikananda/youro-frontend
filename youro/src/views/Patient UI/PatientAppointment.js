@@ -49,7 +49,146 @@ const PatientAppointment = (props) => {
             }
         };
         try {
-            const res = await axios.get(url, config);
+            // const res = await axios.get(url, config);
+            const res = {data : [
+                {
+                    "date": "2023-10-30",
+                    "noOfSlots": 4,
+                    "slotInfo": [
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Mon Oct 30 2023 18:00:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Mon Oct 30 2023 18:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Mon Oct 30 2023 19:00:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Mon Oct 30 2023 19:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "date": "2023-11-05",
+                    "noOfSlots": 4,
+                    "slotInfo": [
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Sun Nov 05 2023 17:00:00 GMT-0500 (EST)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Sun Nov 05 2023 17:30:00 GMT-0500 (EST)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Sun Nov 05 2023 18:00:00 GMT-0500 (EST)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Sun Nov 05 2023 18:30:00 GMT-0500 (EST)",
+                            "doctorIds": [
+                                53
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "date": "2023-11-02",
+                    "noOfSlots": 9,
+                    "slotInfo": [
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 11:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 12:00:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 12:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 13:00:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 13:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 14:00:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 14:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 15:00:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        },
+                        {
+                            "noOfDoctors": 1,
+                            "startTime": "Thu Nov 02 2023 15:30:00 GMT-0400 (EDT)",
+                            "doctorIds": [
+                                53
+                            ]
+                        }
+                    ]
+                }
+            ]}
             // console.log("got data ");
             // console.log(res);
             setSlotsData(res.data);
@@ -64,9 +203,9 @@ const PatientAppointment = (props) => {
             for(var i = 0; i<res.data.length; i++){
                 var date = new Date(res.data[i].date);
                     var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
-                if(res.data[i].slotInfo > 10){                    
+                if(res.data[i].noOfSlots > 10){                    
                     rnFunc(formattedDate, "many_slots")
-                } else if (res.data[i].slotInfo < 10 && res.data[i].slotInfo > 0 ) {
+                } else if (res.data[i].noOfSlots < 10 && res.data[i].noOfSlots > 0 ) {
                     rnFunc(formattedDate, "few_slots")
                 } else {
                     rnFunc(formattedDate, "no_slots")
