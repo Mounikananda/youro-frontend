@@ -27,6 +27,7 @@ import AdminDeniedDoctorsList from './views/Admin UI/Admin-DeniedDoctorsList';
 import AdminViewDoctorProfile from './views/Admin UI/Admin-ViewDoctorProfile';
 import AdminViewPatientProfile from './views/Admin UI/Admin-ViewPatientProfile';
 import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
+import ForgotPassword from './views/ForgotPassword';
 
 
 export const USER_TYPES = {
@@ -47,6 +48,7 @@ export const DOCTOR_STATUS = {
 export const COOKIE_KEYS = {
   token: 'TOKEN',
   userId: 'U_ID',
+  userName: 'U_NAME',
   userType: 'U_TYPE'
 }
 function App() {
@@ -56,6 +58,7 @@ function App() {
      <Routes>
         <Route path='/' element={<Home/>}></Route>
         <Route path='/login' element={<Login/>}></Route>
+        <Route path='/forgot-password' element={<ForgotPassword/>}></Route>
         <Route path='/signup' element={<Signupoptions/>}></Route>
         <Route path='/signupmyself' element={<Signupformyself/>}></Route>
         <Route path='/signupforfamilymember' element={<SignupforFamilyMember/>}></Route>

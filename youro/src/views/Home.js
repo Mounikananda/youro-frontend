@@ -39,7 +39,7 @@ const Home = () => {
                     <p className="flip-heading">DIAGNOSIS</p>
                     </div>
                     <div class="flip-card-back" style={{width: '300px',}}>
-                    <p style={{wordBreak: 'break-word', whiteSpace: 'normal', padding: '20px',}}>{props.info}</p>
+                    <p style={{wordBreak: 'break-word', whiteSpace: 'normal', padding: '20px',color:'black'}}>{props.info}</p>
                     <div className="btn-filled" style={{width: 'fit-content', margin: 'auto auto 0px auto', padding: '5px 15px',}}>Calculate Symptom score</div>
                     </div>
                 </div>

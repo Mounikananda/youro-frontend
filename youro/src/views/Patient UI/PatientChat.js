@@ -1,8 +1,12 @@
 import React from "react";
+import Youroheader from "../Youro-header";
+
 
 const PatientChat = () => {
     return (
-        <div className="chat-container">
+        <div style={{display:'flex',flexDirection:'column',margin:'0% 2%',width:'100%'}}> 
+          <Youroheader/>
+        <div >
             <h1>Messages</h1>
 
             <div className="chat-container-main">
@@ -40,7 +44,7 @@ const PatientChat = () => {
                 </div>
             </div>
             
-
+         </div>
         </div>
     )
 }

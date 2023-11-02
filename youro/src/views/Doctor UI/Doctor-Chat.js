@@ -1,6 +1,7 @@
 import react from 'react'
 import DoctorSideBar from './Doctor-Sidebar';
 import "../../styles/Doctor-ui/Doctorchat.css";
+import Youroheader from '../Youro-header';
 
 const DoctorChat =()=>
 {
@@ -8,11 +9,13 @@ const DoctorChat =()=>
         <div>
          <div className='doctor-chat'>
          <div className='sidebar'>
-         <DoctorSideBar/>
+         <DoctorSideBar data={'doctor-chat'}/>
         </div>
-        <div className="chat-container">
+        <div style={{display:'flex',flexDirection:'column',margin:'0% 2%',width:'100%'}}> 
+          <Youroheader/>
+        <div style={{}}>
+            {/* <Youroheader/> */}
             <h1>Messages</h1>
-
             <div className="chat-container-main">
                 <div className="select-names">
                     <div className="select-names-active">
@@ -49,6 +52,7 @@ const DoctorChat =()=>
             </div>  
         </div>
         </div>
+       </div>
        </div>
     )
 }

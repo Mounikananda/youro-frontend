@@ -24,6 +24,7 @@ import { DOCTOR_STATUS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
+import Youroheader from '../Youro-header';
 
 const AdminDeniedDoctorsList = () => {
     const [tableData, setTableData] = useState([]);
@@ -149,8 +150,12 @@ const AdminDeniedDoctorsList = () => {
                             <AdminSideBar data={'admin-denied-doctors'} />
                         </div>
                         <div className="admin-ui-table">
-                            <div className='header'>
+                            {/* <div className='header'>
                                 <h1>youro</h1>
+                            </div> */}
+                             <div className='header' style={{marginLeft: '15px'}}>
+                                {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
+                                 <Youroheader/>
                             </div>
                             <MaterialReactTable
                                 displayColumnDefOptions={{

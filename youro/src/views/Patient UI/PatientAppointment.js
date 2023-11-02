@@ -9,6 +9,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from "../../App";
+import Youroheader from "../Youro-header";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -42,10 +43,10 @@ const PatientAppointment = (props) => {
         const url = `http://localhost:9092/youro/api/v1/getAvailableSlotsByDate`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
-            headers: { 
+            headers: {
                 Authorization: token,
                 'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods':'*',
+                'Access-Control-Allow-Methods': '*',
             }
         };
         try {
@@ -194,18 +195,22 @@ const PatientAppointment = (props) => {
             setSlotsData(res.data);
 
             const rnFunc = async (formattedDate, classname) => {
+                console.log(formattedDate + " :: " + classname);
+                console.log(`[aria-label="${formattedDate}"]`);
                 var manySlots = await document.querySelector(`[aria-label="${formattedDate}"]`);
                 // manySlots.className += "many_slots"
                 manySlots.classList.add(classname);
             }
-        
 
-            for(var i = 0; i<res.data.length; i++){
+
+            for (var i = 0; i < res.data.length; i++) {
                 var date = new Date(res.data[i].date);
-                    var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
-                if(res.data[i].noOfSlots > 10){                    
+                date.setDate(date.getDate() + 1);
+                var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
+                console.log(date.toLocaleDateString());
+                if (res.data[i].noOfSlots > 5) {
                     rnFunc(formattedDate, "many_slots")
-                } else if (res.data[i].noOfSlots < 10 && res.data[i].noOfSlots > 0 ) {
+                } else if (res.data[i].noOfSlots < 5 && res.data[i].noOfSlots > 0) {
                     rnFunc(formattedDate, "few_slots")
                 } else {
                     rnFunc(formattedDate, "no_slots")
@@ -230,12 +235,13 @@ const PatientAppointment = (props) => {
         saveNewAppointment();
     }
 
+    const [newApptDocName, setNewApptDocName] = useState('');
     const saveNewAppointment = async () => {
         // console.log("====^^^===");
         // console.log("saveNewAppointment START");
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
-            headers: { 
+            headers: {
                 "Authorization": `Bearer ${token}`,
                 "Cache-Control": "no-cache",
                 'Content-Type': 'application/json',
@@ -251,8 +257,9 @@ const PatientAppointment = (props) => {
                 startTime: selectedInfo.startTime + ''
             };
             console.log(temp);
-            const res = await axios.post(url,temp);
+            const res = await axios.post(url, temp);
             console.log(res.data); //{message: 'Doctor Name'}
+            setNewApptDocName(res.data.message);
         }
         catch (err) {
             console.error(err);
@@ -312,20 +319,25 @@ const PatientAppointment = (props) => {
         // console.log(eve);
         setDateSelection(eve);
         // console.log(eve.getDate() > 10);
-        var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0'+eve.getDate()));
+        var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0' + eve.getDate()));
         getSlots(date);
         setEvent(false);
         // console.log("handleDateSelection end");
     };
 
     return (
-        <div style={{ display: 'flex', width: '100%', position: 'relative', alignItems: 'center' }}>
+        <div style={{ display: 'flex', flexDirection:"column",width:"100%"}} >
+            <div style={{margin:"0% 2%"}}>
+            <Youroheader/>
+           </div>
+        <div style={{ display: 'flex', width: '100%', flexDirection:"row", alignItems: 'start' }}>
             <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
+              
                 <div className="react-calendar-container">
-                    <h1 style={{ top: '55px', position: 'absolute', left: '50px' }}>Schedule Appointment</h1>
+                    <h1 style={{margin:"0% 7%"}}>Schedule Appointment</h1>
                     <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
                 </div>
-                <div style={{ width: '-webkit-fill-available', marginTop: '10px', }} className="slots-container">
+                <div style={{ width: '-webkit-fill-available', marginTop: '50px', }} className="slots-container">
                     <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
                     <div className="slots-container-sub">
                         {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
@@ -370,12 +382,13 @@ const PatientAppointment = (props) => {
                 </div>
                 <div style={{ padding: '50px 20px', textAlign: 'center' }}>
                     <h3>Congratulations !!!</h3>
-                    <h3>Appointment with Dr. Farah confirmed</h3>
+                    <h3>Appointment confirmed with {newApptDocName}</h3>
                     <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{ height: '100px' }}></img><br /><br />
                     {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
                 </div>
             </Popup>
         </div>
+       </div>
 
     )
 }

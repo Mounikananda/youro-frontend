@@ -25,6 +25,7 @@ import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
 import Cookies from "js-cookie";
+import Youroheader from '../Youro-header';
 const data = [
     {
         userId: '1',
@@ -446,8 +447,9 @@ const AdminDoctorsList = () => {
                             <AdminSideBar data={'admin-doctors'} />
                         </div>
                         <div className="admin-ui-table">
-                            <div className='header'>
-                                <h1 style={{marginLeft: '15px'}}>youro</h1>
+                            <div className='header' style={{marginLeft: '15px'}}>
+                                {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
+                                 <Youroheader/>
                             </div>
                             <MaterialReactTable
                                 displayColumnDefOptions={{

@@ -5,7 +5,9 @@ import "../../styles/Patient-ui/Patient-home.css";
 import { FaHome,FaCalendar,FaFacebookMessenger,FaPrescription,FaPowerOff,FaHamburger } from "react-icons/fa";
 import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
 import Signupoptions from '../Signupoptions';
-
+import { COOKIE_KEYS } from "../../App";
+import Cookies from "js-cookie";
+import { FaSignOutAlt } from 'react-icons/fa';
 function SideBar(props)
 {
    const [collapse, setCollapse] = useState(true);
@@ -14,6 +16,25 @@ function SideBar(props)
   // const toggleSidebar = () => {
   //   setCollapse(!collapse);
   // };
+  
+   const handleLogout = () => {
+    // Display a loading indicator or a message if needed
+    // For example, you can set a loading state variable.
+    
+
+    // Wait for 5 seconds before removing cookies
+    // setTimeout(() => {
+          // toast.success("loging out");
+          Cookies.remove(COOKIE_KEYS.userId);
+          Cookies.remove(COOKIE_KEYS.token);
+          Cookies.remove(COOKIE_KEYS.userType);
+          navigate('/');
+      // removeCookies();
+    // }, 5000);
+
+   
+    // 5000 milliseconds = 5 seconds
+  };
 
   return (
   <div>
@@ -42,7 +63,8 @@ function SideBar(props)
     <MenuItem onClick={() => props.setActive(1)} icon={<img src={require('../../assets/Schedule_icon.png')} height='45px' alt='home_icon'/>} active={props.active === 1} className="Menu-item" > Appointments</MenuItem>
     <MenuItem onClick={() => props.setActive(2)} icon={<img src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>}active={props.active === 2} className="Menu-item" >Chat</MenuItem>
     <MenuItem onClick={() => props.setActive(3)} icon={<img src={require('../../assets/Educate_icon.png')} height='35px' alt='home_icon'/>}active={props.active === 3} className="Menu-item" > Educate yourself</MenuItem>
-    <MenuItem onClick={() => props.setActive(4)} icon={<img src={require('../../assets/Profile_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 4} className="Menu-item" > Profile</MenuItem>  
+    <MenuItem onClick={() => props.setActive(4)} icon={<img src={require('../../assets/Profile_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 4} className="Menu-item" > Profile</MenuItem>
+     <MenuItem onClick={handleLogout} className="Menu-item" icon={<FaSignOutAlt size={40} color='white'/>} >Logout</MenuItem>  
     </Menu>
     </Sidebar>
   </div>

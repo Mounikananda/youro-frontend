@@ -31,7 +31,7 @@ const Login= () =>
         Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
         Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
         Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
-
+        Cookies.set(COOKIE_KEYS.userName, res.data.fullName,{expires:7}); 
 
         if(res.data.uType === 'PATIENT'){
           navigate("/patient-ui");
@@ -79,14 +79,14 @@ const Login= () =>
                         {errors?.password?.type === "minLength" && <p className="error-text">Password is min 8 characters</p>}
                 </div>
                 <div>
-                <p className="color-secondary" style={{textDecoration: 'underline', cursor: 'pointer'}} onClick={() => setForgot(1)}>Forgot password?</p>
+                <p className="color-secondary" style={{textDecoration: 'underline', cursor: 'pointer',fontWeight:'bold'}} onClick={() => setForgot(1)}>Forgot password?</p>
                 <div className="btn-filled" style={{marginTop: '40px'}} onClick={handleSubmit(onSubmit)}>Login</div>
                 </div>
                 </div>
                 </>
             }
 
-            {forgot === 1 && <ForgotPassword />}
+            {forgot === 1 && navigate('/forgot-password')}
              
              
         </div>

@@ -67,7 +67,7 @@ body
 }
 
 .educate-container {
-  margin-left: 50px;
+  margin-left: 40px;
   width: 100%;
 }
 
@@ -116,10 +116,11 @@ body
 }
 
 .chat-container-main {
-  width: 100%;
+  width: 92%;
   padding: 50px;
   background-color: white;
   display: flex;
+   height: 60vh;
 }
 
 .select-names {

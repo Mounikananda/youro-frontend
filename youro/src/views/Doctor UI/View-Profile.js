@@ -6,6 +6,7 @@ import { BrowserRouter, Link, Route, Routes, useNavigate } from 'react-router-do
 import "../../styles/Doctor-ui/View-Profile.css";
 import DoctorSideBar from "./Doctor-Sidebar";
 import SearchBar from "./Searchbar";
+import Youroheader from "../Youro-header";
 
 
 
@@ -19,7 +20,7 @@ const ViewProfile=()=>
        </div>
        <div></div>
        <div className="d-components">
-         <h1>youro</h1>
+         <Youroheader/>
          <div className="search-bar-profile">
           <SearchBar/>
         </div> 

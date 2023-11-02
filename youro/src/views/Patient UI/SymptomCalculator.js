@@ -102,14 +102,19 @@ const SymptomCalculator = (props) => {
         // console.log("====^^^===");
     };
 
+    const [newScore, setNewScoreInfo] = useState({});
     const saveNewSymptomScore = async (data) => {
         // console.log("====^^^===");
         // console.log("saveNewSymptomScore START");
-        const url = `http://localhost:9092/youro/api/v1/saveNewSymptomScore`;
+        const url = `http://localhost:9092/youro/api/v1/saveSymptomScore`;
         setSymptomScorePage(true)
         try {
+            // console.log(data);
             const res = await axios.post(url, data);
             setDiagnoses(res.data);
+            console.log(res.data);
+            setNewScoreInfo(res.data);
+
             // setSymptomScorePage(true)
         }
         catch (err) {
@@ -123,7 +128,6 @@ const SymptomCalculator = (props) => {
     const handleNext = () => {
         console.log("====^^^===");
         console.log("handleNext START");
-        console.log(userResponse);
         if (chooseDiagnosis) {
             setChooseDiagnosis(false);
             fetchQuesByDiagId();
@@ -133,9 +137,9 @@ const SymptomCalculator = (props) => {
             } else {
                 const now = new Date();
                 const temp = {
-                    diagnosisId: selDiag,
+                    diagnosisId: parseInt(selDiag),
                     questionData: userResponse,
-                    patientId: Cookies.get(COOKIE_KEYS.userId),
+                    patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
                 }
                 saveNewSymptomScore(temp);
                 // props.setOpen(false)
@@ -210,9 +214,9 @@ const SymptomCalculator = (props) => {
                     </div>}
                     {(!chooseDiagnosis) ? (symptomScorePage ? <div style={{ textAlign: 'center' }}>
                     <h2>Your Symptom Score</h2>
-                    <h4><h1 style={{display: 'inline-block'}}>80</h1 >/100</h4><br>
+                    <h4><h1 style={{display: 'inline-block'}}>{newScore.score}</h1 ></h4><br>
                     </br>
-                    <p>Diagnosis Name: <strong>HHHHH</strong></p>
+                    <p>Diagnosis Name: <strong>{newScore.diagName}</strong></p>
                     </div> : 
                      <>
                         <p>{questionnare[questionNum].question}</p>
