@@ -1,142 +1,214 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import "../../styles/Doctor-ui/Doctor-appointment/DA-orders.css";
+import Popup from 'reactjs-popup';
+import { useForm } from "react-hook-form";
+import { ToastContainer, toast } from 'react-toastify';
+import Loader from '../../utils/loader';
 
-const Orders = () => {
+const Orders = (props) => {
 
  
   const [selectedOption, setSelectedOption] = useState('');
-  const handleSelectChange = (event) => {
-    setSelectedOption(event.target.value);
+  const [diagnosisNames, setDiagnoses] = useState([]);
+  const [carePlanDetails, setCarePlanDetails] = useState([]);
+  const [showItems, setShowItems] = useState(['vitamins', 'medicines', 'lifeStyle']);
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm();
+  
+
+  useEffect(() => {
+    fetchAllDiagnoses();
+
+  
+  }, [])
+
+  const handleSubmitDosage = async () => {
+    const url = `http://52.14.33.154:9093/youro/api/v1/saveCarePlanDetails`;
+    var data = {};
+    var dupData = [...carePlanDetails][0]
+    var dupData2 = {}
+    dupData2['vitamins'] = dupData.vitamins.filter((i) => i.indicator)
+    dupData2['lifeStyle'] = dupData.lifeStyle.filter((i) => i.indicator)
+    dupData2['medicines'] = dupData.medicines.filter((i) => i.indicator)
+    dupData2['labs'] = dupData.labs.filter((i) => i.indicator)
+    dupData2['imaging'] = dupData.imaging.filter((i) => i.indicator)
+    data['carePlanDetails'] = dupData2;
+    data['apptId'] = props.apptId;
+    data['diagID'] = selectedOption;
+    console.log(data)
+    axios.post(url, data).then(res => {
+      toast.success('Prescription saved succesfully')
+      console.log(res)
+    }).catch(err => {
+      toast.error('Error saving prescription')
+      console.log(err)
+    })
+    setOpen(false)
+      
+  }
+
+  const fetchAllDiagnoses = async () => {
+    // console.log("====^^^===");
+    // console.log("fetchAllDiagnoses START");
+    const url = `http://52.14.33.154:9093/youro/api/v1/getAllDiagnoses`;
+    try {
+      const res = await axios.get(url);
+      setDiagnoses(res.data);
+    }
+    catch (err) {
+      console.error(err);
+    }
+    // console.log("fetchAllDiagnoses END");
+    // console.log("====^^^===");
   };
 
-  const [lifestyleItems, setLifestyleItems] = useState([
-    { id: 1, text: 'Double voiding', checked: false },
-    { id: 2, text: 'Timed voiding', checked: false },
-    { id: 3, text: 'Restrict water intake', checked: false },
-  ]);
 
-  const [vitaminsItems, setVitaminsItems] = useState([
-    { id: 1, text: 'Vitamin A', checked: false },
-    { id: 2, text: 'Vitamin B', checked: false },
-    { id: 3, text: 'Vitamin C', checked: false },
-  ]);
+  const handleSelectChange = (event) => {
+    setSelectedOption(event.target.value);
+    fetchMedicines(event.target.value);
+  };
 
-  const [medicinesItems, setMedicinesItems] = useState([
-    { id: 1, text: 'Medicine 1', checked: false },
-    { id: 2, text: 'Medicine 2', checked: false },
-    { id: 3, text: 'Medicine 3', checked: false },
-  ]);
+  const fetchMedicines = async(diagId) => {
+    const url = `http://52.14.33.154:9093/youro/api/v1/getCarePlanDetails?apptId=${props.apptId}&diagId=${diagId}`;
+    try {
+      setIsLoading(true)
+      const res = await axios.get(url);
+      // setPrevAppts(res.data.previousAppointments);
+      // setUpcomingAppts(res.data.upComingAppointments);
+      setIsLoading(false)
+      setCarePlanDetails([res.data])
+    }
+    catch (err) {
+      console.error(err);
+      setIsLoading(false);
+    }
+  }
 
- const [labsItems, setLabsItems] = useState([
-    { id: 2, text: 'СВC', checked: false },
-    { id: 3, text: 'BMP', checked: false },
-    { id: 4, text: 'CMP', checked: false },
-    { id: 5, text: 'UA', checked: false },
-    { id: 6, text: 'UCx', checked: false },
-    { id: 7, text: 'PSA', checked: false },
-    { id: 8, text: 'Semen analysis', checked: false },
-    { id: 9, text: 'Testosterone', checked: false },
-    { id: 10, text: 'FSH/LH', checked: false },
-    { id: 11, text: '24hr urine', checked: false },
-    { id: 12, text: 'Lactate', checked: false },
-    { id: 13, text: 'Other (specify)', checked: false },
-  ]);
+  const handleItemSelection = (item) => {
+    const shwItems = [...showItems]
+    if(showItems.includes(item)){
+      const index = shwItems.indexOf(item);
+      shwItems.splice(index, 1);
+    } else {
+      shwItems.push(item)
+    }
 
+    setShowItems(shwItems)
+  }
 
- 
-  const [imagingItems, setImagingItems] = useState([
-    { id: 1, text: 'US', checked: false },
-    { id: 2, text: 'Renal', checked: false },
-    { id: 3, text: 'Bladder', checked: false },
-    { id: 4, text: 'Scrotal', checked: false },
-    { id: 5, text: 'CT abd/pel', checked: false },
-    { id: 6, text: 'W/ contrast', checked: false },
-    { id: 7, text: 'W/o contrast', checked: false },
-    { id: 8, text: 'Urogram', checked: false },
-    { id: 9, text: 'X-ray', checked: false },
-    { id: 10, text: 'KUB', checked: false },
-    { id: 11, text: 'Chest', checked: false },
-    { id: 12, text: 'Other (specify)', checked: false },
-  ]);
-
-  const handleCheckboxChange = (id, category) => {
+  const handleCheckboxChange = (i, category) => {
+    var dupUserRes = [...carePlanDetails]
     switch (category) {
       case 'lifestyle':
-        setLifestyleItems((prevItems) =>
-          prevItems.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
+        dupUserRes[0]['lifeStyle'] = dupUserRes[0]['lifeStyle'].map((item) =>
+            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
           )
-        );
         break;
       case 'vitamins':
-        setVitaminsItems((prevItems) =>
-          prevItems.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
+        dupUserRes[0]['vitamins'] = dupUserRes[0]['vitamins'].map((item) =>
+            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
           )
-        );
         break;
       case 'medicines':
-        setMedicinesItems((prevItems) =>
-          prevItems.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
+        dupUserRes[0]['medicines'] = dupUserRes[0]['medicines'].map((item) =>
+            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
           )
-        );
         break;
        case 'labs':
-        setLabsItems((prevItems) =>
-         prevItems.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
+        dupUserRes[0]['labs'] = dupUserRes[0]['labs'].map((item) =>
+            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
           )
-	); 
         break;
       case 'imaging':
-        setImagingItems((prevItems) => 
-           prevItems.map((item) =>
-            item.id === id ? { ...item, checked: !item.checked } : item
+        dupUserRes[0]['imaging'] = dupUserRes[0]['imaging'].map((item) =>
+            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
           )
-	); 
         break;
      
       default:
         break;
     }
+
+    setCarePlanDetails(dupUserRes)
   };
 
-  const getCategoryItems = (category) => {
+  const handleDosage = (category, i, value) => {
+    console.log(i)
+    var dupUserRes = [...carePlanDetails]
     switch (category) {
       case 'lifestyle':
-        return lifestyleItems;
+        dupUserRes[0]['lifeStyle'] = dupUserRes[0]['lifestyle'].map((item) =>
+            item.presId === i.presId ? { ...item, dosage: value } : item
+          )
+        break;
       case 'vitamins':
-        return vitaminsItems;
+        console.log(dupUserRes[0]['vitamins'].map((item) =>
+        item.presId === i.presId ? { ...item, dosage: value } : item
+      ))
+        dupUserRes[0]['vitamins'] = dupUserRes[0]['vitamins'].map((item) =>
+            item.presId === i.presId ? { ...item, dosage: value } : item
+          )
+        break;
       case 'medicines':
-        return medicinesItems;
-      // Define cases for other categories
+        dupUserRes[0]['medicines'] = dupUserRes[0]['medicines'].map((item) =>
+            item.presId === i.presId ? { ...item, dosage: value } : item
+          )
+        break;
+       case 'labs':
+        dupUserRes[0]['labs'] = dupUserRes[0]['labs'].map((item) =>
+            item.presId === i.presId ? { ...item, dosage: value } : item
+          )
+        break;
+      case 'imaging':
+        dupUserRes[0]['imaging'] = dupUserRes[0]['imaging'].map((item) =>
+            item.presId === i.presId ? { ...item, dosage: value } : item
+          )
+        break;
+     
       default:
-        return [];
+        break;
     }
+
+    setCarePlanDetails(dupUserRes)
   };
+
+
+  const handleSub = () => {
+    setOpen(true)
+  }
+
 
   return (
     <div>
+      <ToastContainer />
     <div className='order-div'>
 
       <div className='orders-row'>
         <div className='dropdown-list'>
-       <select id="dropdown" value={selectedOption} onChange={handleSelectChange}>
-       <option value="">diagnosisname</option>
-         <option value="option1">Diagnosis-1 </option>
-         <option value="option2">Diagnosis-2</option>
-         <option value="option4">Diagnosis-3</option>
-        <option value="option5">Diagnosis-4</option>
-        <option value="option6">Diagnosis-5</option>
-        <option value="option7">Diagnosis-6</option>
-       </select>
+
+       <select id="d" name="d" className='dropdown-chart' value={selectedOption} onChange={handleSelectChange}>
+        <option>Select Diagnosis</option>
+        {
+          diagnosisNames.map((result) => (<option value={result.diagId}>{result.name}</option>))
+        }
+      </select>
      </div>
+
+        {selectedOption && <> {carePlanDetails && carePlanDetails[0] && Object.keys(carePlanDetails[0]).slice(0, 3).map((title) =>  <>
+            <button className={showItems.includes(title) ? 'btn-outlined-selected' : 'btn-outlined'} onClick={() => handleItemSelection(title)}>{title}</button></>
+        )}
+          
+        </>}
       
-        <button className='button-style'>LifeStyle</button>
-        <button className='button-style'>Vitamins/Supplements</button>
-         <button className='button-style'>Medicines</button>
-         <button className='button-style'>Favourites</button>
+        
       
        {/* <div className='order-options'>
        <button className='button-style'>
@@ -156,105 +228,233 @@ const Orders = () => {
 
      </div>
 
+     {selectedOption && <>
+
+     
+
+     <></>
       <div className="orders-checklist">
         <div className='orders-3'>
-        <div className="orders-name">
+        {(showItems.includes('vitamins') || showItems.includes('lifeStyle') || showItems.includes('medicines')) && <>
+        
+          
+          {showItems.includes('lifeStyle') && <>
+          <div className="orders-name">
           <p className='order-label'>LifeStyle</p>
           <div>
-            {lifestyleItems.map((item) => (
-              <div key={item.id}>
+            {carePlanDetails[0] && carePlanDetails[0].lifeStyle.map((item) => (
+              <div key={item.presId}>
                 <input
                   type="checkbox"
                   id={`lifestyle-item-${item.id}`}
-                  checked={item.checked}
-                  onChange={() => handleCheckboxChange(item.id, 'lifestyle')}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, 'lifestyle')}
                 />
-                <label htmlFor={`lifestyle-item-${item.id}`}>{item.text}</label>
+                <label htmlFor={`lifestyle-item-${item.presId}`}>{item.name}</label>
               </div>
             ))}
           </div>
           </div>
+          </>}
+
+        
      
       
-        <div className="orders-name">
+        
+          {showItems.includes('vitamins') && <>
+          <div className="orders-name">
           <p className='order-label'>Vitamins/Supplements</p>
           <div>
-            {vitaminsItems.map((item) => (
-              <div key={item.id}>
+            {carePlanDetails[0] && carePlanDetails[0].vitamins.map((item) => (
+              <div key={item.presId}>
                 <input
                   type="checkbox"
-                  id={`vitamins-item-${item.id}`}
-                  checked={item.checked}
-                  onChange={() => handleCheckboxChange(item.id, 'vitamins')}
+                  id={`lifestyle-item-${item.id}`}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, 'vitamins')}
                 />
-                <label htmlFor={`vitamins-item-${item.id}`}>{item.text}</label>
+                <label htmlFor={`lifestyle-item-${item.presId}`}>{item.name}</label>
               </div>
             ))}
           </div>
           </div>
+          </>}
  
 
-        <div className="orders-name">
+        
+          {showItems.includes('medicines') && <>
+          <div className="orders-name">
           <p className='order-label'>Medicines</p>
           <div>
-            {medicinesItems.map((item) => (
-              <div key={item.id}>
+            {carePlanDetails[0] && carePlanDetails[0].medicines.map((item) => (
+              <div key={item.presId}>
                 <input
                   type="checkbox"
-                  id={`medicines-item-${item.id}`}
-                  checked={item.checked}
-                  onChange={() => handleCheckboxChange(item.id, 'medicines')}
+                  id={`lifestyle-item-${item.id}`}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, 'medicines')}
                 />
-                <label htmlFor={`medicines-item-${item.id}`}>{item.text}</label>
+                <label htmlFor={`lifestyle-item-${item.id}`}>{item.name}</label>
               </div>
             ))}
           </div>
-        </div>
+          </div>
+          </>}
+        </>}
+        
         </div>
 
 
 	 <div className='orders-3'>
-        <div className="orders-name">
+          
+          <div className="orders-name">
           <p className='order-label'>Labs</p>
           <div>
-            {labsItems.map((item) => (
-              <div key={item.id}>
+            {carePlanDetails[0] && carePlanDetails[0].labs.map((item) => (
+              <div key={item.presId}>
                 <input
                   type="checkbox"
-                  id={`labs-item-${item.id}`}
-                  checked={item.checked}
-                  onChange={() => handleCheckboxChange(item.id, 'labs')}
+                  id={`lifestyle-item-${item.id}`}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, 'labs')}
                 />
-                <label htmlFor={`labs-item-${item.id}`}>{item.text}</label>
+                <label htmlFor={`lifestyle-item-${item.id}`}>{item.name}</label>
               </div>
             ))}
           </div>
-        </div>
+          </div>
 
 
    
-        <div className="orders-name">
+          <div className="orders-name">
           <p className='order-label'>Imaging</p>
           <div>
-            {imagingItems.map((item) => (
-              <div key={item.id}>
+            {carePlanDetails[0] && carePlanDetails[0].imaging.map((item) => (
+              <div key={item.presId}>
                 <input
                   type="checkbox"
-                  id={`imaging-item-${item.id}`}
-                  checked={item.checked}
-                  onChange={() => handleCheckboxChange(item.id, 'imaging')}
+                  id={`lifestyle-item-${item.id}`}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, 'imaging')}
                 />
-                <label htmlFor={`imaging-item-${item.id}`}>{item.text}</label>
+                <label htmlFor={`lifestyle-item-${item.id}`}>{item.name}</label>
               </div>
             ))}
           </div>
-       </div>
+          </div>
        </div>
    </div>
      <div className='submit-button'>
-     <button className='btn-filled '>Submit order</button>
+     <button className='btn-filled ' onClick={handleSub}>Submit order</button>
      </div>
+     </>}
+
+     {!selectedOption && <>
+      <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <h3><i>Please select a diagnosis to complete order</i></h3>
+                  </div>
+     </>}
+
+     <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
+          <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpen(false) }}>
+              <span class="material-symbols-outlined">
+                  close
+              </span>
+          </div>
+
+          <h1 style={{color: 'black', padding: '20px'}}>Dosage Instructions</h1>
+
+          <div style={{padding: '0px 20px 20px 20px'}} className='popup-height'>
+            
+              {(open && carePlanDetails[0].vitamins.map((item, i) => {return item.indicator && 1}).includes(1)) && <>
+                <h3>Vitamins/Supplements</h3>
+                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: '10px'}}>
+                    
+                      {open && carePlanDetails[0] && carePlanDetails[0].vitamins.map((item, i) => {return item.indicator && <>
+                        <div style={{width: '45%'}} key={i}>
+                        <label>{item.name} :</label>
+                          <input className="input-field input-border" type="text" value={item.dosage} onChange={(e) => handleDosage('vitamins', item, e.target.value)}/>
+                          </div>
+                          </>})}
+                        
+                      
+                  </div>
+                  <hr style={{marginTop: '20px'}}></hr>
+              </>}
+
+              {(open && carePlanDetails[0].lifeStyle.map((item, i) => {return item.indicator && 1}).includes(1)) && <>
+                <h3>life Style</h3>
+                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+                    
+                      {open && carePlanDetails[0] && carePlanDetails[0].lifeStyle.map((item, i) => {return item.indicator && <>
+                        <div style={{width: '45%'}} key={i}>
+                        <label>{item.name} :</label>
+                          <input className="input-field input-border" type="text" value={item.dosage} onChange={(e) => handleDosage('lifeStyle', item, e.target.value)}/>
+                          </div>
+                          </>})}
+                        
+                      
+                  </div>
+                  <hr style={{marginTop: '20px'}}></hr>
+              </>}
+            
+              {(open && carePlanDetails[0].medicines.map((item, i) => {return item.indicator && 1}).includes(1)) && <>
+                <h3>Medicines</h3>
+                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+                    
+                      {open && carePlanDetails[0] && carePlanDetails[0].medicines.map((item, i) => {return item.indicator && <>
+                        
+                        <div style={{width: '45%'}} key={i}><label>{item.name} :</label>
+                          <input className="input-field input-border" type="text" value={item.dosage} onChange={(e) => handleDosage('medicines', item, e.target.value)}/>
+                          </div>
+                          </>})}
+                      
+                  </div>
+                  <hr style={{marginTop: '20px'}}></hr>
+              </>}
+            
+              {(open && carePlanDetails[0].labs.map((item, i) => {return item.indicator && 1}).includes(1)) && <>
+                <h3>Labs</h3>
+                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+                    
+                      {open && carePlanDetails[0] && carePlanDetails[0].labs.map((item, i) => {return item.indicator && <>
+                        <div style={{width: '45%'}} key={i}>
+                        <label>{item.name} :</label>
+                          <input className="input-field input-border" type="text" value={item.dosage} onChange={(e) => handleDosage('labs', item, e.target.value)}/>
+                          </div>
+                          </>})}
+                        
+                      
+                  </div>
+                  <hr style={{marginTop: '20px'}}></hr>
+              </>}
+            
+              {(open && carePlanDetails[0].imaging.map((item, i) => {return item.indicator && 1}).includes(1)) && <>
+                <h3>Imaging</h3>
+                  <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap'}}>
+                    
+                      {open && carePlanDetails[0] && carePlanDetails[0].imaging.map((item, i) => {return item.indicator && <>
+                        <div style={{width: '45%'}} key={i}>
+                        <label>{item.name} :</label>
+                          <input className="input-field input-border" type="text" value={item.dosage} onChange={(e) => handleDosage('imaging', item, e.target.value)}/>
+                          </div>
+                          </>})}
+                        
+                      
+                  </div>
+                  <hr style={{marginTop: '20px'}}></hr>
+              </>}
+            
+
+              <div className='btn-filled' onClick={handleSubmitDosage}>Submit</div>
+
+          </div>
+
+      </Popup>
+
+      
    </div>
+   <Loader active={isLoading} />
    </div>
   );
 };

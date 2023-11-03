@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "../../styles/Doctor-ui/Searchbar.css";
 import PatientDetails from './DA-PatientDetails';
 import { FaChevronLeft } from 'react-icons/fa';
-import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes,useNavigate, useParams  } from 'react-router-dom';
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -11,11 +11,11 @@ const SearchBar = () => {
 
   const [patientData, setPatientData] = useState(null);
   const navigate = useNavigate();
+  let {apptId, patientId} = useParams();
 
   const handleViewMore = (data) => 
   {
     setshowdetails(true);
-    setPatientData(data);
     setSearchInput('');
   };
 
@@ -26,12 +26,16 @@ const SearchBar = () => {
     }
   };
 
-const hitback =()=>
-{
-  setshowdetails(false);
-}
+  const hitback =()=>
+  {
+    setshowdetails(false);
+  }
 
-
+  useEffect(() => {
+    if(apptId) {
+      handleViewMore()
+    }
+  }, [apptId])
 
 
   const patientdata = [
@@ -88,8 +92,8 @@ const hitback =()=>
     return nameMatch;
   });
 
-   return (
-    <div className='search-bar'>
+   return ( <>
+  <div className='search-bar'>
       <div className='search-input'>
         <>
          <div className='back-button'>
@@ -113,7 +117,7 @@ const hitback =()=>
       <div className='patient-details'>
         {showdetails ? (
           <div className='details-container'>
-             <PatientDetails data={patientData} />
+             <PatientDetails />
           </div>
         ) : (
           <div>
@@ -125,14 +129,16 @@ const hitback =()=>
                   <label className='label-pd'>{patient.gmail}</label>
                 </div>
                 <div className='view-more'>
-                  <button className='btn-filled' onClick={() => handleViewMore(patientdata)}>View More</button>
+                  <button className='btn-filled' onClick={() => handleViewMore()}>View More</button>
                 </div>   
               </div>
             ))}
           </div>
         )}
       </div>
-    </div>
+    </div> 
+   </>
+    
   );
 };
 

@@ -35,7 +35,7 @@ const ForgotPassword = () => {
         // api call to request for otp 
          //if not valid: show error in ui; else store the otp
         console.log("email: ",data.email);
-        const url = `http://52.14.33.154:9092/youro/api/v1/send-otp/${data.email}`;
+        const url = `http://52.14.33.154:9093/youro/api/v1/send-otp/${data.email}`;
         await axios.get(url).then((res) => {
             console.log("otp: ", res.data.message);
             toast.success("otp sent to the email",{autoClose: 5000,
@@ -78,7 +78,7 @@ const ForgotPassword = () => {
             password: data.password // Get the new password from the form data
         };
 
-        const url = `http://52.14.33.154:9092/youro/api/v1/password-reset`;
+        const url = `http://52.14.33.154:9093/youro/api/v1/password-reset`;
         await axios.put(url, newPasswordData).then((res) => {
             toast.success("Password updated successfully!");
             setLogin(1);

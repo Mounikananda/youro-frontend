@@ -27,7 +27,7 @@ const PatientHomePage = () => {
   }, []);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/appointments/${uId}`;
+    const url = `http://52.14.33.154:9093/youro/api/v1/appointments/${uId}`;
     try {
       const res = await axios.get(url);
       console.log(res);
@@ -231,7 +231,7 @@ const PatientHomePage = () => {
           {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
             <div className='previous-appointment'> 
              <div>
-              <h3>{item.apptDate} - {item.apptStartTime}</h3>
+             <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
               <h3>{item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>

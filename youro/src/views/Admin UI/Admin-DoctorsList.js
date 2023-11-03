@@ -369,7 +369,7 @@ const AdminDoctorsList = () => {
                 'Content-Type': 'application/json'
             }
         };
-        const url = `http://52.14.33.154:9092/youro/api/v1/getAllUsers/${type}`;
+        const url = `http://52.14.33.154:9093/youro/api/v1/getAllUsers/${type}`;
         try {
             const res = await axios.get(url, config);
             canRenderAdmin(true); 
@@ -410,7 +410,7 @@ const AdminDoctorsList = () => {
     const updateDoctorStatus = async (rowData) => {
         console.log('in updateDoctorStatus::');
         console.log(rowData);
-        const url = `http://52.14.33.154:9092/youro/api/v1/provider/updateProfile`;
+        const url = `http://52.14.33.154:9093/youro/api/v1/provider/updateProfile`;
         try {
             // const temp = rowData;
             // console.log(temp);

@@ -59,6 +59,9 @@ import FileUpload from './DA-Results';
 import Notes from './DA-notes';
 import Orders from './DA-orders';
 import ReactQuillWrapper from './DA-takenote';
+import { Routes, Route, useParams } from 'react-router-dom';
+import axios from 'axios';
+import Loader from '../../utils/loader';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -68,51 +71,81 @@ const PatientDetails = (props) => {
   const [notes, setNotes] = useState(false);
   const [orders, setOrders] = useState(false);
   const [followup, setFollowup] = useState(false);
+  const [prevAppts, setPrevAppts] = useState([]);
+  const [upComingAppts, setUpcomingAppts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  let {apptId, patientId} = useParams();
+  const [patDetails, setPatDetails] = useState();
 
   const handleOverview = (data) => {
     setActiveTab(data);
   }
 
-  const TodayAppointmentList = () => {
-  const [data, setData] = useState([]);
-  
   useEffect(() => {
 
-    const mockData = [
-      { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
-      { id: 2, name: 'John Doe', time: "10-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },
-      { id: 3, name: 'John Doe', time: "11-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis3', symptomscore: '30', meetup: 'new meet' },
-      { id: 4, name: 'John Doe', time: "12-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis4', symptomscore: '40', meetup: 'follow-up' },
-      { id: 5, name: 'John Doe', time: "13-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up'},
-      { id: 6, name: 'John Doe', time: "14-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis6', symptomscore: '60', meetup: 'new meet' },
-      { id: 7, name: 'John Doe', time: "15-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis7', symptomscore: '70', meetup: 'follow-up' },
-      { id: 8, name: 'John Doe', time: "16-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis8', symptomscore: '80', meetup: 'new meet' },
-    ];
-
-    setTimeout(() => {
-      setData(mockData);
-    }, 1000);
+    fetchAppointments();
+    getPatientDetails();
   }, []);
+
+  const getPatientDetails = async() => {
+    const url = `http://52.14.33.154:9093/youro/api/v1/getUser/${patientId}`;
+    try {
+      setIsLoading(true)
+      const res = await axios.get(url);
+      setPatDetails(res.data)
+      setIsLoading(false)
+    }
+    catch (err) {
+      console.error(err);
+      setIsLoading(false);
+    }
+  }
+
+  const fetchAppointments = async() => {
+    const url = `http://52.14.33.154:9093/youro/api/v1/appointments/${patientId}`;
+    try {
+      setIsLoading(true)
+      const res = await axios.get(url);
+      setPrevAppts(res.data.previousAppointments);
+      setUpcomingAppts(res.data.upComingAppointments);
+      setIsLoading(false)
+    }
+    catch (err) {
+      console.error(err);
+      setIsLoading(false);
+    }
+  }
+
+  const TodayAppointmentList = () => {
+  
 
   return (
     <div>
-        {data.map((item) => (
-          <div className='doctor-div'> 
-           <div>
-            <h3 style={{textDecoration:'underline'}}>{item.name}</h3>
-           </div>
-             <ul key={item.id}>
-             <li>Date : {item.time}</li>
-             <li>Time : {item.patientstime}</li>
-             <li>Diagnosisname: {item.diagnosisname}</li>
-             <li>Symptom score: {item.symptomscore}</li>
-             <li>Meet-type: {item.meetup}</li>
+        {
+          (upComingAppts==null || upComingAppts.length == 0) && <>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <h3><i>No record of appointments</i></h3>
+            </div>
+          </>
+        }
+
+          {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
+            <div className='previous-appointment'> 
+             <div>
+              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
+              <h3>{item.patientName}</h3>
+            </div>
+            <ul key={item.apptId}>
+              <li>Diagnosisname: {item.diagnosisname}</li>
+              {/* <li>Symptom score: {item.symptomscore}</li> */}
+              <li>Symptom score: N/A</li>
               {/* <p>{item.meetup}</p> */}
-             </ul>
-           <button className='join-now-button'>Join Now</button>
-          </div> 
-        ))}
-    </div>
+            </ul>
+          </div>
+        ))
+        
+        }
+      </div>
   );
 };
 
@@ -124,17 +157,17 @@ const PatientDetails = (props) => {
 
  const handlenoteclickclose =()=> {
    setShowEditor(false);
-}
+  }
 
-  console.log("printing data", props.data[0]);
+
   return (
     <div className='p-data'>
 
       <div className='p-all-data'>
         <div className='p-data-col'>
-          <label className='label-p-data' >Name: {'Stephen'}</label>
+          {patDetails && <><label className='label-p-data' >Name: {patDetails.firstName + ' ' + patDetails.lastName}</label>
           <label className='label-p-data'>DOB: {'12/12/1999'}</label>
-          <label className='label-p-data'>Patient id: {'12346'}</label> 
+          <label className='label-p-data'>Patient id: {'12346'}</label></> }
         </div>
         <div className='p-data-row'>
           <div >Message</div>
@@ -217,7 +250,7 @@ const PatientDetails = (props) => {
       )}
 
       {activeTab === 'orders' && (
-        <Orders/>
+        <Orders apptId={apptId} patId={patientId}/>
       )}
 
       {activeTab === 'follow-up' && (
@@ -236,7 +269,7 @@ const PatientDetails = (props) => {
             <ReactQuillWrapper />
         </div> )}
       
-
+    <Loader active={isLoading} />
     </div>
   );
 }

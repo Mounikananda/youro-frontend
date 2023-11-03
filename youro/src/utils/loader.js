@@ -18,6 +18,7 @@ const Loader = (props) => {
                         wrapperStyle={{}}
                         wrapperClass=""
                         visible={true}
+                        style={{zIndex: '1000'}}
                         /></div>
                 </div>
             </div>

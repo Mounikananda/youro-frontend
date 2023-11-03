@@ -47,7 +47,7 @@
 
 //     const fetchData = async () => {
 //         let type = USER_TYPES.doctor;
-//         const url = `http://52.14.33.154:9092/youro/api/v1/getAllUsers/${type}`;
+//         const url = `http://52.14.33.154:9093/youro/api/v1/getAllUsers/${type}`;
 //         try {
 //             const res = await axios.get(url);
 //             canRenderAdmin(true);

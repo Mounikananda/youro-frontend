@@ -147,7 +147,7 @@ const DoctorProfile = () => {
   {
    
     console.log("came to profile pic method");
-    const get_url=`http://52.14.33.154:9092/youro/api/v1/getDp/${doctor_id}`;
+    const get_url=`http://52.14.33.154:9093/youro/api/v1/getDp/${doctor_id}`;
 
     // try {
     //   const res = await axios.get(get_url);
@@ -205,7 +205,7 @@ const DoctorProfile = () => {
       const compressedFile = await imageCompression(file,options);
       // Set the file value in the form data
       setValue('image', compressedFile);
-      // const url=`http://52.14.33.154:9092/youro/api/v1/uploadDp`
+      // const url=`http://52.14.33.154:9093/youro/api/v1/uploadDp`
       // const profile_pic= await 
       // // Create a preview URL for the selected image
       // const previewURL = URL.createObjectURL(file);
@@ -219,7 +219,7 @@ const DoctorProfile = () => {
       formData.append('userId', doctor_id);
       formData.append('imageFile', compressedFile);
 
-      const url = `http://52.14.33.154:9092/youro/api/v1/uploadDp`;
+      const url = `http://52.14.33.154:9093/youro/api/v1/uploadDp`;
       console.log("profile pic dic",formData);
     try {
       const res = await axios.post(url,formData);
@@ -247,7 +247,7 @@ const DoctorProfile = () => {
     // after getting the data -> set defaultValues in html
     // const emailId = 'doc2@gmail.com';
     const uId = Cookies.get(COOKIE_KEYS.userId);
-    const url = `http://52.14.33.154:9092/youro/api/v1/getUser/${uId}`;
+    const url = `http://52.14.33.154:9093/youro/api/v1/getUser/${uId}`;
     try {
       const res = await axios.get(url);
       console.log(res.data);
@@ -273,7 +273,7 @@ const DoctorProfile = () => {
   const [initEmail, setInitEmail] = useState('');
 
   const updateProfileData = async (data) => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/provider/updateProfile`;
+    const url = `http://52.14.33.154:9093/youro/api/v1/provider/updateProfile`;
     console.log(data.newPassword == '');
 
     let temp = data;

@@ -73,7 +73,7 @@ function App() {
         <Route path='/admin-patients' element={<AdminPatientList/>}></Route>
         <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
         <Route path='/doctor-appointment' element={<DoctorAppointments/>}></Route>
-        <Route path='/doctor-view-profile' element={<ViewProfile/>}></Route>
+        <Route path='/doctor-view-profile/:patientId?/:apptId?' element={<ViewProfile/>}></Route>
         <Route path='/doctor-chat' element={<DoctorChat/>}></Route>
         <Route path='/admin-denied-doctors' element={<AdminDeniedDoctorsList/>}></Route>
         <Route path='/admin-view-doctor' element={<AdminViewDoctorProfile/>}></Route>

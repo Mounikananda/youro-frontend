@@ -51,3 +51,8 @@
   padding-left: 25px;
   font-size: small;  
 }
+
+.popup-height{
+  height: 80vh;
+  overflow-y: auto;
+}

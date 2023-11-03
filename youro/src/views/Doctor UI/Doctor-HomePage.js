@@ -12,7 +12,8 @@ import { USER_TYPES } from '../../App';
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from '../../App';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Loader from '../../utils/loader';
 
 function DoctorHomePage() {
   const [isVisible, setIsVisible] = useState(false);
@@ -34,17 +35,21 @@ function DoctorHomePage() {
   const uId = Cookies.get(COOKIE_KEYS.userId);//1; 
   const [prevAppts, setPrevAppts] = useState([]);
   const [upComingAppts, setUpcomingAppts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/appointments/${uId}`;
+    setIsLoading(true)
+    const url = `http://52.14.33.154:9093/youro/api/v1/appointments/${uId}`;
     try {
       const res = await axios.get(url);
       console.log(res);
       setPrevAppts(res.data.previousAppointments);
       setUpcomingAppts(res.data.upComingAppointments);
+      setIsLoading(false)
     }
     catch (err) {
       console.error(err);
+      setIsLoading(false)
     }
   }
 
@@ -71,23 +76,51 @@ function DoctorHomePage() {
     
 
     return (
+      // <div>
+      //   {data && data.length> 0 && data.map((item) => (
+      //     <div className='doctor-div'>
+      //       <div>
+      //         <h3 onClick={toggleVisibility} style={{ textDecoration: 'underline' }}>{item.name}</h3>
+      //       </div>
+      //       <ul key={item.apptId}>
+      //         <li>Date : {item.apptDate}</li>
+      //         <li>Time : {item.apptStartTime}</li>
+      //         {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
+      //         {/* <li>Symptom score: {item.symptomscore}</li> */}
+      //         <li>Meet-type: {item.link}</li>
+      //         {/* <p>{item.meetup}</p> */}
+      //       </ul>
+      //       <button className='join-now-button'>Join Now</button>
+      //     </div>
+      //   ))}
+      // </div>
       <div>
-        {data && data.length> 0 && data.map((item) => (
-          <div className='doctor-div'>
-            <div>
-              <h3 onClick={toggleVisibility} style={{ textDecoration: 'underline' }}>{item.name}</h3>
+        {
+          (upComingAppts==null || upComingAppts.length == 0) && <>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <h3><i>No record of appointments</i></h3>
+            </div>
+          </>
+        }
+
+          {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
+            <div className='previous-appointment'> 
+             <div>
+              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
+              <h3>{item.patientName}</h3>
             </div>
             <ul key={item.apptId}>
-              <li>Date : {item.apptDate}</li>
-              <li>Time : {item.apptStartTime}</li>
-              {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
+              <li>Diagnosisname: {item.diagnosisname}</li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
-              <li>Meet-type: {item.link}</li>
+              <li>Symptom score: N/A</li>
+              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link  style={{ textDecoration: 'none' }}to={`/doctor-view-profile/${item.patientId}/${item.apptId}`}>Take me to care plan</Link></li>
               {/* <p>{item.meetup}</p> */}
             </ul>
-            <button className='join-now-button'>Join Now</button>
+            <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button>
           </div>
-        ))}
+        ))
+        
+        }
       </div>
     );
   };
@@ -173,6 +206,7 @@ function DoctorHomePage() {
 
   return (
      <div className='hm-doctor'>
+        <Loader active={isLoading} />
         <div className='sidebar'>
          <DoctorSideBar data={'doctor-ui'} />
        </div>

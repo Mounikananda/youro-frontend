@@ -40,7 +40,7 @@ const PatientAppointment = (props) => {
     const fetch15DaysSlots = async () => {
         console.log("====^^^===");
         console.log("fetch15DaysSlots START");
-        const url = `http://52.14.33.154:9092/youro/api/v1/getAvailableSlotsByDate`;
+        const url = `http://52.14.33.154:9093/youro/api/v1/getAvailableSlotsByDate`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
@@ -109,7 +109,7 @@ const PatientAppointment = (props) => {
                 "Access-Control-Allow-Origin": "*",
             }
         };
-        const url = `http://52.14.33.154:9092/youro/api/v1/saveAppointment`;
+        const url = `http://52.14.33.154:9093/youro/api/v1/saveAppointment`;
         try {
             console.log(selectedInfo);
             const temp = {
