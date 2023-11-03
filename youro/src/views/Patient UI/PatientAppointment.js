@@ -66,7 +66,7 @@ const PatientAppointment = (props) => {
 
             for (var i = 0; i < res.data.length; i++) {
                 var date = new Date(res.data[i].date);
-                date.setDate(date.getDate() + 1);
+                date.setDate(date.getDate());
                 var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
                 console.log(date.toLocaleDateString());
                 if (res.data[i].noOfSlots > 5) {

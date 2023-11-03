@@ -3,6 +3,7 @@ import "../../styles/Doctor-ui/Searchbar.css";
 import PatientDetails from './DA-PatientDetails';
 import { FaChevronLeft } from 'react-icons/fa';
 import { BrowserRouter, Link, Route, Routes,useNavigate, useParams  } from 'react-router-dom';
+import axios from 'axios';
 
 const SearchBar = () => {
   const [searchInput, setSearchInput] = useState('');
@@ -10,12 +11,13 @@ const SearchBar = () => {
   const [showdetails,setshowdetails] = useState(false);
 
   const [patientData, setPatientData] = useState(null);
+  const [userDetails, setUserDetails] = useState([])
   const navigate = useNavigate();
   let {apptId, patientId} = useParams();
 
-  const handleViewMore = (data) => 
+  const handleViewMore = (id) => 
   {
-    setshowdetails(true);
+    navigate(`${id}`)
     setSearchInput('');
   };
 
@@ -32,27 +34,27 @@ const SearchBar = () => {
   }
 
   useEffect(() => {
-    if(apptId) {
-      handleViewMore()
+    fetchUsers()
+  }, [])
+
+  useEffect(() => {
+    if(patientId) {
+      setshowdetails(true)
     }
-  }, [apptId])
+  }, [patientId])
 
+  const fetchUsers = async () => {
+    const url = `http://52.14.33.154:9093/youro/api/v1/getAllUsers/PATIENT`;
+    try {
+      const res = await axios.get(url);
+      console.log(res)
+      setUserDetails(res.data);
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
 
-  const patientdata = [
-  {
-    firstName: "Noah",
-    lastName: "Hernandez",
-    address: "789 Elm St",
-    city: "San Diego",
-    pincode: "12345",
-    state: "CA",
-    hasInsurance: true,
-    email: "noah@example.com",
-    dateOfBirth: "5/19/1991",
-    sex: "Male",
-    patientId: "123456",
-  },
-];
 
 
   const patientdetails = [
@@ -121,15 +123,14 @@ const SearchBar = () => {
           </div>
         ) : (
           <div>
-            {filteredpatients.map((patient) => (
+            {userDetails.map((patient) => (
               <div key={patient.name} className='patient-details-1'>
                 <div className='column-details'>
-                  <label className='label-pd'>patientid</label>
-                  <label className='label-pd'>{patient.name}</label>
-                  <label className='label-pd'>{patient.gmail}</label>
+                  <label className='label-pd'>{patient.firstName}</label>
+                  <label className='label-pd'>{patient.email}</label>
                 </div>
                 <div className='view-more'>
-                  <button className='btn-filled' onClick={() => handleViewMore()}>View More</button>
+                  <button className='btn-filled' onClick={() => handleViewMore(patient.userId)}>View More</button>
                 </div>   
               </div>
             ))}
