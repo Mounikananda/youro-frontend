@@ -21,7 +21,7 @@ import {
 
 import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-PatientList.css";
-import { USER_TYPES } from '../../App';
+import { API_DETAILS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import Youroheader from '../Youro-header';
@@ -331,9 +331,16 @@ const AdminPatientList = () => {
 
     const fetchData = async () => {
         let type = USER_TYPES.user;
-        const url = `http://52.14.33.154:9093/youro/api/v1/getAllUsers/${type}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllUsers/${type}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url, config);
             canRenderAdminPats(true);
             setTableDataPats(res.data);
             console.log("Data inside fetchData : " + count + "  =>  " + tableDataPats);

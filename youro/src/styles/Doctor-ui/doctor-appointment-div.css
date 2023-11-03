@@ -21,6 +21,16 @@
   border-radius: 20px;
 }
 
+
+.create-link-button
+{
+  border: none;
+  color: white;
+  background-color: var(--secondary-color);
+  padding: 10px;
+  border-radius: 20px;
+}
+
 .incomplete-appt-div
 {
   display: flex;

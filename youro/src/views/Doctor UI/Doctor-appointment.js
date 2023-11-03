@@ -9,7 +9,7 @@ import "../../styles/Doctor-ui/Doctor-appointment/Doctor-Appointment-page.css";
 import "../../index.css";
 import axios, { all } from 'axios';
 import { appendErrors } from "react-hook-form";
-import { COOKIE_KEYS } from "../../App";
+import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 import Youroheader from "../Youro-header";
 import Loader from '../../utils/loader';
@@ -17,19 +17,19 @@ import Loader from '../../utils/loader';
 // #d7b8b9
 const components =
 {
-  event:(props)=>{
-     console.log("advance css components for calender",props);
-     const eventtype=props.title;
-     const centerTextStyles = {
+  event: (props) => {
+    console.log("advance css components for calender", props);
+    const eventtype = props.title;
+    const centerTextStyles = {
       background: eventtype === "Available" ? "#745edf" : "#8A6767",
       color: "white",
       height: "100%",
       textAlign: "center",
-      display: "flex", 
-      alignItems: "center", 
-      justifyContent: "center", 
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     };
-    return <div style={centerTextStyles}>{props.title}</div>; 
+    return <div style={centerTextStyles}>{props.title}</div>;
     //  if(eventtype==="Available")
     //   {
     //     return (
@@ -77,11 +77,11 @@ function DoctorAppointments() {
 
   const [events, setEvents] = useState([]);
   const [calenderapt, setcalenderapt] = useState([]);
-  
+
   // console.log(User)
 
   // const clear_events =
- 
+
 
   const apt = {
 
@@ -134,14 +134,21 @@ function DoctorAppointments() {
     let all_events = [];
     // let doc_events=[];
 
-    const url = `http://52.14.33.154:9093/youro/api/v1/getAvailability/${doctid}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAvailability/${doctid}`;
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
     try {
 
-      const res = await axios.get(url);
+      const res = await axios.get(url, config);
       console.log("checking doc availability", res.data);
       // const res.data = res.data;
-     
-      
+
+
       if (res.data && res.data.appointments) {
         res.data.appointments.forEach((appointment) => {
           const event = {
@@ -154,7 +161,7 @@ function DoctorAppointments() {
         });
       }
 
-      console.log("All events",res.data.appointments);
+      console.log("All events", res.data.appointments);
       if (res.data && res.data.docAvail) {
         res.data.docAvail.forEach((availability) => {
           const event = {
@@ -163,11 +170,11 @@ function DoctorAppointments() {
             title: availability.status,
             id: availability.doctorId,
           };
-           all_events.push(event);
+          all_events.push(event);
         });
       }
 
-     console.log("all events of docavail ",all_events)
+      console.log("all events of docavail ", all_events)
 
       // console.log("printing all events", all_events);
       setEvents(all_events);
@@ -183,7 +190,7 @@ function DoctorAppointments() {
     fetching_api_data();
   }, []);
 
-  const [newEvent, setNewEvent] = useState({ start: null, end: null, id: ""});
+  const [newEvent, setNewEvent] = useState({ start: null, end: null, id: "" });
 
   function handleEventCreation(slotInfo) {
     if (newEvent) {
@@ -222,35 +229,48 @@ function DoctorAppointments() {
 
   // }
 
-  const RemoveAvailability= async (selectedEvent) =>
-  {
-     axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
-     const url = `http://52.14.33.154:9093/youro/api/v1/removeDoctorAvailability`;
-      console.log(selectedEvent);
-      const temp = {
-        startTime: selectedEvent.start + "",
-        endTime: selectedEvent.end + "",
-        docId: doctid
-      };
-      try {
-        const res = await axios.put(url,temp);
-        console.log(res);
-        console.log("posting removed data", res);
-        hidedetails();
-        fetching_api_data();
+  const RemoveAvailability = async (selectedEvent) => {
+    //  axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/removeDoctorAvailability`;
+    console.log(selectedEvent);
+    const temp = {
+      startTime: selectedEvent.start + "",
+      endTime: selectedEvent.end + "",
+      docId: doctid
+    };
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
       }
-      catch (err) {
-        console.error(err);
-      }
+    };
+    try {
+      const res = await axios.put(url, temp, config);
+      console.log(res);
+      console.log("posting removed data", res);
+      hidedetails();
+      fetching_api_data();
+    }
+    catch (err) {
+      console.error(err);
+    }
   }
 
   const handleCancelApptAPI = async (selectedEvent) => {
-    console.log('handleCancelApptAPI :: ',selectedEvent);
+    console.log('handleCancelApptAPI :: ', selectedEvent);
 
     console.log(typeof (selectedEvent.apptId));
-    const url = `http://52.14.33.154:9093/youro/api/v1/cancelAppointment/${selectedEvent.id}/${doctid}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${selectedEvent.id}/${doctid}`;
+    const config = {
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
     try {
-      const res = await axios.put(url);
+      const res = await axios.put(url, config);
       console.log(res);
       hidedetails();
       fetching_api_data();
@@ -262,10 +282,10 @@ function DoctorAppointments() {
 
   const saveNewSchedule = async () => {
 
-    console.log("showing what slot is selected",selectslot);
+    console.log("showing what slot is selected", selectslot);
     if (selectslot == "Available") {
-      axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
-      const url = `http://52.14.33.154:9093/youro/api/v1/addDoctorAvailability`;
+      // axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/addDoctorAvailability`;
 
       const temp = {
         startTime: newEvent.start + "",
@@ -273,8 +293,15 @@ function DoctorAppointments() {
         docId: doctid
       };
       console.log(temp);
+      const config = {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+        }
+      };
       try {
-        const res = await axios.put(url,temp);
+        const res = await axios.put(url, temp, config);
         console.log(res);
         console.log("posting available data", res);
         fetching_api_data();
@@ -283,9 +310,8 @@ function DoctorAppointments() {
         console.error(err);
       }
     }
-    else if(selectslot=="UnAvailable")
-    {
-       RemoveAvailability(newEvent); 
+    else if (selectslot == "UnAvailable") {
+      RemoveAvailability(newEvent);
       // axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
       // const url = `http://52.14.33.154:9093/youro/api/v1/removeDoctorAvailability`;
       // const temp = {
@@ -303,8 +329,8 @@ function DoctorAppointments() {
       // catch (err) {
       //   console.error(err);
       // }
-    } 
     }
+  }
   // };
 
 
@@ -315,7 +341,7 @@ function DoctorAppointments() {
           <DoctorSideBar data={'doctor-appointment'} />
         </div>
         <div className="d-calender">
-          <Youroheader/>
+          <Youroheader />
           <div className="d-calender-form">
             <Calendar
               localizer={localizer}
@@ -341,7 +367,7 @@ function DoctorAppointments() {
                 }
               }}
               onSelectEvent={handleSelectEvent}
-              style={{ height: "80vh" }}   
+              style={{ height: "80vh" }}
               components={components}
             />
             <div className="events-form">
