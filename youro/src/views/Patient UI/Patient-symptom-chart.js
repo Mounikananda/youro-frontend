@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, } from 'recharts';
+import { API_DETAILS } from '../../App';
 
 const PatientSymptomChart = (props) => {
   const [render, canRender] = useState(false)
@@ -38,8 +39,15 @@ const PatientSymptomChart = (props) => {
   }, []);
 
   const fetchPrevSymptomScore = () => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/symptomScore/${usrId}`;
-    axios.get(url).then((res) => {
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/symptomScore/${usrId}`;
+    const config = {
+      headers: { 
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
+    axios.get(url, config).then((res) => {
       // console.log("got symptom score :: " + JSON.stringify(res.data));
       setData(res.data);
       canRender(true);
@@ -51,9 +59,16 @@ const PatientSymptomChart = (props) => {
   const fetchAllDiagnoses = async () => {
     // console.log("====^^^===");
     // console.log("fetchAllDiagnoses START");
-    const url = `http://52.14.33.154:9092/youro/api/v1/getAllDiagnoses`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllDiagnoses`;
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
     try {
-      const res = await axios.get(url);
+      const res = await axios.get(url, config);
       setDiagnoses(res.data);
     }
     catch (err) {

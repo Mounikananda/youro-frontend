@@ -13,7 +13,7 @@ import Popup from 'reactjs-popup';
 import Popmenu from './Popupmenu';
 import SymptomCalculator from './SymptomCalculator';
 import Cookies from "js-cookie";
-import { COOKIE_KEYS } from '../../App';
+import { API_DETAILS, COOKIE_KEYS } from '../../App';
 import Youroheader from '../Youro-header';
 import CarePlan from './PatientCareplan';
 
@@ -28,9 +28,16 @@ const PatientHomePage = () => {
   }, []);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/appointments/${uId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/appointments/${uId}`;
+    const config = {
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
     try {
-      const res = await axios.get(url);
+      const res = await axios.get(url, config);
       console.log(res);
       setPrevAppts(res.data.previousAppointments);
       setUpcomingAppts(res.data.upComingAppointments);

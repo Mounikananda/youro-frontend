@@ -20,7 +20,7 @@ import {
 
 import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
-import { USER_TYPES } from '../../App';
+import { API_DETAILS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
@@ -83,9 +83,16 @@ const AdminMaintainenceList = () => {
 
 // diagId, name, info
     const fetchData = async () => {
-        const url = `http://52.14.33.154:9092/youro/api/v1/getAllPrescriptions`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllPrescriptions`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url, config);
             console.log(res);
             canRenderAdmin(true);
             
@@ -189,7 +196,14 @@ const AdminMaintainenceList = () => {
             name: selecDiag,
             info: 'Hardcoded info for now'
         };
-        axios.post("http://52.14.33.154:9092/youro/api/v1/addDiagnosis", temp).then((res) => {
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/addDiagnosis", temp, config).then((res) => {
             console.log(res);
             toast.success('Added successfully!!');
         }).catch((err) => {
@@ -207,7 +221,7 @@ const AdminMaintainenceList = () => {
             diagnosisId: parseInt(data.diagnosis)
         };
 
-        axios.post("http://52.14.33.154:9092/youro/api/v1/addPrescription", temp).then((res) => {
+        axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/addPrescription", temp).then((res) => {
             console.log(res);
             toast.success('Added successfully!!');
         }).catch((err) => {
@@ -219,7 +233,14 @@ const AdminMaintainenceList = () => {
 
     const [diagnosisData, setDiagnosisData] = useState([]);
     const fetchAllDiagnosis = () => {
-        axios.get("http://52.14.33.154:9092/youro/api/v1/getAllDiagnoses").then((res) => {
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        axios.get(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/getAllDiagnoses", config).then((res) => {
             console.log(res);
             setDiagnosisData(res.data);
         }).catch((err) => {

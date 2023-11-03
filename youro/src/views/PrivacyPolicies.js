@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { API_DETAILS } from "../App";
 
 const PrivacyPolicy = (props) => {
   const {
@@ -26,7 +27,14 @@ const PrivacyPolicy = (props) => {
     delete usrData.confirmPassword;
     console.log("usr data :: ");
     console.log(usrData);
-    axios.post("http://52.14.33.154:9092/youro/api/v1/register", usrData).then((res) => {
+    const config = {
+      headers: {          
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
+    axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/register", usrData, config).then((res) => {
         console.log("register success");
         console.log(res);
         navigate("/login");

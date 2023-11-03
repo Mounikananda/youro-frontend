@@ -21,7 +21,7 @@ import {
 
 import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
-import { COOKIE_KEYS, USER_TYPES } from '../../App';
+import { API_DETAILS, COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
@@ -363,13 +363,12 @@ const AdminDoctorsList = () => {
         console.log("token in admin doctors list :: " + token.trim());
         const config = {
             headers: {
-                Authorization: 'Bearer ' + token,
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': '*',
                 'Content-Type': 'application/json'
             }
         };
-        const url = `http://52.14.33.154:9092/youro/api/v1/getAllUsers/${type}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllUsers/${type}`;
         try {
             const res = await axios.get(url, config);
             canRenderAdmin(true); 
@@ -410,7 +409,7 @@ const AdminDoctorsList = () => {
     const updateDoctorStatus = async (rowData) => {
         console.log('in updateDoctorStatus::');
         console.log(rowData);
-        const url = `http://52.14.33.154:9092/youro/api/v1/provider/updateProfile`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
         try {
             // const temp = rowData;
             // console.log(temp);

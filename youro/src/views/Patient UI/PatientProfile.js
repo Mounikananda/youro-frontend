@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import Cookies from "js-cookie";
-import { COOKIE_KEYS } from "../../App";
+import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Youroheader from "../Youro-header";
@@ -27,9 +27,16 @@ const PatientProfile = () => {
 
   const fetchProfileData = async () => {
     const uID = Cookies.get(COOKIE_KEYS.userId);
-    const url = `http://52.14.33.154:9092/youro/api/v1/getUser/${uID}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getUser/${uID}`;
+    const config = {
+      headers: {          
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
     try {
-      const res = await axios.get(url);
+      const res = await axios.get(url, config);
       console.log(res.data);
       setValue("firstName", res.data.firstName);
       setValue("lastName", res.data.lastName);
@@ -81,19 +88,26 @@ const PatientProfile = () => {
 
 
   const updateProfileData = async (data) => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/provider/updateProfile`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
     let temp = data;
     temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
     delete temp.newPassword;
     temp.userId = Cookies.get(COOKIE_KEYS.userId);
     console.log(temp);
+    const config = {
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
     try {
       if(initEmail == temp.email){
         delete temp.email;
         console.log("delete email attr from temp");
         console.log(temp);
       }
-      const res = await axios.put(url, temp);
+      const res = await axios.put(url, temp, config);
       console.log(res.data);
       if (initEmail != temp.email) {
         if (res.data.email == initEmail) {

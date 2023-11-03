@@ -4,6 +4,7 @@ import axios from "axios";
 import { ToastContainer, toast } from 'react-toastify';
 import Login from './login';
 import { useNavigate  } from 'react-router-dom';
+import { API_DETAILS } from '../App';
 
 const ForgotPassword = () => {
 
@@ -35,8 +36,15 @@ const ForgotPassword = () => {
         // api call to request for otp 
          //if not valid: show error in ui; else store the otp
         console.log("email: ",data.email);
-        const url = `http://52.14.33.154:9092/youro/api/v1/send-otp/${data.email}`;
-        await axios.get(url).then((res) => {
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/send-otp/${data.email}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        await axios.get(url, config).then((res) => {
             console.log("otp: ", res.data.message);
             toast.success("otp sent to the email",{autoClose: 5000,
                 hideProgressBar: false,
@@ -78,8 +86,15 @@ const ForgotPassword = () => {
             password: data.password // Get the new password from the form data
         };
 
-        const url = `http://52.14.33.154:9092/youro/api/v1/password-reset`;
-        await axios.put(url, newPasswordData).then((res) => {
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +'/password-reset';
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        await axios.put(url, newPasswordData, config).then((res) => {
             toast.success("Password updated successfully!");
             setLogin(1);
             setOtpstep(3);

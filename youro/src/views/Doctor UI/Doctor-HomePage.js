@@ -7,7 +7,7 @@ import DoctorSideBar from '../Doctor UI/Doctor-Sidebar';
 import PreviousAppointments from './PreviousAppointments';
 import IncompleteEncounters from './IncompleteEncounters';
 import Youroheader from '../Youro-header';
-import { USER_TYPES } from '../../App';
+import { API_DETAILS, USER_TYPES } from '../../App';
 
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from '../../App';
@@ -36,12 +36,21 @@ function DoctorHomePage() {
   const [upComingAppts, setUpcomingAppts] = useState([]);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = `http://52.14.33.154:9092/youro/api/v1/appointments/${uId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/appointments/${uId}`;
+    const config = {
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
     try {
-      const res = await axios.get(url);
+      const res = await axios.get(url, config);
       console.log(res);
       setPrevAppts(res.data.previousAppointments);
       setUpcomingAppts(res.data.upComingAppointments);
+      console.log('upcoming appts::::  ');
+      console.log(res.data.upComingAppointments);
     }
     catch (err) {
       console.error(err);

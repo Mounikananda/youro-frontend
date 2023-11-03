@@ -21,7 +21,7 @@ import {
 
 import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
-import { DOCTOR_STATUS, USER_TYPES } from '../../App';
+import { API_DETAILS, DOCTOR_STATUS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
@@ -51,9 +51,16 @@ const AdminDeniedDoctorsList = () => {
 
     const fetchData = async () => {
         let type = USER_TYPES.doctor;
-        const url = `http://52.14.33.154:9092/youro/api/v1/getAllUsers/${type}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllUsers/${type}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url, config);
             canRenderAdmin(true);
             let data= [];
             for(let i =0; i<res.data.length; i++){
