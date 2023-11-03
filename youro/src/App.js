@@ -29,7 +29,11 @@ import AdminViewPatientProfile from './views/Admin UI/Admin-ViewPatientProfile';
 import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
 
-
+export const API_DETAILS = {
+  baseUrl: 'http://52.14.33.154:',
+  PORT: '9093',
+  baseExtension: '/youro/api/v1',
+};
 export const USER_TYPES = {
   user : 'PATIENT',
   doctor : 'PROVIDER',

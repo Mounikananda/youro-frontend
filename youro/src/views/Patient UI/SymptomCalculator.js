@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Popup from 'reactjs-popup';
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { COOKIE_KEYS } from "../../App";
+import { API_DETAILS, COOKIE_KEYS } from "../../App";
 
 
 const SymptomCalculator = (props) => {
@@ -74,9 +74,16 @@ const SymptomCalculator = (props) => {
     const fetchQuesByDiagId = async () => {
         console.log("====^^^===");
         console.log("fetchQuesByDiagId START");
-        const url = `http://52.14.33.154:9093/youro/api/v1/getQuestionsBydiagId/${selDiag}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getQuestionsBydiagId/${selDiag}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url, config);
             console.log(res);
             setQuestionnare(res.data);
         }
@@ -90,9 +97,16 @@ const SymptomCalculator = (props) => {
     const fetchAllDiagnoses = async () => {
         // console.log("====^^^===");
         // console.log("fetchAllDiagnoses START");
-        const url = `http://52.14.33.154:9093/youro/api/v1/getAllDiagnoses`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllDiagnoses`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
-            const res = await axios.get(url);
+            const res = await axios.get(url, config);
             setDiagnoses(res.data);
         }
         catch (err) {
@@ -106,11 +120,18 @@ const SymptomCalculator = (props) => {
     const saveNewSymptomScore = async (data) => {
         // console.log("====^^^===");
         // console.log("saveNewSymptomScore START");
-        const url = `http://52.14.33.154:9093/youro/api/v1/saveSymptomScore`;
-        setSymptomScorePage(true)
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/saveSymptomScore`;
+        setSymptomScorePage(true);
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
             // console.log(data);
-            const res = await axios.post(url, data);
+            const res = await axios.post(url, data, config);
             setDiagnoses(res.data);
             console.log(res.data);
             setNewScoreInfo(res.data);

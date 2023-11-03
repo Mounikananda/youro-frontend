@@ -10,6 +10,7 @@ import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Delete } from '@mui/icons-material';
 import axios from 'axios';
+import { API_DETAILS } from '../../App';
 
 const AdminPopUps = ((props) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -29,7 +30,14 @@ const AdminPopUps = ((props) => {
 
     const softDeleteUser = async () => {
         console.log('in softDeleteUser::' + props.data.rowData['userId']);
-        const url = `http://52.14.33.154:9093/youro/api/v1/provider/updateProfile`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
             // const temp = {
             //     userId: props.data.rowData['userId'],
@@ -38,7 +46,7 @@ const AdminPopUps = ((props) => {
             const temp = props.data.rowData;
             temp.softDelete = true;
             console.log(temp);
-            const res = await axios.put(url, temp);
+            const res = await axios.put(url, temp, config);
             console.log(res.data);
         }
         catch (err) {
@@ -49,9 +57,16 @@ const AdminPopUps = ((props) => {
     const deletePrescription = async () => {
         // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
         console.log('in deletePrescription::' + props.data.rowData['medicineId']);
-        const url = `http://52.14.33.154:9093/youro/api/v1/deletePrescription/${props.data.rowData['medicineId']}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePrescription/${props.data.rowData['medicineId']}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
         try {
-            const res = await axios.delete(url);
+            const res = await axios.delete(url, config);
             console.log(res.data);
         }
         catch (err) {

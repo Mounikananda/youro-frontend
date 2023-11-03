@@ -8,7 +8,7 @@ import 'react-calendar/dist/Calendar.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import Cookies from "js-cookie";
-import { COOKIE_KEYS } from "../../App";
+import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Youroheader from "../Youro-header";
 
 const PatientAppointment = (props) => {
@@ -40,13 +40,13 @@ const PatientAppointment = (props) => {
     const fetch15DaysSlots = async () => {
         console.log("====^^^===");
         console.log("fetch15DaysSlots START");
-        const url = `http://52.14.33.154:9093/youro/api/v1/getAvailableSlotsByDate`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAvailableSlotsByDate`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
-                Authorization: token,
                 'Access-Control-Allow-Origin': '*',
                 'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
             }
         };
         try {
@@ -103,13 +103,13 @@ const PatientAppointment = (props) => {
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
-                "Authorization": `Bearer ${token}`,
-                "Cache-Control": "no-cache",
-                'Content-Type': 'application/json',
-                "Access-Control-Allow-Origin": "*",
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
             }
         };
-        const url = `http://52.14.33.154:9093/youro/api/v1/saveAppointment`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/saveAppointment`;
+        
         try {
             console.log(selectedInfo);
             const temp = {
@@ -187,69 +187,69 @@ const PatientAppointment = (props) => {
     };
 
     return (
-        <div style={{ display: 'flex', flexDirection:"column",width:"100%"}} >
-            <div style={{margin:"0% 2%"}}>
-            <Youroheader/>
-           </div>
-        <div style={{ display: 'flex', width: '100%', flexDirection:"row", alignItems: 'start' }}>
-            <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
-              
-                <div className="react-calendar-container">
-                    <h1 style={{margin:"0% 7%"}}>Schedule Appointment</h1>
-                    <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
-                </div>
-                <div style={{ width: '-webkit-fill-available', marginTop: '50px', }} className="slots-container">
-                    <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
-                    <div className="slots-container-sub">
-                        {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
-                            // var startTime = data['startTime'].includes("T") ? data['startTime'].split('T')[1].split(':')[0] + ':' + data['startTime'].split('T')[1].split(':')[1] : data['startTime'].split(':')[0] + ':' + data['startTime'].split(':')[1];
-                            var startTime = data['startTime'].split(" ")[4].split(":")[0] + ':' + data['startTime'].split(" ")[4].split(":")[1]
-                            return (
-                                <>
-                                    <div onClick={(e) => handleSelectSlot(startTime, data)} className="slot-timings">
-                                        <span style={{ letterSpacing: '1.3px' }}>{startTime}</span>
-                                        -
-                                        <span style={{ letterSpacing: '1.3px' }}>{getEndTime(startTime)}</span>
-                                    </div>
-                                </>
-
-                            )
-                        })}
-
-                        {!slotsOnDate && <h4 style={{ letterSpacing: '2px' }}>No slots Available on selected date. Choose another date</h4>}
-                    </div>
-                </div>
+        <div style={{ display: 'flex', flexDirection: "column", width: "100%" }} >
+            <div style={{ margin: "0% 2%" }}>
+                <Youroheader />
             </div>
+            <div style={{ display: 'flex', width: '100%', flexDirection: "row", alignItems: 'start' }}>
+                <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
 
-            {
-                event &&
-                <>
-                    <div style={{ margin: 'auto' }}>
-                        <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />
-                        <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event} - {getEndTime(event)}
-                        <br /><br /><br /><br /><br />
-                        <div className="btn-filled" onClick={handleBook}>Book Appointment</div>
-
+                    <div className="react-calendar-container">
+                        <h1 style={{ margin: "0% 7%" }}>Schedule Appointment</h1>
+                        <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
                     </div>
+                    <div style={{ width: '-webkit-fill-available', marginTop: '50px', }} className="slots-container">
+                        <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
+                        <div className="slots-container-sub">
+                            {slotsOnDate && slotsOnDate.slotInfo.map((data) => {
+                                // var startTime = data['startTime'].includes("T") ? data['startTime'].split('T')[1].split(':')[0] + ':' + data['startTime'].split('T')[1].split(':')[1] : data['startTime'].split(':')[0] + ':' + data['startTime'].split(':')[1];
+                                var startTime = data['startTime'].split(" ")[4].split(":")[0] + ':' + data['startTime'].split(" ")[4].split(":")[1]
+                                return (
+                                    <>
+                                        <div onClick={(e) => handleSelectSlot(startTime, data)} className="slot-timings">
+                                            <span style={{ letterSpacing: '1.3px' }}>{startTime}</span>
+                                            -
+                                            <span style={{ letterSpacing: '1.3px' }}>{getEndTime(startTime)}</span>
+                                        </div>
+                                    </>
 
-                </>
-            }
+                                )
+                            })}
 
-            <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
-                <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpen(false); props.changeView(0) }}>
-                    <span class="material-symbols-outlined">
-                        close
-                    </span>
+                            {!slotsOnDate && <h4 style={{ letterSpacing: '2px' }}>No slots Available on selected date. Choose another date</h4>}
+                        </div>
+                    </div>
                 </div>
-                <div style={{ padding: '50px 20px', textAlign: 'center' }}>
-                    <h3>Congratulations !!!</h3>
-                    <h3>Appointment confirmed with {newApptDocName}</h3>
-                    <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{ height: '100px' }}></img><br /><br />
-                    {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
-                </div>
-            </Popup>
+
+                {
+                    event &&
+                    <>
+                        <div style={{ margin: 'auto' }}>
+                            <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />
+                            <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event} - {getEndTime(event)}
+                            <br /><br /><br /><br /><br />
+                            <div className="btn-filled" onClick={handleBook}>Book Appointment</div>
+
+                        </div>
+
+                    </>
+                }
+
+                <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
+                    <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpen(false); props.changeView(0) }}>
+                        <span class="material-symbols-outlined">
+                            close
+                        </span>
+                    </div>
+                    <div style={{ padding: '50px 20px', textAlign: 'center' }}>
+                        <h3>Congratulations !!!</h3>
+                        <h3>Appointment confirmed with {newApptDocName}</h3>
+                        <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{ height: '100px' }}></img><br /><br />
+                        {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
+                    </div>
+                </Popup>
+            </div>
         </div>
-       </div>
 
     )
 }
