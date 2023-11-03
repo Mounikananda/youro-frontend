@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from 'react';
+import { React, useState,useEffect } from 'react';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import Hamburger from 'hamburger-react';
 import "../../styles/Patient-ui/Patient-home.css";
@@ -15,6 +15,7 @@ import SymptomCalculator from './SymptomCalculator';
 import Cookies from "js-cookie";
 import { COOKIE_KEYS } from '../../App';
 import Youroheader from '../Youro-header';
+import CarePlan from './PatientCareplan';
 
 
 const PatientHomePage = () => {
@@ -39,74 +40,75 @@ const PatientHomePage = () => {
     }
   }
 
-  const CarePlan = () => {
-    const [data, setData] = useState([]);
-    const [activeLoader, setActiveLoader] = useState(false);
+  // const CarePlan = () => {
+  //   const [data, setData] = useState([]);
+  //   const [activeLoader, setActiveLoader] = useState(false);
 
-    useEffect(() => {
-      const mockData = [
-        {
-          "Prescription": {
-            "Dolo":
-              "take one in the morning and 1 in the evening",
-            "Paracetamol": "take 1 after dinner"
-          },
-          "Supplements": {
-            "Dolo": "take one in the morning and 1 in the evening",
-            "Paracetamol": "take 1 after dinner"
-          },
-          "Lifestylemodifications": [
-            "Make sure to drink 3 - 5 liters of water daily",
-            "Spend at least an hour in the sun",
-            "Don't drink coffee",
-            "Don't smoke",
-            "Don't consume alcohol"
-          ]
-        }
-      ];
-      setData(mockData);
-      // const fetchData = async () => {
-      //   try {
+  //   useEffect(() => {
+      
+  //     const mockData = [
+  //       {
+  //         "Prescription": {
+  //           "Dolo":
+  //             "take one in the morning and 1 in the evening",
+  //           "Paracetamol": "take 1 after dinner"
+  //         },
+  //         "Supplements": {
+  //           "Dolo": "take one in the morning and 1 in the evening",
+  //           "Paracetamol": "take 1 after dinner"
+  //         },
+  //         "Lifestylemodifications": [
+  //           "Make sure to drink 3 - 5 liters of water daily",
+  //           "Spend at least an hour in the sun",
+  //           "Don't drink coffee",
+  //           "Don't smoke",
+  //           "Don't consume alcohol"
+  //         ]
+  //       }
+  //     ];
+  //     setData(mockData);
+  //     // const fetchData = async () => {
+  //     //   try {
 
-      //     // const response = await fetch('any-api');
-      //     // const result = await response.json();
-      //     setData(mockData);
-      //     setIsLoading(false);
-      //   } catch (error) {
-      //     console.error('Error fetching data:', error);
-      //     setIsLoading(false);
-      //   }
-      // };
+  //     //     // const response = await fetch('any-api');
+  //     //     // const result = await response.json();
+  //     //     setData(mockData);
+  //     //     setIsLoading(false);
+  //     //   } catch (error) {
+  //     //     console.error('Error fetching data:', error);
+  //     //     setIsLoading(false);
+  //     //   }
+  //     // };
 
-      // fetchData();
+  //     // fetchData();
 
-    }, []);
+  //   }, []);
 
 
-    return (
-      <div>
-        {data.map((item, index) => (
-          <div className='patient-div' key={index}>
-            <h3 >Reduce your symptom score by 'x' points before your next follow-up.</h3>
+  //   return (
+  //     <div>
+  //       {data.map((item, index) => (
+  //         <div className='patient-div' key={index}>
+  //           <h3 >Reduce your symptom score by 'x' points before your next follow-up.</h3>
 
-            {Object.keys(item).map((category, categoryIndex) => (
-              <div key={categoryIndex + 1}>
-                <h4>{category}</h4>
-                <ul>
-                  {Object.entries(item[category]).map(([medication, instruction], i) => (
-                    <li key={i}>
-                      {/* {medication}: {instruction} */}
-                      {category !== 'Lifestylemodifications' ? `${medication}: ${instruction}` : `${instruction}`}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
-  };
+  //           {Object.keys(item).map((category, categoryIndex) => (
+  //             <div key={categoryIndex + 1}>
+  //               <h4>{category}</h4>
+  //               <ul>
+  //                 {Object.entries(item[category]).map(([medication, instruction], i) => (
+  //                   <li key={i}>
+  //                     {/* {medication}: {instruction} */}
+  //                     {category !== 'Lifestylemodifications' ? `${medication}: ${instruction}` : `${instruction}`}
+  //                   </li>
+  //                 ))}
+  //               </ul>
+  //             </div>
+  //           ))}
+  //         </div>
+  //       ))}
+  //     </div>
+  //   );
+  // };
 
   const PreviousAppointments = () => {
     // const [data, setData] = useState([]);
@@ -273,7 +275,7 @@ const PatientHomePage = () => {
              <div>Loading...</div>
            </div>
          ) : ( <CarePlan/>)} */}
-          <CarePlan />
+          <CarePlan/>
         </div>
         <div className='column-data'>
           <PatientSymptomChart uId={uId} retakeSymptomScore={setOpen} />
