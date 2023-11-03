@@ -11,7 +11,7 @@ import axios from 'axios';
 import imageCompression from 'browser-image-compression';
 import { ToastContainer, toast } from 'react-toastify';
 import Youroheader from '../Youro-header';
-import { COOKIE_KEYS } from '../../App';
+import { API_DETAILS, COOKIE_KEYS } from '../../App';
 import Cookies from "js-cookie";
 
 
@@ -28,7 +28,7 @@ const DoctorProfile = () => {
 
   const [isPopupVisible, setPopupVisible] = useState(false);
 
- 
+
 
   const showPopup = (data) => {
     console.log(data);
@@ -103,9 +103,9 @@ const DoctorProfile = () => {
     password: '',
   };
 
-  const doctor_id= Cookies.get(COOKIE_KEYS.userId);
+  const doctor_id = Cookies.get(COOKIE_KEYS.userId);
 
-  console.log("doctor details",doctor_id);
+  console.log("doctor details", doctor_id);
 
   // let usrData1 = {
   //   image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
@@ -135,19 +135,17 @@ const DoctorProfile = () => {
 
 
   const [imagePreview, setImagePreview] = useState(null);
-  const [toggle_image,setToggle_image]= useState(false);
-  
-  
-  const toggle_profile_image=()=>
-  {
-     setToggle_image(!toggle_image);
+  const [toggle_image, setToggle_image] = useState(false);
+
+
+  const toggle_profile_image = () => {
+    setToggle_image(!toggle_image);
   }
 
-   const get_profile_pic = async ()=>
-  {
-   
+  const get_profile_pic = async () => {
+
     console.log("came to profile pic method");
-    const get_url=`http://52.14.33.154:9093/youro/api/v1/getDp/${doctor_id}`;
+    const get_url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDp/${doctor_id}`;
 
     // try {
     //   const res = await axios.get(get_url);
@@ -167,50 +165,55 @@ const DoctorProfile = () => {
     //   console.log("getting get_api error pic ");
     //   console.error(err);
     // }
-
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json',
+        'responseType': 'arraybuffer'
+      }
+    };
     try {
-        const response = await axios.get(get_url, {
-          responseType: 'arraybuffer', // This is important to specify
-        });
+      const response = await axios.get(get_url, config);
 
-        if (response.status === 200) {
-          const arrayBuffer = new Uint8Array(response.data);
-          const base64Image = btoa(
-            new Uint8Array(arrayBuffer).reduce(
-              (data, byte) => data + String.fromCharCode(byte),
-              ''
-            )
-          );
+      if (response.status === 200) {
+        const arrayBuffer = new Uint8Array(response.data);
+        const base64Image = btoa(
+          new Uint8Array(arrayBuffer).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
 
-          setImagePreview(`data:image/jpeg;base64,${base64Image}`);
-         }
-        }
+        setImagePreview(`data:image/jpeg;base64,${base64Image}`);
+      }
+    }
 
-     catch (err) {
+    catch (err) {
       console.log("getting get_api error pic ");
       console.error(err);
     }
-     }
+  }
 
 
-  const handleImageChange = async(e) => {
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
 
       const options = {
-          maxSizeMB: 5,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true
-        }
-      const compressedFile = await imageCompression(file,options);
+        maxSizeMB: 5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+      const compressedFile = await imageCompression(file, options);
       // Set the file value in the form data
       setValue('image', compressedFile);
       // const url=`http://52.14.33.154:9093/youro/api/v1/uploadDp`
       // const profile_pic= await 
       // // Create a preview URL for the selected image
       // const previewURL = URL.createObjectURL(file);
-     
-      console.log("doctor id",doctor_id);    
+
+      console.log("doctor id", doctor_id);
       // let profile_pic = {
       //       "imageFile": file,
       //       "userId": doctor_id
@@ -219,37 +222,52 @@ const DoctorProfile = () => {
       formData.append('userId', doctor_id);
       formData.append('imageFile', compressedFile);
 
-      const url = `http://52.14.33.154:9093/youro/api/v1/uploadDp`;
-      console.log("profile pic dic",formData);
-    try {
-      const res = await axios.post(url,formData);
-      console.log("uploading pic ");
-      console.log(res.data);
-      console.log("going to profile pic method");
-      get_profile_pic();
-      // usrData = res.data;
-    }
-    catch (err) {
-      console.log("uploading pic ");
-      console.error(err);
-    }
-      
-    
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/uploadDp`;
+      console.log("profile pic dic", formData);
+      const config = {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json',
+          'responseType': 'arraybuffer'
+        }
+      };
+      try {
+        const res = await axios.post(url, formData, config);
+        console.log("uploading pic ");
+        console.log(res.data);
+        console.log("going to profile pic method");
+        get_profile_pic();
+        // usrData = res.data;
+      }
+      catch (err) {
+        console.log("uploading pic ");
+        console.error(err);
+      }
 
-  };
-      // // print(previewURL,"this is the url created");
-      // setImagePreview(previewURL);
 
-    }
+
+    };
+    // // print(previewURL,"this is the url created");
+    // setImagePreview(previewURL);
+
+  }
 
 
   const fetchProfileData = async () => {
     // after getting the data -> set defaultValues in html
     // const emailId = 'doc2@gmail.com';
     const uId = Cookies.get(COOKIE_KEYS.userId);
-    const url = `http://52.14.33.154:9093/youro/api/v1/getUser/${uId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getUser/${uId}`;
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
     try {
-      const res = await axios.get(url);
+      const res = await axios.get(url, config);
       console.log(res.data);
       setValue("firstName", res.data.firstName);
       setValue("lastName", res.data.lastName);
@@ -273,7 +291,7 @@ const DoctorProfile = () => {
   const [initEmail, setInitEmail] = useState('');
 
   const updateProfileData = async (data) => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/provider/updateProfile`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
     console.log(data.newPassword == '');
 
     let temp = data;
@@ -291,8 +309,15 @@ const DoctorProfile = () => {
       console.log("delete email attr from temp");
       console.log(temp);
     }
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
     try {
-      const res = await axios.put(url, temp);
+      const res = await axios.put(url, temp, config);
       console.log(res.data);
       console.log(temp.email);
       if (initEmail != temp.email) {
@@ -301,7 +326,7 @@ const DoctorProfile = () => {
           toast.success("Changes saved!!");
           // toast.error("Changes saved successfully except for the email!! Try Again with another email");
         }
-        else{
+        else {
           toast.success("Changes saved!!");
         }
       }
@@ -330,7 +355,7 @@ const DoctorProfile = () => {
       </div>
       <div className="d-container">
         <div className='profile-column'>
-          <Youroheader/>
+          <Youroheader />
           <div className='profile-details'>
             <div className='my-profile'>
               <ToastContainer />
@@ -347,21 +372,21 @@ const DoctorProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                    <img  src={ imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                  <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
                 </label>
-                
-                  <>
-                    <input
-                      type="file"
-                      id="imgupload"
-                      accept=".jpg, .jpeg, .png"
-                      {...register('image')}
-                      onChange={handleImageChange}
-                      style={{ display: 'none' }}
-                    />
-                    {errors.image && <p className="error-text">{errors.image.message}</p>}
-                  </>
-          
+
+                <>
+                  <input
+                    type="file"
+                    id="imgupload"
+                    accept=".jpg, .jpeg, .png"
+                    {...register('image')}
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                  />
+                  {errors.image && <p className="error-text">{errors.image.message}</p>}
+                </>
+
                 {/* {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />} */}
 
               </div>

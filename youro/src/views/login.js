@@ -7,7 +7,7 @@ import ForgotPassword from "./ForgotPassword";
 import Cookies from "js-cookie";
 
 import { useNavigate } from 'react-router-dom';
-import { COOKIE_KEYS } from "../App";
+import { API_DETAILS, COOKIE_KEYS } from "../App";
 
 const Login= () =>
 {
@@ -25,7 +25,14 @@ const Login= () =>
 
   const onSubmit = (data) =>{
     console.log(data);
-    axios.post("http://52.14.33.154:9093/youro/api/v1/login", data).then((res) => {
+    const config = {
+      headers: {          
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
+    axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension + "/login", data, config).then((res) => {
         toast.success("Successful login");
         console.log(res);
         Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
