@@ -110,7 +110,7 @@ const AdminMaintainenceList = () => {
             // console.log("Data inside fetchData : " + count + "  =>  " + tableData);
         }
         catch (err) {
-            renderapidata(true);
+            cannotrenderapidata(true);
             console.error(err);
         }
     };
@@ -215,10 +215,15 @@ const AdminMaintainenceList = () => {
     const handleAddPrescription = (data) => {
         setOpen(false);
         console.log(data);
+        let numberArray =[];
+        for (var i = 0; i < data.diagnosis.length; i++) {
+          numberArray.push(parseInt(data.diagnosis[i])); 
+        }
+  
         const temp = {
             name: data.medicineName,
             type: data.category,
-            diagnosisId: parseInt(data.diagnosis)
+            diagnosisId: numberArray
         };
 
         axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/addPrescription", temp).then((res) => {
@@ -378,7 +383,7 @@ const AdminMaintainenceList = () => {
                         </div> <br ></br>
                         <div className="">
                             <label>Diagnosis :</label><br />
-                            <select style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
+                            <select multiple style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
                                 required: true,
                             })}>
                                 <option value="">Select</option>
