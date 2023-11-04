@@ -16,11 +16,11 @@ const PatientView = () => {
             <div className='sidebar'>
                 <SideBar active={view} setActive={setView}/>
             </div>
-            {view === 0 && <PatientHomePage />}
+            {view === 0 && <PatientHomePage changeView={setView}/>}
             {view === 1 && <PatientAppointment changeView={setView}/>}
-            {view === 2 && <PatientChat />}
-            {view === 3 && <PatientEducate />}
-            {view === 4 && <PatientProfile />}
+            {view === 2 && <PatientChat  changeView={setView}/>}
+            {view === 3 && <PatientEducate  changeView={setView}/>}
+            {view === 4 && <PatientProfile  changeView={setView}/>}
         </div>
         </>
     )

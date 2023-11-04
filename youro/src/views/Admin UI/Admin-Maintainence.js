@@ -53,7 +53,7 @@ const data = [
 const AdminMaintainenceList = () => {
     const [tableData, setTableData] = useState([]);
     const [renderAdmin, canRenderAdmin] = useState(false);
-    const [renderapidata,cannotrenderapidata]=useState(false);
+    const [renderapidata, cannotrenderapidata] = useState(false);
     const [open, setOpen] = useState(false);
     const [addDiagnosis, setAddDiagnosis] = useState(false);
     const isRendered = useRef(false);
@@ -81,9 +81,9 @@ const AdminMaintainenceList = () => {
         }
     }, []);
 
-// diagId, name, info
+    // diagId, name, info
     const fetchData = async () => {
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllPrescriptions`;
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllPrescriptions`;
         const config = {
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -95,9 +95,9 @@ const AdminMaintainenceList = () => {
             const res = await axios.get(url, config);
             console.log(res);
             canRenderAdmin(true);
-            
-            let tempData  = [];
-            for(let i=0; i<res.data.length; i++){
+
+            let tempData = [];
+            for (let i = 0; i < res.data.length; i++) {
                 let temp = {
                     medicineId: res.data[i].presId,
                     medicineName: res.data[i].name,
@@ -175,18 +175,6 @@ const AdminMaintainenceList = () => {
         // }
     ]
 
-    const handleDeleteRow = useCallback(
-        (row) => {
-            if (
-                !window.confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
-            ) {
-                return;
-            }
-            tableData.splice(row.index, 1);
-        },
-        [tableData],
-    );
-
     const [selecDiag, setDiag] = useState('');
 
     const handleAddDiagnosis = () => {
@@ -203,7 +191,7 @@ const AdminMaintainenceList = () => {
                 'Content-Type': 'application/json'
             }
         };
-        axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/addDiagnosis", temp, config).then((res) => {
+        axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addDiagnosis", temp, config).then((res) => {
             console.log(res);
             toast.success('Added successfully!!');
         }).catch((err) => {
@@ -215,18 +203,18 @@ const AdminMaintainenceList = () => {
     const handleAddPrescription = (data) => {
         setOpen(false);
         console.log(data);
-        let numberArray =[];
+        let numberArray = [];
         for (var i = 0; i < data.diagnosis.length; i++) {
-          numberArray.push(parseInt(data.diagnosis[i])); 
+            numberArray.push(parseInt(data.diagnosis[i]));
         }
-  
+
         const temp = {
             name: data.medicineName,
             type: data.category,
             diagnosisId: numberArray
         };
 
-        axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/addPrescription", temp).then((res) => {
+        axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPrescription", temp).then((res) => {
             console.log(res);
             toast.success('Added successfully!!');
         }).catch((err) => {
@@ -245,7 +233,7 @@ const AdminMaintainenceList = () => {
                 'Content-Type': 'application/json'
             }
         };
-        axios.get(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/getAllDiagnoses", config).then((res) => {
+        axios.get(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/getAllDiagnoses", config).then((res) => {
             console.log(res);
             setDiagnosisData(res.data);
         }).catch((err) => {
@@ -253,28 +241,28 @@ const AdminMaintainenceList = () => {
         });
     }
 
- 
+
     return (
         <div>
             {
-                
-                    <div className='hm'>
-                        <div className='sidebar'>
-                            <AdminSideBar data={'manage-approved-medicine'} />
-                        </div>
-                        <div className="admin-ui-table">
-                            {/* <div className='header'>
+
+                <div className='hm'>
+                    <div className='sidebar'>
+                        <AdminSideBar data={'manage-approved-medicine'} />
+                    </div>
+                    <div className="admin-ui-table">
+                        {/* <div className='header'>
                                 <h1 style={{ marginLeft: '15px' }}>youro</h1>
                             </div> */}
-                             <div className='header' style={{marginLeft: '15px'}}>
-                                {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
-                                 <Youroheader/>
-                            </div>
-                            <div style={{ display: 'flex' }}>
-                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(false); fetchAllDiagnosis(); }}>+ Add new medicine</div>
-                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(true) }}>+ Add new diagnosis</div>
-                            </div>
-                            <ToastContainer />
+                        <div className='header' style={{ marginLeft: '15px' }}>
+                            {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
+                            <Youroheader />
+                        </div>
+                        <div style={{ display: 'flex' }}>
+                            <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(false); fetchAllDiagnosis(); }}>+ Add new medicine</div>
+                            <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(true) }}>+ Add new diagnosis</div>
+                        </div>
+                        <ToastContainer />
                         {renderAdmin == true && tableData && tableData.length > 0 ? (
                             <MaterialReactTable
                                 displayColumnDefOptions={{
@@ -301,7 +289,7 @@ const AdminMaintainenceList = () => {
                                             {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
                                                 <Delete />
                                             </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-prescription', 'step': 1 , 'rowData': row.original}} />
+                                            <AdminPopUps data={{ 'action': 'delete-prescription', 'step': 1, 'rowData': row.original }} />
                                             {/* delete-medication - have to add condition in admin pop up and write api integration */}
                                         </Tooltip>
                                     </Box>
@@ -319,33 +307,19 @@ const AdminMaintainenceList = () => {
                                         },
                                     }),
                                 }}
-                            />) : renderapidata? (<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}}>
-                        Error Fetching Data!
-                    </div>):!renderAdmin ? ( <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} ><Oval/></div>):
-                          renderAdmin==true && tableData && tableData.length == 0 && <>
-                     <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',} }>
-                         No Data Found!
-                     </div>
-                       </>};
-                        </div>
+                            />) : renderapidata ? (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
+                                Error Fetching Data!
+                            </div>) : !renderAdmin ? (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }} ><Oval /></div>) :
+                            renderAdmin == true && tableData && tableData.length == 0 && <>
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
+                                    No Data Found!
+                                </div>
+                            </>};
                     </div>
+                </div>
 
-             
+
             }
-            {/* {
-                renderAdmin == true && tableData && tableData.length == 0 && <>
-                    <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        No Data Found!
-                    </div>
-                </>
-            }
-            {
-                renderAdmin == false && <>
-                    <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        Error Fetching Data!
-                    </div>
-                </>
-            } */}
             <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
                 <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpen(false) }}>
                     <span class="material-symbols-outlined">
@@ -383,21 +357,35 @@ const AdminMaintainenceList = () => {
                         </div> <br ></br>
                         <div className="">
                             <label>Diagnosis :</label><br />
-                            <select multiple style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
+                            {/* <select multiple style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
                                 required: true,
-                            })}>
+                            }) }>
                                 <option value="">Select</option>
                                 {
                                     diagnosisData.map((result) => (<option value={result.diagId}>{result.name}</option>))
                                 }
-                            </select>
+                            </select> */}
+
+                            {
+                                diagnosisData.map((diagosis) => {
+                                    return (
+                                        <div style={{ maxWidth: '200px', minWidth: '150px' }}>
+                                            <input type="checkbox" id="html" name="diagnosis" value={diagosis.diagId} {...register("diagnosis", {
+                                                required: true,
+                                            })} />
+                                            <label for="html" style={{ marginLeft: '10px' }}>{diagosis.name}</label><br /><br />
+                                        </div>
+                                    )
+                                })
+                            }
+
 
                             {errors?.diagnosis && <p className="error-text">This field is required</p>}
                         </div>
                     </div>
 
                     <div>
-                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={ handleSubmit(handleAddPrescription)}>Add medicine</div>
+                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={handleSubmit(handleAddPrescription)}>Add medicine</div>
                     </div>
                 </>}
 

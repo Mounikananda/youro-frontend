@@ -1,14 +1,25 @@
-import React, {useState} from "react";
+import { React, useState,useEffect } from 'react';
 import Youroheader from "../Youro-header";
 
-const PatientEducate = () => {
+const PatientEducate = (props) => {
 
-    const [step, setStep] = useState(0)
+    const [step, setStep] = useState(0);
+    const [viewVal, setViewVal] = useState(0);
+    const navToProfile = () => {
+        props.changeView(4);
+    }
+
+    useEffect(() => {
+        if (viewVal == 4) {
+            navToProfile();
+        }
+    }, [viewVal]);
+
 
     return (
         <div className="educate-container">
-            <Youroheader/>
-            <h1 style={{marginTop: '80px'}}>Educate Yourself</h1>
+            <Youroheader  setView={setViewVal}/>
+            <h1 style={{ marginTop: '80px' }}>Educate Yourself</h1>
             <div className="educate-container-main">
                 <div className="educate-column-one">
                     <div className={`educate-column-one-name ${step === 0 && 'educate-column-one-name-active'}`} onClick={() => setStep(0)}>Diagnosis1</div>
@@ -25,13 +36,13 @@ const PatientEducate = () => {
                     <p>Have you ever wondered why this happend to you? Watch this video down below</p>
 
                     <iframe width="70%" height="400" className="educate-iframe"
-                    src="https://www.youtube.com/embed/tgbNymZ7vqY">
+                        src="https://www.youtube.com/embed/tgbNymZ7vqY">
                     </iframe>
 
                     <p>Next watch this video...</p>
 
                     <iframe width="70%" height="400" className="educate-iframe"
-                    src="https://www.youtube.com/embed/tgbNymZ7vqY">
+                        src="https://www.youtube.com/embed/tgbNymZ7vqY">
                     </iframe>
                 </div>
             </div>

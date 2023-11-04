@@ -31,16 +31,22 @@ const PatientAppointment = (props) => {
     const [slotsData, setSlotsData] = useState([]);
     const [slotsOnDate, setSlotsOnDate] = useState();
     const [selectedInfo, setSelectedInfo] = useState();
+    const [viewVal, setViewVal] = useState(0);
+    const navToProfile = () => {
+        props.changeView(4);
+    }
 
     useEffect(() => {
         fetch15DaysSlots();
-
-    }, [])
+        if (viewVal == 4) {
+            navToProfile();
+        }
+    }, [viewVal]);
 
     const fetch15DaysSlots = async () => {
         console.log("====^^^===");
         console.log("fetch15DaysSlots START");
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAvailableSlotsByDate`;
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAvailableSlotsByDate`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
@@ -108,8 +114,8 @@ const PatientAppointment = (props) => {
                 'Content-Type': 'application/json'
             }
         };
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/saveAppointment`;
-        
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/saveAppointment`;
+
         try {
             console.log(selectedInfo);
             const temp = {
@@ -189,7 +195,7 @@ const PatientAppointment = (props) => {
     return (
         <div style={{ display: 'flex', flexDirection: "column", width: "100%" }} >
             <div style={{ margin: "0% 2%" }}>
-                <Youroheader />
+                <Youroheader setView={setViewVal} />
             </div>
             <div style={{ display: 'flex', width: '100%', flexDirection: "row", alignItems: 'start' }}>
                 <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
