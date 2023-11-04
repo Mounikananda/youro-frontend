@@ -32,6 +32,7 @@ function DoctorHomePage() {
     //      navigate("/");  
     //   }
     fetchPrevAndUpcomingAppointments();
+    // setOpenCreatePopUp(false);
   }, []);
 
 
@@ -40,16 +41,9 @@ function DoctorHomePage() {
   const [upComingAppts, setUpcomingAppts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpenCreatePopUp, setOpenCreatePopUp] = useState(false);
-  const [meetLink, setMeetLink] = useState('');
 
-  const openLinkPopUp = (item) => {
-    console.log(item);
-    setOpenCreatePopUp(true);
-  }
 
-  const openZoomLink = (link) => {
-    // window.open(link, '_blank');
-  }
+  
   const createMeetLink = (e, confirm) => {
     if (!confirm) {
       console.log(e);
@@ -84,27 +78,22 @@ function DoctorHomePage() {
     }
   }
 
-  const TodayAppointmentList = () => {
+  const TodayAppointmentList = (props) => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-
-      // const mockData = [
-      //   { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
-      //   { id: 2, name: 'John Doe', time: "10-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },
-      //   { id: 3, name: 'John Doe', time: "11-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis3', symptomscore: '30', meetup: 'new meet' },
-      //   { id: 4, name: 'John Doe', time: "12-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis4', symptomscore: '40', meetup: 'follow-up' },
-      //   { id: 5, name: 'John Doe', time: "13-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up' },
-      //   { id: 6, name: 'John Doe', time: "14-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis6', symptomscore: '60', meetup: 'new meet' },
-      //   { id: 7, name: 'John Doe', time: "15-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis7', symptomscore: '70', meetup: 'follow-up' },
-      //   { id: 8, name: 'John Doe', time: "16-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis8', symptomscore: '80', meetup: 'new meet' },
-      // ];
-
-      setTimeout(() => {
-        setData(upComingAppts);
-      }, 1000);
+      setData(upComingAppts);
     }, []);
 
+    const openLinkPopUp = (item) => {
+      console.log('openLinkPopUp');
+      console.log(item.link == null);
+      props.openPopUp(true);
+    }
+
+    const openZoomLink = (link) => {
+      // window.open(link, '_blank');
+    }
 
     return (
       // <div>
@@ -127,14 +116,14 @@ function DoctorHomePage() {
       // </div>
       <div>
         {
-          (upComingAppts == null || upComingAppts.length == 0) && <>
+          (data == null || data.length == 0) && <>
             <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <h3><i>No record of appointments</i></h3>
             </div>
           </>
         }
 
-        {upComingAppts && upComingAppts.length != 0 && upComingAppts.map((item) => (
+        {data && data.length != 0 && data.map((item) => (
           <div className='previous-appointment'>
             <div>
               <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
@@ -156,9 +145,9 @@ function DoctorHomePage() {
               </>
             }
             {
-              !item?.link && (item?.link == null || item?.link == '') && <>
+              (!item?.link || item?.link == null || item?.link == '') && <>
                 <button className='create-link-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}
-                  onClick={openLinkPopUp(item)} >Create Meeting</button>
+                  onClick={() =>openLinkPopUp(item)} >Create Meeting</button>
               </>
             }
             {
@@ -290,7 +279,7 @@ function DoctorHomePage() {
         <div className='all-details-doctor'>
           <div className='care-plan-details-doctor'>
             <h2>Today's Appointments</h2>
-            <TodayAppointmentList />
+            <TodayAppointmentList openPopUp= {setOpenCreatePopUp}/>
           </div>
           {isVisible &&
             <div className='care-plan-details-doctor'>
