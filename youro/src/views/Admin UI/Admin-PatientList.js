@@ -5,27 +5,14 @@ import { Oval } from 'react-loader-spinner';
 import {
     Box,
     Typography,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    MenuItem,
-    Stack,
-    TextField,
     Container,
-    Tooltip,
-    Switch
 } from '@mui/material';
-
-import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-PatientList.css";
 import { API_DETAILS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
-import { Link } from 'react-router-dom'
 import Youroheader from '../Youro-header';
 
+import {  useNavigate  } from 'react-router-dom';
 
 const AdminPatientList = () => {
     const [tableDataPats, setTableDataPats] = useState([]);
@@ -376,19 +363,33 @@ const AdminPatientList = () => {
         [],
     );
 
-    const handleDeleteRow = useCallback(
-        (row) => {
-            if (
-                !window.confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
-            ) {
-                return;
-            }
-            //send api delete request here, then refetch or update local table data for re-render
-            tableDataPats.splice(row.index, 1);
-            // tableDataPats([...tableDataPats]);
-        },
-        [tableDataPats],
-    );
+    const navigate = useNavigate();
+
+    const handleClick = (row) => {
+        console.log('Redirecting to admin view patient');
+        navigate('/admin-view-patient', { 
+            state: { 
+                userId: row.original.userId,
+                firstName: row.original.firstName,
+                lastName: row.original.lastName,
+                email: row.original.email,
+                phone1: row.original.phone1,
+                address: row.original.address,
+                city: row.original.city,
+                zipCode: row.original.zipCode,
+                specialty: row.original.specialty,
+                status: row.original.status,
+                userType: row.original.userType,
+                state: row.original.state,
+                profileImageURL: row.original.profileImageURL,
+                license: row.original.license,
+                username: row.original.username,
+                gender: row.original.gender,
+                dateOfBirth: row.original.dateOfBirth
+            } 
+        });
+    };
+  
 
 
 
@@ -461,13 +462,13 @@ const AdminPatientList = () => {
                                             </div>
                                             <div className='row'>
                                                 <div className='col-12' style={{ textAlign: 'end' }}>
-                                                    <Link to={'/admin-view-patient' } className='view-more-class'>
-                                                        {/* <Link to={{ screen: 'Profile', params: { id: 'jane' } }}>
-                                                            Go to Jane's profile
-                                                            </Link> */}
+                                                    {/* <Link to={'/admin-view-patient' } className='view-more-class'>
                                                         View More{'>>'}
                                                         
-                                                    </Link>
+                                                    </Link> */}
+                                                    <button onClick={() => handleClick(row)} className='view-more-class' >
+                                                        View More {'>>'}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </Container>
@@ -475,13 +476,8 @@ const AdminPatientList = () => {
                                 )}
                                 muiTableBodyProps={{
                                     sx: () => ({
-                                        // '& tr:nth-of-type(even)': {
-                                        //     backgroundColor: "yellow",
-                                        // },
                                         '& tr:nth-of-type(odd)': {
                                             backgroundColor: "lightgray",
-                                            // border: '2px solid',
-                                            // borderColor: 'black'
                                         },
                                     }),
                                 }}
@@ -500,20 +496,6 @@ const AdminPatientList = () => {
 
                 // </>
             }
-            {/* {
-                renderAdminPats == true && tableDataPats && tableDataPats.length == 0 && <>
-                    <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        No Data Found!
-                    </div>
-                </>
-            }
-            {
-                renderAdminPats == false && <>
-                    <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '200px' }}>
-                        Error Fetching Data!
-                    </div>
-                </>
-            } */}
         </div>
     );
 
