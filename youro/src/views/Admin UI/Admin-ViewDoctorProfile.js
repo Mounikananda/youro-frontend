@@ -20,34 +20,88 @@ import {
 
 import { Delete } from '@mui/icons-material';
 // import "../../styles/Admin-ui/Admin-HomePage.css";
-import { USER_TYPES } from '../../App';
+import { API_DETAILS, COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom';
 import PreviousAppointments from '../Doctor UI/PreviousAppointments';
 import IncompleteEncounters from '../Doctor UI/IncompleteEncounters';
 
+import Cookies from "js-cookie";
+// import { useLocation } from 'react-router-dom';
+
+import { generatePath, useLocation } from 'react-router-dom';
+import Loader from '../../utils/loader';
+
 const AdminViewDoctorProfile = () => {
 
+    const [prevAppts, setPrevAppts] = useState([]);
+    const [upComingAppts, setUpcomingAppts] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [providerInfo, setProviderInfo] = useState(null);
+    const location = useLocation();
+
+
+    useEffect(() => {
+
+        const temp = {
+            userId: location.state.userId,
+            firstName: location.state.firstName,
+            lastName: location.state.lastName,
+            email: location.state.email,
+            phone1: location.state.phone1,
+            address: location.state.address,
+            city: location.state.city,
+            zipCode: location.state.zipCode,
+            specialty: location.state.specialty,
+            status: location.state.status,
+            userType: location.state.userType,
+            state: location.state.state,
+            profileImageURL: location.state.profileImageURL,
+            license: location.state.license,
+            username: location.state.username,
+            gender: location.state.gender,
+            dateOfBirth: location.state.dateOfBirth
+        };
+        setProviderInfo(temp);
+        fetchPrevAndUpcomingAppointments();
+    }, []);
+
+
+    const fetchPrevAndUpcomingAppointments = async () => {
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/appointments/${location.state.userId}`;
+        console.log(providerInfo);
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            const res = await axios.get(url, config);
+            console.log(res);
+            setPrevAppts(res.data.previousAppointments);
+            setUpcomingAppts(res.data.upComingAppointments);
+            console.log('upcoming appts::::  ');
+            console.log(res.data.upComingAppointments);
+            console.log('upcoming appts::::  ');
+            console.log(res.data.previousAppointments);
+            setIsLoading(false);
+        }
+        catch (err) {
+            console.error(err);
+            setIsLoading(false);
+        }
+    }
 
     const TodayAppointmentList = (props) => {
         const [data, setData] = useState([]);
 
         useEffect(() => {
 
-            const mockData = [
-                { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
-                { id: 2, name: 'John Doe', time: "10-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },
-                { id: 3, name: 'John Doe', time: "11-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis3', symptomscore: '30', meetup: 'new meet' },
-                { id: 4, name: 'John Doe', time: "12-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis4', symptomscore: '40', meetup: 'follow-up' },
-                { id: 5, name: 'John Doe', time: "13-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up' },
-                { id: 6, name: 'John Doe', time: "14-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis6', symptomscore: '60', meetup: 'new meet' },
-                { id: 7, name: 'John Doe', time: "15-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis7', symptomscore: '70', meetup: 'follow-up' },
-                { id: 8, name: 'John Doe', time: "16-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis8', symptomscore: '80', meetup: 'new meet' },
-            ];
-
-            setTimeout(() => {
-                setData(mockData);
-            }, 1000);
+            setData(upComingAppts);
+            // setTimeout(() => {
+            // }, 1000);
         }, []);
 
         return (
@@ -78,50 +132,55 @@ const AdminViewDoctorProfile = () => {
                 <div className='sidebar'>
                     <AdminSideBar data={'admin-doctors'} />
                 </div>
-                <div className="admin-view-doctor-container" style={{width: '100%'}}>
+                <div className="admin-view-doctor-container" style={{ width: '100%' }}>
                     <div className='admin-view-doctor-header'>
-                    <div className='header'>
-                                <h1 style={{marginLeft: '15px'}}>youro</h1>
-                            </div>
+                        <div className='header'>
+                            <h1 style={{ marginLeft: '15px' }}>youro</h1>
+                        </div>
                     </div>
                     <div className='admin-view-doctor-body'>
-                        <div className='all-plans-patient'>
-                            <div className='admin-details-view'>
-                                <h2>Upcoming Appointments</h2>
-                                <TodayAppointmentList/></div>
-                            <div className='admin-details-view'>
-                                <h2>Previous Appointments</h2>
-                                <PreviousAppointments />
-                            </div>
-                            <div className='admin-details-view'>
-
-                                <img  style={{margin: '15px auto 30px auto', borderRadius: '5px', display: 'block'}} src='https://demo.cherrytheme.com/gems/wp-content/uploads/2018/11/our-team-04.jpg' alt="Preview" width="150" height="150" />
-                                <div style={{display: 'flex', justifyContent: 'space-around'}}>
-                                    <div style={{width: '35%'}}>
-                                        <p>First Name:</p>
-                                        <p>Last Name:</p>
-                                        <p>Email</p>
-                                        <p>Mobile Number:</p><br />
-                                        <p>License Number:</p><br />
-                                        <p>Gender:</p>
-                                        <p>Date of Birth:</p>
-                                        <p>Address: </p>
-
+                        <Loader active={isLoading} />
+                        {
+                            !isLoading && <>
+                                <div className='all-plans-patient'>
+                                    <div className='admin-details-view'>
+                                        <h2>Upcoming Appointments</h2>
+                                        <TodayAppointmentList /></div>
+                                    <div className='admin-details-view'>
+                                        <h2>Previous Appointments</h2>
+                                        <PreviousAppointments data={prevAppts} />
                                     </div>
-                                    <div style={{width: '60%'}}>
-                                        <p><strong>Dr. Gulliame Farah</strong></p>
-                                        <p><strong>XXXXXXXX</strong></p>
-                                        <p><strong>Farah2000@gmail.com</strong></p>
-                                        <p><strong>716-819-9000</strong></p><br />
-                                        <p><strong>XXXXXXXX</strong></p><br />
-                                        <p><strong>Male</strong></p>
-                                        <p><strong>12/12/2000</strong></p>
-                                        <p><strong>XXXXXXXXXXXXXXXX</strong></p>
-                                    </div>
+                                    <div className='admin-details-view'>
 
+                                        <img style={{ margin: '15px auto 30px auto', borderRadius: '5px', display: 'block' }} src='https://demo.cherrytheme.com/gems/wp-content/uploads/2018/11/our-team-04.jpg' alt="Preview" width="150" height="150" />
+                                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                                            <div style={{ width: '35%' }}>
+                                                <p>First Name:</p>
+                                                <p>Last Name:</p>
+                                                <p>Email</p>
+                                                <p>Mobile Number:</p><br />
+                                                <p>License Number:</p><br />
+                                                <p>Gender:</p>
+                                                <p>Date of Birth:</p>
+                                                <p>Address: </p>
+
+                                            </div>
+                                            <div style={{ width: '60%' }}>
+                                                <p><strong>{providerInfo.firstName}</strong></p>
+                                                <p><strong>{providerInfo.lastName}</strong></p>
+                                                <p><strong>{providerInfo.email}</strong></p>
+                                                <p><strong>{providerInfo.phone1}</strong></p>
+                                                <p><strong>{providerInfo.license}</strong></p>
+                                                <p><strong>{providerInfo.gender}</strong></p>
+                                                <p><strong>{providerInfo.dateOfBirth}</strong></p>
+                                                <p><strong>{providerInfo.address}</strong></p>
+                                            </div>
+
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            </>
+                        }
                     </div>
                 </div>
             </div>

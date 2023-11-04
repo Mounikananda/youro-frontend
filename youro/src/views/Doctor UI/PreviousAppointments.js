@@ -13,7 +13,9 @@ const PreviousAppointments=(props)=>
       { id: 1, name: 'John Doe', time: "12-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis4', symptomscore: '40', meetup: 'follow-up' },
       { id: 1, name: 'John Doe', time: "13-sept,2023",patientstime: '4:30 am', diagnosisname: 'Diagnosis5', symptomscore: '50', meetup: 'follow-up'},
     ];
-
+    console.log('================');
+    console.log('================');
+    console.log(props.data);
     setTimeout(() => {
       setData(props.data);
     }, 1000);

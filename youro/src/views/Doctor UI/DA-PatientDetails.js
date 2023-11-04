@@ -62,6 +62,7 @@ import ReactQuillWrapper from './DA-takenote';
 import { Routes, Route, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../../utils/loader';
+import { API_DETAILS } from '../../App';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -88,7 +89,7 @@ const PatientDetails = (props) => {
   }, []);
 
   const getPatientDetails = async() => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/getUser/${patientId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.port + `/youro/api/v1/getUser/${patientId}`;
     try {
       setIsLoading(true)
       const res = await axios.get(url);
@@ -102,7 +103,7 @@ const PatientDetails = (props) => {
   }
 
   const fetchAppointments = async() => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/appointments/${patientId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.port + `/youro/api/v1/appointments/${patientId}`;
     try {
       setIsLoading(true)
       const res = await axios.get(url);
