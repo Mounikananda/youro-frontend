@@ -244,7 +244,7 @@ const CarePlan = () => {
 
     if (appointmentData) {
       const { apptId, diagId } = appointmentData;
-      const url = `http://52.14.33.154:9093/youro/api/v1/getCarePlanDetails?apptId=${apptId}&diagId=${diagId}&patientId=${patientId}`;
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/youro/api/v1/getCarePlanDetails?apptId=${apptId}&diagId=${diagId}&patientId=${patientId}`;
 
       try {
         const res = await axios.get(url);

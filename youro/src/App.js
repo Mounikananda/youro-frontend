@@ -30,7 +30,7 @@ import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
 
 export const API_DETAILS = {
-  baseUrl: 'http://52.14.33.154:',
+  baseUrl: 'http://3.139.104.28:',
   PORT: '9093',
   baseExtension: '/youro/api/v1',
 };
