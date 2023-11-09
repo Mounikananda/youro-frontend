@@ -213,7 +213,7 @@ function DoctorHomePage() {
 
   return (
      <div className='hm-doctor'>
-        <Loader active={isLoading} />
+        {/* <Loader active={isLoading} /> */}
         <div className='sidebar'>
          <DoctorSideBar data={'doctor-ui'} />
        </div>

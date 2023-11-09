@@ -268,11 +268,14 @@ const CarePlan = () => {
           <h4>{category}</h4>
           <ul>
             {data[category].map(item => (
-              <li key={item.presId}>
+              item.indicator && <>
+                <li key={item.presId}>
                 {item.name}
                 {item.dosage ? ` - Dosage: ${item.dosage}` : ''}
-                {item.indicator ? ' (Indicator)' : ''}
+                {/* {item.indicator ? ' (Indicator)' : ''} */}
               </li>
+                </>
+              
             ))}
           </ul>
         </div>
