@@ -24,6 +24,9 @@ const PatientHomePage = (props) => {
   const [prevAppts, setPrevAppts] = useState([]);
   const [upComingAppts, setUpcomingAppts] = useState([]);
   const [viewVal, setViewVal] = useState(0);
+
+  const navigate = useNavigate();
+
   const navToProfile = () => {
     props.changeView(4);
   }
@@ -140,7 +143,8 @@ const PatientHomePage = (props) => {
         {prevAppts && prevAppts.length!= 0 &&  prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
-              <h3 >{item.apptDate} - {item.doctorName}</h3>
+              <h3 >{new Date(item.apptDate).toLocaleDateString()}</h3>
+              <h3>{item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
@@ -189,7 +193,10 @@ const PatientHomePage = (props) => {
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
               {/* <p>{item.meetup}</p> */}
             </ul>
-            <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button>
+            {item.link ? <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> : 
+            <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
+            }
+            
           </div>
         ))
         
