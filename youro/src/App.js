@@ -31,7 +31,7 @@ import ForgotPassword from './views/ForgotPassword';
 
 export const API_DETAILS = {
   baseUrl: 'http://3.139.104.28:',
-  PORT: '9093',
+  PORT: '9095',
   baseExtension: '/youro/api/v1',
 };
 export const USER_TYPES = {
