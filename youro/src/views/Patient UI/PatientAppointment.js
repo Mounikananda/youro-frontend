@@ -31,16 +31,61 @@ const PatientAppointment = (props) => {
     const [slotsData, setSlotsData] = useState([]);
     const [slotsOnDate, setSlotsOnDate] = useState();
     const [selectedInfo, setSelectedInfo] = useState();
+    const [viewVal, setViewVal] = useState(0);
+    const [diagnosisNames, setDiagnoses] = useState([]);
+    const [selectedOption, setSelectedOption] = useState('');
+    const handleSelectChange = (event) => {
+        // console.log(event.target.value);
+        // console.log("symptom score data :: " + JSON.stringify(data));
+        setSelectedOption(event.target.value);
+    };
+
+
+    const navToProfile = () => {
+        props.changeView(4);
+    }
 
     useEffect(() => {
         fetch15DaysSlots();
+        fetchAllDiagnoses();
+        if (viewVal == 4) {
+            navToProfile();
+        }
+    }, [viewVal]);
 
-    }, [])
+    const formatSlotsToLocal = async (data) => {
+        var finalData = {}
+        for(var i = 0; i< data.length; i++){
+
+        }
+    }
+
+    const fetchAllDiagnoses = async () => {
+        // console.log("====^^^===");
+        // console.log("fetchAllDiagnoses START");
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllDiagnoses`;
+        const config = {
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Content-Type': 'application/json'
+          }
+        };
+        try {
+          const res = await axios.get(url, config);
+          setDiagnoses(res.data);
+        }
+        catch (err) {
+          console.error(err);
+        }
+        // console.log("fetchAllDiagnoses END");
+        // console.log("====^^^===");
+      };
 
     const fetch15DaysSlots = async () => {
         console.log("====^^^===");
         console.log("fetch15DaysSlots START");
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAvailableSlotsByDate`;
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAvailableSlotsByDate`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
@@ -91,7 +136,7 @@ const PatientAppointment = (props) => {
     // }
 
     const handleBook = () => {
-        setOpen(true);
+        
         console.log(selectedInfo); //.doctorIds[Math.floor(Math.random()*selectedInfo.doctorIds.length)]
         saveNewAppointment();
     }
@@ -108,11 +153,12 @@ const PatientAppointment = (props) => {
                 'Content-Type': 'application/json'
             }
         };
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/saveAppointment`;
-        
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/saveAppointment`;
+
         try {
             console.log(selectedInfo);
             const temp = {
+                diagId: selectedOption,
                 docId: selectedInfo.doctorIds[0],
                 patId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
                 startTime: selectedInfo.startTime + ''
@@ -121,6 +167,7 @@ const PatientAppointment = (props) => {
             const res = await axios.post(url, temp);
             console.log(res.data); //{message: 'Doctor Name'}
             setNewApptDocName(res.data.message);
+            setOpen(true);
         }
         catch (err) {
             console.error(err);
@@ -179,6 +226,7 @@ const PatientAppointment = (props) => {
         // console.log("handleDateSelection start");
         // console.log(eve);
         setDateSelection(eve);
+        console.log(eve)
         // console.log(eve.getDate() > 10);
         var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0' + eve.getDate()));
         getSlots(date);
@@ -189,7 +237,7 @@ const PatientAppointment = (props) => {
     return (
         <div style={{ display: 'flex', flexDirection: "column", width: "100%" }} >
             <div style={{ margin: "0% 2%" }}>
-                <Youroheader />
+                <Youroheader setView={setViewVal} />
             </div>
             <div style={{ display: 'flex', width: '100%', flexDirection: "row", alignItems: 'start' }}>
                 <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
@@ -224,7 +272,15 @@ const PatientAppointment = (props) => {
                 {
                     event &&
                     <>
+                        
                         <div style={{ margin: 'auto' }}>
+                        <label for='d'>Choose diagnosis: </label>
+                        <select id="d" name="d" className='dropdown-chart' value={selectedOption} onChange={handleSelectChange}>
+                            <option>Select Diagnosis</option>
+                            {
+                            diagnosisNames.map((result) => (<option value={result.diagId}>{result.name}</option>))
+                            }
+                        </select><br/><br/>
                             <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />
                             <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event} - {getEndTime(event)}
                             <br /><br /><br /><br /><br />

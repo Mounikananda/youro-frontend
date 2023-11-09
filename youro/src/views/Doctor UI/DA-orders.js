@@ -5,6 +5,7 @@ import Popup from 'reactjs-popup';
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
 import Loader from '../../utils/loader';
+import { API_DETAILS } from '../../App';
 
 const Orders = (props) => {
 
@@ -31,7 +32,7 @@ const Orders = (props) => {
   }, [])
 
   const handleSubmitDosage = async () => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/saveCarePlanDetails`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.port + `/youro/api/v1/saveCarePlanDetails`;
     var data = {};
     var dupData = [...carePlanDetails][0]
     var dupData2 = {}
@@ -58,7 +59,7 @@ const Orders = (props) => {
   const fetchAllDiagnoses = async () => {
     // console.log("====^^^===");
     // console.log("fetchAllDiagnoses START");
-    const url = `http://52.14.33.154:9093/youro/api/v1/getAllDiagnoses`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.port + `/youro/api/v1/getAllDiagnoses`;
     try {
       const res = await axios.get(url);
       setDiagnoses(res.data);
@@ -77,7 +78,7 @@ const Orders = (props) => {
   };
 
   const fetchMedicines = async(diagId) => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/getCarePlanDetails?apptId=${props.apptId}&diagId=${diagId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.port + `/youro/api/v1/getCarePlanDetails?apptId=${props.apptId}&diagId=${diagId}`;
     try {
       setIsLoading(true)
       const res = await axios.get(url);

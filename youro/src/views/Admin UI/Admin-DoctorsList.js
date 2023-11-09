@@ -5,35 +5,20 @@ import { Oval } from 'react-loader-spinner';
 import {
     Box,
     Typography,
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    IconButton,
-    MenuItem,
-    Stack,
-    TextField,
     Container,
     Tooltip,
     Switch
 } from '@mui/material';
 
-import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
 import { API_DETAILS, COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
-import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
 import Cookies from "js-cookie";
 import Youroheader from '../Youro-header';
-
-
-import Popup from 'reactjs-popup';
-import 'reactjs-popup/dist/index.css';
 import "../../styles/Admin-ui/Admin-PopUps.css";
-// import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/Delete';
+
+import {  useNavigate  } from 'react-router-dom';
 const data = [
     {
         userId: '1',
@@ -312,25 +297,6 @@ const data = [
         status: "APPROVED"
     },
 ];
-// {
-//     "userId": 5,
-//     "email": "doc1@gmail.com",
-//     "password": "12121212",
-//     "userType": "PROVIDER",
-//     "firstName": "doc1st",
-//     "lastName": "asdf",
-//     "gender": "MALE",
-//     "address": "asdf",
-//     "city": "asfd",
-//     "state": "NY",
-//     "zipCode": "14214",
-//     "dateOfBirth": "2003-07-03",
-//     "phone1": "987654321",
-//     "license": "123456",
-//     "specialization": "Diagnosis1",
-//     "status": "APPROVED"
-//   }
-
 
 
 const AdminDoctorsList = () => {
@@ -338,7 +304,6 @@ const AdminDoctorsList = () => {
     const [renderAdmin, canRenderAdmin] = useState(false);
     const [renderapidata,cannotrenderapidata]=useState(false);
     const isRendered = useRef(false);
-    // const parentRef = useRef();
     let count = 0;
 
 
@@ -458,19 +423,34 @@ const AdminDoctorsList = () => {
         }
     ];
 
-    const handleDeleteRow = useCallback(
-        (row) => {
-            if (
-                !window.confirm(`Are you sure you want to delete ${row.getValue('firstName')}`)
-            ) {
-                return;
-            }
-            tableData.splice(row.index, 1);
-        },
-        [tableData],
-    );
 
+    const navigate = useNavigate();
 
+    const handleClick = (row) => {
+        console.log('Redirecting to admin view doctor');
+        navigate('/admin-view-doctor', { 
+            state: { 
+                userId: row.original.userId,
+                firstName: row.original.firstName,
+                lastName: row.original.lastName,
+                email: row.original.email,
+                phone1: row.original.phone1,
+                address: row.original.address,
+                city: row.original.city,
+                zipCode: row.original.zipCode,
+                specialty: row.original.specialty,
+                status: row.original.status,
+                userType: row.original.userType,
+                state: row.original.state,
+                profileImageURL: row.original.profileImageURL,
+                license: row.original.license,
+                username: row.original.username,
+                gender: row.original.gender,
+                dateOfBirth: row.original.dateOfBirth
+            } 
+        });
+    };
+  
 
     
     return (
@@ -507,10 +487,7 @@ const AdminDoctorsList = () => {
                                 positionActionsColumn='last'
                                 renderRowActions={({ row }) => (
                                     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                                        <Tooltip arrow placement="right" title="Delete">
-                                            {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                                <Delete />
-                                            </IconButton> */}
+                                        <Tooltip arrow placement="right" title="Delete" >
                                             <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
                                         </Tooltip>
                                     </Box>
@@ -537,9 +514,9 @@ const AdminDoctorsList = () => {
                                             </div>
                                             <div className='row'>
                                                 <div className='col-12' style={{ textAlign: 'end' }}>
-                                                    <Link to={'/admin-view-doctor'} className='view-more-class'>
-                                                        View More{'>>'}
-                                                    </Link>
+                                                    <button onClick={() => handleClick(row)} className='view-more-class' >
+                                                        View More {'>>'}
+                                                    </button>
                                                 </div>
                                             </div>
                                         </Container>

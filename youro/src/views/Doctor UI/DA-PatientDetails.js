@@ -1,55 +1,3 @@
-// import React, { useState } from 'react';
-// import "../../styles/Doctor-ui/Doctor-appointment/Doctor-patient-data.css";
-
-// const PatientDetails = (props) => {
-
-//   const [overviewtab,setoverviewtab]=useState(false);
-//   const [personalinfo,setpersonalinfo]= useState(false);
-//   const [results,setresults]=useState(false);
-//   const [notes,setnotes]=useState(false);
-//   const [orders,setorders]=useState(false);
-//   const [followup,setfollowup]=useState(false);
-
-
-//   const handleoverview= (data)=>
-// {
-//   setoverviewtab('overview'==data);
-// }
-
-
- 
-//   console.log("printing data", props.data[0]);
-//   return (
-//       <div className='p-data'>
-//       <div className='p-data-row'>
-//         <div className='p-data-col'>
-//         <label>Patient Id:{props.data[0].patientId}</label>
-//         <label>Patient first name: {props.data[0].firstName}</label>
-//         </div>
-//         <div className='p-data-col'> 
-//         <label>Patient last name: {props.data[0].lastName}</label>
-//         <label>Patient email: {props.data[0].email}</label>
-//         </div>
-//       </div>
-//       <div className='p-div-row'>
-//         <div className='p-tabs' onClick={handleoverview('overview')}>OverView</div>
-//         <div className='p-tabs' onClick={handleoverview('personinfo')}>Personal Info</div>
-//         <div className='p-tabs' onClick={handleoverview('results')}>Results</div>
-//         <div className='p-tabs' onClick={handleoverview('notes')}>Notes</div> 
-//         <div className='p-tabs' onClick={handleoverview('orders')}>Orders</div>
-//         <div className='p-tabs' onClick={handleoverview('follow-up')}>Follow-up</div>  
-//       </div>
-
-//       <div>
-//       </div>
-//       </div>
-//   );
-// }
-
-// export default PatientDetails;
-
-
-
 import React, { useState,useEffect} from 'react';
 import "../../styles/Doctor-ui/Doctor-appointment/Doctor-patient-data.css";
 import PreviousAppointments from './PreviousAppointments';
@@ -62,6 +10,7 @@ import ReactQuillWrapper from './DA-takenote';
 import { Routes, Route, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../../utils/loader';
+import { API_DETAILS } from '../../App';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -74,7 +23,7 @@ const PatientDetails = (props) => {
   const [prevAppts, setPrevAppts] = useState([]);
   const [upComingAppts, setUpcomingAppts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  let {apptId, patientId} = useParams();
+  let {patientId} = useParams();
   const [patDetails, setPatDetails] = useState();
 
   const handleOverview = (data) => {
@@ -82,13 +31,12 @@ const PatientDetails = (props) => {
   }
 
   useEffect(() => {
-
     fetchAppointments();
     getPatientDetails();
   }, []);
 
   const getPatientDetails = async() => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/getUser/${patientId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getUser/${patientId}`;
     try {
       setIsLoading(true)
       const res = await axios.get(url);
@@ -102,7 +50,8 @@ const PatientDetails = (props) => {
   }
 
   const fetchAppointments = async() => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/appointments/${patientId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/appointments/${patientId}`;
+    console.log(url)
     try {
       setIsLoading(true)
       const res = await axios.get(url);
@@ -250,7 +199,7 @@ const PatientDetails = (props) => {
       )}
 
       {activeTab === 'orders' && (
-        <Orders apptId={apptId} patId={patientId}/>
+        <Orders patId={patientId}/>
       )}
 
       {activeTab === 'follow-up' && (

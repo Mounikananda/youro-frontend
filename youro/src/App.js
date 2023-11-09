@@ -30,8 +30,8 @@ import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
 
 export const API_DETAILS = {
-  baseUrl: 'http://52.14.33.154:',
-  PORT: '9093',
+  baseUrl: 'http://3.139.104.28:',
+  PORT: '9095',
   baseExtension: '/youro/api/v1',
 };
 export const USER_TYPES = {
@@ -77,7 +77,7 @@ function App() {
         <Route path='/admin-patients' element={<AdminPatientList/>}></Route>
         <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
         <Route path='/doctor-appointment' element={<DoctorAppointments/>}></Route>
-        <Route path='/doctor-view-profile/:patientId?/:apptId?' element={<ViewProfile/>}></Route>
+        <Route path='/doctor-view-profile/:patientId?' element={<ViewProfile/>}></Route>
         <Route path='/doctor-chat' element={<DoctorChat/>}></Route>
         <Route path='/admin-denied-doctors' element={<AdminDeniedDoctorsList/>}></Route>
         <Route path='/admin-view-doctor' element={<AdminViewDoctorProfile/>}></Route>

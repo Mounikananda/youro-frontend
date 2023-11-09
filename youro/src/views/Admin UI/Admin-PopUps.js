@@ -97,7 +97,7 @@ const AdminPopUps = ((props) => {
     return (
         <div>
 
-            <IconButton color="error" onClick={openPopup}>
+            <IconButton color="error" onClick={openPopup} className='delete-doctor-button'>
                 <Delete />
             </IconButton>
             {

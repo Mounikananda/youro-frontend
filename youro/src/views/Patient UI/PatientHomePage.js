@@ -18,14 +18,25 @@ import Youroheader from '../Youro-header';
 import CarePlan from './PatientCareplan';
 
 
-const PatientHomePage = () => {
+const PatientHomePage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const uId = Cookies.get(COOKIE_KEYS.userId);//1; 
   const [prevAppts, setPrevAppts] = useState([]);
   const [upComingAppts, setUpcomingAppts] = useState([]);
+  const [viewVal, setViewVal] = useState(0);
+
+  const navigate = useNavigate();
+
+  const navToProfile = () => {
+    props.changeView(4);
+  }
+
   useEffect(() => {
     fetchPrevAndUpcomingAppointments();
-  }, []);
+    if(viewVal == 4){
+      navToProfile();
+    }
+  }, [viewVal]);
 
   const fetchPrevAndUpcomingAppointments = async () => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/appointments/${uId}`;
@@ -118,75 +129,7 @@ const PatientHomePage = () => {
   // };
 
   const PreviousAppointments = () => {
-    // const [data, setData] = useState([]);
-
-    // useEffect(() => {
-    //   const mockData1 = [
-    //     {
-    //       patientName: "Mr. Mandava",
-    //       doctorName: "Ms. asdf",
-    //       patientId: "1",
-    //       doctorId: "10",
-    //       apptStartTime: "00:00:00",
-    //       link: "ZOOM LINK",
-    //       apptId: "1",
-    //       apptEndTime: "02:00:00",
-    //       apptDate: "2023-11-01",
-    //       status: "SCHEDULED"
-    //     },
-    //     {
-    //       patientName: "Mr. Mandava",
-    //       doctorName: "Ms. asdf",
-    //       patientId: "1",
-    //       doctorId: "9",
-    //       apptStartTime: "08:00:00",
-    //       link: "ZOOM LINK",
-    //       apptId: "7",
-    //       apptEndTime: "10:00:00",
-    //       apptDate: "2023-12-03",
-    //       status: "SCHEDULED"
-    //     },
-    //     {
-    //       patientName: "Mr. Mandava",
-    //       doctorName: "Mr. asdf",
-    //       patientId: "1",
-    //       doctorId: "8",
-    //       apptStartTime: "11:45:00",
-    //       link: "ZOOM LINK",
-    //       apptId: "9",
-    //       apptEndTime: "14:00:00",
-    //       apptDate: "2023-12-07",
-    //       status: "SCHEDULED"
-    //     },
-    //     {
-    //       patientName: "Mr. Mandava",
-    //       doctorName: "Ms. asdf",
-    //       patientId: "1",
-    //       doctorId: "9",
-    //       apptStartTime: "08:50:00",
-    //       link: "ZOOM LINK",
-    //       apptId: "18",
-    //       apptEndTime: "10:50:00",
-    //       apptDate: "2021-12-03",
-    //       status: "CANCELED"
-    //     },
-    //     {
-    //       patientName: "Mr. Mandava",
-    //       doctorName: "Mr. asdf",
-    //       patientId: "1",
-    //       doctorId: "8",
-    //       apptStartTime: "11:45:00",
-    //       link: "ZOOM LINK",
-    //       apptId: "20",
-    //       apptEndTime: "14:40:00",
-    //       apptDate: "2022-12-07",
-    //       status: "COMPLETED"
-    //     }
-    //   ]
-
-    //   setData(mockData1);
-    // }, []);
-
+   
     return (
       <div className="previous-appointment-wrapper">
         {
@@ -200,7 +143,8 @@ const PatientHomePage = () => {
         {prevAppts && prevAppts.length!= 0 &&  prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
-              <h3 >{item.apptDate} - {item.doctorName}</h3>
+              <h3 >{new Date(item.apptDate).toLocaleDateString()}</h3>
+              <h3>{item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
@@ -249,7 +193,10 @@ const PatientHomePage = () => {
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
               {/* <p>{item.meetup}</p> */}
             </ul>
-            <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button>
+            {item.link ? <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> : 
+            <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
+            }
+            
           </div>
         ))
         
@@ -257,7 +204,6 @@ const PatientHomePage = () => {
       </div>
     );
   };
-
 
   const [open, setOpen] = useState(false);
 
@@ -270,7 +216,7 @@ const PatientHomePage = () => {
          <Popmenu/> 
          </div>  */}
         <div style={{width:"100%",margin:"0% 2%"}}>
-      <Youroheader/>
+      <Youroheader setView={setViewVal}/>
        </div>
        
       <div className='all-details'>

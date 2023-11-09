@@ -218,7 +218,7 @@
 // ----------------
 
 import React, { useState, useEffect } from 'react';
-import { COOKIE_KEYS } from '../../App';
+import { API_DETAILS, COOKIE_KEYS } from '../../App';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 
@@ -227,7 +227,7 @@ const CarePlan = () => {
   const [activeLoader, setActiveLoader] = useState(false);
 
   const fetchAppointments = async (patientId) => {
-    const url = `http://52.14.33.154:9093/youro/api/v1/getCarePlanDetailsByPatientID/${patientId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/youro/api/v1/getCarePlanDetailsByPatientID/${patientId}`;
 
     try {
       const res = await axios.get(url);
@@ -262,8 +262,9 @@ const CarePlan = () => {
   }, []);
 
   return (
-    <div>
-      {Object.keys(data).map(category => (
+    // <div>
+    <>
+      {data.length ? Object.keys(data).map(category => (
         <div key={category}>
           <h4>{category}</h4>
           <ul>
@@ -279,8 +280,12 @@ const CarePlan = () => {
             ))}
           </ul>
         </div>
-      ))}
-    </div>
+      )) : <div style={{ width: '100%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <h3><i>See a doctor for your careplan</i></h3>
+    </div>}
+    
+    </>
+    // </div>
   );
 };
 

@@ -7,7 +7,7 @@ import axios from "axios";
 import Youroheader from "../Youro-header";
 import { ToastContainer, toast } from 'react-toastify';
 
-const PatientProfile = () => {
+const PatientProfile = (props) => {
 
   const {
     register,
@@ -20,10 +20,17 @@ const PatientProfile = () => {
 
   const [initEmail, setInitEmail] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
+  const [viewVal, setViewVal] = useState(0);
+  const navToProfile = () => {
+    props.changeView(4);
+  }
 
   useEffect(() => {
     fetchProfileData();
-  }, []);
+    if(viewVal == 4){
+      navToProfile();
+    }
+  }, [viewVal]);
 
   const fetchProfileData = async () => {
     const uID = Cookies.get(COOKIE_KEYS.userId);
@@ -130,7 +137,7 @@ const PatientProfile = () => {
   return (
     <>
       <div style={{ marginTop: '10px', marginLeft: '50px', width: '100%' }}>
-        <Youroheader/>
+        <Youroheader setView={setViewVal}/>
       <ToastContainer />
         <h1>Profile Information</h1>
         <div>

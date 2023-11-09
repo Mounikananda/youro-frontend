@@ -50,4 +50,7 @@ body
 
 .Menu-item:hover {
   background-color: var(--primary-color);
+  
+  transform: scale(1.1);
+  transition-duration: 0.3s;
 }
