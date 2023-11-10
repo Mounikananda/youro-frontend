@@ -23,6 +23,7 @@ const Orders = (props) => {
   const [careplanVersion, setCareplanVersions] = useState([]);
   const [selectedVersion, setSelectedVersion] = useState('');
   const [notes, setNotes] = useState('');
+  const [followUp, setFollowUp] = useState(null);
 
   const {
     register,
@@ -53,6 +54,7 @@ const Orders = (props) => {
     data['diagID'] = selectedOption;
     data['notes'] = notes;
     data['doctorId'] = Cookies.get(COOKIE_KEYS.userId);
+    data['followUp'] = followUp;
     console.log(data)
     axios.post(url, data).then(res => {
       props.handleToast(true)
@@ -97,7 +99,7 @@ const Orders = (props) => {
     try {
       const res = await axios.get(url);
       if (!edit) setCarePlan(res.data);
-      if (edit) setCarePlanDetails([res.data.carePlan]); setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId); setNotes(res.data.notes)
+      if (edit) setCarePlanDetails([res.data.carePlan]); setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId); setNotes(res.data.notes); setFollowUp(res.data.followUp)
     }
     catch (err) {
       console.error(err);
@@ -237,10 +239,10 @@ const Orders = (props) => {
         }
       </select>
       {Object.keys(carePlan['carePlan']).map(category => (
-        <div key={category}>
+        carePlan['carePlan'][category].filter(item => item.indicator)[0] && <div key={category}>
           <h4 style={{margin: '15px 0px'}}>{category}</h4>
           <ul style={{margin: '0px'}}>
-            {carePlan['carePlan'][category].map(item => (
+            { carePlan['carePlan'][category].map(item => (
               item.indicator && <>
                 <li key={item.presId}>
                 {item.presName}
@@ -251,8 +253,14 @@ const Orders = (props) => {
               
             ))}
           </ul>
-        </div>       
+        </div>      
       ))} <br /><br />
+      {carePlan.followUp ? <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
+                            sync
+                            </span><strong>&nbsp;&nbsp;Follow-up required</strong></div> :
+                             <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
+                             select_check_box
+                             </span><strong>&nbsp;&nbsp;Follow-up not required</strong></div>} <br /> <br />
       <strong>Notes : </strong><p style={{wordWrap: 'break-word'}}>{carePlan.notes}</p> <br /><br /><br />
       {console.log(selectedVersion, careplanVersion.filter(val => val.cId == selectedVersion && val.edit))}{careplanVersion.filter(val => val.cId == selectedVersion && val.edit)[0] && <div className='btn-filled' onClick={() => handleEdit()}>Edit</div>}</div>}
 
@@ -395,6 +403,10 @@ const Orders = (props) => {
  </div>
 </div>
 <textarea style={{width: '95%', height: '50px', margin: '0px auto'}} value={notes} onChange={(e) => setNotes(e.target.value)}>Enter your notes here...</textarea>
+<br />
+<input id='followUp' checked={followUp ? true : false} onChange={e => setFollowUp(followUp ? null : true)} type='checkbox'></input>
+<label for='followUp'>Follow-up required</label>
+
 <div className='submit-button'>
 <button className='btn-filled ' onClick={handleSub}>Submit order</button>
 </div>

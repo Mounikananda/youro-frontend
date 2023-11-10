@@ -23,7 +23,7 @@ function DoctorHomePage() {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => {
-    setIsVisible(true);
+    setIsVisible(!isVisible);
   };
   const navigate = useNavigate();
 
@@ -88,6 +88,23 @@ const appointments_image = (arrayBuffer) => {
     }
   }
 
+  const ImagePrev = (data) => {
+    const arrayBuffer = new Uint8Array(data);
+        if(arrayBuffer.length!=0)
+        {
+        const base64Image = btoa(
+          new Uint8Array(arrayBuffer).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+      //    const base64Image = btoa(
+      //   String.fromCharCode.apply(null, arrayBuffer)
+      // );
+        //  const contentType = response.headers['content-type'];
+        return `data:image/png;base64,${base64Image}`
+  }
+  }
   const TodayAppointmentList = () => {
 
     const openLinkPopUp = (item) => {
@@ -113,14 +130,14 @@ const appointments_image = (arrayBuffer) => {
         }
 
         {upComingAppts && upComingAppts.length != 0 && upComingAppts.map((item) => (
-          <div className='previous-appointment'>
-            <div>
+          <div className='previous-appointment' onClick={toggleVisibility}>
+            <div> 
               <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
               
                 <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
-                src={item.picture!=null ? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 className="profile-pic" alt="Patient Image" width="15" height="15"/>
               {/* {item.picture[0] && (
                 <img
@@ -129,7 +146,9 @@ const appointments_image = (arrayBuffer) => {
                   style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
                 /> */}
               {/* )} */}
-              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>{item.patientName}</h3>
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
+                <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.patientName}</Link>
+              </h3>
             </div>
                 {/* {item.patientName}</h3> */}
             </div>

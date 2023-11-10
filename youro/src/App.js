@@ -29,6 +29,7 @@ import AdminViewPatientProfile from './views/Admin UI/Admin-ViewPatientProfile';
 import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
 import VerifyEmail from './views/VerifyEmail';
+import AdminAssistantList from './views/Admin UI/Admin-AssistantList';
 
 export const API_DETAILS = {
   baseUrl: 'http://3.149.235.109:',
@@ -38,7 +39,8 @@ export const API_DETAILS = {
 export const USER_TYPES = {
   user : 'PATIENT',
   doctor : 'PROVIDER',
-  admin : 'ADMIN'
+  admin : 'ADMIN',
+  assistant : 'ASSISTANT'
 };
 export const subscriptionStatus = {
   active : 'ACTIVE',
@@ -85,6 +87,7 @@ function App() {
         <Route path='/admin-view-doctor' element={<AdminViewDoctorProfile/>}></Route>
         <Route path='/admin-view-patient' element={<AdminViewPatientProfile/>}></Route>
         <Route path='manage-approved-medicine' element={<AdminMaintainenceList />}></Route>
+        <Route path='/admin-assistants' element={<AdminAssistantList/>}></Route>
      </Routes>
     </Router>
     
