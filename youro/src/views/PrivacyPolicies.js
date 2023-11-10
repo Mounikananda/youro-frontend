@@ -35,10 +35,12 @@ const PrivacyPolicy = (props) => {
       }
   };
     axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/register", usrData, config).then((res) => {
-        console.log("register success");
-        console.log(res);
-        navigate("/login");
-        toast.success("Registration success")
+      console.log("email in usrdata ", usrData.email);
+      console.log("id in usrdata ", res.data.userId);  
+      console.log("register success");
+      console.log(res);
+      navigate("/verify-email",  { state: { userEmail : usrData.email } });
+      toast.success("Registration success");
     }).catch((err) => {
         console.error(err.response.data.errorMessage)
         toast.error('Oops!! ' + err.response.data.errorMessage)
