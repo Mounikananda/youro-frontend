@@ -23,7 +23,7 @@ function DoctorHomePage() {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => {
-    setIsVisible(true);
+    setIsVisible(!isVisible);
   };
   const navigate = useNavigate();
 
@@ -130,8 +130,8 @@ const appointments_image = (arrayBuffer) => {
         }
 
         {upComingAppts && upComingAppts.length != 0 && upComingAppts.map((item) => (
-          <div className='previous-appointment'>
-            <div>
+          <div className='previous-appointment' onClick={toggleVisibility}>
+            <div> 
               <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
               
                 <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
@@ -146,7 +146,9 @@ const appointments_image = (arrayBuffer) => {
                   style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
                 /> */}
               {/* )} */}
-              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>{item.patientName}</h3>
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
+                <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.patientName}</Link>
+              </h3>
             </div>
                 {/* {item.patientName}</h3> */}
             </div>
