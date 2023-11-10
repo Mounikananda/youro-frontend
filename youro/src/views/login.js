@@ -33,21 +33,38 @@ const Login= () =>
       }
   };
     axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension + "/login", data, config).then((res) => {
-        toast.success("Successful login");
-        console.log(res);
-        Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
-        Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
-        Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
-        Cookies.set(COOKIE_KEYS.userName, res.data.fullName,{expires:7}); 
+        console.log("login response: ", res);  
+        console.log("verificationStatus: ", res.data.verificationStatus)
 
-        if(res.data.uType === 'PATIENT'){
-          navigate("/patient-ui");
-        }
-        else if(res.data.uType === 'PROVIDER'){
-          navigate("/doctor-ui");
-        }
-        else{
+        if(res.data.uType === 'ADMIN'){
+          toast.success("Successful login");
+          console.log(res);
+          Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
+          Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
+          Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
+          Cookies.set(COOKIE_KEYS.userName, res.data.fullName,{expires:7}); 
           navigate("/admin-doctors");
+        }
+      
+        else{
+          if(res.data.verificationStatus == true){
+                toast.success("Successful login");
+                console.log(res);
+                Cookies.set(COOKIE_KEYS.token, res.data.token, { expires: 7 });
+                Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
+                Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
+                Cookies.set(COOKIE_KEYS.userName, res.data.fullName,{expires:7});            
+
+                if(res.data.uType === 'PATIENT'){
+                  navigate("/patient-ui");
+                }
+                else if(res.data.uType === 'PROVIDER'){
+                  navigate("/doctor-ui");
+                }
+          }
+          else{
+                navigate("/verify-email",  { state: { userEmail : res.data.email } });
+          }
         }
     }).catch((res) => {
         console.error(res.response.data.errorMessage)
