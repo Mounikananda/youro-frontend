@@ -24,6 +24,8 @@ const PatientHomePage = (props) => {
   const [prevAppts, setPrevAppts] = useState([]);
   const [upComingAppts, setUpcomingAppts] = useState([]);
   const [viewVal, setViewVal] = useState(0);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [selectedCareplan, setSelectedCareplan] = useState(null)
 
   const navigate = useNavigate();
 
@@ -39,7 +41,7 @@ const PatientHomePage = (props) => {
   }, [viewVal]);
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/appointments/${uId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/appointments/${uId}?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
     const config = {
       headers: {
           'Access-Control-Allow-Origin': '*',
@@ -58,76 +60,6 @@ const PatientHomePage = (props) => {
     }
   }
 
-  // const CarePlan = () => {
-  //   const [data, setData] = useState([]);
-  //   const [activeLoader, setActiveLoader] = useState(false);
-
-  //   useEffect(() => {
-      
-  //     const mockData = [
-  //       {
-  //         "Prescription": {
-  //           "Dolo":
-  //             "take one in the morning and 1 in the evening",
-  //           "Paracetamol": "take 1 after dinner"
-  //         },
-  //         "Supplements": {
-  //           "Dolo": "take one in the morning and 1 in the evening",
-  //           "Paracetamol": "take 1 after dinner"
-  //         },
-  //         "Lifestylemodifications": [
-  //           "Make sure to drink 3 - 5 liters of water daily",
-  //           "Spend at least an hour in the sun",
-  //           "Don't drink coffee",
-  //           "Don't smoke",
-  //           "Don't consume alcohol"
-  //         ]
-  //       }
-  //     ];
-  //     setData(mockData);
-  //     // const fetchData = async () => {
-  //     //   try {
-
-  //     //     // const response = await fetch('any-api');
-  //     //     // const result = await response.json();
-  //     //     setData(mockData);
-  //     //     setIsLoading(false);
-  //     //   } catch (error) {
-  //     //     console.error('Error fetching data:', error);
-  //     //     setIsLoading(false);
-  //     //   }
-  //     // };
-
-  //     // fetchData();
-
-  //   }, []);
-
-
-  //   return (
-  //     <div>
-  //       {data.map((item, index) => (
-  //         <div className='patient-div' key={index}>
-  //           <h3 >Reduce your symptom score by 'x' points before your next follow-up.</h3>
-
-  //           {Object.keys(item).map((category, categoryIndex) => (
-  //             <div key={categoryIndex + 1}>
-  //               <h4>{category}</h4>
-  //               <ul>
-  //                 {Object.entries(item[category]).map(([medication, instruction], i) => (
-  //                   <li key={i}>
-  //                     {/* {medication}: {instruction} */}
-  //                     {category !== 'Lifestylemodifications' ? `${medication}: ${instruction}` : `${instruction}`}
-  //                   </li>
-  //                 ))}
-  //               </ul>
-  //             </div>
-  //           ))}
-  //         </div>
-  //       ))}
-  //     </div>
-  //   );
-  // };
-
   const PreviousAppointments = () => {
    
     return (
@@ -144,11 +76,23 @@ const PatientHomePage = (props) => {
           <div className='previous-appointment' >
             <div>
               <h3 >{new Date(item.apptDate).toLocaleDateString()}</h3>
-              <h3>{item.doctorName}</h3>
+              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+                  <img
+                // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                src={item.picture!=null ? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+              {/* {item.picture[0] && (
+                <img
+                  src={arrayBufferToBase64(item.picture[0])}
+                  alt="Patient"
+                  style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
+                /> */}
+              {/* )} */}
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>{item.doctorName}</h3> </div>
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
-              <li style={{ textDecoration: 'underline', color: '#9CB189' }}>view careplan and note provided</li>
+              <li style={{ textDecoration: 'underline', color: '#9CB189' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>view careplan and note provided</li>
               <li>Status: {item.status}</li>
               {/* <p>{item.meetup}</p> */}
             </ul>
@@ -185,7 +129,19 @@ const PatientHomePage = (props) => {
             <div className='previous-appointment'> 
              <div>
              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
-              <h3>{item.doctorName}</h3>
+             <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+                  <img
+                // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                src={item.picture!=null ? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+              {/* {item.picture[0] && (
+                <img
+                  src={arrayBufferToBase64(item.picture[0])}
+                  alt="Patient"
+                  style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
+                /> */}
+              {/* )} */}
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>{item.doctorName}</h3> </div>
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
@@ -248,6 +204,17 @@ const PatientHomePage = (props) => {
 
       {/* </div>   */}
       {open && <SymptomCalculator open={open} setOpen={setOpen} />}
+
+      <Popup open={popupOpen} modal closeOnDocumentClick={false} onClose={() => setPopupOpen(false)} className="congrats-popup">
+                    <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setPopupOpen(false); props.changeView(0) }}>
+                        <span class="material-symbols-outlined">
+                            close
+                        </span>
+                    </div>
+                    <div style={{ padding: '50px 20px'}}>
+                        <CarePlan apptId={selectedCareplan && selectedCareplan.apptId}/>
+                    </div>
+                </Popup>
     </div>
     // </div>
   );
