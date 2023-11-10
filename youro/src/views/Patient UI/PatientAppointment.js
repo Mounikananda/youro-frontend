@@ -83,9 +83,7 @@ const PatientAppointment = (props) => {
       };
 
     const fetch15DaysSlots = async () => {
-        console.log("====^^^===");
-        console.log("fetch15DaysSlots START");
-        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAvailableSlotsByDate`;
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAvailableSlotsByDate?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
@@ -99,10 +97,9 @@ const PatientAppointment = (props) => {
             // console.log("got data ");
             // console.log(res);
             setSlotsData(res.data);
+            handleDateSelection(new Date(), res.data);
 
             const rnFunc = async (formattedDate, classname) => {
-                console.log(formattedDate + " :: " + classname);
-                console.log(`[aria-label="${formattedDate}"]`);
                 var manySlots = await document.querySelector(`[aria-label="${formattedDate}"]`);
                 // manySlots.className += "many_slots"
                 manySlots?.classList?.add(classname);
@@ -111,12 +108,11 @@ const PatientAppointment = (props) => {
 
             for (var i = 0; i < res.data.length; i++) {
                 var date = new Date(res.data[i].date);
-                date.setDate(date.getDate());
-                var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric' }) + ", " + date.toLocaleString('default', { year: 'numeric' });
-                console.log(date.toLocaleDateString());
+                // date.setDate(date.getDate());
+                var formattedDate = date.toLocaleString('default', { month: 'long', day: 'numeric', timeZone: 'UTC'}) + ", " + date.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' });
                 if (res.data[i].noOfSlots > 5) {
                     rnFunc(formattedDate, "many_slots")
-                } else if (res.data[i].noOfSlots < 5 && res.data[i].noOfSlots > 0) {
+                } else if (res.data[i].noOfSlots <= 5 && res.data[i].noOfSlots > 0) {
                     rnFunc(formattedDate, "few_slots")
                 } else {
                     rnFunc(formattedDate, "no_slots")
@@ -126,14 +122,7 @@ const PatientAppointment = (props) => {
         catch (err) {
             console.error(err);
         }
-        console.log("fetch15DaysSlots END");
-        console.log("====^^^===");
     }
-    // const handleSelectEvent = (event) => {
-    //     setVal(event.id)
-    //     setEvent(event)
-    //     eventPropGetter(event)
-    // }
 
     const handleBook = () => {
         
@@ -176,11 +165,6 @@ const PatientAppointment = (props) => {
         // console.log("====^^^===");
     };
 
-    // const eventPropGetter = (event) => {
-    //     const backgroundColor = event.id === val  ? 'var(--neon-color)' : 'var(--secondary-color)';
-    //     return { style: { backgroundColor } }
-    // }
-
     const getEndTime = (time) => {
         // console.log(time);
         var hour = parseInt(time.split(":")[0]);
@@ -196,14 +180,17 @@ const PatientAppointment = (props) => {
     }
 
 
-    const getSlots = (eve) => {
+    const getSlots = (eve, data) => {
         // console.log("getSlots start");
         var flag = 0
-        for (var i = 0; i < slotsData.length; i++) {
+        data = data ? data : slotsData
+        // console.log(data)
+        for (var i = 0; i < data.length; i++) {
             // console.log(slotsData[i]);
-            if (slotsData[i].date === eve) {
+            if (data[i].date === eve) {
                 flag = 1;
-                setSlotsOnDate(slotsData[i]);
+                setSlotsOnDate(data[i]);
+                console.log(data[i])
                 break
             }
         }
@@ -221,7 +208,7 @@ const PatientAppointment = (props) => {
         // console.log("handleSelectSlot end");
     }
 
-    const handleDateSelection = (eve) => {
+    const handleDateSelection = (eve, data = null) => {
         // event is directly the date
         // console.log("handleDateSelection start");
         // console.log(eve);
@@ -229,7 +216,7 @@ const PatientAppointment = (props) => {
         console.log(eve)
         // console.log(eve.getDate() > 10);
         var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0' + eve.getDate()));
-        getSlots(date);
+        getSlots(date, data);
         setEvent(false);
         // console.log("handleDateSelection end");
     };
@@ -244,7 +231,7 @@ const PatientAppointment = (props) => {
 
                     <div className="react-calendar-container">
                         <h1 style={{ margin: "0% 7%" }}>Schedule Appointment</h1>
-                        <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
+                        <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={(e) => handleDateSelection(e, null)} value={dateSelection} />
                     </div>
                     <div style={{ width: '-webkit-fill-available', marginTop: '50px', }} className="slots-container">
                         <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>
