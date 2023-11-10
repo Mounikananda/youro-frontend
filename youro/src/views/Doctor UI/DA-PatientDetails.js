@@ -97,6 +97,8 @@ const PatientDetails = (props) => {
               <h3>{item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>
+            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
+            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li>
               <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
               <li>Symptom score: <strong>{item.symptomScore}</strong></li>

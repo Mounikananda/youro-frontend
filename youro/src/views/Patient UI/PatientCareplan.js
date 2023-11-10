@@ -53,7 +53,12 @@ const CarePlan = () => {
           </ul>
       
         </div>       
-      ))}<br /><br /><strong>Notes : </strong><p style={{wordWrap: 'break-word'}}>{data.notes}</p> <br /><br /><br /></> : <div style={{ width: '100%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      ))}<br /><br />{data.followUp ? <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
+      sync
+      </span><strong>&nbsp;&nbsp;Follow-up required</strong></div> :
+       <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
+       select_check_box
+       </span><strong>&nbsp;&nbsp;Follow-up not required</strong></div>} <br /> <br /><strong>Notes : </strong><p style={{wordWrap: 'break-word'}}>{data.notes}</p> <br /><br /><br /></> : <div style={{ width: '100%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <h3><i>See a doctor for your careplan</i></h3>
     </div>}
     

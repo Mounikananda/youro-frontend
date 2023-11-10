@@ -92,7 +92,7 @@ const PatientHomePage = (props) => {
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
-              <li style={{ textDecoration: 'underline', color: '#9CB189' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>view careplan and note provided</li>
+              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>view careplan and note provided</li>
               <li>Status: {item.status}</li>
               {/* <p>{item.meetup}</p> */}
             </ul>

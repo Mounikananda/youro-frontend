@@ -136,6 +136,7 @@ const DoctorProfile = () => {
 
   const [imagePreview, setImagePreview] = useState(null);
   const [toggle_image, setToggle_image] = useState(false);
+  const [updateImagePreview, setUpdatedImagePreview] = useState(null);
 
 
   const toggle_profile_image = () => {
@@ -196,6 +197,7 @@ const DoctorProfile = () => {
       // );
          const contentType = response.headers['content-type'];
         setImagePreview(`data:${contentType};base64,${base64Image}`);
+        setUpdatedImagePreview(`data:${contentType};base64,${base64Image}`)
         // window.location.reload();
         // setImagePreview(`data:image/jpeg;base64,${base64Image}`);
         }
@@ -378,7 +380,7 @@ const DoctorProfile = () => {
       </div>
       <div className="d-container">
         <div className='profile-column'>
-          <Youroheader />
+          <Youroheader imagePreview={updateImagePreview}/>
           <div className='profile-details'>
             <div className='my-profile'>
               <ToastContainer />
