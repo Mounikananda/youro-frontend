@@ -107,6 +107,22 @@
   box-shadow: var(--shadow);
 }
 
+.btn-gray
+{
+  background-color: gray;
+  color: white;
+  border-radius: 15px;
+  text-align: center;
+  transition: all .2s ease-out;
+  cursor: pointer;
+  padding: 15px 25px;
+  font-weight: 700;
+}
+/* .btn-gray:hover {
+  box-shadow: var(--shadow);
+} */
+
+
 .congrats-popup-content  {
   width: fit-content !important;
   border-radius: 10px;
