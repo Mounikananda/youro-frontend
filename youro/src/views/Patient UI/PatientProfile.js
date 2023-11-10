@@ -546,9 +546,10 @@ const PatientProfile = () => {
   const updateProfileData = async (data) => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
     console.log(data.newPassword == '');
-    data.hasInsurance=data.insurance=="yes"?true:false;
+    data.hasInsurance=(data.hasInsurance=="yes"?true:false);
     console.log(data.hasInsurance,"checking insurance");
     let temp = data;
+    console.log("temp data",temp);
     if (temp.newPassword == '') {
       delete temp.password;
     }
