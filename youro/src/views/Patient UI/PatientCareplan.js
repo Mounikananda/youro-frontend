@@ -262,22 +262,30 @@ const CarePlan = () => {
   }, []);
 
   return (
-    <div>
-      {Object.keys(data).map(category => (
+    // <div>
+    <>
+      {data.length ? Object.keys(data).map(category => (
         <div key={category}>
           <h4>{category}</h4>
           <ul>
             {data[category].map(item => (
-              <li key={item.presId}>
+              item.indicator && <>
+                <li key={item.presId}>
                 {item.name}
                 {item.dosage ? ` - Dosage: ${item.dosage}` : ''}
-                {item.indicator ? ' (Indicator)' : ''}
+                {/* {item.indicator ? ' (Indicator)' : ''} */}
               </li>
+                </>
+              
             ))}
           </ul>
         </div>
-      ))}
-    </div>
+      )) : <div style={{ width: '100%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <h3><i>See a doctor for your careplan</i></h3>
+    </div>}
+    
+    </>
+    // </div>
   );
 };
 
