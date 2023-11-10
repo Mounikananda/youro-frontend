@@ -33,7 +33,7 @@ const Youroheader = (props) => {
       <div className='user-name'>
         <img src='https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9' className="profile-pic" alt="Preview" width="20" height="20" />
         <h4 className='profle-bubtton-h4'>
-          <button className="options-button-1" onClick={changeView}>{userName}</button>
+          <div className="options-button-1" onClick={changeView}>{userName}</div>
         </h4>
       </div>
     </div>

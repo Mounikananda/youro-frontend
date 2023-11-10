@@ -143,9 +143,9 @@ const DoctorProfile = () => {
   }
 
   const get_profile_pic = async () => {
-
+    const doctor_id_1 = Cookies.get(COOKIE_KEYS.userId);
     console.log("came to profile pic method");
-    const get_url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDp/${doctor_id}`;
+    const get_url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDp/${doctor_id_1}`;
 
     // try {
     //   const res = await axios.get(get_url);
@@ -166,17 +166,18 @@ const DoctorProfile = () => {
     //   console.error(err);
     // }
     const config = {
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': '*',
-        'Content-Type': 'application/json',
-        'responseType': 'arraybuffer'
-      }
+      // headers: {
+      //   'Access-Control-Allow-Origin': '*',
+      //   'Access-Control-Allow-Methods': '*',
+      //   'Content-Type': 'application/json',
+      //   'responseType': 'arraybuffer'
+      // }
     };
     try {
-      const response = await axios.get(get_url, config);
+      const response = await axios.get(get_url,{ responseType: 'arraybuffer' });
 
       if (response.status === 200) {
+        console.log("came ",response);
         const arrayBuffer = new Uint8Array(response.data);
         const base64Image = btoa(
           new Uint8Array(arrayBuffer).reduce(
@@ -197,6 +198,9 @@ const DoctorProfile = () => {
 
 
   const handleImageChange = async (e) => {
+
+    const doctor_id_2 = Cookies.get(COOKIE_KEYS.userId);
+
     const file = e.target.files[0];
     if (file) {
 
@@ -213,28 +217,34 @@ const DoctorProfile = () => {
       // // Create a preview URL for the selected image
       // const previewURL = URL.createObjectURL(file);
 
-      console.log("doctor id", doctor_id);
+      console.log("doctor id in handle image change ", doctor_id_2);
       // let profile_pic = {
       //       "imageFile": file,
       //       "userId": doctor_id
       // }
-      const formData = new FormData();
-      formData.append('userId', doctor_id);
-      formData.append('imageFile', compressedFile);
-
+      // const formData = {};
+      // formData.append('userId', 2);
+      // formData.append('imageFile', compressedFile);
+       const requestData = {
+             'userId': 2, // Assuming 'userId' should be a string
+             'imageFile': compressedFile,
+          };
       const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/uploadDp`;
-      console.log("profile pic dic", formData);
+      console.log("profile pic dic", requestData);
       const config = {
         headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': '*',
-          'Content-Type': 'application/json',
-          'responseType': 'arraybuffer'
+          // 'Access-Control-Allow-Origin': '*',
+          // 'Access-Control-Allow-Methods': '*',
+          // 'Content-Type': 'application/json',
+          // 'responseType': 'arraybuffer'
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': '*',
+              'Content-Type': 'multipart/form-data',
         }
       };
       try {
-        const res = await axios.post(url, formData, config);
-        console.log("uploading pic ");
+        const res = await axios.post(url,requestData, config);
+        console.log("uploading pic ",res);
         console.log(res.data);
         console.log("going to profile pic method");
         get_profile_pic();
@@ -374,7 +384,6 @@ const DoctorProfile = () => {
                 <label for='imgupload'>
                   <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
                 </label>
-
                 <>
                   <input
                     type="file"
