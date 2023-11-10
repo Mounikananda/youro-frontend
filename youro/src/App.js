@@ -28,10 +28,11 @@ import AdminViewDoctorProfile from './views/Admin UI/Admin-ViewDoctorProfile';
 import AdminViewPatientProfile from './views/Admin UI/Admin-ViewPatientProfile';
 import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
+import VerifyEmail from './views/VerifyEmail';
 
 export const API_DETAILS = {
   baseUrl: 'http://3.139.104.28:',
-  PORT: '9093',
+  PORT: '9095',
   baseExtension: '/youro/api/v1',
 };
 export const USER_TYPES = {
@@ -63,6 +64,7 @@ function App() {
         <Route path='/' element={<Home/>}></Route>
         <Route path='/login' element={<Login/>}></Route>
         <Route path='/forgot-password' element={<ForgotPassword/>}></Route>
+        <Route path='/verify-email' element={<VerifyEmail/>}></Route>
         <Route path='/signup' element={<Signupoptions/>}></Route>
         <Route path='/signupmyself' element={<Signupformyself/>}></Route>
         <Route path='/signupforfamilymember' element={<SignupforFamilyMember/>}></Route>
