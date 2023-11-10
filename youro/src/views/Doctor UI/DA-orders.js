@@ -61,6 +61,7 @@ const Orders = (props) => {
     })
     setOpen(false)
     props.closePopup(false)
+    props.nav()
   }
 
   const fetchAllDiagnoses = async () => {

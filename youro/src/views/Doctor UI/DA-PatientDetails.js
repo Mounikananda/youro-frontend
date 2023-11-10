@@ -1,4 +1,4 @@
-import React, { useState,useEffect} from 'react';
+import React, { useState,useEffect, useRef } from 'react';
 import "../../styles/Doctor-ui/Doctor-appointment/Doctor-patient-data.css";
 import IncompleteEncounters from './IncompleteEncounters';
 import PersonalInfo from './DA-personal-info';
@@ -12,6 +12,8 @@ import Loader from '../../utils/loader';
 import { API_DETAILS } from '../../App';
 import Popup from 'reactjs-popup';
 import { ToastContainer, toast } from 'react-toastify';
+import { COOKIE_KEYS, USER_TYPES } from "../../App";
+import Cookies from "js-cookie";
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -28,7 +30,6 @@ const PatientDetails = (props) => {
   const [patDetails, setPatDetails] = useState();
   const [isOpenCreatePopUp, setOpenCreatePopUp] = useState(false);
 
-  const navigate = useNavigate();
 
   const handleOverview = (data) => {
     setActiveTab(data);
@@ -130,6 +131,7 @@ const PreviousAppointmentList = () => {
             </div>
             <ul key={item.apptId}>
             <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
+            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li>
               <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
               <li>Symptom score: <strong>{item.symptomScore}</strong></li>
@@ -158,6 +160,25 @@ const PreviousAppointmentList = () => {
     if(!val) toast.error('Error saving prescription')
   }
 
+  const navigate = useNavigate();
+  const closeElement = React.useRef();
+
+  const handleNotesSubmit = () => {
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/saveNotes`;
+    var data = {};
+    data['apptId'] = showEditor.apptId;
+    data['patientId'] = showEditor.patientId;
+    data['doctorId'] = Cookies.get(COOKIE_KEYS.userId);
+    data['notes'] = notes
+    console.log(data)
+    axios.post(url, data).then(res => {
+      toast.success('Notes saved successfully')
+      setShowEditor(null)
+    }).catch(err => {     
+      toast.error("Error saving Notes")    
+    })
+  }
+
 
   return (
     <div className='p-data'>
@@ -170,8 +191,6 @@ const PreviousAppointmentList = () => {
         </div>
         <div className='p-data-row'>
           <div >Message</div>
-          <div>Schedule Appointment</div>
-          <div onClick={handleCreateNoteClick}>Create Note</div>
           {/* {showEditor && (
         <div className="floating-editor">
             <ReactQuillWrapper/>
@@ -229,7 +248,7 @@ const PreviousAppointmentList = () => {
 
       {activeTab === 'personalinfo' && (
         // <div className="tab-content">
-         <PersonalInfo/>
+         <PersonalInfo data={patDetails}/>
       //  </div>
       )}
 
@@ -239,7 +258,7 @@ const PreviousAppointmentList = () => {
       )}
      
       {activeTab === 'notes' && (
-       <Notes/>
+       <Notes patId={patientId}/>
       )}
 
       {/* {activeTab === 'orders' && (
@@ -255,22 +274,25 @@ const PreviousAppointmentList = () => {
             <button >Maximize</button> */}
             <div className='notes-title'>
             <label>Notes</label>
-            <button>X</button>
+            <button onClick={() => handleNotesSubmit()}>Submit</button>
+            <button onClick={() => setShowEditor(null)}>X</button>
            </div>
           {/* <ReactQuillWrapper /> */}
-            <ReactQuillWrapper />
+            <ReactQuillWrapper val={setNotes}/>
         </div> )}
       
         <Popup open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)} className="congrats-popup">
-                  <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false); navigate(-1) }}>
-                    <span class="material-symbols-outlined">
+                  <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false); navigate("..", { relative: "path" })}}>
+                    {/* <Link to='..' relative="path"> */}
+                      <span class="material-symbols-outlined">
                       close
                     </span>
+                    {/* </Link> */}
                   </div>
 
                   <div style={{ padding: '50px 20px' }}>
                     
-                  <Orders patId={patientId} apptId={apptId} closePopup={setOpenCreatePopUp} handleToast={handleToast}/>
+                  <Orders patId={patientId} apptId={apptId} closePopup={setOpenCreatePopUp} handleToast={handleToast} nav={() => {navigate("..", { relative: "path" })}}/>
                   </div>
 
 

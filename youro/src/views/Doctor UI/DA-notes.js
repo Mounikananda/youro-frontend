@@ -1,77 +1,53 @@
-import {React} from 'react';
+import {React, useState, useEffect} from 'react';
 import "../../styles/Doctor-ui/Doctor-appointment/DA-notes.css";
+import { API_DETAILS } from '../../App';
+import axios from 'axios';
 
-const Notes=()=>
+const Notes=(props)=>
 {
+
+  const [notes, setNotes] = useState([]);
+  const [index, setIndex] = useState(-1);
+
+  useEffect(() => {
+    fetchNotes();
+  }, [])
+
+  const fetchNotes = async () => {
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getNotes/${props.patId}`;
+    try {
+      const res = await axios.get(url);
+      setNotes(res.data);
+    }
+    catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    notes.map((note, i) => {document.getElementById(`notes-${i}`).innerHTML = note.notes})
+  })
+
+
+  const parser = new DOMParser();
+
   return (
   <div >
      <div className='notes-doctor'>
-     <div className='notes-date'>
-       <div className='date'>
-        <h3>Today Dr.Farah</h3> 
-       </div>
-       <div className='description'>
-        <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-        <p>Medicine 1-Dosage everyday only night </p>
-        
-      </div>
-     </div>
-     <div className='notes-date'>
-       <div className='date'>
-        <h3>Aug 2023 Dr.Farah</h3> 
-       </div>
-       <div className='description'>
-        <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-        <p>Medicine 2-Dosage everyday only night </p>
-        <p>Medicine 2-Dosage everyday only night </p>
-        <p>Medicine 2-Dosage everyday only night </p>
-      </div>
-     </div>
+      {notes && notes.length ? notes.map((note, i) => {return (
+        <div className='notes-date'>
+          <div className='date'>
+          <h3>{new Date(note.lastUpdated).toLocaleDateString()}, {note.doctorName}</h3> 
+          </div>
+          <div className='description'>
+            <div id={`notes-${i}`}></div>
+        </div>
+        </div>
+      )}): <><div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      <h3><i>No record of notes</i></h3>
+    </div></>} 
 
-    <div className='notes-date'>
-       <div className='date'>
-        <h3>June 2023 Dr.Alan Hunt</h3> 
-       </div>
-       <div className='description'>
-         <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-      </div>
-     </div>
-
-    <div className='notes-date'>
-       <div className='date'>
-        <h3>May 2023 Dr.Farah</h3> 
-       </div>
-       <div className='description'>
-         <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-      </div>
-     </div>
-    
-    <div className='notes-date'>
-       <div className='date'>
-        <h3>Jan 2023 Dr.Farah</h3> 
-       </div>
-       <div className='description'>
-        <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-      </div>
-     </div>
-
-     <div className='notes-date'>
-       <div className='date'>
-        <h3>Dec 2023 Dr.Alan Hunt</h3> 
-       </div>
-       <div className='description'>
-         <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-      </div>
-     </div>
-
-     <div className='notes-date'>
-       <div className='date'>
-        <h3>June 2022 Dr.Farah</h3> 
-       </div>
-       <div className='description'>
-        <p>Notes goes here and description of any lifestyle/medicines or any medicinde prescritiopn </p>
-      </div>
-     </div>
+     
 </div>
   </div>
 );
