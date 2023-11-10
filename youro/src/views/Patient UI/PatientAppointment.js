@@ -85,7 +85,8 @@ const PatientAppointment = (props) => {
     const fetch15DaysSlots = async () => {
         console.log("====^^^===");
         console.log("fetch15DaysSlots START");
-        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAvailableSlotsByDate`;
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAvailableSlotsByDate?timeZone=America/New_York`;
+        // http://3.139.104.28:9095/youro/api/v1/getAvailableSlotsByDate?timeZone=America/New_York
         const token = Cookies.get(COOKIE_KEYS.token);
         const config = {
             headers: {
