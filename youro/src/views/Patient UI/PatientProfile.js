@@ -6,77 +6,242 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Youroheader from "../Youro-header";
 import { ToastContainer, toast } from 'react-toastify';
+import imageCompression from 'browser-image-compression';
+// const PatientProfile = (props) => {
 
-const PatientProfile = (props) => {
-
-  const {
-    register,
-    handleSubmit,
-    watch,
-    setValue,
-    formState: { errors },
-  } = useForm();
-
-
-  const [initEmail, setInitEmail] = useState('');
-  const [imagePreview, setImagePreview] = useState(null);
-  const [viewVal, setViewVal] = useState(0);
-  const navToProfile = () => {
-    props.changeView(4);
-  }
-
-  useEffect(() => {
-    fetchProfileData();
-    if(viewVal == 4){
-      navToProfile();
-    }
-  }, [viewVal]);
-
-  const fetchProfileData = async () => {
-    const uID = Cookies.get(COOKIE_KEYS.userId);
-    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getUser/${uID}`;
-    const config = {
-      headers: {          
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': '*',
-          'Content-Type': 'application/json'
-      }
-  };
-    try {
-      const res = await axios.get(url, config);
-      console.log(res.data);
-      setValue("firstName", res.data.firstName);
-      setValue("lastName", res.data.lastName);
-      setValue("email", res.data.email);
-      setInitEmail(res.data.email);
-      // setValue("license", res.data.license);
-      // setValue("address", res.data.address);
-      // setValue("city", res.data.city);
-      // setValue("state", res.data.state);
-      // setValue("zipCode", res.data.zipCode);
-      // setValue("dateOfBirth", res.data.dateOfBirth);
-      // setValue("password", res.data.password);
-      // setValue("newPassword", '');
-    }
-    catch (err) {
-      console.error(err);
-    }
-  }
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // Set the file value in the form data
-      setValue('image', file);
-      // Create a preview URL for the selected image
-      const previewURL = URL.createObjectURL(file);
-      // print(previewURL,"this is the url created");
-      setImagePreview(previewURL);
-
-    }
-  };
+//   const {
+//     register,
+//     handleSubmit,
+//     watch,
+//     setValue,
+//     formState: { errors },
+//   } = useForm();
 
 
+//   const [initEmail, setInitEmail] = useState('');
+//   const [imagePreview, setImagePreview] = useState(null);
+//   const [viewVal, setViewVal] = useState(0);
+//   const navToProfile = () => {
+//     props.changeView(4);
+//   }
+
+//   useEffect(() => {
+//     fetchProfileData();
+//     if(viewVal == 4){
+//       navToProfile();
+//     }
+//   }, [viewVal]);
+
+//   const fetchProfileData = async () => {
+//     const uID = Cookies.get(COOKIE_KEYS.userId);
+//     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getUser/${uID}`;
+//     const config = {
+//       headers: {          
+//           'Access-Control-Allow-Origin': '*',
+//           'Access-Control-Allow-Methods': '*',
+//           'Content-Type': 'application/json'
+//       }
+//   };
+//     try {
+//       const res = await axios.get(url, config);
+//       console.log(res.data);
+//       setValue("firstName", res.data.firstName);
+//       setValue("lastName", res.data.lastName);
+//       setValue("email", res.data.email);
+//       setInitEmail(res.data.email);
+//       // setValue("license", res.data.license);
+//       // setValue("address", res.data.address);
+//       // setValue("city", res.data.city);
+//       // setValue("state", res.data.state);
+//       // setValue("zipCode", res.data.zipCode);
+//       // setValue("dateOfBirth", res.data.dateOfBirth);
+//       // setValue("password", res.data.password);
+//       // setValue("newPassword", '');
+//     }
+//     catch (err) {
+//       console.error(err);
+//     }
+//   }
+
+//   const handleImageChange = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//       // Set the file value in the form data
+//       setValue('image', file);
+//       // Create a preview URL for the selected image
+//       const previewURL = URL.createObjectURL(file);
+//       // print(previewURL,"this is the url created");
+//       setImagePreview(previewURL);
+
+//     }
+//   };
+
+
+//   const navigate = useNavigate();
+//   const handleLogout = () => {
+//     Cookies.remove(COOKIE_KEYS.userId);
+//     Cookies.remove(COOKIE_KEYS.token);
+//     Cookies.remove(COOKIE_KEYS.userType);
+//     navigate('/');
+//   }
+
+//   const showdata = (data) => {
+//     console.log("TEST log");
+//     console.log(data);
+//     updateProfileData(data);
+//     // api call here
+//     //setImagePreview
+//   }
+
+
+//   const updateProfileData = async (data) => {
+//     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
+//     let temp = data;
+//     temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
+//     delete temp.newPassword;
+//     temp.userId = Cookies.get(COOKIE_KEYS.userId);
+//     console.log(temp);
+//     const config = {
+//       headers: {
+//           'Access-Control-Allow-Origin': '*',
+//           'Access-Control-Allow-Methods': '*',
+//           'Content-Type': 'application/json'
+//       }
+//   };
+//     try {
+//       if(initEmail == temp.email){
+//         delete temp.email;
+//         console.log("delete email attr from temp");
+//         console.log(temp);
+//       }
+//       const res = await axios.put(url, temp, config);
+//       console.log(res.data);
+//       if (initEmail != temp.email) {
+//         if (res.data.email == initEmail) {
+//           setValue("email", initEmail);
+//           toast.error("Changes saved successfully except for the email!! Try Again with another email");
+//         }
+//         else{
+//           toast.success("Changes saved!!");
+//         }
+//       }
+//       else {
+//         toast.success("Update success!!");
+//       }
+//     }
+//     catch (err) {
+//       console.error(err);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <div style={{ marginTop: '10px', marginLeft: '50px', width: '100%' }}>
+//         <Youroheader setView={setViewVal}/>
+//       <ToastContainer />
+//         <h1>Profile Information</h1>
+//         <div>
+
+//           <div className="Form-myself-Container" style={{ width: '50%', margin: '50px auto' }}>
+
+//             <div>
+//               <>
+//                 <label for='imgupload'>
+//                   <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+//                 </label>
+//                 <input
+//                   type="file"
+//                   id="imgupload"
+//                   accept=".jpg, .jpeg, .png"
+//                   {...register('image')}
+//                   onChange={handleImageChange}
+//                   style={{ display: 'none' }}
+//                 />
+
+//               </>
+
+//             </div>
+
+
+//             <div className="required-fields">
+//               <div className="myself-input">
+//                 <label>First Name</label>
+//                 <input className="input-field input-border" type="text" {...register("firstName", {
+//                   required: true,
+//                   maxLength: 32,
+//                   value: 'Sri Sai Charan'
+//                 })} />
+//                 {errors?.firstName?.type === "required" && <p className="error-text">This field is required</p>}
+//                 {errors?.firstName?.type === "maxLength" && <p className="error-text">First name cannot exceed 32 characters</p>}
+//               </div>
+
+//               <div className="myself-input">
+//                 <label>Last Name</label>
+//                 <input className="input-field input-border" type="text" {...register("lastName", {
+//                   required: true,
+//                   maxLength: 32,
+//                   value: 'Kachavarapu'
+//                 })} />
+//                 {errors?.lastName?.type === "required" && <p className="error-text">This field is required</p>}
+//                 {errors?.lastName?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+//               </div>
+//             </div>
+
+//             <div className="required-fields">
+//               <div className="myself-input">
+//                 <label>Email</label>
+//                 <input className="input-field1 input-border" type="text" {...register("email", {
+//                   required: true,
+//                   maxLength: 32,
+//                   value: 'charan@gmail.com',
+//                   pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/
+//                 })} />
+//                 {errors?.email?.type === "required" && <p className="error-text">This field is required</p>}
+//                 {errors?.email?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+//                 {errors?.email?.type === "pattern" && <p className="error-text">Please enter valid email</p>}
+//               </div>
+//             </div>
+
+//             <div style={{ display: 'flex', justifyContent: 'center', width: '94%', marginTop: '50px', marginLeft: '0px', marginRight: 'auto' }}>
+
+//               {/* <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
+//                 <span class="material-symbols-outlined" style={{ marginRight: '15px' }}>
+//                   logout
+//                 </span>
+//                 Logout
+//               </div> */}
+
+
+//               {/* <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> */}
+//               <div className="next-button btn-filled" onClick={handleSubmit(showdata)}>Update</div>
+//             </div>
+
+
+
+
+//             {/* <div className="bottom-fields">
+//                    <p>Already youro member? <span>Login</span></p>      
+// 		</div>
+                
+// 		 <div className="button-container">
+//                    <button className="next-button">Next</button>
+//                 </div> */}
+//           </div>
+//         </div>
+
+
+
+//       </div>
+//     </>
+//   )
+// }
+
+// export default PatientProfile;
+
+
+
+
+const PatientProfile = () => {
   const navigate = useNavigate();
   const handleLogout = () => {
     Cookies.remove(COOKIE_KEYS.userId);
@@ -84,6 +249,105 @@ const PatientProfile = (props) => {
     Cookies.remove(COOKIE_KEYS.userType);
     navigate('/');
   }
+
+  const [isPopupVisible, setPopupVisible] = useState(false);
+  const [insurance,setInsurance]= useState("yes");
+  
+
+
+  const showPopup = (data) => {
+    console.log(data);
+    setPopupVisible(true);
+  };
+
+  const hidePopup = () => {
+    setPopupVisible(false);
+  };
+
+  const handleYes = () => {
+    // Handle 'Yes' button action
+    hidePopup();
+  };
+
+  const handleNo = () => {
+    // Handle 'No' button action
+    hidePopup();
+  };
+
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    setValue,
+    formState: { errors }
+  } = useForm();
+
+
+  // useEffect(() => {
+  //   console.log("doctor profile : landing");
+  //   fetchProfileData();
+  // }, []);
+
+  // let usrData = {
+  //   image: new File([''], '', {
+  //     type: 'image/png',
+  //   }),
+  //   firstName: '',
+  //   lastName: '',
+  //   email: '',
+  //   license: '',
+  //   address: '',
+  //   city: '',
+  //   dateOfBirth: '',
+  //   state: '',
+  //   zipCode: '',
+  //   password: '',
+  // });
+
+  useEffect(() => {
+    console.log("Patient profile : landing");
+    fetchProfileData();
+    get_profile_pic();
+  }, []);
+
+
+  let usrData = {
+    image: new File([''], '', {
+      type: 'image/png',
+    }),
+    firstName: '',
+    lastName: '',
+    email: '',
+    license: '',
+    address: '',
+    city: '',
+    dateOfBirth: '',
+    state: '',
+    zipCode: '',
+    password: '',
+  };
+
+  const doctor_id = Cookies.get(COOKIE_KEYS.userId);
+
+  console.log("doctor details", doctor_id);
+
+  // let usrData1 = {
+  //   image: new File([''], 'Screenshot 2023-09-28 at 6.19.28 PM.png', {
+  //     type: 'image/png',
+  //   }),
+  //   firstName: 'vamshi',
+  //   lastName: 'j',
+  //   email: 'vamshivj12@gmail.com',
+  //   license: '12345678',
+  //   address: '123456',
+  //   city: 'vamshivj1208',
+  //   dateOfBirth: '2023-10-20',
+  //   state: 'NY',
+  //   zipCode: '14214',
+  //   password: 'vamshivj1208',
+  // };
+
 
   const showdata = (data) => {
     console.log("TEST log");
@@ -94,115 +358,462 @@ const PatientProfile = (props) => {
   }
 
 
-  const updateProfileData = async (data) => {
-    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
-    let temp = data;
-    temp.newPassword == '' ? delete temp.password : temp.password = temp.newPassword;
-    delete temp.newPassword;
-    temp.userId = Cookies.get(COOKIE_KEYS.userId);
-    console.log(temp);
-    const config = {
-      headers: {
+
+  const [imagePreview, setImagePreview] = useState(null);
+  const [toggle_image, setToggle_image] = useState(false);
+
+
+  const toggle_profile_image = () => {
+    setToggle_image(!toggle_image);
+  }
+
+  // console.log("image preview length",imagePreview);
+
+  const get_profile_pic = async () => {
+    const doctor_id_1 = Cookies.get(COOKIE_KEYS.userId);
+    console.log("came to profile pic method");
+    const get_url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDp/${doctor_id_1}`;
+
+    // try {
+    //   const res = await axios.get(get_url);
+    //   console.log("getting get_api pic ");
+    //   console.log(res.data);
+    //   // const imageURL = res.data.imageURL;
+    //   // setImagePreview('data:image/jpeg;base64,' + res.data.eventFlyer);
+    //   // const arrayBufferView = new Uint8Array(res.data);
+    //   setImagePreview('data:image/jpeg;base64,' + res.data);
+    //   // const blob = new Blob([arrayBufferView], { type: 'image/jpeg' });
+    //   // const dataUrl = URL.createObjectURL(blob);
+    //   // console.log(res.data);
+    //   // setImagePreview(dataUrl);
+    //   // usrData = res.data;
+    // }
+    // catch (err) {
+    //   console.log("getting get_api error pic ");
+    //   console.error(err);
+    // }
+    // const config = {
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*',
+    //     'Access-Control-Allow-Methods': '*',
+    //     'Content-Type': 'image/png',
+    //     'responseType': 'arraybuffer'
+    //   }
+    // };
+    //  responseType: 'arraybuffer' 
+    try {
+      const response = await axios.get(get_url,{responseType: 'arraybuffer'});
+
+      if (response.status === 200) {
+        console.log("came profile pic",response);
+      //  console.log(response.d)
+        const arrayBuffer = new Uint8Array(response.data);
+        if(arrayBuffer.length!=0)
+        {
+        const base64Image = btoa(
+          new Uint8Array(arrayBuffer).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+      //    const base64Image = btoa(
+      //   String.fromCharCode.apply(null, arrayBuffer)
+      // );
+         const contentType = response.headers['content-type'];
+        setImagePreview(`data:${contentType};base64,${base64Image}`);
+        // window.location.reload();
+        // setImagePreview(`data:image/jpeg;base64,${base64Image}`);
+        }
+      }
+    }
+
+    catch (err) {
+      console.log("getting get_api error pic ");
+      console.error(err);
+    }
+  }
+
+
+  const handleImageChange = async (e) => {
+
+    const doctor_id_2 = Cookies.get(COOKIE_KEYS.userId);
+
+    const file = e.target.files[0];
+    if (file) {
+
+      const options = {
+        maxSizeMB: 5,
+        maxWidthOrHeight: 1920,
+        useWebWorker: true
+      }
+      const compressedFile = await imageCompression(file, options);
+      // Set the file value in the form data
+      setValue('image', compressedFile);
+      // const url=`http://52.14.33.154:9093/youro/api/v1/uploadDp`
+      // const profile_pic= await 
+      // // Create a preview URL for the selected image
+      // const previewURL = URL.createObjectURL(file);
+
+      console.log("doctor id in handle image change ", doctor_id_2);
+      // let profile_pic = {
+      //       "imageFile": file,
+      //       "userId": doctor_id
+      // }
+      // const formData = {};
+      // formData.append('userId', 2);
+      // formData.append('imageFile', compressedFile);
+       const requestData = {
+             'userId': doctor_id_2, // Assuming 'userId' should be a string
+             'imageFile': compressedFile,
+          };
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/uploadDp`;
+      console.log("profile pic dic", requestData);
+      const config = {
+        headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': '*',
-          'Content-Type': 'application/json'
+          // 'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
+          // 'responseType': 'arraybuffer'
+              // 'Access-Control-Allow-Origin': '*',
+              // 'Access-Control-Allow-Methods': '*',
+              // 'Content-Type': 'application/json',
+        }
+      };
+      try {
+        const res = await axios.post(url,requestData, config);
+        console.log("uploading pic ",res);
+        console.log(res.data);
+        console.log("going to profile pic method");
+        get_profile_pic();
+        // usrData = res.data;
       }
-  };
+      catch (err) {
+        console.log("uploading pic ");
+        console.error(err);
+      }
+
+
+
+    };
+    // // print(previewURL,"this is the url created");
+    // setImagePreview(previewURL);
+
+  }
+
+
+  const fetchProfileData = async () => {
+    // after getting the data -> set defaultValues in html
+    // const emailId = 'doc2@gmail.com';
+    console.log("came to fetch profile method");
+    const uId = Cookies.get(COOKIE_KEYS.userId);
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getUser/${uId}`;
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
     try {
-      if(initEmail == temp.email){
-        delete temp.email;
-        console.log("delete email attr from temp");
-        console.log(temp);
-      }
-      const res = await axios.put(url, temp, config);
+      const res = await axios.get(url, config);
       console.log(res.data);
-      if (initEmail != temp.email) {
-        if (res.data.email == initEmail) {
-          setValue("email", initEmail);
-          toast.error("Changes saved successfully except for the email!! Try Again with another email");
-        }
-        else{
-          toast.success("Changes saved!!");
-        }
-      }
-      else {
-        toast.success("Update success!!");
-      }
+      setValue("firstName", res.data.firstName);
+      setValue("lastName", res.data.lastName);
+      setValue("email", res.data.email);
+      setValue("hasInsurance", res.data.hasInsurance? "yes":"no");
+      setValue("address", res.data.address);
+      setValue("city", res.data.city);
+      setValue("state", res.data.state);
+      setValue("zipCode", res.data.zipCode);
+      setValue("dateOfBirth", res.data.dateOfBirth);
+      setValue("password", res.data.password);
+      setValue("newPassword", '');
+      // get the hook form current state
+      // setInsurance(res.data.hasInsurance ? "yes" : "no");
+      // console.log("checking insurance",insurance);
+      // const hasInsuranceValue = res.data.hasInsurance ? "yes" : "no";
+      setInitEmail(res.data.email);
+    //  console.log("")
     }
     catch (err) {
       console.error(err);
     }
   };
 
+  const [initEmail, setInitEmail] = useState('');
+
+  const updateProfileData = async (data) => {
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/provider/updateProfile`;
+    console.log(data.newPassword == '');
+    data.hasInsurance=data.insurance=="yes"?true:false;
+    console.log(data.hasInsurance,"checking insurance");
+    let temp = data;
+    if (temp.newPassword == '') {
+      delete temp.password;
+    }
+    else {
+      temp.password = temp.newPassword;
+    }
+    temp.userId = Cookies.get(COOKIE_KEYS.userId);
+    delete temp.newPassword;
+    console.log(temp);
+    if (initEmail == temp.email) {
+      delete temp.email;
+      console.log("delete email attr from temp");
+      console.log(temp);
+    }
+    const config = {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': '*',
+        'Content-Type': 'application/json'
+      }
+    };
+    try {
+      const res = await axios.put(url, temp, config);
+      console.log(res.data);
+      console.log(temp.email);
+      if (initEmail != temp.email) {
+        if (res.data.email == initEmail) {
+          setValue("email", initEmail);
+          toast.success("Changes saved!!");
+          // toast.error("Changes saved successfully except for the email!! Try Again with another email");
+        }
+        else {
+          toast.success("Changes saved!!");
+        }
+      }
+      else {
+        toast.success("Update success!!");
+      }
+      // toast.success("Update success!!");
+    }
+    catch (err) {
+      console.error(err);
+    }
+  };
+
+
+  // const onsubmit = (data) =>
+  // {
+  //   // const allData = Object.assign(values, props.data)
+  //   console.log("All data:",data);
+  // }
+
+
   return (
-    <>
-      <div style={{ marginTop: '10px', marginLeft: '50px', width: '100%' }}>
-        <Youroheader setView={setViewVal}/>
-      <ToastContainer />
-        <h1>Profile Information</h1>
-        <div>
+    <div className='d-profile1' style={{display:'flex',width:'100%'}}>
+      <div className='profile-side-bar'>
+        {/* <DoctorSideBar data={'doctor-profile'} /> */}
+      </div>
+      <div className="d-container">
+        <div className='profile-column'>
+          <Youroheader />
+          <div className='profile-details'>
+            <div className='my-profile'>
+              <ToastContainer />
+              <h1>My Profile</h1>
 
-          <div className="Form-myself-Container" style={{ width: '50%', margin: '50px auto' }}>
-
-            <div>
-              <>
-                <label for='imgupload'>
-                  <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
-                </label>
-                <input
+              <div>
+                {/* <img  src={'https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'} alt="My Image" width="200" height="150" /> */}
+                {/* {!imagePreview && <input
                   type="file"
-                  id="imgupload"
                   accept=".jpg, .jpeg, .png"
-                  {...register('image')}
-                  onChange={handleImageChange}
-                  style={{ display: 'none' }}
+                  {...register('image', { required: true })}
+                   onChange={handleImageChange}
                 />
+                {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
+                } */}
+                <label for='imgupload'>
+                  <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                </label>
+                <>
+                  <input
+                    type="file"
+                    id="imgupload"
+                    accept=".jpg, .jpeg, .png"
+                    {...register('image')}
+                    onChange={handleImageChange}
+                    style={{ display: 'none' }}
+                  />
+                  {errors.image && <p className="error-text">{errors.image.message}</p>}
+                </>
 
-              </>
+                {/* {imagePreview && <img src={imagePreview} alt="Preview" width="150" height="150" />} */}
 
+              </div>
             </div>
+            <div className='p-col'>
+              {/* <div className='p-fields'>  
+            <h3>Edit Info</h3>
+            </div> */}
+              <div className='p-fields'>
+                <label>First Name(Legal first name)</label>
+                <input defaultValue={""} className='input-field' type='text'
+                  {...register("firstName", {
+                    required: true,
+                    maxLength: 32,
+                    // validate: {
+                    //   checkRequired: (value) => value !== "" || "This field is required",
+                    // },
+                  })} />
 
-
-            <div className="required-fields">
-              <div className="myself-input">
-                <label>First Name</label>
-                <input className="input-field input-border" type="text" {...register("firstName", {
-                  required: true,
-                  maxLength: 32,
-                  value: 'Sri Sai Charan'
-                })} />
                 {errors?.firstName?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.firstName?.type === "maxLength" && <p className="error-text">First name cannot exceed 32 characters</p>}
               </div>
-
-              <div className="myself-input">
+              <div className='p-fields'>
                 <label>Last Name</label>
-                <input className="input-field input-border" type="text" {...register("lastName", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("lastName", {
                   required: true,
                   maxLength: 32,
-                  value: 'Kachavarapu'
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
                 {errors?.lastName?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.lastName?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
               </div>
             </div>
-
-            <div className="required-fields">
-              <div className="myself-input">
+            <div className='p-col'>
+              <div className='p-fields'>
                 <label>Email</label>
-                <input className="input-field1 input-border" type="text" {...register("email", {
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("email", {
                   required: true,
                   maxLength: 32,
-                  value: 'charan@gmail.com',
-                  pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/
+                  pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
                 })} />
                 {errors?.email?.type === "required" && <p className="error-text">This field is required</p>}
                 {errors?.email?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
                 {errors?.email?.type === "pattern" && <p className="error-text">Please enter valid email</p>}
               </div>
+              <div className='p-fields'>
+                <label>Has Insurance</label>
+                {/* <input className='input-field' type='text'></input> */}  
+                 <select  defaultValue={""} style={{ width: '85%' }} className="input-field input-border" id="hasInsurance" {...register("hasInsurance", {
+                    required: true,
+                  })}>
+                    {/* <option value="">Select</option> */}
+                    <option value="yes">yes</option>
+                    <option value="no">no</option>
+                  </select>
+                  {errors?.hasInsurance && <p className="error-text">This field is required</p>}
+                {/* <input defaultValue={""} className="input-field" type="text" {...register("hasInsurance", {
+                  required: true,
+                  maxLength: 32,
+                  minLength: 8,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })} ></input>
+                {errors?.hasInsurance?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.hasInsurance?.type === "maxLength" && <p className="error-text">License number cannot exceed 32 characters</p>}
+                {errors?.hasInsurance?.type === "minLength" && <p className="error-text">L.Number must be more than 8 characters</p>} */}
+              </div>
+            </div>
+            <div className='p-col'>
+              <div className='p-fields'>
+                <label>Address</label>
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("address", {
+                  required: true,
+                  maxLength: 50,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })} />
+                {errors?.address?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.address?.type === "maxLength" && <p className="error-text">Address cannot exceed 40 characters</p>}
+                {/* <input className='input-field' type='text'></input> */}
+              </div>
+              <div className='p-fields'>
+                <label>City </label>
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("city", {
+                  required: true,
+                  maxLength: 32,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })} />
+                {errors?.city?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.city?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
+              </div>
+            </div>
+            <div className='p-col'>
+              <div className='p-fields'>
+                <label>State</label>
+                {/* <input className='input-field' type='text'></input> */}
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("state", {
+                  required: true,
+                  maxLength: 32,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })} />
+                {errors?.state?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.state?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+              </div>
+              <div className='p-fields'>
+                <label>Zipcode</label>
+                <input defaultValue={""} className="input-field input-border" type="text" {...register("zipCode", {
+                  required: true,
+                  maxLength: 32,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })} />
+                {errors?.zipCode?.type === "required" && <p className="error-text">This field is required</p>}
+                {errors?.zipCode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
+              </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'center', width: '94%', marginTop: '50px', marginLeft: '0px', marginRight: 'auto' }}>
+            
+            <div className='p-col'>
+              <div className='p-fields'>
+                <label>Date of Birth</label>
+                {/* <input className='input-field' type='text'></input> */}
+                {/* <input type="date" className='input-field'
+             max={new Date().toISOString().split('T')[0]} 
+            /> */}
+                <input type="date" className="input-field" {...register("dateOfBirth", {
+                  required: "Date of Birth is required",
+                  max: {
+                    value: new Date().toISOString().split("T")[0],
+                    message: "Date of Birth cannot be in the future",
+                  },
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })}
+                  defaultValue={""} // Replace with your desired default value
+                />
+                {errors?.dateOfBirth?.type === "required" && (<p className="error-text">{errors?.dateOfBirth?.message}</p>
+                )}
+                {errors?.dateOfBirth?.type === "validate" && (<p className="error-text">{errors?.dateOfBirth?.message}</p>)}
+              </div>
+            </div>
+            <div className='p-col'>
+              <div className='p-fields'>
+                <label>Set New Password</label>
+                <input defaultValue={""} className="password-input" type="password" {...register("newPassword", {
+                  required: false,
+                  maxLength: 32,
+                  minLength: 8,
+                  // validate: {
+                  //   checkRequired: (value) => value !== "" || "This field is required",
+                  // },
+                })} ></input>
+                {/* {errors?.password?.type === "required" && <p className="error-text">This field is required</p>} */}
+                {errors?.newPassword?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
+                {errors?.newPassword?.type === "minLength" && <p className="error-text">Password length must be more than 8 characters</p>}
+              </div>
+            </div>
+
+            {/* {handleSubmit((onsubmit))} */}
+            <div className='p-buttons-col'>
+              <button className='btn-filled' onClick={handleSubmit(showdata)}>Update</button>
 
               {/* <div style={{ marginLeft: '0px', color: 'var(--error-color)', display: 'flex', alignItems: 'center' }} onClick={handleLogout}>
                 <span class="material-symbols-outlined" style={{ marginRight: '15px' }}>
@@ -210,30 +821,29 @@ const PatientProfile = (props) => {
                 </span>
                 Logout
               </div> */}
-
-
-              {/* <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Update</div> */}
-              <div className="next-button btn-filled" onClick={handleSubmit(showdata)}>Update</div>
+              {/* <button className='cancel-button'>Cancel</button> */}
             </div>
 
+            {isPopupVisible && (
+              <div className="popup-container">
+                <div className="popup-background"></div>
+                <div className="popup-content-local">
+                  <p>Do you want to make changes to your profile?</p>
+                  <div className='popup-button'>
+                    <div>
+                      <button onClick={handleYes} className='btn-filled'>Yes</button></div>
+                    <div>
+                      <button onClick={handleNo} className='cancel-button'>No</button></div>
+                  </div>
+                </div>
+              </div>
+            )}
 
-
-
-            {/* <div className="bottom-fields">
-                   <p>Already youro member? <span>Login</span></p>      
-		</div>
-                
-		 <div className="button-container">
-                   <button className="next-button">Next</button>
-                </div> */}
           </div>
         </div>
-
-
-
       </div>
-    </>
-  )
+    </div>
+  );
 }
 
 export default PatientProfile;

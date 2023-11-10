@@ -17,7 +17,6 @@ import { API_DETAILS, COOKIE_KEYS } from '../../App';
 import Youroheader from '../Youro-header';
 import CarePlan from './PatientCareplan';
 
-
 const PatientHomePage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
   const uId = Cookies.get(COOKIE_KEYS.userId);//1; 
@@ -109,11 +108,65 @@ const PatientHomePage = (props) => {
     useEffect(() => {
 
       const mockData = [
-        { id: 1, name: 'John Doe', time: "9-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis1', symptomscore: '10', meetup: 'new meet' },
-        { id: 2, name: 'John Doe', time: "10-sept,2023", patientstime: '4:30 am', diagnosisname: 'Diagnosis2', symptomscore: '20', meetup: 'follow-up' },]
-
+        {
+          apptId: 3,
+          patientId: 15,
+          doctorName: "Mr. Sainath Reddy Hyderabad",
+          patientName: "Ms. Abhigna Sree Tumati",
+          picture: "",
+          doctorId: 2,
+          apptDate: "2023-11-11",
+          apptStartTime: "Sat Nov 11 2023 07:30:00 GMT-0500 (EST)",
+          apptEndTime: "Sat Nov 11 2023 08:00:00 GMT-0500 (EST)",
+          link: null,
+          status: "SCHEDULED",
+          diagId: 1,
+          diagName: "Diagnosis 1",
+          symptomScore: 0,
+          dateOfGeneratedScore: null
+        },
+        {
+          apptId: 4,
+          patientId: 13,
+          doctorName: "Mr. Sainath Reddy Hyderabad",
+          patientName: "Ms. Abhigna Sree Tumati",
+          picture: "",
+          doctorId: 2,
+          apptDate: "2023-11-11",
+          apptStartTime: "Sat Nov 11 2023 07:30:00 GMT-0500 (EST)",
+          apptEndTime: "Sat Nov 11 2023 08:00:00 GMT-0500 (EST)",
+          link: null,
+          status: "SCHEDULED",
+          diagId: 1,
+          diagName: "Diagnosis 1",
+          symptomScore: 0,
+          dateOfGeneratedScore: null
+        }
+      ]
       setData(mockData);
     }, []);
+
+    
+    const cancelAppointment = async (data) => {
+      console.log("cancel appt:: ");
+      console.log(data);
+
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${data.apptId}/${data.doctorId}`;
+      const config = {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Content-Type': 'application/json'
+        }
+    };
+      try {
+        const res = await axios.put(url, config);
+        console.log(res);
+      }
+      catch (err) {
+        console.error(err);
+      }
+    }
 
     return (
       <div>
@@ -126,7 +179,7 @@ const PatientHomePage = (props) => {
         }
 
           {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
-            <div className='previous-appointment'> 
+            <div className='previous-appointment' style={item.status == 'CANCELED' ? {border: '2px solid', borderColor: 'red'} : {}}> 
              <div>
              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
@@ -149,10 +202,39 @@ const PatientHomePage = (props) => {
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
               {/* <p>{item.meetup}</p> */}
             </ul>
-            {item.link ? <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> : 
-            <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
+            {/* <div className='row' style={{ display: 'flex', justifyContent: 'space-around'}}>
+                <div className='col-6'>
+                  {
+                  item.link ? 
+                  <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> 
+                  : 
+                  <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
+                  }
+                </div>
+                <div className='col-6'>
+                  <button className='join-now-button' onClick={() => cancelAppointment(item)} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>
+                    Cancel
+                  </button>
+                </div>
+            </div> */}
+            {
+              item.status != 'CANCELED' ? 
+              <div className='row' style={{ display: 'flex', justifyContent: 'space-around'}}>
+                <div className='col-6'>
+                  {
+                  item.link ? 
+                  <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> 
+                  : 
+                  <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
+                  }
+                </div>
+                <div className='col-6'>
+                  <button className='join-now-button' onClick={() => cancelAppointment(item)} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>
+                    Cancel
+                  </button>
+                </div>
+            </div> : <></>
             }
-            
           </div>
         ))
         
