@@ -59,10 +59,10 @@ const DoctorProfile = () => {
   } = useForm();
 
 
-  useEffect(() => {
-    console.log("doctor profile : landing");
-    fetchProfileData();
-  }, []);
+  // useEffect(() => {
+  //   console.log("doctor profile : landing");
+  //   fetchProfileData();
+  // }, []);
 
   // let usrData = {
   //   image: new File([''], '', {
@@ -142,6 +142,8 @@ const DoctorProfile = () => {
     setToggle_image(!toggle_image);
   }
 
+  // console.log("image preview length",imagePreview);
+
   const get_profile_pic = async () => {
     const doctor_id_1 = Cookies.get(COOKIE_KEYS.userId);
     console.log("came to profile pic method");
@@ -165,28 +167,38 @@ const DoctorProfile = () => {
     //   console.log("getting get_api error pic ");
     //   console.error(err);
     // }
-    const config = {
-      // headers: {
-      //   'Access-Control-Allow-Origin': '*',
-      //   'Access-Control-Allow-Methods': '*',
-      //   'Content-Type': 'application/json',
-      //   'responseType': 'arraybuffer'
-      // }
-    };
+    // const config = {
+    //   headers: {
+    //     'Access-Control-Allow-Origin': '*',
+    //     'Access-Control-Allow-Methods': '*',
+    //     'Content-Type': 'image/png',
+    //     'responseType': 'arraybuffer'
+    //   }
+    // };
+    //  responseType: 'arraybuffer' 
     try {
-      const response = await axios.get(get_url,{ responseType: 'arraybuffer' });
+      const response = await axios.get(get_url,{responseType: 'arraybuffer'});
 
       if (response.status === 200) {
-        console.log("came ",response);
+        console.log("came profile pic",response);
+      //  console.log(response.d)
         const arrayBuffer = new Uint8Array(response.data);
+        if(arrayBuffer.length!=0)
+        {
         const base64Image = btoa(
           new Uint8Array(arrayBuffer).reduce(
             (data, byte) => data + String.fromCharCode(byte),
             ''
           )
         );
-
-        setImagePreview(`data:image/jpeg;base64,${base64Image}`);
+      //    const base64Image = btoa(
+      //   String.fromCharCode.apply(null, arrayBuffer)
+      // );
+         const contentType = response.headers['content-type'];
+        setImagePreview(`data:${contentType};base64,${base64Image}`);
+        // window.location.reload();
+        // setImagePreview(`data:image/jpeg;base64,${base64Image}`);
+        }
       }
     }
 
@@ -226,20 +238,21 @@ const DoctorProfile = () => {
       // formData.append('userId', 2);
       // formData.append('imageFile', compressedFile);
        const requestData = {
-             'userId': 2, // Assuming 'userId' should be a string
+             'userId': doctor_id_2, // Assuming 'userId' should be a string
              'imageFile': compressedFile,
           };
       const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/uploadDp`;
       console.log("profile pic dic", requestData);
       const config = {
         headers: {
-          // 'Access-Control-Allow-Origin': '*',
-          // 'Access-Control-Allow-Methods': '*',
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
           // 'Content-Type': 'application/json',
+          'Content-Type': 'multipart/form-data',
           // 'responseType': 'arraybuffer'
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': '*',
-              'Content-Type': 'multipart/form-data',
+              // 'Access-Control-Allow-Origin': '*',
+              // 'Access-Control-Allow-Methods': '*',
+              // 'Content-Type': 'application/json',
         }
       };
       try {
@@ -382,7 +395,7 @@ const DoctorProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                  <img src={imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                  <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
                 </label>
                 <>
                   <input
@@ -516,6 +529,8 @@ const DoctorProfile = () => {
                 {errors?.zipCode?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
               </div>
             </div>
+
+            
             <div className='p-col'>
               <div className='p-fields'>
                 <label>Date of Birth</label>
