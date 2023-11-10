@@ -1,16 +1,17 @@
 import React, { useState,useEffect} from 'react';
 import "../../styles/Doctor-ui/Doctor-appointment/Doctor-patient-data.css";
-import PreviousAppointments from './PreviousAppointments';
 import IncompleteEncounters from './IncompleteEncounters';
 import PersonalInfo from './DA-personal-info';
 import FileUpload from './DA-Results';
 import Notes from './DA-notes';
 import Orders from './DA-orders';
 import ReactQuillWrapper from './DA-takenote';
-import { Routes, Route, useParams } from 'react-router-dom';
+import { Routes, Route, useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Loader from '../../utils/loader';
 import { API_DETAILS } from '../../App';
+import Popup from 'reactjs-popup';
+import { ToastContainer, toast } from 'react-toastify';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -23,8 +24,11 @@ const PatientDetails = (props) => {
   const [prevAppts, setPrevAppts] = useState([]);
   const [upComingAppts, setUpcomingAppts] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  let {patientId} = useParams();
+  let {patientId, apptId} = useParams();
   const [patDetails, setPatDetails] = useState();
+  const [isOpenCreatePopUp, setOpenCreatePopUp] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleOverview = (data) => {
     setActiveTab(data);
@@ -34,6 +38,13 @@ const PatientDetails = (props) => {
     fetchAppointments();
     getPatientDetails();
   }, []);
+
+  useEffect(() => {
+    if (apptId){
+      setOpenCreatePopUp(true)
+    }
+    
+  }, [apptId])
 
   const getPatientDetails = async() => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getUser/${patientId}`;
@@ -82,12 +93,46 @@ const PatientDetails = (props) => {
             <div className='previous-appointment'> 
              <div>
               <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
-              <h3>{item.patientName}</h3>
+              <h3>{item.doctorName}</h3>
             </div>
             <ul key={item.apptId}>
-              <li>Diagnosisname: {item.diagnosisname}</li>
+              <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
-              <li>Symptom score: N/A</li>
+              <li>Symptom score: <strong>{item.symptomScore}</strong></li>
+              {/* <p>{item.meetup}</p> */}
+            </ul>
+          </div>
+        ))
+        
+        }
+      </div>
+  );
+};
+
+const PreviousAppointmentList = () => {
+  
+
+  return (
+    <div>
+        {
+          (prevAppts==null || prevAppts.length == 0) && <>
+            <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <h3><i>No record of previous appointments</i></h3>
+            </div>
+          </>
+        }
+
+          {prevAppts && prevAppts.length!= 0 && prevAppts.map((item) => (
+            <div className='previous-appointment'> 
+             <div>
+              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
+              <h3>{item.doctorName}</h3>
+            </div>
+            <ul key={item.apptId}>
+            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
+              <li>Diagnosisname: <strong>{item.diagName}</strong></li>
+              {/* <li>Symptom score: {item.symptomscore}</li> */}
+              <li>Symptom score: <strong>{item.symptomScore}</strong></li>
               {/* <p>{item.meetup}</p> */}
             </ul>
           </div>
@@ -106,6 +151,11 @@ const PatientDetails = (props) => {
 
  const handlenoteclickclose =()=> {
    setShowEditor(false);
+  }
+
+  const handleToast = (val) => {
+    if (val) toast.success('Prescription saved successfully')
+    if(!val) toast.error('Error saving prescription')
   }
 
 
@@ -154,18 +204,12 @@ const PatientDetails = (props) => {
         >
           Notes
         </div>
-        <div
+        {/* <div
           className={`p-tabs ${activeTab === 'orders' ? 'active-tab' : ''}`}
           onClick={() => handleOverview('orders')}
         >
           Orders
-        </div>
-        <div
-          className={`p-tabs ${activeTab === 'follow-up' ? 'active-tab' : ''}`}
-          onClick={() => handleOverview('follow-up')}
-        >
-          Follow-up
-        </div>
+        </div> */}
        </div>
        {activeTab === 'overview' && (
            <div className='all-plans-patient'>
@@ -174,7 +218,7 @@ const PatientDetails = (props) => {
           <TodayAppointmentList/></div>
            <div className='care-plan-details-doctor-apt'>
            <h2>Previous Appointments</h2>
-           <PreviousAppointments/>
+           <PreviousAppointmentList/>
            </div>
           <div className='care-plan-details-doctor-apt'>
           <h2>Incomplete Encounters</h2>
@@ -198,13 +242,12 @@ const PatientDetails = (props) => {
        <Notes/>
       )}
 
-      {activeTab === 'orders' && (
+      {/* {activeTab === 'orders' && (
         <Orders patId={patientId}/>
-      )}
+      )} */}
 
-      {activeTab === 'follow-up' && (
-        <div className="tab-content">follow -up Content Goes Here</div>
-      )}
+
+
 
         {showEditor && (
         <div className="floating-editor">
@@ -218,7 +261,24 @@ const PatientDetails = (props) => {
             <ReactQuillWrapper />
         </div> )}
       
+        <Popup open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)} className="congrats-popup">
+                  <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false); navigate(-1) }}>
+                    <span class="material-symbols-outlined">
+                      close
+                    </span>
+                  </div>
+
+                  <div style={{ padding: '50px 20px' }}>
+                    
+                  <Orders patId={patientId} apptId={apptId} closePopup={setOpenCreatePopUp} handleToast={handleToast}/>
+                  </div>
+
+
+
+                </Popup>
+
     <Loader active={isLoading} />
+    <ToastContainer />
     </div>
   );
 }
