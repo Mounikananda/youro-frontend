@@ -12,7 +12,7 @@ const IncompleteEncounters=()=>
    const fetchData = async () => {
    const doctor_id = Cookies.get(COOKIE_KEYS.userId);
 
-  const url = `http://3.139.104.28:9095/youro/api/v1/getCheckList/${doctor_id}`;
+  const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension+`/getCheckList/${doctor_id}`;
 
       try {
         const res = await axios.get(url);
@@ -39,6 +39,9 @@ const IncompleteEncounters=()=>
 
   return (
     <div>
+         { data.length==0 ?
+            <div style={{textAlign:'center',marginTop:'42%'}}> No IncompleteEncounters</div> 
+              : <div>
         {data.map((item) => (
           <div className='incomplete-appt-div'> 
            <div>
@@ -55,6 +58,8 @@ const IncompleteEncounters=()=>
             </div>
           </div> 
         ))}
+        </div>
+       }
     </div>
   ); 
 }

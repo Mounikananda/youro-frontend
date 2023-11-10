@@ -45,7 +45,19 @@ function DoctorHomePage() {
   const [meetLink, setMeetLink] = useState(null);
   const [meetingId, setMeetingId] = useState(null);
 
-
+const appointments_image = (arrayBuffer) => {
+   
+     const arrayBuffer1 = new Uint8Array(arrayBuffer);
+     if(arrayBuffer1.length!=0)
+       {
+        const base64String = btoa(new Uint8Array(arrayBuffer1).reduce(
+        (data, byte) => data + String.fromCharCode(byte),
+        '')
+        );
+      return `data:image/png;base64,${base64String}`;
+       }
+      return null;
+  };
   
   const createMeetLink = () => {
 
@@ -67,6 +79,7 @@ function DoctorHomePage() {
       const res = await axios.get(url, config);
       setPrevAppts(res.data.previousAppointments);
       setUpcomingAppts(res.data.upComingAppointments);
+      console.log("checking uid",res.data);
       setIsLoading(false);
     }
     catch (err) {
@@ -101,23 +114,38 @@ function DoctorHomePage() {
           <div className='previous-appointment'>
             <div>
               <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
-              <h3>{item.patientName}</h3>
+              
+                <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+                  <img
+                // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                src={item.picture!=null ? `data:image/jpeg;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+              {/* {item.picture[0] && (
+                <img
+                  src={arrayBufferToBase64(item.picture[0])}
+                  alt="Patient"
+                  style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
+                /> */}
+              {/* )} */}
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>{item.patientName}</h3>
+            </div>
+                {/* {item.patientName}</h3> */}
             </div>
             <ul key={item.apptId}>
-              <li>Diagnosisname: {item.diagnosisname}</li>
-              <li>Symptom score: N/A</li>
+              <li>Diagnosisname: {item.diagName}</li>
+              <li>Symptom score: {item.symptomScore}</li>
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>Take me to care plan</Link></li>
             </ul>
             {
               item.link && <>
                 {/* <button className='join-now-button' >Join Now</button> */}
-                <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}
+                <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto',padding:'10px', cursor: 'pointer' }}
                   onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')}>Join Now</button>
               </>
             }
             {
               !item.link && <>
-                <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}
+                <button className='btn-gray' style={{ width: 'fit-content', margin: '0px auto 10px auto',padding:'10px', cursor: 'pointer' }}
                   onClick={() =>openLinkPopUp(item)} >Upload Link</button>
               </>
             }
