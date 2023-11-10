@@ -12,7 +12,9 @@ const SearchBar = () => {
   const [showdetails,setshowdetails] = useState(false);
 
   const [patientData, setPatientData] = useState(null);
-  const [userDetails, setUserDetails] = useState([])
+  const [userDetails, setUserDetails] = useState([]);
+  const [consulted, setConsulted] = useState(false);
+
   const navigate = useNavigate();
   let {patientId} = useParams();
 
@@ -82,6 +84,7 @@ const SearchBar = () => {
             )}
          </div>
         </>
+        <div className={consulted ? 'btn-outlined-selected': 'btn-outlined'} onClick={() => setConsulted(!consulted)}>Consulted by me</div>
         <input
           className='search-input-field' 
           type="search"

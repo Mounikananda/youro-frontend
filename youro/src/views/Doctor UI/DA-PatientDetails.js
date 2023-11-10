@@ -62,7 +62,7 @@ const PatientDetails = (props) => {
   }
 
   const fetchAppointments = async() => {
-    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/appointments/${patientId}`;
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/appointments/${patientId}?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
     console.log(url)
     try {
       setIsLoading(true)

@@ -55,7 +55,7 @@ function DoctorHomePage() {
   };
 
   const fetchPrevAndUpcomingAppointments = async () => {
-    const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/appointments/${uId}`;
+    const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/appointments/${uId}?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
     const config = {
       headers: {
         'Access-Control-Allow-Origin': '*',
