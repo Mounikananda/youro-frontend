@@ -18,7 +18,7 @@ const PatientChat = (props) => {
         <div style={{ display: 'flex', flexDirection: 'column', margin: '0% 2%', width: '100%' }}>
             <Youroheader setView={setViewVal}/>
             <div >
-                <h1>Messages</h1>
+                <h1 style={{color:'black'}}>Messages</h1>
 
                 <div className="chat-container-main">
                     <div className="select-names">

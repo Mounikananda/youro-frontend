@@ -230,8 +230,8 @@ const PatientAppointment = (props) => {
                 <div style={{ display: 'flex', width: '70%', justifyContent: 'space-between' }}>
 
                     <div className="react-calendar-container">
-                        <h1 style={{ margin: "0% 7%" }}>Schedule Appointment</h1>
-                        <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={(e) => handleDateSelection(e, null)} value={dateSelection} />
+                        <h1 style={{ margin: "0% 7%",color:'black'}}>Schedule Appointment</h1>
+                        <ReactCalendar minDate={minDate} maxDate={maxDate} onChange={handleDateSelection} value={dateSelection} />
                     </div>
                     <div style={{ width: '-webkit-fill-available', marginTop: '50px', }} className="slots-container">
                         <p>Available Slots on - <strong style={{ textDecoration: 'underline' }}>{dateSelection.toLocaleDateString()}</strong></p>

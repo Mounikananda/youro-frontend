@@ -19,7 +19,7 @@ const PatientEducate = (props) => {
     return (
         <div className="educate-container">
             <Youroheader  setView={setViewVal}/>
-            <h1 style={{ marginTop: '80px' }}>Educate Yourself</h1>
+            <h1 style={{ marginTop: '80px',color:'black'}}>Educate Yourself</h1>
             <div className="educate-container-main">
                 <div className="educate-column-one">
                     <div className={`educate-column-one-name ${step === 0 && 'educate-column-one-name-active'}`} onClick={() => setStep(0)}>Diagnosis1</div>
