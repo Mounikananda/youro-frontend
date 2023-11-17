@@ -217,6 +217,69 @@ width:auto;
 }
 
 
+/* #for login page #### */
+@media (max-width: 600px) {
+
+  .Login-Form-Container {
+    width: 80%;
+    margin: 0px auto;
+    background-color: #e5dfd1;
+    padding: 20px;
+    border-radius: 20px;
+  } 
+
+   h1
+  {
+     font-size: 1.8rem;
+  }
+  h2
+  {
+     font-size: 1.2rem;
+   }
+  
+}
+
+@media (min-width: 601px) {
+
+  .Login-Form-Container {
+    width: 40%;
+    margin: 0px auto;
+    background-color: #e5dfd1;
+    padding: 20px;
+    border-radius: 20px;
+  } 
+
+   h1
+  {
+     font-size: 2rem;
+  }
+  h2
+  {
+     font-size: 1.5rem;
+   }
+  
+}
+
+@media (min-width: 1441px)
+{
+  /* .Login-Form-Container {
+    width: 50%;
+    margin: 0px auto;
+    background-color: #e5dfd1;
+    padding: 20px;
+    border-radius: 20px;
+  }  */
+
+   h1
+  {
+     font-size: 5rem;
+  }
+  h2
+  {
+     font-size: 3.5rem;
+   } 
+}
+
 @media (max-width: 480px) {
   .option-select h1 {
     font-size: 1.5rem; 

@@ -91,6 +91,27 @@ const appointments_image = (arrayBuffer) => {
       setIsLoading(false);
     }
   }
+  
+   const cancelAppointment = async (data) => {
+
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${data.apptId}/${data.doctorId}`;
+      const config = {
+        headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': '*',
+            'Content-Type': 'application/json'
+        }
+    };
+      try {
+        const res = await axios.put(url, config);
+        fetchPrevAndUpcomingAppointments()
+        toast.success("Appointment cancelled successfully");
+      }
+      catch (err) {
+        toast.error("Error cancelling appointment");
+        console.error(err);
+      }
+    }
 
   const ImagePrev = (data) => {
     const arrayBuffer = new Uint8Array(data);
@@ -156,17 +177,24 @@ const appointments_image = (arrayBuffer) => {
             </ul>
             {
               item.link && <>
+                <div>
                 {/* <button className='join-now-button' >Join Now</button> */}
                 <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}
                   onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')}>Join Now</button>
+                <button style={{backgroundColor:'gray',color:'white',borderRadius:'15px',cursor:'pointer'}} onClick={() => cancelAppointment(item)}>Cancel</button>
+                </div>
               </>
             }
             {
               !item.link && item.status != 'CANCELED' && <>
-                <button className='btn-gray' style={{ width: 'fit-content', margin: '0px auto 10px auto', padding: '0px 5px', cursor: 'pointer' }}
+                <div>
+                <button className='btn-gray' style={{ width: 'fit-content', margin: '0px 20px 10px 20px', padding: '0px 5px', cursor: 'pointer' }}
                   onClick={() =>openLinkPopUp(item)} >Upload Link</button>
+                <button style={{backgroundColor:'gray',color:'white',borderRadius:'15px',cursor:'pointer'}} onClick={() => cancelAppointment(item)} >Cancel</button>
+                </div>
               </>
             }
+             {/* <button>cancel</button> */}
             
 
           </div>
