@@ -241,11 +241,11 @@ const DoctorProfile = () => {
       // formData.append('imageFile', compressedFile);
        const requestData = {
              'userId': doctor_id_2, // Assuming 'userId' should be a string
-             'imageFile': compressedFile,
+             'image': compressedFile,
           };
       const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/uploadDp`;
-      console.log("profile pic dic", requestData);
-      const config = {
+      console.log("profile pic dp", file);
+      const config = { 
         headers: {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Methods': '*',

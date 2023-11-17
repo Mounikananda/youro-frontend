@@ -30,7 +30,7 @@ import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
 import VerifyEmail from './views/VerifyEmail';
 import AdminAssistantList from './views/Admin UI/Admin-AssistantList';
-
+  
 export const API_DETAILS = {
   baseUrl: 'http://18.118.122.202:',
   PORT: '9095',

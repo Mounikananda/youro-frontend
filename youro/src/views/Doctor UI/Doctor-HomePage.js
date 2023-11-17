@@ -72,7 +72,9 @@ const appointments_image = (arrayBuffer) => {
       headers: {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Methods': '*',
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        //  'responseType': 'arraybuffer' 
+        'responseType': 'arraybuffer' 
       }
     };
     try {
@@ -102,7 +104,8 @@ const appointments_image = (arrayBuffer) => {
       //   String.fromCharCode.apply(null, arrayBuffer)
       // );
         //  const contentType = response.headers['content-type'];
-        return `data:image/png;base64,${base64Image}`
+        return `data:image/png;base64,${base64Image}`;
+        // return `data:image/png;base64,${base64Image}`;
   }
   }
   const TodayAppointmentList = () => {
@@ -136,8 +139,8 @@ const appointments_image = (arrayBuffer) => {
               
                 <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img
-                // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
-                src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                // src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 className="profile-pic" alt="Patient Image" width="15" height="15"/>
               {/* {item.picture[0] && (
                 <img
