@@ -408,6 +408,7 @@ const PatientProfile = () => {
         console.log("came profile pic",response);
       //  console.log(response.d)
         const arrayBuffer = new Uint8Array(response.data);
+        console.log("array",arrayBuffer);
         if(arrayBuffer.length!=0)
         {
         const base64Image = btoa(
@@ -464,10 +465,10 @@ const PatientProfile = () => {
       // formData.append('imageFile', compressedFile);
        const requestData = {
              'userId': doctor_id_2, // Assuming 'userId' should be a string
-             'imageFile': compressedFile,
+             'image': compressedFile,
           };
       const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/uploadDp`;
-      console.log("profile pic dic", requestData);
+      console.log("profile pic dp", file);
       const config = {
         headers: {
           'Access-Control-Allow-Origin': '*',
@@ -489,7 +490,7 @@ const PatientProfile = () => {
         // usrData = res.data;
       }
       catch (err) {
-        console.log("uploading pic ");
+        console.log("uploading pic error ");
         console.error(err);
       }
 
