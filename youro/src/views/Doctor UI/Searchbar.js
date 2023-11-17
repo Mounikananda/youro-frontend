@@ -105,15 +105,15 @@ const SearchBar = () => {
         <input id='consulted' onClick={() => { setConsulted(!consulted); handleConsultByMe(); }} type='checkbox'></input>
         <label for='consulted'>Consulted by me</label>
         </div>}
-        <>
+        {/* <>
           <div className='back-button'>
             {showdetails && (
-              <button className="back-button-1" onClick={() => hitback()}>
+              <button className="btn-filled" style={{width: 'fit-content', padding: '10px 15px'}} onClick={() => hitback()}>
                 <FaChevronLeft /> Back
               </button>
             )}
           </div>
-        </>
+        </> */}
         
         {!showdetails && <input
           className='search-input-field'

@@ -291,7 +291,7 @@ const PatientAppointment = (props) => {
                     </div>
                     <div style={{ padding: '50px 20px', textAlign: 'center' }}>
                         <h3>Congratulations !!!</h3>
-                        <h3>Appointment confirmed with Dr.{newApptDocName}</h3>
+                        <h3>Appointment confirmed with Dr. {newApptDocName}</h3>
                         <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{ height: '100px' }}></img><br /><br />
                         {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
                     </div>

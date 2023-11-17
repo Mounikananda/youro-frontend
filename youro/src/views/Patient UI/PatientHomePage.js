@@ -27,7 +27,8 @@ const PatientHomePage = (props) => {
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedCareplan, setSelectedCareplan] = useState(null);
   const [activeLoader, setActiveLoader] = useState(false);
-  const [fetchSymptomScore, setFetchSymptomScore] = useState(false)
+  const [fetchSymptomScore, setFetchSymptomScore] = useState(false);
+
 
   const navigate = useNavigate();
 
@@ -64,6 +65,8 @@ const PatientHomePage = (props) => {
       setActiveLoader(false);
     }
   }
+
+
 
   const PreviousAppointments = () => {
    

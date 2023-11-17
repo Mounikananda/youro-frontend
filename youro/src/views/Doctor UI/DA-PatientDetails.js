@@ -29,6 +29,8 @@ const PatientDetails = (props) => {
   let {patientId, apptId} = useParams();
   const [patDetails, setPatDetails] = useState();
   const [isOpenCreatePopUp, setOpenCreatePopUp] = useState(false);
+  const [diagName, setDiagName] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
 
   const handleOverview = (data) => {
@@ -38,6 +40,7 @@ const PatientDetails = (props) => {
   useEffect(() => {
     fetchAppointments();
     getPatientDetails();
+    fetchPatientPicture();
   }, []);
 
   useEffect(() => {
@@ -58,6 +61,31 @@ const PatientDetails = (props) => {
     catch (err) {
       console.error(err);
       setIsLoading(false);
+    }
+  }
+
+  const fetchPatientPicture = async () => {
+    const get_url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDp/${patientId}`;
+    try {
+      const response = await axios.get(get_url,{ responseType: 'arraybuffer' });
+
+      if (response.status === 200) {
+        console.log("came ",response);
+        const arrayBuffer = new Uint8Array(response.data);
+        if(arrayBuffer.length!=0)
+       {
+        const base64Image = btoa(
+          new Uint8Array(arrayBuffer).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ''
+          )
+        );
+        setImagePreview(`data:image/jpeg;base64,${base64Image}`);
+       }
+      }
+    }catch (err) {
+      console.log("getting get_api error pic ");
+      console.error(err);
     }
   }
 
@@ -106,7 +134,7 @@ const PatientDetails = (props) => {
             </div>
             <ul key={item.apptId}>
               {item.status != 'CANCELED' && <>
-              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
+              <li onClick={() => setDiagName(item.diagId)} style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
             <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li>
               </>}
             
@@ -151,8 +179,8 @@ const PreviousAppointmentList = () => {
             </div>
             </div>
             <ul key={item.apptId}>
-            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
-            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li>
+            {item.status != 'CANCELED' && <><li onClick={() => setDiagName(item.diagId)} style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
+            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li></>}
               <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
               <li>Symptom score: <strong>{item.symptomScore}</strong></li>
@@ -205,10 +233,17 @@ const PreviousAppointmentList = () => {
     <div className='p-data'>
 
       <div className='p-all-data'>
-        <div className='p-data-col'>
-          {patDetails && <><label className='label-p-data' >Name: {patDetails.firstName + ' ' + patDetails.lastName}</label>
-          <label className='label-p-data'>DOB: {'12/12/1999'}</label>
-          <label className='label-p-data'>Patient id: {'12346'}</label></> }
+        <div className='p-data-col' style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+          <div>
+          <img style={{margin: '0px 20px 0px 0px', borderRadius: '100%', minWidth: '100px'}} src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" height="100" />
+          </div>
+          
+          <div>
+            {patDetails && <><p className='label-p-data' ><strong>Name: </strong><i>{patDetails.firstName + ' ' + patDetails.lastName}</i></p>
+            <p className='label-p-data'><strong>DOB: </strong><i>{'12/12/1999'}</i></p>
+            <p className='label-p-data'><strong>Patient id: </strong><i>{'12346'}</i></p></> }
+          </div>
+          
         </div>
         <div className='p-data-row'>
           <div >Message</div>
@@ -313,7 +348,7 @@ const PreviousAppointmentList = () => {
 
                   <div style={{ padding: '50px 20px' }}>
                     
-                  <Orders patId={patientId} apptId={apptId} closePopup={setOpenCreatePopUp} handleToast={handleToast} nav={() => {navigate("..", { relative: "path" })}}/>
+                  <Orders patId={patientId} apptId={apptId} diag={diagName} closePopup={setOpenCreatePopUp} handleToast={handleToast} nav={() => {navigate("..", { relative: "path" })}}/>
                   </div>
 
 

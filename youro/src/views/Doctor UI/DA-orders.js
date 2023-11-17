@@ -12,7 +12,7 @@ import Cookies from "js-cookie";
 const Orders = (props) => {
 
  
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedOption, setSelectedOption] = useState(props.diag);
   const [diagnosisNames, setDiagnoses] = useState([]);
   const [carePlan, setCarePlan] = useState([]);
   const [carePlanDetails, setCarePlanDetails] = useState([]);
@@ -36,7 +36,9 @@ const Orders = (props) => {
   useEffect(() => {
     fetchAllDiagnoses();
     fetchVersions();
-  
+    if(props.diag){
+      fetchMedicines(props.diag)
+    }   
   }, [])
 
   const handleSubmitDosage = async () => {

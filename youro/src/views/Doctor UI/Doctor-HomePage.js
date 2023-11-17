@@ -44,6 +44,7 @@ function DoctorHomePage() {
   const [isOpenCreatePopUp, setOpenCreatePopUp] = useState(false);
   const [meetLink, setMeetLink] = useState(null);
   const [meetingId, setMeetingId] = useState(null);
+  const [activeLoader, setActiveLoader] = useState(false);
 
 const appointments_image = (arrayBuffer) => {
    
@@ -77,6 +78,7 @@ const appointments_image = (arrayBuffer) => {
         'responseType': 'arraybuffer' 
       }
     };
+    setIsLoading(true)
     try {
       const res = await axios.get(url, config);
       setPrevAppts(res.data.previousAppointments);
@@ -181,7 +183,7 @@ const appointments_image = (arrayBuffer) => {
 
   return (
      <div className='hm-doctor'>
-        {/* <Loader active={isLoading} /> */}
+        <Loader active={isLoading} />
         <div className='sidebar'>
          <DoctorSideBar data={'doctor-ui'} />
        </div>
