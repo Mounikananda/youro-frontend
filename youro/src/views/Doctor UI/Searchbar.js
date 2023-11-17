@@ -35,6 +35,7 @@ const SearchBar = () => {
 
   const hitback = () => {
     setshowdetails(false);
+    navigate("..", {relative: "path"})
   }
 
   useEffect(() => {
@@ -66,7 +67,6 @@ const SearchBar = () => {
 
   const handleConsultByMe = async () => {
 
-    console.log("consult by me axios :: ");
     const uId = Cookies.get(COOKIE_KEYS.userId).trim();
     const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getPatientsByDoctor/${uId}`;
     const config = {
@@ -88,8 +88,6 @@ const SearchBar = () => {
 
   const handleChange = (e) => {
     // console.clear();
-    alert("handle consult by me ");
-    console.log(e);
     setSearchInput(e.target.value);
   };
 
@@ -101,7 +99,12 @@ const SearchBar = () => {
 
   return (<>
     <div className='search-bar'>
+      
       <div className='search-input'>
+        {!showdetails && <div>
+        <input id='consulted' onClick={() => { setConsulted(!consulted); handleConsultByMe(); }} type='checkbox'></input>
+        <label for='consulted'>Consulted by me</label>
+        </div>}
         <>
           <div className='back-button'>
             {showdetails && (
@@ -111,15 +114,15 @@ const SearchBar = () => {
             )}
           </div>
         </>
-        <div className={consulted ? 'btn-outlined-selected' : 'btn-outlined'} onClick={() => { setConsulted(!consulted); handleConsultByMe(); }}>Consulted by me</div>
-        <input
+        
+        {!showdetails && <input
           className='search-input-field'
           type="search"
           placeholder="Search here by name"
           onChange={handleChange}
           onKeyDown={handlesearchdetails}
           value={searchInput}
-        />
+        />}
         {/* <span class="icon">🔍</span> */}
       </div>
       <div className='patient-details'>

@@ -267,9 +267,9 @@ const Orders = (props) => {
       {editCarePlan && <div className='order-div'>
 
 <div className='orders-row'>
-  <div className='dropdown-list'>
+  <div className='dropdown-list' style={{width: 'fit-content'}}>
 
- <select id="d" name="d" className='dropdown-chart' value={selectedOption} onChange={handleSelectChange}>
+ <select id="d" name="d" className='dropdown-chart' style={{marginLeft: '0px'}} value={selectedOption} onChange={handleSelectChange}>
   <option>Select Diagnosis</option>
   {
     diagnosisNames.map((result) => (<option value={result.diagId}>{result.name}</option>))
@@ -277,11 +277,11 @@ const Orders = (props) => {
 </select>
 </div>
 
-  {selectedOption && <> {carePlanDetails && carePlanDetails[0] && Object.keys(carePlanDetails[0]).slice(0, 3).map((title) =>  <>
+  {/* {selectedOption && <> {carePlanDetails && carePlanDetails[0] && Object.keys(carePlanDetails[0]).slice(0, 3).map((title) =>  <>
       <button className={showItems.includes(title) ? 'btn-outlined-selected' : 'btn-outlined'} onClick={() => handleItemSelection(title)}>{title}</button></>
   )}
     
-  </>}
+  </>} */}
 
   
 </div>
@@ -290,13 +290,13 @@ const Orders = (props) => {
 
 <></>
 <div className="orders-checklist">
-  <div className='orders-3'>
+  <div className='orders-3' style={{width: '60%'}}>
   {(showItems.includes('vitamins') || showItems.includes('lifeStyle') || showItems.includes('medicines')) && <>
   
     
     {showItems.includes('lifeStyle') && <>
-    <div className="orders-name">
-    <p className='order-label'>LifeStyle</p>
+    <div className="orders-name" style={{width: '33.3%'}}>
+    <p className='order-label'><strong>LifeStyle</strong></p>
     <div>
       {carePlanDetails[0] && carePlanDetails[0].lifeStyle.map((item) => (
         <div key={item.presId}>
@@ -306,7 +306,7 @@ const Orders = (props) => {
             checked={item.indicator}
             onChange={() => handleCheckboxChange(item, 'lifestyle')}
           />
-          <label htmlFor={`lifestyle-item-${item.presId}`}>{item.presName}</label>
+          <label htmlFor={`lifestyle-item-${item.presId}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
         </div>
       ))}
     </div>
@@ -318,8 +318,8 @@ const Orders = (props) => {
 
   
     {showItems.includes('vitamins') && <>
-    <div className="orders-name">
-    <p className='order-label'>Vitamins/Supplements</p>
+    <div className="orders-name" style={{width: '33.3%'}}>
+    <p className='order-label' style={{wordBreak: 'wrap'}}><strong>Vitamins/<br />Supplements</strong></p>
     <div>
       {carePlanDetails[0] && carePlanDetails[0].vitamins.map((item) => (
         <div key={item.presId}>
@@ -329,7 +329,7 @@ const Orders = (props) => {
             checked={item.indicator}
             onChange={() => handleCheckboxChange(item, 'vitamins')}
           />
-          <label htmlFor={`lifestyle-item-${item.presId}`}>{item.presName}</label>
+          <label htmlFor={`lifestyle-item-${item.presId}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
         </div>
       ))}
     </div>
@@ -339,8 +339,8 @@ const Orders = (props) => {
 
   
     {showItems.includes('medicines') && <>
-    <div className="orders-name">
-    <p className='order-label'>Medicines</p>
+    <div className="orders-name" style={{width: '33.3%'}}>
+    <p className='order-label'><strong>Medicines</strong></p>
     <div>
       {carePlanDetails[0] && carePlanDetails[0].medicines.map((item) => (
         <div key={item.presId}>
@@ -350,7 +350,7 @@ const Orders = (props) => {
             checked={item.indicator}
             onChange={() => handleCheckboxChange(item, 'medicines')}
           />
-          <label htmlFor={`lifestyle-item-${item.id}`}>{item.presName}</label>
+          <label htmlFor={`lifestyle-item-${item.id}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
         </div>
       ))}
     </div>
@@ -361,10 +361,10 @@ const Orders = (props) => {
   </div>
 
 
-<div className='orders-3'>
+<div className='orders-3' style={{width: '30%'}}>
     
-    <div className="orders-name">
-    <p className='order-label'>Labs</p>
+    <div className="orders-name" style={{width: '50%'}}>
+    <p className='order-label'><strong>Labs</strong></p>
     <div>
       {carePlanDetails[0] && carePlanDetails[0].labs.map((item) => (
         <div key={item.presId}>
@@ -374,7 +374,7 @@ const Orders = (props) => {
             checked={item.indicator}
             onChange={() => handleCheckboxChange(item, 'labs')}
           />
-          <label htmlFor={`lifestyle-item-${item.id}`}>{item.presName}</label>
+          <label htmlFor={`lifestyle-item-${item.id}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
         </div>
       ))}
     </div>
@@ -382,8 +382,8 @@ const Orders = (props) => {
 
 
 
-    <div className="orders-name">
-    <p className='order-label'>Imaging</p>
+    <div className="orders-name" style={{width: '50%'}}>
+    <p className='order-label'><strong>Imaging</strong></p>
     <div>
       {carePlanDetails[0] && carePlanDetails[0].imaging.map((item) => (
         <div key={item.presId}>
@@ -393,7 +393,7 @@ const Orders = (props) => {
             checked={item.indicator}
             onChange={() => handleCheckboxChange(item, 'imaging')}
           />
-          <label htmlFor={`lifestyle-item-${item.id}`}>{item.presName}</label>
+          <label htmlFor={`lifestyle-item-${item.id}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
         </div>
       ))}
     </div>
@@ -402,18 +402,20 @@ const Orders = (props) => {
     
  </div>
 </div>
-<textarea style={{width: '95%', height: '50px', margin: '0px auto'}} value={notes} onChange={(e) => setNotes(e.target.value)}>Enter your notes here...</textarea>
+<div style={{width: '95%', margin: '0px auto'}}>
+<textarea style={{width: '100%', height: '50px'}} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder='Enter your notes here...'></textarea>
+</div>
 <br />
 <input id='followUp' checked={followUp ? true : false} onChange={e => setFollowUp(followUp ? null : true)} type='checkbox'></input>
 <label for='followUp'>Follow-up required</label>
 
 <div className='submit-button'>
-<button className='btn-filled ' onClick={handleSub}>Submit order</button>
+<button className='btn-filled ' onClick={handleSub} style={{padding: '10px 15px'}}>Submit order</button>
 </div>
 </>}
 
 {!selectedOption && <>
-<div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+<div style={{ width: '100%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <h3><i>Please select a diagnosis to complete order</i></h3>
             </div>
 </>}
@@ -509,7 +511,7 @@ const Orders = (props) => {
         </>}
       
 
-        <div className='btn-filled' onClick={handleSubmitDosage}>Submit</div>
+        <div className='btn-filled' style={{padding: '10px 15px'}} onClick={handleSubmitDosage}>Submit</div>
 
     </div>
 

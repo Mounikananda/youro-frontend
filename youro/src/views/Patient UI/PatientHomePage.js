@@ -16,6 +16,7 @@ import Cookies from "js-cookie";
 import { API_DETAILS, COOKIE_KEYS } from '../../App';
 import Youroheader from '../Youro-header';
 import CarePlan from './PatientCareplan';
+import { ToastContainer, toast } from 'react-toastify';
 
 const PatientHomePage = (props) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -24,7 +25,9 @@ const PatientHomePage = (props) => {
   const [upComingAppts, setUpcomingAppts] = useState([]);
   const [viewVal, setViewVal] = useState(0);
   const [popupOpen, setPopupOpen] = useState(false);
-  const [selectedCareplan, setSelectedCareplan] = useState(null)
+  const [selectedCareplan, setSelectedCareplan] = useState(null);
+  const [activeLoader, setActiveLoader] = useState(false);
+  const [fetchSymptomScore, setFetchSymptomScore] = useState(false)
 
   const navigate = useNavigate();
 
@@ -48,14 +51,17 @@ const PatientHomePage = (props) => {
           'Content-Type': 'application/json'
       }
   };
+  setActiveLoader(true)
     try {
       const res = await axios.get(url, config);
+      setActiveLoader(false)
       console.log(res);
       setPrevAppts(res.data.previousAppointments);
       setUpcomingAppts(res.data.upComingAppointments);
     }
     catch (err) {
       console.error(err);
+      setActiveLoader(false);
     }
   }
 
@@ -74,7 +80,7 @@ const PatientHomePage = (props) => {
         {prevAppts && prevAppts.length!= 0 &&  prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
-              <h3 >{new Date(item.apptDate).toLocaleDateString()}</h3>
+              <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
               <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
@@ -107,8 +113,6 @@ const PatientHomePage = (props) => {
 
     
     const cancelAppointment = async (data) => {
-      console.log("cancel appt:: ");
-      console.log(data);
 
       const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${data.apptId}/${data.doctorId}`;
       const config = {
@@ -120,9 +124,11 @@ const PatientHomePage = (props) => {
     };
       try {
         const res = await axios.put(url, config);
-        console.log(res);
+        fetchPrevAndUpcomingAppointments()
+        toast.success("Appointment cancelled successfully");
       }
       catch (err) {
+        toast.error("Error cancelling appointment");
         console.error(err);
       }
     }
@@ -138,9 +144,9 @@ const PatientHomePage = (props) => {
         }
 
           {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
-            <div className='previous-appointment' style={item.status == 'CANCELED' ? {border: '2px solid', borderColor: 'red'} : {}}> 
+            <div className='previous-appointment'> 
              <div>
-             <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
+             <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
@@ -161,21 +167,7 @@ const PatientHomePage = (props) => {
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
               {/* <p>{item.meetup}</p> */}
             </ul>
-            {/* <div className='row' style={{ display: 'flex', justifyContent: 'space-around'}}>
-                <div className='col-6'>
-                  {
-                  item.link ? 
-                  <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> 
-                  : 
-                  <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
-                  }
-                </div>
-                <div className='col-6'>
-                  <button className='join-now-button' onClick={() => cancelAppointment(item)} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>
-                    Cancel
-                  </button>
-                </div>
-            </div> */}
+
             {
               item.status != 'CANCELED' ? 
               <div className='row' style={{ display: 'flex', justifyContent: 'space-around'}}>
@@ -208,6 +200,7 @@ const PatientHomePage = (props) => {
     //  <div className='hm'>
 
     <div className='care-plan'>
+      <ToastContainer/>
       {/* <div className='header'>
         <h1 style={{ marginLeft: '50px' }}>youro</h1>
          <Popmenu/> 
@@ -228,7 +221,7 @@ const PatientHomePage = (props) => {
           <CarePlan/>
         </div>
         <div className='column-data'>
-          <PatientSymptomChart uId={uId} retakeSymptomScore={setOpen} />
+          <PatientSymptomChart uId={uId} retakeSymptomScore={setOpen} fetchSymptomScore={fetchSymptomScore} setFetchSymptomScore={setFetchSymptomScore}/>
           <div className='row-data'>
             <div className='care-plan-details-patient-1'>
               <h3>Upcoming Appointments </h3>
@@ -241,10 +234,11 @@ const PatientHomePage = (props) => {
             </div>
           </div>
         </div>
+        <Loader active={activeLoader}/>
       </div>
 
       {/* </div>   */}
-      {open && <SymptomCalculator open={open} setOpen={setOpen} />}
+      {open && <SymptomCalculator open={open} setOpen={setOpen} fetchSymptomScore={setFetchSymptomScore}/>}
 
       <Popup open={popupOpen} modal closeOnDocumentClick={false} onClose={() => setPopupOpen(false)} className="congrats-popup">
                     <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setPopupOpen(false); props.changeView(0) }}>

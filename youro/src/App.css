@@ -130,6 +130,12 @@
   position: relative;
 }
 
+.order-popup-content {
+  width: 70% !important;
+  border-radius: 10px;
+  position: relative;
+}
+
 .symptom-popup-content{
   width: 500px !important;
   border-radius: 10px;
@@ -174,4 +180,14 @@ input[type='radio']:checked:after {
   display: inline-block;
   visibility: visible;
   border: 2px solid var(--secondary-color);
+}
+
+.cancel-tag{
+  background-color: var(--error-color);
+  color: white;
+  width: fit-content;
+  padding: 5px;
+  border-radius: 5px;
+  display: inline-block;
+  margin-left: 10px;
 }

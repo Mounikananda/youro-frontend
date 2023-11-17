@@ -21,59 +21,10 @@ const SymptomCalculator = (props) => {
 
     useEffect(() => {
         fetchAllDiagnoses();
-        // setQuestionnare([
-        //     {
-        //         "questionId": 3003,
-        //         "question": "Question 1",
-        //         "options": [
-        //             {
-        //                 "oId": 1,
-        //                 "oName": "Option 1"
-        //             },
-        //             {
-        //                 "oId": 2,
-        //                 "oName": "Option 2"
-        //             }
-        //         ]
-        //     },
-        //     {
-        //         "questionId": 3004,
-        //         "question": "Question 2",
-        //         "options": [
-        //             {
-        //                 "oId": 3,
-        //                 "oName": "Option 1"
-        //             },
-        //             {
-        //                 "oId": 4,
-        //                 "oName": "Option 2"
-        //             }
-        //         ]
-        //     },
-        //     {
-        //         "questionId": 3005,
-        //         "question": "Question 3",
-        //         "options": [
-        //             {
-        //                 "oId": 5,
-        //                 "oName": "Option 1"
-        //             },
-        //             {
-        //                 "oId": 6,
-        //                 "oName": "Option 2"
-        //             },
-        //             {
-        //                 "oId": 7,
-        //                 "oName": "Option 3"
-        //             }
-        //         ]
-        //     }
-        // ])
+        
     }, [])
 
     const fetchQuesByDiagId = async () => {
-        console.log("====^^^===");
-        console.log("fetchQuesByDiagId START");
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getQuestionsBydiagId/${selDiag}`;
         const config = {
             headers: {
@@ -90,13 +41,9 @@ const SymptomCalculator = (props) => {
         catch (err) {
             console.error(err);
         }
-        console.log("fetchQuesByDiagId END");
-        console.log("====^^^===");
     };
 
     const fetchAllDiagnoses = async () => {
-        // console.log("====^^^===");
-        // console.log("fetchAllDiagnoses START");
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllDiagnoses`;
         const config = {
             headers: {
@@ -112,14 +59,10 @@ const SymptomCalculator = (props) => {
         catch (err) {
             console.error(err);
         }
-        // console.log("fetchAllDiagnoses END");
-        // console.log("====^^^===");
     };
 
     const [newScore, setNewScoreInfo] = useState({});
     const saveNewSymptomScore = async (data) => {
-        // console.log("====^^^===");
-        // console.log("saveNewSymptomScore START");
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/saveSymptomScore`;
         setSymptomScorePage(true);
         const config = {
@@ -141,8 +84,7 @@ const SymptomCalculator = (props) => {
         catch (err) {
             console.error(err);
         }
-        // console.log("saveNewSymptomScore END");
-        // console.log("====^^^===");
+        props.fetchSymptomScore(true);
     };
 
 
@@ -171,8 +113,6 @@ const SymptomCalculator = (props) => {
     }
 
     const handleResponse = (questionNum, option) => {
-        console.log("====^^^===");
-        console.log("handleResponse START");
         var userResponses = [...userResponse];
         console.log(userResponses);
         console.log(userResponse[questionNum]);
@@ -186,17 +126,11 @@ const SymptomCalculator = (props) => {
         }
         setUserResponse(userResponses);
         console.log(userResponses);
-        console.log("handleResponse END");
-        console.log("====^^^===");
     }
 
     const handleDiagChange = (event) => {
-        // console.log("====^^^===");
-        // console.log("handleDiagChange START");
         console.log(event.target.value);
         setDiagId(event.target.value);
-        // console.log("handleDiagChange END");
-        // console.log("====^^^===");
     }
 
     return (
@@ -231,7 +165,7 @@ const SymptomCalculator = (props) => {
                 </div>
 
                 <div style={{ textAlign: 'start' }}>
-                    {chooseDiagnosis && <div style={{ display: "flex", flexWrap: 'wrap', maxHeight: '30vh', overflowY: 'scroll' }}>
+                    {chooseDiagnosis && <div style={{ display: "flex", flexWrap: 'wrap', maxHeight: '30vh' }}>
                         {diagnosisNames.map((diagosis) => {
                             return (
                                 <div style={{ maxWidth: '200px', minWidth: '150px' }}>

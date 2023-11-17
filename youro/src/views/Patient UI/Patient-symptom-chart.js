@@ -8,9 +8,11 @@ const PatientSymptomChart = (props) => {
   const [data, setData] = useState([]);
   const [selectedScore, setSelectedScore] = useState([]);
   const [diagnosisNames, setDiagnoses] = useState([]);
+  const [prevDIag, setPrevDiag] = useState([]);
   let usrId = props.uId;
 
 
+  
   const [selectedOption, setSelectedOption] = useState('');
   const handleSelectChange = (event) => {
     // console.log(event.target.value);
@@ -18,6 +20,7 @@ const PatientSymptomChart = (props) => {
     setSelectedOption(event.target.value);
     showScoreForSelectedDiagnosis(event.target.value);
   };
+  
 
   const showScoreForSelectedDiagnosis = (value) => {
     // console.log("showScoreForSelectedDiagnosis :: " + value);
@@ -35,6 +38,7 @@ const PatientSymptomChart = (props) => {
 
   useEffect(() => {
     fetchAllDiagnoses();
+    fecthPrevDiag();
     fetchPrevSymptomScore();
   }, []);
 
@@ -54,6 +58,30 @@ const PatientSymptomChart = (props) => {
     }).catch((err) => {
       console.error(err);
     });
+  }
+
+  const fecthPrevDiag = async () => {
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDiagnosisByCustomer/${usrId}`;
+    const config = {
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
+    try {
+      const res = await axios.get(url, config);
+      setPrevDiag(res.data)
+    }
+    catch (err) {
+      console.error(err);
+    }
+  }
+
+  if(props.fetchSymptomScore){
+    fetchPrevSymptomScore();
+    fecthPrevDiag();
+    props.setFetchSymptomScore(false)
   }
 
   const fetchAllDiagnoses = async () => {
@@ -78,6 +106,19 @@ const PatientSymptomChart = (props) => {
     // console.log("====^^^===");
   };
 
+  const CustomizedAxisTick = (props) => {
+    const { x, y, stroke, payload } = props;  
+    var date = new Date(payload.value)
+  
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={16} textAnchor="end">
+        {date.toLocaleString('default', { month: 'long', day: 'numeric', timeZone: 'UTC'}) + ", " + date.toLocaleString('default', { year: 'numeric', timeZone: 'UTC' })}
+        </text>
+      </g>
+    );
+  }
+
   return (
     <div>
       {
@@ -86,16 +127,16 @@ const PatientSymptomChart = (props) => {
             <div style={{ position: 'absolute', top: '3px', left: '15px' }}>
               <h3 style={{ display: 'inline-block' }}>Prev Symptom Scores</h3>
 
-              <select id="d" name="d" className='dropdown-chart' value={selectedOption} onChange={handleSelectChange}>
+              {prevDIag && prevDIag[0] && <select id="d" name="d" className='dropdown-chart' value={selectedOption} onChange={handleSelectChange}>
                 <option>Select Diagnosis</option>
                 {
-                  diagnosisNames.map((result) => (<option value={result.diagId}>{result.name}</option>))
+                  prevDIag.map((result) => (<option value={result.diagId}>{result.diagName}</option>))
                 }
-              </select>
+              </select>}
             </div>
-            <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>
-              Retake symptom score
-            </div>
+            {prevDIag && !prevDIag[0] && <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>
+              Calculate symptom score
+            </div>}
 
             {data.length == 0 && <>
               {/* <div style={{ width: "98%", backgroundColor: 'white', borderRadius: '10px', height: '30vh', display: 'flex', alignItems: 'end', position: 'relative' }}> */}
@@ -134,7 +175,7 @@ const PatientSymptomChart = (props) => {
                       }}
                     >
                       <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="dateTime" />
+                      <XAxis dataKey="dateTime" tick={<CustomizedAxisTick />}/>
                       <YAxis />
                       <Tooltip />
                       <Line type="monotone" dataKey="symptomScore" stroke="#8884d8" fill="#8884d8" />

@@ -11,9 +11,15 @@ const ReactQuillWrapper = ({ onClose, val }) => {
       [{ header: [1, 2, false] }],
       ['bold', 'italic', 'underline', 'strike', 'blockquote'],
       [{ list: 'ordered' }, { list: 'bullet' }, { indent: '-1' }, { indent: '+1' }],
-      ['link', 'image'],
+      ['link'],
       ['clean'],
     ],
+    // placeholder: 'Write a note...',
+    // theme: 'snow'
+    clipboard: {
+      // toggle to add extra line breaks when pasting HTML:
+      matchVisual: false,
+    }
   };
 
   const formats = [
@@ -27,7 +33,6 @@ const ReactQuillWrapper = ({ onClose, val }) => {
     'bullet',
     'indent',
     'link',
-    'image',
   ];
 
   const handleChange = (value) => {
@@ -37,7 +42,7 @@ const ReactQuillWrapper = ({ onClose, val }) => {
 
   return (
     <div className="quill-editor-container">
-      <ReactQuill value={text} modules={modules} formats={formats} onChange={handleChange} />
+      <ReactQuill value={text} modules={modules} formats={formats} onChange={handleChange} placeholder={'Write a note...'}/>
     </div>
   );
 };

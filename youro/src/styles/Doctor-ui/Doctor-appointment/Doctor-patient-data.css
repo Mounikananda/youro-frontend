@@ -80,7 +80,7 @@
   height: 52vh;
   margin: 15px;
   border-radius: 20px;
-  overflow-y: scroll;
+  overflow-y: auto;
   scroll-behavior: initial;
 }
 

@@ -10,6 +10,7 @@ import axios from 'axios';
 import Cookies from "js-cookie";
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Youroheader from "../Youro-header";
+import Loader from "../../utils/loader";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -34,6 +35,8 @@ const PatientAppointment = (props) => {
     const [viewVal, setViewVal] = useState(0);
     const [diagnosisNames, setDiagnoses] = useState([]);
     const [selectedOption, setSelectedOption] = useState('');
+    const [activeLoader, setActiveLoader] = useState(false);
+
     const handleSelectChange = (event) => {
         // console.log(event.target.value);
         // console.log("symptom score data :: " + JSON.stringify(data));
@@ -71,12 +74,14 @@ const PatientAppointment = (props) => {
             'Content-Type': 'application/json'
           }
         };
+        setActiveLoader(true)
         try {
           const res = await axios.get(url, config);
           setDiagnoses(res.data);
+          setActiveLoader(false)
         }
         catch (err) {
-          console.error(err);
+            setActiveLoader(false)
         }
         // console.log("fetchAllDiagnoses END");
         // console.log("====^^^===");
@@ -286,12 +291,13 @@ const PatientAppointment = (props) => {
                     </div>
                     <div style={{ padding: '50px 20px', textAlign: 'center' }}>
                         <h3>Congratulations !!!</h3>
-                        <h3>Appointment confirmed with {newApptDocName}</h3>
+                        <h3>Appointment confirmed with Dr.{newApptDocName}</h3>
                         <img src={require('../../assets/Congrats.png')} alt='Congrats' style={{ height: '100px' }}></img><br /><br />
                         {event && <p>Appointment at: &nbsp;<strong> {dateSelection.toLocaleDateString()}, {event} - {getEndTime(event)}</strong></p>}
                     </div>
                 </Popup>
             </div>
+            <Loader active={activeLoader}/>
         </div>
 
     )

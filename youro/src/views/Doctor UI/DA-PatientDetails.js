@@ -93,12 +93,23 @@ const PatientDetails = (props) => {
           {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
             <div className='previous-appointment'> 
              <div>
-              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
-              <h3>{item.doctorName}</h3>
+             <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
+              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+                  <img
+                src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                // src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
+                <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.doctorName}</Link>
+              </h3>
+            </div>
             </div>
             <ul key={item.apptId}>
-            <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
+              {item.status != 'CANCELED' && <>
+              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
             <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li>
+              </>}
+            
               <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
               <li>Symptom score: <strong>{item.symptomScore}</strong></li>
@@ -128,8 +139,16 @@ const PreviousAppointmentList = () => {
           {prevAppts && prevAppts.length!= 0 && prevAppts.map((item) => (
             <div className='previous-appointment'> 
              <div>
-              <h3>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(':').slice(0, 2).join(":")}</h3>
-              <h3>{item.doctorName}</h3>
+             <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
+              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+                  <img
+                src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                // src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
+                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
+                <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.doctorName}</Link>
+              </h3>
+            </div>
             </div>
             <ul key={item.apptId}>
             <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`${item.apptId}`}>View/edit the care plan</Link></li>
@@ -283,7 +302,7 @@ const PreviousAppointmentList = () => {
             <ReactQuillWrapper val={setNotes}/>
         </div> )}
       
-        <Popup open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)} className="congrats-popup">
+        <Popup className='order-popup' closeOnEscape={false} open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)}>
                   <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false); navigate("..", { relative: "path" })}}>
                     {/* <Link to='..' relative="path"> */}
                       <span class="material-symbols-outlined">
