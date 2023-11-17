@@ -89,6 +89,7 @@ const Orders = (props) => {
         getCarePlanDetails(res.data[0].cId, false);
       }else{
         setEditCarePlan(true)
+        props.setCarePlanView(false)
       }
     }
     catch (err) {
@@ -227,6 +228,7 @@ const Orders = (props) => {
   const handleEdit = () => {
     setEditCarePlan(true);
     getCarePlanDetails(selectedVersion, true)
+    props.setCarePlanView(false)
     // fecthMedicinesV2()
   }
 

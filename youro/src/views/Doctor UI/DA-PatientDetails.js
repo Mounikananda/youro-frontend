@@ -31,6 +31,7 @@ const PatientDetails = (props) => {
   const [isOpenCreatePopUp, setOpenCreatePopUp] = useState(false);
   const [diagName, setDiagName] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [carePlanView, setCarePlanView] = useState(true);
 
 
   const handleOverview = (data) => {
@@ -337,7 +338,7 @@ const PreviousAppointmentList = () => {
             <ReactQuillWrapper val={setNotes}/>
         </div> )}
       
-        <Popup className='order-popup' closeOnEscape={false} open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)}>
+        <Popup className={!carePlanView ? 'order-popup': 'congrats-popup'} closeOnEscape={false} open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)}>
                   <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false); navigate("..", { relative: "path" })}}>
                     {/* <Link to='..' relative="path"> */}
                       <span class="material-symbols-outlined">
@@ -348,7 +349,7 @@ const PreviousAppointmentList = () => {
 
                   <div style={{ padding: '50px 20px' }}>
                     
-                  <Orders patId={patientId} apptId={apptId} diag={diagName} closePopup={setOpenCreatePopUp} handleToast={handleToast} nav={() => {navigate("..", { relative: "path" })}}/>
+                  <Orders setCarePlanView={setCarePlanView} patId={patientId} apptId={apptId} diag={diagName} closePopup={setOpenCreatePopUp} handleToast={handleToast} nav={() => {navigate("..", { relative: "path" })}}/>
                   </div>
 
 
