@@ -105,47 +105,6 @@ const PatientHomePage = (props) => {
   const UpcomingAppointments = () => {
     const [data, setData] = useState([]);
 
-    useEffect(() => {
-
-      const mockData = [
-        {
-          apptId: 3,
-          patientId: 15,
-          doctorName: "Mr. Sainath Reddy Hyderabad",
-          patientName: "Ms. Abhigna Sree Tumati",
-          picture: "",
-          doctorId: 2,
-          apptDate: "2023-11-11",
-          apptStartTime: "Sat Nov 11 2023 07:30:00 GMT-0500 (EST)",
-          apptEndTime: "Sat Nov 11 2023 08:00:00 GMT-0500 (EST)",
-          link: null,
-          status: "SCHEDULED",
-          diagId: 1,
-          diagName: "Diagnosis 1",
-          symptomScore: 0,
-          dateOfGeneratedScore: null
-        },
-        {
-          apptId: 4,
-          patientId: 13,
-          doctorName: "Mr. Sainath Reddy Hyderabad",
-          patientName: "Ms. Abhigna Sree Tumati",
-          picture: "",
-          doctorId: 2,
-          apptDate: "2023-11-11",
-          apptStartTime: "Sat Nov 11 2023 07:30:00 GMT-0500 (EST)",
-          apptEndTime: "Sat Nov 11 2023 08:00:00 GMT-0500 (EST)",
-          link: null,
-          status: "SCHEDULED",
-          diagId: 1,
-          diagName: "Diagnosis 1",
-          symptomScore: 0,
-          dateOfGeneratedScore: null
-        }
-      ]
-      setData(mockData);
-    }, []);
-
     
     const cancelAppointment = async (data) => {
       console.log("cancel appt:: ");

@@ -50,7 +50,7 @@
 }
 
 .btn-filled:hover {
-  background-color: var(--primary-color);
+  background-color: inherit;
   color: #404040 !important;
   border: 1px solid #404040 !important;
   box-shadow: var(--shadow);
@@ -58,7 +58,7 @@
 
 .btn-outlined {
   color: #404040 !important;
-  font-weight: 700;
+  /* font-weight: 700; */
   border: 1px solid #404040 !important;
   border-radius: 15px;
   border-width: 5;
@@ -71,8 +71,9 @@
 
 .btn-outlined:hover {
   background-color: var(--secondary-color);
-  color: white;
-  border: none;
+  color: white !important;
+  border: 1px solid transparent !important;
+  /* border-color: none !important; */
   box-shadow: var(--shadow);
 }
 

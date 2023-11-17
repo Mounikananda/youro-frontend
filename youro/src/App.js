@@ -32,8 +32,8 @@ import VerifyEmail from './views/VerifyEmail';
 import AdminAssistantList from './views/Admin UI/Admin-AssistantList';
 
 export const API_DETAILS = {
-  baseUrl: 'http://3.149.235.109:',
-  PORT: '9094',
+  baseUrl: 'http://18.118.122.202:',
+  PORT: '9095',
   baseExtension: '/youro/api/v1',
 };
 export const USER_TYPES = {

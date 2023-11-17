@@ -141,8 +141,8 @@ white-space:nowrap;
 
 .flip-card {
     background-color: transparent;
-    width: 300px;
-    height: 300px;
+    width: 500px;
+    height: 600px;
     perspective: 1000px; /* Remove this if you don't want the 3D effect */
     display: inline-block;
     margin-right: 100px;
@@ -189,14 +189,16 @@ white-space:nowrap;
   
   /* Style the back side */
   .flip-card-back {
-    background-color: var(--neon-color);
+    background-color: #CEC3A6;
     color: white;
     transform: rotateY(180deg);
     border-radius: 10px;
+    text-align: justify;
   }
 
 .flip-heading {
     position: absolute;
+    padding: 10px 0px;
     bottom: 0px;
     font-weight: 700;
     font-size: 32px;
