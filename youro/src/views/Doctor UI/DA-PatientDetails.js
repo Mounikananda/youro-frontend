@@ -14,6 +14,8 @@ import Popup from 'reactjs-popup';
 import { ToastContainer, toast } from 'react-toastify';
 import { COOKIE_KEYS, USER_TYPES } from "../../App";
 import Cookies from "js-cookie";
+import 'react-quill/dist/quill.snow.css';
+import { FaPlus} from 'react-icons/fa';
 
 const PatientDetails = (props) => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -51,6 +53,8 @@ const PatientDetails = (props) => {
     
   }, [apptId])
 
+
+
   const getPatientDetails = async() => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getUser/${patientId}`;
     try {
@@ -64,6 +68,9 @@ const PatientDetails = (props) => {
       setIsLoading(false);
     }
   }
+
+
+
 
   const fetchPatientPicture = async () => {
     const get_url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDp/${patientId}`;
@@ -230,6 +237,7 @@ const PreviousAppointmentList = () => {
   }
 
 
+
   return (
     <div className='p-data'>
 
@@ -247,7 +255,8 @@ const PreviousAppointmentList = () => {
           
         </div>
         <div className='p-data-row'>
-          <div >Message</div>
+          {/* <div >Message</div> */}
+            <Link style={{ textDecoration: 'none' }} to={`/doctor-chat`}>Message</Link>
           {/* {showEditor && (
         <div className="floating-editor">
             <ReactQuillWrapper/>
@@ -335,7 +344,7 @@ const PreviousAppointmentList = () => {
             <button onClick={() => setShowEditor(null)}>X</button>
            </div>
           {/* <ReactQuillWrapper /> */}
-            <ReactQuillWrapper val={setNotes}/>
+            <ReactQuillWrapper  val={setNotes}/>
         </div> )}
       
         <Popup className={!carePlanView ? 'order-popup': 'congrats-popup'} closeOnEscape={false} open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)}>
