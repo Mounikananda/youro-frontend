@@ -32,7 +32,7 @@ import VerifyEmail from './views/VerifyEmail';
 import AdminAssistantList from './views/Admin UI/Admin-AssistantList';
   
 export const API_DETAILS = {
-  baseUrl: 'http://18.118.122.202:',
+  baseUrl: 'http://3.147.74.34:',
   PORT: '9095',
   baseExtension: '/youro/api/v1',
 };
