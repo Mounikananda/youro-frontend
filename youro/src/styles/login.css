@@ -191,7 +191,7 @@ width:auto;
   margin-top:250px;
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
 
   .option-select h1 {
     font-size: 2rem; 
@@ -217,7 +217,7 @@ width:auto;
 }
 
 
-/* #for login page #### */
+#for login page ####
 @media (max-width: 600px) {
 
   .Login-Form-Container {
@@ -262,13 +262,6 @@ width:auto;
 
 @media (min-width: 1441px)
 {
-  /* .Login-Form-Container {
-    width: 50%;
-    margin: 0px auto;
-    background-color: #e5dfd1;
-    padding: 20px;
-    border-radius: 20px;
-  }  */
 
    h1
   {
@@ -302,6 +295,6 @@ width:auto;
     width: 80%;
     font-size: medium;
   }
-}
+} */
 
 

@@ -78,54 +78,6 @@ function DoctorAppointments() {
   const [events, setEvents] = useState([]);
   const [calenderapt, setcalenderapt] = useState([]);
 
-  // console.log(User)
-
-  // const clear_events =
-
-
-  const apt = {
-
-    // "appoitments": [
-    // {
-    // "apptId": 1,
-    // "patientId": 1,
-    // "doctorName": "Ms. doc6th asdf",
-    // "patientName": "Mr. Ravi Mandava",
-    // "doctorId": 10,
-    // "apptDate": null,
-    // "apptStartTime": "Wed Nov 01 2023 00:00:00 GMT-0400 (EDT)",
-    // "apptEndTime": "Wed Nov 01 2023 02:00:00 GMT-0400 (EDT)",
-    // "link": "ZOOM LINK",
-    // "followUpId": 0
-    // },
-    // {
-    // "apptId": 2,
-    // "patientId": 2,
-    // "doctorName": "Mr. Ravi Mandava",
-    // "patientName": "Ms. Sai Hyd",
-    // "doctorId": 1,
-    // "apptDate": null,
-    // "apptStartTime": "Mon Oct 23 2023 08:00:00 GMT-0400 (EDT)",
-    // "apptEndTime": "Mon Oct 23 2023 08:30:00 GMT-0400 (EDT)",
-    // "link": "ZOOM LINK",
-    // "followUpId": 0
-    // }
-    // ],
-    // "docAvail": [
-    // {
-    // "doctorId": 1,
-    // "status":"Available",
-    // "startTime": "Mon Oct 23 2023 19:30:00 GMT-0400 (EDT)",
-    // "endTime": "Mon Oct 23 2023 20:00:00 GMT-0400 (EDT)"
-    // },
-    // {
-    // "doctorId": 1,
-    // "status":"Available",
-    // "startTime": "Mon Oct 23 2023 04:30:00 GMT-0400 (EDT)",
-    // "endTime": "Mon Oct 23 2023 05:00:00 GMT-0400 (EDT)"
-    // }
-    // ]
-  };
 
   const doctid = Cookies.get(COOKIE_KEYS.userId);
   const fetching_api_data = async () => {
