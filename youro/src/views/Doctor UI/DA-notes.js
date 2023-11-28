@@ -2,6 +2,8 @@ import {React, useState, useEffect} from 'react';
 import "../../styles/Doctor-ui/Doctor-appointment/DA-notes.css";
 import { API_DETAILS } from '../../App';
 import axios from 'axios';
+import { FaPlus} from 'react-icons/fa';
+
 
 const Notes=(props)=>
 {
@@ -11,6 +13,7 @@ const Notes=(props)=>
 
   useEffect(() => {
     fetchNotes();
+    // notes.map((note, i) => {document.getElementById(`notes-${i}`).innerHTML = note.notes})
   }, [])
 
   const fetchNotes = async () => {
@@ -34,6 +37,10 @@ const Notes=(props)=>
   return (
   <div >
      <div className='notes-doctor'>
+        <div style={{color:'#9CB189',alignSelf:'flex-end',cursor:'pointer'}}>
+        <FaPlus />
+          Add Notes
+      </div>
       {notes && notes.length ? notes.map((note, i) => {return (
         <div className='notes-date'>
           <div className='date'>

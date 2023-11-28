@@ -5,7 +5,7 @@ import "../../styles/Doctor-ui/Doctor-appointment/DA-takenotes.css";
 
 
 const ReactQuillWrapper = ({ onClose, val }) => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState('<p>&nbsp;</p>');
   const modules = {
     toolbar: [
       [{ header: [1, 2, false] }],
@@ -41,7 +41,7 @@ const ReactQuillWrapper = ({ onClose, val }) => {
   };
 
   return (
-    <div className="quill-editor-container">
+    <div className="quill-editor-container" key="unique-key">
       <ReactQuill value={text} modules={modules} formats={formats} onChange={handleChange} placeholder={'Write a note...'}/>
     </div>
   );
