@@ -27,7 +27,7 @@ const PreviousAppointments=(props)=>
         {data && data.length> 0 && data.map((item) => (
           <div className='previous-appointment'> 
            <div>
-           <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
+           <h3 style={{display: 'inline-block'}}>{new Date(item.apptStartTime).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
             <h3 >{item.patientName}</h3>
            </div>
              <ul key={item.apptId}>

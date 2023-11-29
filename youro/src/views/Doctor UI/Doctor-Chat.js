@@ -182,7 +182,7 @@ const DoctorChat =()=>
                         className='' alt="Patient Image"/>
                     </div>
                     <div>
-                        <p style={{margin: '10px', fontWeight: '900', fontSize: 'large', whiteSpace: 'nowrap' , textOverflow: 'ellipsis', display: 'inline'}}>{props.data.name}</p>{props.data.coun && props.data.count !=0 && <p className="mssg-count-ui">{props.data.count}</p>}
+                        <p style={{margin: '10px', fontWeight: '900', fontSize: 'large', whiteSpace: 'nowrap' , textOverflow: 'ellipsis', display: 'inline'}}>{props.data.name}</p>{props.data.count && props.data.count !=0 && <p className="mssg-count-ui">{props.data.count}</p>}
                         <p style={{margin: '10px'}}>{props.data.message ? props.data.message : <span style={{fontSize: '10px'}}>start conversation</span>}</p>
                     </div>
                 

@@ -164,7 +164,7 @@ const appointments_image = (arrayBuffer) => {
         {upComingAppts && upComingAppts.length != 0 && upComingAppts.map((item) => (
           <div className='previous-appointment' onClick={toggleVisibility}>
             <div> 
-            <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
+            <h3 style={{display: 'inline-block'}}>{new Date(item.apptStartTime).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
               
                 <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img

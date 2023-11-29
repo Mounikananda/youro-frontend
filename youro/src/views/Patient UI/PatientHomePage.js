@@ -83,7 +83,7 @@ const PatientHomePage = (props) => {
         {prevAppts && prevAppts.length!= 0 &&  prevAppts.map((item) => (
           <div className='previous-appointment' >
             <div>
-              <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
+              <h3 style={{display: 'inline-block'}}>{new Date(item.apptStartTime).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
               <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
@@ -149,26 +149,17 @@ const PatientHomePage = (props) => {
           {upComingAppts && upComingAppts.length!= 0 && upComingAppts.map((item) => (
             <div className='previous-appointment'> 
              <div>
-             <h3 style={{display: 'inline-block'}}>{new Date(item.apptDate).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
+             <h3 style={{display: 'inline-block'}}>{new Date(item.apptStartTime).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 src={item.picture!=null ? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 className="profile-pic" alt="Patient Image" width="15" height="15"/>
-              {/* {item.picture[0] && (
-                <img
-                  src={arrayBufferToBase64(item.picture[0])}
-                  alt="Patient"
-                  style={{ width: '50px', height: '50px', borderRadius: '50%', marginRight: '10px' }}
-                /> */}
-              {/* )} */}
+
               <h3 style={{marginTop:'3%',marginLeft:'2%'}}>{item.doctorName}</h3> </div>
             </div>
             <ul key={item.apptId}>
-              {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
-              {/* <li>Symptom score: {item.symptomscore}</li> */}
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
-              {/* <p>{item.meetup}</p> */}
             </ul>
 
             {
