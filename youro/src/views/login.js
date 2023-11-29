@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React,{useState, useEffect} from "react";
 import "../styles/login.css";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from 'react-toastify';
@@ -19,6 +19,13 @@ const Login= () =>
   } = useForm();
 
 
+  useEffect(() => {
+    // removing existing cookies before login in case redirected from some un-authed url access
+    Cookies.remove(COOKIE_KEYS.userId);
+    Cookies.remove(COOKIE_KEYS.token);
+    Cookies.remove(COOKIE_KEYS.userType);
+    Cookies.remove(COOKIE_KEYS.userName);
+}, []);
   
   const navigate = useNavigate();
   const [forgot, setForgot] = useState(0)
@@ -60,6 +67,9 @@ const Login= () =>
                 }
                 else if(res.data.uType === 'PROVIDER'){
                   navigate("/doctor-ui");
+                }
+                else{
+                  navigate("/admin-doctors");
                 }
           }
           else{

@@ -18,46 +18,145 @@ import {
     Switch
 } from '@mui/material';
 
-import { Delete } from '@mui/icons-material';
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
-import { API_DETAILS, USER_TYPES } from '../../App';
+import { API_DETAILS, COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
 import Popup from 'reactjs-popup';
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { Oval } from 'react-loader-spinner';
 import { ToastContainer, toast } from 'react-toastify';
 import Youroheader from '../Youro-header';
-
-const data = [
-    {
-        medicineId: '1',
-        categoryId: '1',
-        medicineName: 'Paracetomal',
-        category: 'Supplement',
-        approved: '12/12/2022',
-        diagnosis: 'Diagnosis 1'
-    },
-    {
-        medicineId: '2',
-        categoryId: '2',
-        medicineName: 'Vitamin C',
-        category: 'Vitamins',
-        approved: '',
-        diagnosis: 'Diagnosis 2'
-    },
-];
+import ReactQuillWrapper from '../Doctor UI/DA-takenote';
+import Cookies from "js-cookie";
+import { useNavigate } from 'react-router-dom';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import "../../styles/Admin-ui/Admin-Maintainence.css";
 
 
 const AdminMaintainenceList = () => {
     const [tableData, setTableData] = useState([]);
     const [renderAdmin, canRenderAdmin] = useState(false);
-    const [renderapidata, cannotrenderapidata] = useState(false);
+    const [renderapidata, cannotrenderapidata] = useState({
+        prescriptionRender: true,
+        diagnosisRender: true,
+        questionnairesRender: true,
+    });
+    const [renderDiagnosisApiData, setRenderDiagnosisApiData] = useState(false);
+    const [renderPrescriptionApiData, setRenderPrescriptionApiData] = useState(false);
+    const [renderQuestionnaireApiData, setRenderQuestionnaireApiData] = useState(false);
     const [open, setOpen] = useState(false);
-    const [addDiagnosis, setAddDiagnosis] = useState(false);
+    const [addPopUpContext, setAddPopUpContext] = useState('');
     const isRendered = useRef(false);
     let count = 0;
+    const [authContext, setAuthContext] = useState(''); // default zero. After login if ADMIN -> set('ADMIN') else if 'ASSITANT' -> set('ASSITANT')
+    const [pageContext, setPageContext] = React.useState('PRESCRIPTION');
+    const [prescriptionList, setPrescription] = useState([]);
+    // const [diagnosisList, setDiagnoses] = useState([]);
+    const [questionnairesList, setQuestionnaires] = useState([]);
+    const [selecDiag, setDiag] = useState('');
+    const [selecDiagInfo, setDiagInfo] = useState('');
+
+    const [diagnosisData, setDiagnosisData] = useState([]);
+    const [needsRefresh, setRefreshStatus] = useState(false);
+
+    const [columns, setColumns] = useState(
+        [
+            {
+                accessorKey: 'medicineId',
+                header: 'ID',
+                enableColumnOrdering: false,
+                enableEditing: false,
+                size: 50,
+            },
+            {
+                accessorKey: 'medicineName',
+                header: 'Medicine Name',
+            },
+            {
+                accessorKey: 'category',
+                header: 'Category',
+            },
+            {
+                accessorKey: 'diagnosis',
+                header: 'Diagnosis',
+            }
+        ]
+    );
+
+
+    const handlePageContextChange = (event, newAlignment) => {
+        if (newAlignment == null || newAlignment == 'PRESCRIPTION') {
+            setPageContext('PRESCRIPTION');
+            setColumns([
+                {
+                    accessorKey: 'medicineId',
+                    header: 'ID',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
+                },
+                {
+                    accessorKey: 'medicineName',
+                    header: 'Medicine Name',
+                },
+                {
+                    accessorKey: 'category',
+                    header: 'Category',
+                },
+                {
+                    accessorKey: 'diagnosis',
+                    header: 'Diagnosis',
+                }
+            ]);
+            setTableData(prescriptionList)
+        }
+        else if (newAlignment == 'QUESTIONNAIRE') {
+            setPageContext('QUESTIONNAIRE');
+            setColumns([
+                {
+                    accessorKey: 'questionId',
+                    header: 'ID',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
+                },
+                {
+                    accessorKey: 'question',
+                    header: 'Question',
+                },
+                {
+                    accessorKey: 'options',
+                    header: 'Options',
+                }
+            ]);
+            setTableData(questionnairesList);
+        }
+        else if (newAlignment == 'DIAGNOSIS') {
+            setPageContext('DIAGNOSIS');
+            setColumns([
+                {
+                    accessorKey: 'diagId',
+                    header: 'ID',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
+                },
+                {
+                    accessorKey: 'name',
+                    header: 'Name',
+                },
+                {
+                    accessorKey: 'info',
+                    header: 'Info',
+                }
+            ]);
+            setTableData(diagnosisData);
+        }
+    };
+
 
     const {
         register,
@@ -66,23 +165,23 @@ const AdminMaintainenceList = () => {
         formState: { errors },
     } = useForm();
 
-
+    const navigate = useNavigate();
     useEffect(() => {
         count += 1;
         if (!isRendered.current) {
-            console.log('useEffect : ' + count);
-            fetchData();
+            fetchPrescitions();
+            fetchAllDiagnoses();
+            fetchAllQuestionnaires();
             isRendered.current = true;
-            // setTableData(data)
         }
         else {
             console.log('useEffect re-render : ' + count);
-            console.log("Data inside useEffect : " + count + "  =>  " + tableData);
         }
     }, []);
 
     // diagId, name, info
-    const fetchData = async () => {
+    const fetchPrescitions = async () => {
+        Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
         const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllPrescriptions`;
         const config = {
             headers: {
@@ -93,9 +192,7 @@ const AdminMaintainenceList = () => {
         };
         try {
             const res = await axios.get(url, config);
-            console.log(res);
             canRenderAdmin(true);
-
             let tempData = [];
             for (let i = 0; i < res.data.length; i++) {
                 let temp = {
@@ -106,84 +203,20 @@ const AdminMaintainenceList = () => {
                 };
                 tempData.push(temp);
             }
+            setPrescription(tempData);
             setTableData(tempData);
-            // console.log("Data inside fetchData : " + count + "  =>  " + tableData);
+            setRenderPrescriptionApiData(true);
         }
         catch (err) {
-            cannotrenderapidata(true);
+            setRenderPrescriptionApiData(false);
             console.error(err);
         }
     };
 
-    const handleApproveRenderAndChange = (cell = { emptyRow: true }, isChange = false,) => {
-        if (isChange) {
-            var data = [...tableData]
-            for (let i = 0; i < tableData.length; i++) {
-                if (cell.row.original.medicineId == tableData[i].medicineId) {
-                    data[i].approved = cell.row.original.approved ? '' : new Date().toLocaleDateString();
-                    setTableData([...data]);
-
-                    isRendered.current = true;
-                }
-            }
-        }
-    }
-
-    const columns = [
-        {
-            accessorKey: 'medicineId',
-            header: 'ID',
-            enableColumnOrdering: false,
-            enableEditing: false,
-            size: 50,
-        },
-        {
-            accessorKey: 'medicineName',
-            header: 'Medicine Name',
-        },
-        {
-            accessorKey: 'category',
-            header: 'Category',
-        },
-        {
-            accessorKey: 'diagnosis',
-            header: 'Diagnosis',
-        },
-        // {
-        //     accessorKey: 'approved',
-        //     header: 'Approved On',
-        //     Cell: ({ cell }) => (
-        //         <span style={{ width: 'fit-content', margin: '0px auto' }}>
-        //             {cell.row.original.approved ? cell.row.original.approved : '-'}
-        //         </span>
-
-        //     )
-        // },
-        // {
-        //     header: "Status",
-        //     accessorKey: "status",
-        //     Cell: ({ cell }) => (
-        //         <Tooltip arrow placement="right" title="Approve">
-        //             <Switch
-        //                 checked={cell.row.original.approved}
-        //                 onClick={() => handleApproveRenderAndChange(cell, true)}
-        //                 inputProps={{ 'aria-label': 'controlled', 'data': tableData }}
-        //             />
-        //         </Tooltip>
-        //     ),
-        //     size: 20,
-        // }
-    ]
-
-    const [selecDiag, setDiag] = useState('');
-
-    const handleAddDiagnosis = () => {
-        setOpen(false);
-        console.log(selecDiag);
-        const temp = {
-            name: selecDiag,
-            info: 'Hardcoded info for now'
-        };
+    const fetchAllDiagnoses = async () => {
+        // console.log("====^^^===");
+        // console.log("fetchAllDiagnoses START");
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllDiagnoses`;
         const config = {
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -191,18 +224,126 @@ const AdminMaintainenceList = () => {
                 'Content-Type': 'application/json'
             }
         };
-        axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addDiagnosis", temp, config).then((res) => {
-            console.log(res);
-            toast.success('Added successfully!!');
-        }).catch((err) => {
+        try {
+            const res = await axios.get(url, config);
+            setDiagnosisData(res.data);
+            if (pageContext == 'DIAGNOSIS') {
+                setTableData(res.data);
+            }
+            setRenderPrescriptionApiData(true);
+        }
+        catch (err) {
+            cannotrenderapidata({
+                prescriptionRender: true,
+                diagnosisRender: false,
+                questionnairesRender: true,
+            });
+            setRenderDiagnosisApiData(false);
             console.error(err);
-            toast.error('Error adding diagnosis');
-        });
+        }
+        // console.log("fetchAllDiagnoses END");
+        // console.log("====^^^===");
+    };
+
+    const getOptionsStringFromApiData = (qOptsArray) => {
+        let str  = "$ ";
+        for (let i = 0; i < qOptsArray.length; i++) {
+            let temp = qOptsArray[i].oName + " $ ";
+            str += temp;
+        }
+        // console.log('Opts str :: '+ str);
+        return str;
+    }   
+    //   getAllQuestionnaires
+    const fetchAllQuestionnaires = async () => {
+        // console.log("====^^^===");
+        // console.log("fetchAllQuestionnaires START");
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllQuestionnaires`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            const res = await axios.get(url, config);
+            let tempData = [];
+            for (let i = 0; i < res.data.length; i++) {
+                let optStr = getOptionsStringFromApiData(res.data[i].options);
+                console.log('Opts str :: '+ optStr);
+                let temp = {
+                    questionId: res.data[i].questionId,
+                    question: res.data[i].question,
+                    options: optStr
+                };
+                tempData.push(temp);
+            }
+            setQuestionnaires(tempData);
+            if (pageContext == 'QUESTIONNAIRE') {
+                setTableData(tempData);
+            }
+            
+            setRenderQuestionnaireApiData(true);
+        }
+        catch (err) {
+
+            cannotrenderapidata({
+                prescriptionRender: true,
+                diagnosisRender: true,
+                questionnairesRender: false,
+            });
+            setRenderQuestionnaireApiData(false);
+            console.error(err);
+        }
+        // console.log("fetchAllQuestionnaires END");
+        // console.log("====^^^===");
+    };
+
+    const fetchAfterDelete = () => {
+        if (needsRefresh) {
+            if (pageContext == 'QUESTIONNAIRE') {
+                fetchAllQuestionnaires();
+            }
+            if (pageContext == 'PRESCRIPTION') {
+                fetchPrescitions();
+            }
+            else if (pageContext == 'DIAGNOSIS') {
+                fetchAllDiagnoses();
+            }
+            setRefreshStatus(false);
+        }
+    }
+
+    const handleAddDiagnosis = () => {
+        if (selecDiag != '' && selecDiagInfo != '') {
+            setOpen(false);
+            const temp = {
+                name: selecDiag,
+                info: selecDiagInfo
+            };
+            const config = {
+                headers: {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': '*',
+                    'Content-Type': 'application/json'
+                }
+            };
+            axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addDiagnosis", temp, config).then((res) => {
+                toast.success('Added successfully!!');
+                fetchAllDiagnoses();
+            }).catch((err) => {
+                console.error(err);
+                toast.error('Error adding diagnosis');
+            });
+        }
+        else {
+            console.clear();
+        }
     }
 
     const handleAddPrescription = (data) => {
         setOpen(false);
-        console.log(data);
         let numberArray = [];
         for (var i = 0; i < data.diagnosis.length; i++) {
             numberArray.push(parseInt(data.diagnosis[i]));
@@ -215,32 +356,13 @@ const AdminMaintainenceList = () => {
         };
 
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPrescription", temp).then((res) => {
-            console.log(res);
             toast.success('Added successfully!!');
+            fetchPrescitions();
         }).catch((err) => {
             console.error(err);
             toast.error(err.response.data.errorMessage);
         });
     }
-
-
-    const [diagnosisData, setDiagnosisData] = useState([]);
-    const fetchAllDiagnosis = () => {
-        const config = {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Content-Type': 'application/json'
-            }
-        };
-        axios.get(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/getAllDiagnoses", config).then((res) => {
-            console.log(res);
-            setDiagnosisData(res.data);
-        }).catch((err) => {
-            console.error(err);
-        });
-    }
-
 
     return (
         <div>
@@ -251,70 +373,83 @@ const AdminMaintainenceList = () => {
                         <AdminSideBar data={'manage-approved-medicine'} />
                     </div>
                     <div className="admin-ui-table">
-                        {/* <div className='header'>
-                                <h1 style={{ marginLeft: '15px' }}>youro</h1>
-                            </div> */}
                         <div className='header' style={{ marginLeft: '15px' }}>
-                            {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
                             <Youroheader />
                         </div>
-                        <div style={{ display: 'flex' }}>
-                            <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(false); fetchAllDiagnosis(); }}>+ Add new medicine</div>
-                            <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddDiagnosis(true) }}>+ Add new diagnosis</div>
+                        <div className='row' style={{ display: 'flex', justifyContent: 'center' }}>
+                            {
+                                pageContext == 'PRESCRIPTION' && 
+                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('MEDICINE'); fetchAllDiagnoses(); }}> 
+                                    Medicine
+                                </div>
+                            }
+                            {/* {pageContext == 'DIAGNOSIS' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('DIAGNOSIS') }}> Add Diagnosis</div>} */}
+                            {/* {pageContext == 'QUESTIONNAIRE' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('QUESTIONNAIRE'); fetchAllDiagnoses(); }}> Add Questionnaire</div>} */}
+                            <ToggleButtonGroup
+                                value={pageContext}
+                                exclusive
+                                onChange={handlePageContextChange}
+                                aria-label="Platform"
+                            >
+                                <ToggleButton value="PRESCRIPTION">Prescription</ToggleButton>
+                                <ToggleButton value="DIAGNOSIS">Diagnosis</ToggleButton>
+                                <ToggleButton value="QUESTIONNAIRE">Questionnaire</ToggleButton>
+                            </ToggleButtonGroup>
                         </div>
                         <ToastContainer />
-                        {renderAdmin == true && tableData && tableData.length > 0 ? (
-                            <MaterialReactTable
-                                displayColumnDefOptions={{
-                                    'mrt-row-actions': {
-                                        muiTableHeadCellProps: {
-                                            align: 'center',
-                                        },
-                                        size: 120,
-                                    },
-                                }}
-                                columns={columns}
-                                data={tableData}
-                                enableStickyHeader
-                                enableColumnOrdering
-                                enableRowActions
-                                enableEditing={true}
-                                // enableRowNumbers
+                        {
+                            renderAdmin == true && tableData && tableData.length > 0 ?
+                                (
+                                    <MaterialReactTable
+                                        displayColumnDefOptions={{
+                                            'mrt-row-actions': {
+                                                muiTableHeadCellProps: {
+                                                    align: 'center',
+                                                },
+                                                size: 120,
+                                            },
+                                        }}
+                                        columns={columns}
+                                        data={tableData}
+                                        enableStickyHeader
+                                        enableColumnOrdering
+                                        enableRowActions={authContext == 'ADMIN'}
+                                        enableEditing={authContext == 'ADMIN'}
+                                        muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
+                                        positionActionsColumn='last'
+                                        renderRowActions={({ row }) => (
+                                            authContext == 'ADMIN' &&
+                                            <Box sx={{ display: 'flex', gap: '1rem' }}>
+                                                <Tooltip arrow placement="right" title="Delete">
+                                                    <AdminPopUps data={{ 'action': `delete-${pageContext.toLowerCase()}`, 'step': 1, 'rowData': row.original, 'postDeleteAction': fetchAfterDelete(), 'setParentRefreshStatus': setRefreshStatus }} />
+                                                </Tooltip>
+                                            </Box>
+                                        )}
 
-                                muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
-                                positionActionsColumn='last'
-                                renderRowActions={({ row }) => (
-                                    <Box sx={{ display: 'flex', gap: '1rem' }}>
-                                        <Tooltip arrow placement="right" title="Delete">
-                                            {/* <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                                <Delete />
-                                            </IconButton> */}
-                                            <AdminPopUps data={{ 'action': 'delete-prescription', 'step': 1, 'rowData': row.original }} />
-                                            {/* delete-medication - have to add condition in admin pop up and write api integration */}
-                                        </Tooltip>
-                                    </Box>
-                                )}
-
-                                muiTableBodyProps={{
-                                    sx: () => ({
-                                        // '& tr:nth-of-type(even)': {
-                                        //     backgroundColor: "yellow",
-                                        // },
-                                        '& tr:nth-of-type(odd)': {
-                                            backgroundColor: "lightgray",
-                                            // border: '2px solid',
-                                            // borderColor: 'black'
-                                        },
-                                    }),
-                                }}
-                            />) : renderapidata ? (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
-                                Error Fetching Data!
-                            </div>) : !renderAdmin ? (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }} ><Oval /></div>) :
-                            renderAdmin == true && tableData && tableData.length == 0 && <>
-                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
-                                    No Data Found!
-                                </div>
-                            </>};
+                                        muiTableBodyProps={{
+                                            sx: () => ({
+                                                '& tr:nth-of-type(odd)': {
+                                                    backgroundColor: "lightgray",
+                                                },
+                                            }),
+                                        }}
+                                    />
+                                )
+                                : (
+                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData)) ?
+                                        (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
+                                            Error Fetching Data!
+                                        </div>)
+                                        : !renderAdmin ?
+                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }} ><Oval /></div>)
+                                            : renderAdmin == true && tableData && tableData.length == 0 &&
+                                            <>
+                                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
+                                                    No Data Found!
+                                                </div>
+                                            </>
+                                )
+                        }
                     </div>
                 </div>
 
@@ -326,12 +461,12 @@ const AdminMaintainenceList = () => {
                         close
                     </span>
                 </div>
-                {!addDiagnosis && <>
-                    <div style={{ padding: '50px 20px' }}>
+                {addPopUpContext == 'MEDICINE' && <>
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
                         <div style={{ width: '300px' }}>
 
                         </div>
-                        <div className="">
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
                             <label>Medicine Name :</label>
                             <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} {...register("medicineName", {
                                 required: true,
@@ -357,15 +492,6 @@ const AdminMaintainenceList = () => {
                         </div> <br ></br>
                         <div className="">
                             <label>Diagnosis :</label><br />
-                            {/* <select multiple style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
-                                required: true,
-                            }) }>
-                                <option value="">Select</option>
-                                {
-                                    diagnosisData.map((result) => (<option value={result.diagId}>{result.name}</option>))
-                                }
-                            </select> */}
-
                             {
                                 diagnosisData.map((diagosis) => {
                                     return (
@@ -378,8 +504,6 @@ const AdminMaintainenceList = () => {
                                     )
                                 })
                             }
-
-
                             {errors?.diagnosis && <p className="error-text">This field is required</p>}
                         </div>
                     </div>
@@ -389,32 +513,58 @@ const AdminMaintainenceList = () => {
                     </div>
                 </>}
 
-                {addDiagnosis && <>
-                    <div style={{ padding: '50px 20px' }}>
+                {/* {addPopUpContext == 'DIAGNOSIS' && <>
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
                         <div style={{ width: '300px' }}>
 
                         </div>
-                        <div className="">
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
                             <label>Diagnosis Name :</label>
                             <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} onChange={(e) => setDiag(e.target.value)} />
-                            {/* {...register("medicineName", {
-                                required: true,
-                                maxLength: 32,
-                            })} */}
-                            {/* {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.medicineName?.type === "maxLength" && <p className="error-text">Medicine Name cannot exceed 32 characters</p>} */}
                         </div>
 
+                        <div className="">
+                            <label>Diagnosis Info :</label>
+                            <ReactQuillWrapper val={setDiagInfo} />
+                        </div>
+
+                        
                     </div>
 
                     <div>
                         <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={() => handleAddDiagnosis()}>Add diagnosis</div>
                     </div>
-                </>}
+                </>} */}
 
+                {/* {addPopUpContext == 'QUESTIONNAIRE' && <>
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
+                            <label>Diagnosis Name :</label>
+                            <select style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("diagnosis", {
+                                required: true,
+                            })}>
+                                <option value="">Select</option>
+                                {
+                                    diagnosisData.map((result) => (<option value={result.diagId}>{result.name}</option>))
+                                }
+                            </select>
+                        </div>
+
+                        <div className="">
+                            <label>Diagnosis Info :</label>
+                            <ReactQuillWrapper val={setDiagInfo} />
+                        </div>
+
+
+                    </div>
+
+                    <div>
+                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={() => handleAddDiagnosis()}>Add Questionnaire</div>
+                    </div>
+                </>} */}
             </Popup>
         </div>
-    );
+    )
 
 };
 

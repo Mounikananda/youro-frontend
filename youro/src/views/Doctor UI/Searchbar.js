@@ -44,6 +44,7 @@ const SearchBar = () => {
     }
   }, [])
 
+  // USED useEffect twice
   useEffect(() => {
     if (patientId) {
       setshowdetails(true)
