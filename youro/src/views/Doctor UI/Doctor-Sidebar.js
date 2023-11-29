@@ -59,7 +59,7 @@ function DoctorSideBar(props)
       </div>
     <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={props.data==='doctor-ui'} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => navigate("/doctor-appointment")} icon={<FaCalendar size={40} />} active={props.data==='doctor-appointment'} className="Menu-item" > Appointments</MenuItem>
-    <MenuItem onClick={() => navigate("/doctor-chat")} icon={<img src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>} active={props.data==='doctor-chat'}  className="Menu-item" >Chat</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-chat")} icon={<><img style={{position: 'absolute'}} src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>{(props.mssgCount != 0) && <p style={{fontSize: '10px', padding: '3px 6px', position: 'absolute', top: '-9px', right: '15px', lineHeight: 'normal'}}className="mssg-count-ui">{props.mssgCount}</p>}</>} active={props.data==='doctor-chat'}  className="Menu-item" >Chat</MenuItem>
     <MenuItem onClick={() => navigate("/doctor-view-profile")} icon={<FaEdit size={40}/>}  active={props.data==='doctor-view-profile'}  className="Menu-item" > Patient Details</MenuItem>
     <MenuItem onClick={() => navigate("/doctor-profile")} icon={<img src={require('../../assets/Profile_icon.png')} height='40px' alt='home_icon'/>} active={props.data==='doctor-profile'} className="Menu-item" > Profile</MenuItem> 
     <MenuItem onClick={handleLogout} className="Menu-item" icon={<FaSignOutAlt size={40} color='white'/>} >Logout</MenuItem>
