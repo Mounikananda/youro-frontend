@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaUpload } from 'react-icons/fa';
+import { FaExternalLinkSquareAlt, FaUpload } from 'react-icons/fa';
 import "../../styles/Doctor-ui/Doctor-appointment/DA-results.css";
 import { API_DETAILS } from '../../App';
 import axios from 'axios';
@@ -14,7 +14,7 @@ const FileUpload = (props) => {
     const files = Array.from(e.target.files);
 
     setUploadedDocuments((prevDocuments) => [...prevDocuments, ...files]);
-    uploadResult(files);
+    // uploadResult(files);
     e.target.value = '';
   };
 
@@ -76,6 +76,18 @@ const FileUpload = (props) => {
     }
   };
 
+
+  const openDocumentInNewTab = (file) => {
+    console.log('openDocumentInNewTab :: file');
+    console.log(file);
+    const file1 = new Blob([file], { type: "application/pdf" });
+    //Build a URL from the file
+    const fileURL = URL.createObjectURL(file1);
+    //Open the URL on new Window
+    const pdfWindow = window.open();
+    pdfWindow.location.href = fileURL;
+  };
+
   return (
     <div className="document-uploader">
       <label
@@ -88,6 +100,7 @@ const FileUpload = (props) => {
       <input
         type="file"
         id="file-upload"
+        accept=".jpg, .jpeg, .png, .pdf, .doc, .docx, .xls, .xlsx"
         ref={fileInputRef}
         onChange={handleFileSelect}
         multiple
@@ -98,22 +111,15 @@ const FileUpload = (props) => {
         //  <div className='upload-docs'>
         <div>{uploadedDocuments.map((file, index) => (
           <div className='document-list' >
-            <p key={index}>File Name</p>
-            <p className='pdf-open'>Open</p>
-
-            {/* <object
-              data={URL.createObjectURL(new Blob([uploadedDocuments[0]], { type: 'application/pdf' }))}
-              type="application/pdf"
-              width="100%"
-              height="100%"
-            >
-              <embed
-                src={URL.createObjectURL(new Blob([uploadedDocuments[0]], { type: 'application/pdf' }))}
-                type="application/pdf"
-                width="100%"
-                height="100%"
-              />
-            </object> */}
+            {/* <p key={index}>File Name</p> */}
+            {/* <p className='pdf-open'>Open</p> */}
+            <div className="document-list" key={index}>
+              <p>{file.name}</p>
+              <p className="pdf-open" onClick={() => openDocumentInNewTab(file)}>
+                <FaExternalLinkSquareAlt />
+                Open
+              </p>
+            </div>
 
           </div>
         ))}
