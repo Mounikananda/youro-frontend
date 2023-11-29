@@ -224,7 +224,7 @@ const PatientHomePage = (props) => {
           <CarePlan/>
         </div>
         <div className='column-data'>
-          <PatientSymptomChart uId={uId} retakeSymptomScore={setOpen} fetchSymptomScore={fetchSymptomScore} setFetchSymptomScore={setFetchSymptomScore}/>
+          <PatientSymptomChart uId={uId} retakeSymptomScore={setOpen} fetchSymptomScore={fetchSymptomScore} setFetchSymptomScore={setFetchSymptomScore} doctorView={false}/>
           <div className='row-data'>
             <div className='care-plan-details-patient-1'>
               <h3>Upcoming Appointments </h3>

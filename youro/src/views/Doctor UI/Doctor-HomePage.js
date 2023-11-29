@@ -17,10 +17,14 @@ import Loader from '../../utils/loader';
 import { ToastContainer, toast } from 'react-toastify';
 
 import Popup from 'reactjs-popup';
+import PatientSymptomChart from '../Patient UI/Patient-symptom-chart';
 
 
 function DoctorHomePage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [openSymChart, setOpenSymChart] = useState(false);
+  const [clickedPatId, setClickedpatId] = useState(null);
+  
 
   const toggleVisibility = () => {
     setIsVisible(!isVisible);
@@ -132,7 +136,6 @@ const appointments_image = (arrayBuffer) => {
   }
   }
   const TodayAppointmentList = () => {
-
     const openLinkPopUp = (item) => {
       setMeetingId(item.apptId)
       
@@ -143,6 +146,10 @@ const appointments_image = (arrayBuffer) => {
       // window.open(link, '_blank');
     }
 
+    const openPatSymScore = (patId) => {
+      setClickedpatId(patId);
+      setOpenSymChart(true);
+    }
 
     return (
       <div>
@@ -172,7 +179,8 @@ const appointments_image = (arrayBuffer) => {
             </div>
             <ul key={item.apptId}>
               <li>Diagnosisname: {item.diagName}</li>
-              <li>Symptom score: {item.symptomScore}</li>
+              {/* <li onClick={openPatSymScore}>Symptom score: {item.symptomScore}</li> */}
+              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => openPatSymScore(item.patientId)}><Link style={{ textDecoration: 'none' }}>Symptom score: {item.symptomScore}</Link></li>
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>Take me to care plan</Link></li>
             </ul>
             {
@@ -235,34 +243,56 @@ const appointments_image = (arrayBuffer) => {
         </div>
       </div>
       {isOpenCreatePopUp && 
-              <>
-                <Popup open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)} className="congrats-popup">
-                  <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false) }}>
-                    <span class="material-symbols-outlined">
-                      close
-                    </span>
-                  </div>
+        <>
+          <Popup open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)} className="congrats-popup">
+            <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenCreatePopUp(false) }}>
+              <span class="material-symbols-outlined">
+                close
+              </span>
+            </div>
 
-                  <div style={{ padding: '50px 20px' }}>
-                    <div style={{ width: '300px' }}>
+            <div style={{ padding: '50px 20px' }}>
+              <div style={{ width: '300px' }}>
 
-                    </div>
-                    <div className="">
-                      <label>Zoom meeting link:</label>
-                      <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} value={meetLink} onChange={e => {setMeetLink(e.target.value)}} />
-                    </div>
+              </div>
+              <div className="">
+                <label>Zoom meeting link:</label>
+                <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} value={meetLink} onChange={e => {setMeetLink(e.target.value)}} />
+              </div>
 
-                  </div>
+            </div>
 
-                  <div>
-                    <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={() => createMeetLink()}>Upload</div>
-                  </div>
+            <div>
+              <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={() => createMeetLink()}>Upload</div>
+            </div>
 
 
-                </Popup>
-              </>
-            }
-            <ToastContainer />
+          </Popup>
+        </>
+      }
+      {openSymChart && 
+        <>
+          <Popup open={openSymChart} modal closeOnDocumentClick={false} onClose={() => setOpenSymChart(false)} className="congrats-popup">
+            <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpenSymChart(false) }}>
+              <span class="material-symbols-outlined">
+                close
+              </span>
+            </div>
+
+            <div style={{ padding: '50px 20px', minWidth: '30vw', minWidth: '60vw' }}>
+              <div style={{ minWidth: '30vw' }}>
+              </div>
+              <div className="">
+                <PatientSymptomChart uId={clickedPatId}   doctorView={true} />
+              </div>
+
+            </div>
+
+
+          </Popup>
+        </>
+      }
+      <ToastContainer />
     </div>
   )
 }

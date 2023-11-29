@@ -41,6 +41,8 @@ const PatientDetails = (props) => {
   }
 
   useEffect(() => {
+    console.log('DA-PatientDetails.js useEffect : ' );
+    console.log(patientId);
     fetchAppointments();
     getPatientDetails();
     fetchPatientPicture();
@@ -320,7 +322,7 @@ const PreviousAppointmentList = () => {
 
       {activeTab === 'results' && (
         // <div className="tab-content">Results Content Goes Here</div>
-        <FileUpload/>
+        <FileUpload data={patientId}/>
       )}
      
       {activeTab === 'notes' && (
