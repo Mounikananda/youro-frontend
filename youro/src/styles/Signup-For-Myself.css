@@ -77,3 +77,10 @@ body
   padding: 10px 20px;
   margin: 50px 10px 40px 120px; */
 }
+
+.myself-input-assist
+{
+  /* width: 48%; */
+  display: flex;
+  margin-bottom: 1.5vh;
+}

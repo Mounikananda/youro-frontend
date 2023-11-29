@@ -40,7 +40,7 @@ export const USER_TYPES = {
   user : 'PATIENT',
   doctor : 'PROVIDER',
   admin : 'ADMIN',
-  assistant : 'ASSISTANT'
+  assistant : 'ASSITANT'
 };
 export const subscriptionStatus = {
   active : 'ACTIVE',

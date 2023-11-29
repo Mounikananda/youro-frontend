@@ -134,7 +134,7 @@ const PatientSymptomChart = (props) => {
                 }
               </select>}
             </div>
-            {prevDIag && !prevDIag[0] && <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>
+            {!props.doctorView && prevDIag && !prevDIag[0] && <div style={{ position: 'absolute', top: '10px', right: '20px', fontSize: '12px', padding: '10px 5px' }} className='btn-outlined' onClick={() => props.retakeSymptomScore(true)}>
               Calculate symptom score
             </div>}
 

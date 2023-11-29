@@ -305,6 +305,7 @@ const AdminDoctorsList = () => {
     const [renderapidata,cannotrenderapidata]=useState(false);
     const isRendered = useRef(false);
     let count = 0;
+    const [authContext, setAuthContext] = useState(''); // default zero. After login if ADMIN -> set('ADMIN') else if 'ASSITANT' -> set('ASSITANT')
 
 
     useEffect(() => {
@@ -313,7 +314,6 @@ const AdminDoctorsList = () => {
             console.log('useEffect : ' + count);
             fetchData();
             isRendered.current = true;
-            // setTableData(data)
         }
         else {
             console.log('useEffect re-render : ' + count);
@@ -325,6 +325,7 @@ const AdminDoctorsList = () => {
     const fetchData = async () => {
         let type = USER_TYPES.doctor;
         const token = Cookies.get(COOKIE_KEYS.token).trim();
+        Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'))
         console.log("token in admin doctors list :: " + token.trim());
         const config = {
             headers: {
@@ -387,7 +388,8 @@ const AdminDoctorsList = () => {
         }
     }
 
-    const columns = [
+    const columns = authContext=='ADMIN' ?
+    [
         {
             accessorKey: 'userId',
             header: 'ID',
@@ -420,6 +422,27 @@ const AdminDoctorsList = () => {
                 </Tooltip>
             ),
             size: 20,
+        }
+    ] :
+    [
+        {
+            accessorKey: 'userId',
+            header: 'ID',
+            enableColumnOrdering: false,
+            enableEditing: false,
+            size: 50,
+        },
+        {
+            accessorKey: 'firstName',
+            header: 'First Name',
+        },
+        {
+            accessorKey: 'lastName',
+            header: 'Last Name',
+        },
+        {
+            accessorKey: 'state',
+            header: 'State',
         }
     ];
 
@@ -479,13 +502,14 @@ const AdminDoctorsList = () => {
                                 data={tableData}
                                 enableStickyHeader
                                 enableColumnOrdering
-                                enableRowActions
-                                enableEditing={true}
+                                enableRowActions={authContext=='ADMIN'}
+                                enableEditing={authContext=='ADMIN'}
                                 // enableRowNumbers
 
                                 muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
                                 positionActionsColumn='last'
-                                renderRowActions={({ row }) => (
+                                renderRowActions={ ({ row }) => (
+                                    authContext=='ADMIN' &&
                                     <Box sx={{ display: 'flex', gap: '1rem' }}>
                                         <Tooltip arrow placement="right" title="Delete" >
                                             <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
@@ -509,7 +533,7 @@ const AdminDoctorsList = () => {
                                                     <Typography>Address: {row.original.address}</Typography>
                                                     <Typography>City: {row.original.city}</Typography>
                                                     <Typography>State: {row.original.state}</Typography>
-                                                    <Typography>Country: {row.original.country}</Typography>
+                                                    {/* <Typography>Country: {row.original.country}</Typography> */}
                                                 </div>
                                             </div>
                                             <div className='row'>

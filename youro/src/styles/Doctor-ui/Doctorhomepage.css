@@ -22,8 +22,8 @@
  }
 .care-plan-doctor h1
 {
-  color: var(--secondary-color);
-  font-size: 2.5rem;
+  /* color: var(--secondary-color);
+  font-size: 2.5rem; */
   /* padding: 10px; */
 }
 

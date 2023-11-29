@@ -8,18 +8,20 @@ import {
     Container,
 } from '@mui/material';
 import "../../styles/Admin-ui/Admin-PatientList.css";
-import { API_DETAILS, USER_TYPES } from '../../App';
+import { API_DETAILS, COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import Youroheader from '../Youro-header';
 
-import {  useNavigate  } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const AdminPatientList = () => {
     const [tableDataPats, setTableDataPats] = useState([]);
     const [renderAdminPats, canRenderAdminPats] = useState(false);
-    const [renderapidata,cannotrenderapidata]=useState(false); 
+    const [renderapidata, cannotrenderapidata] = useState(false);
     const isAdminPatsRendered = useRef(false);
     let count = 0;
+    const [authContext, setAuthContext] = useState(''); // default zero. After login if ADMIN -> set('ADMIN') else if 'ASSITANT' -> set('ASSITANT')
 
     const data = [
         {
@@ -32,7 +34,7 @@ const AdminPatientList = () => {
             state: 'Kentucky',
             country: 'United States',
             status: "APPROVED"
-    
+
         },
         {
             userId: '2',
@@ -318,7 +320,8 @@ const AdminPatientList = () => {
 
     const fetchData = async () => {
         let type = USER_TYPES.user;
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getAllUsers/${type}`;
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllUsers/${type}`;
+        Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'))
         const config = {
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -365,31 +368,36 @@ const AdminPatientList = () => {
 
     const navigate = useNavigate();
 
-    const handleClick = (row) => {
-        console.log('Redirecting to admin view patient');
-        navigate('/admin-view-patient', { 
-            state: { 
-                userId: row.original.userId,
-                firstName: row.original.firstName,
-                lastName: row.original.lastName,
-                email: row.original.email,
-                phone1: row.original.phone1,
-                address: row.original.address,
-                city: row.original.city,
-                zipCode: row.original.zipCode,
-                specialty: row.original.specialty,
-                status: row.original.status,
-                userType: row.original.userType,
-                state: row.original.state,
-                profileImageURL: row.original.profileImageURL,
-                license: row.original.license,
-                username: row.original.username,
-                gender: row.original.gender,
-                dateOfBirth: row.original.dateOfBirth
-            } 
-        });
+    const handleClick = (row, context) => {
+        if (context == 'VIEW_MORE') {
+            console.log('Redirecting to admin view patient');
+            navigate('/admin-view-patient', {
+                state: {
+                    userId: row.original.userId,
+                    firstName: row.original.firstName,
+                    lastName: row.original.lastName,
+                    email: row.original.email,
+                    phone1: row.original.phone1,
+                    address: row.original.address,
+                    city: row.original.city,
+                    zipCode: row.original.zipCode,
+                    specialty: row.original.specialty,
+                    status: row.original.status,
+                    userType: row.original.userType,
+                    state: row.original.state,
+                    profileImageURL: row.original.profileImageURL,
+                    license: row.original.license,
+                    username: row.original.username,
+                    gender: row.original.gender,
+                    dateOfBirth: row.original.dateOfBirth
+                }
+            });
+        }
+        else if (context == 'CARE_PLAN') {
+            navigate(`/doctor-view-profile/${row.original.userId}`);
+        }
     };
-  
+
 
 
 
@@ -399,20 +407,20 @@ const AdminPatientList = () => {
     return (
         <div>
             {
-                
-                    <div className='hm'>
-                        <div className='sidebar'>
-                            <AdminSideBar data={'admin-patients'} />
-                        </div>
-                        <div className="admin-ui-table">
+
+                <div className='hm'>
+                    <div className='sidebar'>
+                        <AdminSideBar data={'admin-patients'} />
+                    </div>
+                    <div className="admin-ui-table">
                         {/* <div className='header'>
                                 <h1 style={{marginLeft: '15px'}}>youro</h1>
                             </div> */}
-                             <div className='header' style={{marginLeft: '15px'}}>
-                                {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
-                                 <Youroheader/>
-                            </div>
-                         {renderAdminPats == true && tableDataPats && tableDataPats.length > 0 ? (
+                        <div className='header' style={{ marginLeft: '15px' }}>
+                            {/* <h1 style={{marginLeft: '15px'}}>youro</h1> */}
+                            <Youroheader />
+                        </div>
+                        {renderAdminPats == true && tableDataPats && tableDataPats.length > 0 ? (
                             <MaterialReactTable
                                 displayColumnDefOptions={{
                                     'mrt-row-actions': {
@@ -426,20 +434,6 @@ const AdminPatientList = () => {
                                 data={tableDataPats}
                                 enableColumnOrdering
                                 muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
-                                // enableRowActions
-                                // enableEditing={true}
-                                // editingMode={'cell'}
-                                // enableRowNumbers
-                                // positionActionsColumn='last'
-                                // renderRowActions={({ row }) => (
-                                //     <Box sx={{ display: 'flex', gap: '1rem' }}>
-                                //         <Tooltip arrow placement="right" title="Delete">
-                                //             <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                                //                 <Delete />
-                                //             </IconButton>
-                                //         </Tooltip>
-                                //     </Box>
-                                // )}
                                 renderDetailPanel={({ row }) => (
                                     <Box
                                         sx={{
@@ -466,9 +460,14 @@ const AdminPatientList = () => {
                                                         View More{'>>'}
                                                         
                                                     </Link> */}
-                                                    <button onClick={() => handleClick(row)} className='view-more-class' >
+                                                    <button onClick={() => handleClick(row, 'CARE_PLAN')} className='view-more-class' >
+                                                        View Care Plan {'>>'}
+                                                    </button>
+                                                    <button onClick={() => handleClick(row, 'VIEW_MORE')} className='view-more-class' >
                                                         View More {'>>'}
                                                     </button>
+                                                    {/* <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${row.original.userId}`}></Link> */}
+                                                    { }
                                                 </div>
                                             </div>
                                         </Container>
@@ -482,17 +481,17 @@ const AdminPatientList = () => {
                                     }),
                                 }}
                             />
-                            ): renderapidata? (<div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} >
-                                Error Fetching Data!
-                    </div>): !renderAdminPats ? ( <div style={{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',width: "98%", borderRadius: '10px', height: '70vh',}} ><Oval/></div>):
-                          renderAdminPats==true && tableDataPats && tableDataPats.length == 0 && <>
-                     <div style={{ textAlign:'center',width: "98%", borderRadius: '10px', height: '70vh' }}>
-                         No Data Found!
-                     </div>
-                        </>
-                           };
-                        </div>
+                        ) : renderapidata ? (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }} >
+                            Error Fetching Data!
+                        </div>) : !renderAdminPats ? (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }} ><Oval /></div>) :
+                            renderAdminPats == true && tableDataPats && tableDataPats.length == 0 && <>
+                                <div style={{ textAlign: 'center', width: "98%", borderRadius: '10px', height: '70vh' }}>
+                                    No Data Found!
+                                </div>
+                            </>
+                        };
                     </div>
+                </div>
 
                 // </>
             }

@@ -19,68 +19,10 @@ import Cookies from "js-cookie";
 import "../../styles/Admin-ui/Admin-PopUps.css";
 
 import { useNavigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import Popup from 'reactjs-popup';
 import { useForm } from 'react-hook-form';
 import Youroheader from '../Youro-header';
-const data = [
-    {
-        userId: '1',
-        firstName: 'Dylan',
-        middleName: 'Sprouse',
-        lastName: 'Murray',
-        address: '261 Erdman Ford',
-        city: 'East Daphne',
-        state: 'Kentucky',
-        country: 'United States',
-        status: "APPROVED"
-
-    },
-    {
-        userId: '2',
-        firstName: 'Raquel',
-        middleName: 'Hakeem',
-        lastName: 'Kohler',
-        address: '769 Dominic Grove',
-        city: 'Vancouver',
-        state: 'British Columbia',
-        country: 'Canada',
-        status: "APPROVED"
-    },
-    {
-        userId: '3',
-        firstName: 'Ervin',
-        middleName: 'Kris',
-        lastName: 'Reinger',
-        address: '566 Brakus Inlet',
-        city: 'South Linda',
-        state: 'West Virginia',
-        country: 'United States',
-        status: "APPROVED"
-    },
-    {
-        userId: '4',
-        firstName: 'Brittany',
-        middleName: 'Kathryn',
-        lastName: 'McCullough',
-        address: '722 Emie Stream',
-        city: 'Lincoln',
-        state: 'Nebraska',
-        country: 'United States',
-        status: "PENDING"
-    },
-    {
-        userId: '5',
-        firstName: 'Branson',
-        middleName: 'John',
-        lastName: 'Frami',
-        address: '32188 Larkin Turnpike',
-        city: 'Charleston',
-        state: 'South Carolina',
-        country: 'United States',
-        status: "PENDING"
-    },
-];
 
 
 const AdminAssistantList = () => {
@@ -90,6 +32,7 @@ const AdminAssistantList = () => {
     const isRendered = useRef(false);
     const [open, setOpen] = useState(false);
     let count = 0;
+    const [authContext, setAuthContext] = useState(''); // default zero. After login if ADMIN -> set('ADMIN') else if 'ASSITANT' -> set('ASSITANT')
 
 
     useEffect(() => {
@@ -110,6 +53,7 @@ const AdminAssistantList = () => {
     const fetchData = async () => {
         let type = USER_TYPES.assistant;
         const token = Cookies.get(COOKIE_KEYS.token).trim();
+        Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
         console.log("token in admin doctors list :: " + token.trim());
         const config = {
             headers: {
@@ -122,13 +66,12 @@ const AdminAssistantList = () => {
         try {
             const res = await axios.get(url, config);
             canRenderAdmin(true);
-            for (let i = 0; i < res.data.length; i++) {
-                console.log(res.data[i]);
-                if (res.data[i].softDelete !== true) {
-                    console.log(true);
-                    data.push(res.data[i]);
-                }
-            }
+            // for (let i = 0; i < res.data.length; i++) {
+            //     console.log(res.data[i]);
+            //     if (res.data[i].softDelete !== true) {
+            //         console.log(true);
+            //     }
+            // }
             setTableData(res.data);
             console.log("Data inside fetchData : ");
             console.log(res);
@@ -172,7 +115,8 @@ const AdminAssistantList = () => {
         }
     }
 
-    const columns = [
+    const columns = authContext=='ADMIN' ?
+    [
         {
             accessorKey: 'userId',
             header: 'ID',
@@ -206,6 +150,27 @@ const AdminAssistantList = () => {
             ),
             size: 20,
         }
+    ]:
+    [
+        {
+            accessorKey: 'userId',
+            header: 'ID',
+            enableColumnOrdering: false,
+            enableEditing: false,
+            size: 50,
+        },
+        {
+            accessorKey: 'firstName',
+            header: 'First Name',
+        },
+        {
+            accessorKey: 'lastName',
+            header: 'Last Name',
+        },
+        {
+            accessorKey: 'state',
+            header: 'State',
+        }
     ];
 
 
@@ -237,8 +202,28 @@ const AdminAssistantList = () => {
     };
 
     const handlAddNewAssistant = (data) => {
+        data.userType = 'ASSITANT';
+        data.phoneNumber = 1234567890;
         console.log(data);
-        setOpen(false);
+        const config = {
+            headers: {          
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +"/register", data, config).then((res) => {
+            console.log("email in usrdata ", data.email);
+            console.log("register success :: ");
+            console.log(res);
+            // navigate("/verify-email",  { state: { userEmail : usrData.email } });
+            toast.success("Registration success");
+            reset();
+            setOpen(false);
+        }).catch((err) => {
+            console.error(err.response.data.errorMessage)
+            toast.error('Oops!! ' + err.response.data.errorMessage)
+        });
     }
 
     const {
@@ -246,6 +231,7 @@ const AdminAssistantList = () => {
         handleSubmit,
         watch,
         formState: { errors },
+        reset
     } = useForm();
 
 
@@ -283,13 +269,14 @@ const AdminAssistantList = () => {
                                     data={tableData}
                                     enableStickyHeader
                                     enableColumnOrdering
-                                    enableRowActions
-                                    enableEditing={true}
+                                    enableRowActions={authContext=='ADMIN'}
+                                    enableEditing={authContext=='ADMIN'}
                                     // enableRowNumbers
 
                                     muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
                                     positionActionsColumn='last'
                                     renderRowActions={({ row }) => (
+                                        authContext=='ADMIN' &&
                                         <Box sx={{ display: 'flex', gap: '1rem' }}>
                                             <Tooltip arrow placement="right" title="Delete" >
                                                 <AdminPopUps data={{ 'action': 'delete-doctor', 'step': 1, 'rowData': row.original }} />
@@ -371,11 +358,11 @@ const AdminAssistantList = () => {
                 </div>
 
                 <div style={{ padding: '50px 20px' }}>
-                    <div style={{ width: '300px' }}>
+                    <div style={{ minWidth: '30vw', maxWidth: '60vw' }}>
 
                     </div>
 
-                    <div className="myself-input">
+                    <div className="myself-input-assist">
                         <label>First Name *</label>
                         <input className="input-field input-border" type="text" {...register("firstName", {
                             required: true,
@@ -385,7 +372,7 @@ const AdminAssistantList = () => {
                         {errors?.firstName?.type === "maxLength" && <p className="error-text">First name cannot exceed 32 characters</p>}
                     </div>
 
-                    <div className="myself-input">
+                    <div className="myself-input-assist">
                         <label>Last Name *</label>
                         <input className="input-field input-border" type="text" {...register("lastName", {
                             required: true,
@@ -395,9 +382,19 @@ const AdminAssistantList = () => {
                         {errors?.lastName?.type === "maxLength" && <p className="error-text">Last Name cannot exceed 32 characters</p>}
                     </div>
 
-                    <div className="myself-input">
+                    <div className="myself-input-assist">
+                        <label>Phone *</label>
+                        <input className="input-field input-border" type="text" {...register("phoneNumber", {
+                            required: true,
+                            maxLength: 32,
+                        })} />
+                        {errors?.lastName?.type === "required" && <p className="error-text">This field is required</p>}
+                        {errors?.lastName?.type === "maxLength" && <p className="error-text">Phone number cannot exceed 10 characters</p>}
+                    </div>
+
+                    <div className="myself-input-assist">
                         <label>Email *</label>
-                        <input className="input-field1 input-border" type="text" {...register("email", {
+                        <input className="input-field input-border" type="text" {...register("email", {
                             required: true,
                             maxLength: 32,
                             pattern: /([-!#-'*+/-9=?A-Z^-~]+(\.[-!#-'*+/-9=?A-Z^-~]+)*|"([]!#-[^-~ \t]|(\\[\t -~]))+")@[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?(\.[0-9A-Za-z]([0-9A-Za-z-]{0,61}[0-9A-Za-z])?)+/
@@ -406,7 +403,7 @@ const AdminAssistantList = () => {
                         {errors?.email?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
                         {errors?.email?.type === "pattern" && <p className="error-text">Please enter valid email</p>}
                     </div>
-                    <div className="myself-input">
+                    <div className="myself-input-assist">
                         <label >Create Password *</label>
                         <input className="input-field input-border" type="password" {...register("password", {
                             required: true,
@@ -417,7 +414,7 @@ const AdminAssistantList = () => {
                         {errors?.password?.type === "maxLength" && <p className="error-text">Password cannot exceed 32 characters</p>}
                         {errors?.password?.type === "minLength" && <p className="error-text">Password length must be more than 8 characters</p>}
                     </div>
-                    <div className="myself-input">
+                    <div className="myself-input-assist">
                         <label >Re-type Password *</label>
                         <input className="input-field input-border" type="password" {...register("confirmPassword", {
                             validate: val => watch('password') === val

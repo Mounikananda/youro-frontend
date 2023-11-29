@@ -1,0 +1,16 @@
+@import "../../App.css";
+
+.MuiToggleButtonGroup-root {
+    width: 100%;
+    justify-content: center;
+    max-height: 6vh;
+    .MuiToggleButton-root {
+        width: 15%;
+    }
+
+    .Mui-selected {
+        background-color: var(--secondary-color) !important;
+        color: white !important;
+        box-shadow: inset 1px 1px 15px #7d7d7d;
+    }
+}
