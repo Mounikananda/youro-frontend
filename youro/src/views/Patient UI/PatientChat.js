@@ -28,18 +28,19 @@ const PatientChat =(props)=>
     const [searchInput, setSearchInput] = useState('');
     const [searchData, setSearchData] = useState(null);
     const [totalMssgCount, setTotalMssgCount] = useState(0);
-    var flag = 0
+    const isFirstRender = useRef(0);
 
     useEffect(() => {
         getChatHistory();
         setInterval(() => getChatHistory(false), 60000);
       }, []);
 
-    useEffect(() => {
-        if(flag == 0){
+      useEffect(() => {
+        if(isFirstRender.current > 0 && isFirstRender.current < 3){
             getChatUsers();
-            flag += 1
-        }        
+        }  
+            isFirstRender.current = isFirstRender.current + 1;  
+        getChat(false)
     }, [chatHistory])
 
     useEffect(() => {
@@ -82,7 +83,7 @@ const PatientChat =(props)=>
     }
 
     const getChat = async(reload = true) => {
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getChat/${Cookies.get(COOKIE_KEYS.userId)}/${seletedChat}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getChat/${Cookies.get(COOKIE_KEYS.userId)}/${seletedChat}?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
         if(reload) setActiveLoader(true);
 
         try {           

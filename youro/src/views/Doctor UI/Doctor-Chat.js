@@ -24,24 +24,26 @@ const DoctorChat =()=>
 
     useEffect(() => {
         getChatHistory();
+        // getChatUsers();
         setInterval(() => getChatHistory(false), 60000);
       }, []);
 
     useEffect(() => {
-        if(isFirstRender.current == 0){
+        if(isFirstRender.current > 0 && isFirstRender.current < 3){
             getChatUsers();
             
-            isFirstRender.current = isFirstRender.current + 1;
+            // isFirstRender.current = isFirstRender.current + 1;
         }  
         // if(isFirstRender.current > 1){
         //     playAudio()
-        //     isFirstRender.current = isFirstRender.current + 1;
+            isFirstRender.current = isFirstRender.current + 1;
         // }     
         getChat(false)
     }, [chatHistory])
 
     useEffect(() => {
         if(seletedChat) getChat();
+        UpdateChat();
     }, [seletedChat])
 
 
@@ -80,7 +82,7 @@ const DoctorChat =()=>
     }
 
     const getChat = async(reload = true) => {
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getChat/${Cookies.get(COOKIE_KEYS.userId)}/${seletedChat}`;
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getChat/${Cookies.get(COOKIE_KEYS.userId)}/${seletedChat}?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
         if(reload) setActiveLoader(true);
 
         try {           
@@ -171,6 +173,31 @@ const DoctorChat =()=>
         }
     }
 
+    const UpdateChat = () => {
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/updateChat`;
+        const data = {
+            "fromId": parseInt(Cookies.get(COOKIE_KEYS.userId)),
+            "toId": seletedChat,
+            "time": `${new Date()}`
+        }
+
+        axios.put(url, data).then(res => {
+            const dupChatHistory = [...chatHistory]
+            for(var j = 0; j<dupChatHistory.length; j++){
+                if(seletedChat == dupChatHistory[j].uId){
+                    setTotalMssgCount(totalMssgCount - dupChatHistory[j].count)
+                    dupChatHistory[j].count = 0;
+                    break;
+                }
+            }
+            setChatHistory(dupChatHistory)
+
+          }).catch(err => {     
+            console.error(err);
+          })
+          
+    }
+
     const ChatNamesUi = (props) => {
         return (
             <div className={`select-names-div ` + (props.data.uId == seletedChat ? 'select-names-active' : '')} onClick={() => setSelectedChat(props.data.uId)}>
@@ -182,7 +209,7 @@ const DoctorChat =()=>
                         className='' alt="Patient Image"/>
                     </div>
                     <div>
-                        <p style={{margin: '10px', fontWeight: '900', fontSize: 'large', whiteSpace: 'nowrap' , textOverflow: 'ellipsis', display: 'inline'}}>{props.data.name}</p>{props.data.count && props.data.count !=0 && <p className="mssg-count-ui">{props.data.count}</p>}
+                        <p style={{margin: '10px', fontWeight: '900', fontSize: 'large', whiteSpace: 'nowrap' , textOverflow: 'ellipsis', display: 'inline'}}>{props.data.name}</p>{props.data.count && props.data.count !=0 ? <p className="mssg-count-ui">{props.data.count}</p> : null}
                         <p style={{margin: '10px'}}>{props.data.message ? props.data.message : <span style={{fontSize: '10px'}}>start conversation</span>}</p>
                     </div>
                 
