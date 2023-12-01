@@ -155,7 +155,7 @@ const PatientAppointment = (props) => {
             }
         };
         const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/saveAppointment`;
-        const res='';
+        // const res='';
         try {
             console.log(selectedInfo);
             const temp = {
@@ -165,13 +165,13 @@ const PatientAppointment = (props) => {
                 startTime: selectedInfo.startTime + ''
             };
             console.log(temp);
-            res= await axios.post(url, temp);
-            console.log(res.data); //{message: 'Doctor Name'}
+            const res= await axios.post(url, temp);
+            // console.log(res.data); //{message: 'Doctor Name'}
             setNewApptDocName(res.data.message);
             setOpen(true);
         }
         catch (err) {
-            window.alert(res.data.message);
+            // window.alert(res.data.message);
             console.error(err);
         }
         // console.log("saveNewAppointment END");
