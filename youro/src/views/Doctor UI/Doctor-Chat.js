@@ -40,9 +40,9 @@ const DoctorChat =()=>
     useEffect(() => {
         if(isFirstRender.current > 0 && isFirstRender.current < 3){
             getChatUsers();
-            if (chatHistory && (chatHistory.filter((data, i) => data.uId == searchParams.get('patientId')))){
-                alert('Hi')
-            }
+            // if (chatHistory && (chatHistory.filter((data, i) => data.uId == searchParams.get('patientId')))){
+            //     alert('Hi')
+            // }
             
             // isFirstRender.current = isFirstRender.current + 1;
         }  

@@ -168,7 +168,7 @@ const SymptomCalculator = (props) => {
                     {chooseDiagnosis && <div style={{ display: "flex", flexWrap: 'wrap', maxHeight: '30vh' }}>
                         {diagnosisNames.map((diagosis) => {
                             return (
-                                <div style={{ maxWidth: '200px', minWidth: '150px' }}>
+                                <div style={{ width: '200px' }}>
                                     <input type="radio" id="html" name="diagnosis" value={diagosis.diagId}
                                         onChange={handleDiagChange} />
                                     <label for="html" style={{ marginLeft: '10px' }}>{diagosis.name}</label><br /><br />
