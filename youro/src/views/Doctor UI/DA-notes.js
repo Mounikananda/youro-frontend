@@ -16,6 +16,11 @@ const Notes=(props)=>
     // notes.map((note, i) => {document.getElementById(`notes-${i}`).innerHTML = note.notes})
   }, [])
 
+  const handleClick = () => {
+    props.showEditor(true);
+  };
+
+
   const fetchNotes = async () => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getNotes/${props.patId}`;
     try {
@@ -37,9 +42,9 @@ const Notes=(props)=>
   return (
   <div >
      <div className='notes-doctor'>
-        <div style={{color:'#9CB189',alignSelf:'flex-end',cursor:'pointer'}}>
+        <div style={{color:'#9CB189',alignSelf:'flex-end',cursor:'pointer'}} onClick={handleClick}>
         <FaPlus />
-          Add Notes
+          Add Notes 
       </div>
       {notes && notes.length ? notes.map((note, i) => {return (
         <div className='notes-date'>

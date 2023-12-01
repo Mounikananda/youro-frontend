@@ -34,7 +34,8 @@ const PatientDetails = (props) => {
   const [diagName, setDiagName] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [carePlanView, setCarePlanView] = useState(true);
-
+  
+  console.log("Patient details for notes im checking props",props);
 
   const handleOverview = (data) => {
     setActiveTab(data);
@@ -205,6 +206,7 @@ const PreviousAppointmentList = () => {
 };
 
   const [showEditor, setShowEditor] = useState(false);
+  
 
   const handleCreateNoteClick = () => {
     setShowEditor(!showEditor);
@@ -229,11 +231,11 @@ const PreviousAppointmentList = () => {
     data['patientId'] = showEditor.patientId;
     data['doctorId'] = Cookies.get(COOKIE_KEYS.userId);
     data['notes'] = notes
-    console.log(data)
+    console.log("notes data",data);
     axios.post(url, data).then(res => {
       toast.success('Notes saved successfully')
-      setShowEditor(null)
-    }).catch(err => {     
+      setShowEditor(null);
+    }).catch(err => {   
       toast.error("Error saving Notes")    
     })
   }
@@ -326,7 +328,7 @@ const PreviousAppointmentList = () => {
       )}
      
       {activeTab === 'notes' && (
-       <Notes patId={patientId}/>
+       <Notes patId={patientId} showEditor={setShowEditor}/>
       )}
 
       {/* {activeTab === 'orders' && (
