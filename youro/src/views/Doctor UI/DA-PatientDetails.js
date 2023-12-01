@@ -137,7 +137,7 @@ const PatientDetails = (props) => {
                   <img
                 src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 // src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
-                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+                className="profile-pic" alt="Patient Image" width="25" height="25"/>
               <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
                 <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.doctorName}</Link>
               </h3>
@@ -151,7 +151,7 @@ const PatientDetails = (props) => {
             
               <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
-              <li>Symptom score: <strong>{item.symptomScore}</strong></li>
+              {item.status != 'CANCELED' && <li>Symptom score: <strong>{item.symptomScore}</strong></li>}
               {/* <p>{item.meetup}</p> */}
             </ul>
           </div>
@@ -183,7 +183,7 @@ const PreviousAppointmentList = () => {
                   <img
                 src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 // src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
-                className="profile-pic" alt="Patient Image" width="15" height="15"/>
+                className="profile-pic" alt="Patient Image" width="25" height="25"/>
               <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
                 <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.doctorName}</Link>
               </h3>
@@ -194,7 +194,7 @@ const PreviousAppointmentList = () => {
             <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setShowEditor(item)}>Add note for doctors</li></>}
               <li>Diagnosisname: <strong>{item.diagName}</strong></li>
               {/* <li>Symptom score: {item.symptomscore}</li> */}
-              <li>Symptom score: <strong>{item.symptomScore}</strong></li>
+              {item.status != 'CANCELED' && <li>Symptom score: <strong>{item.symptomScore}</strong></li>}
               {/* <p>{item.meetup}</p> */}
             </ul>
           </div>
@@ -253,8 +253,7 @@ const PreviousAppointmentList = () => {
           
           <div>
             {patDetails && <><p className='label-p-data' ><strong>Name: </strong><i>{patDetails.firstName + ' ' + patDetails.lastName}</i></p>
-            <p className='label-p-data'><strong>DOB: </strong><i>{'12/12/1999'}</i></p>
-            <p className='label-p-data'><strong>Patient id: </strong><i>{'12346'}</i></p></> }
+            <p className='label-p-data'><strong>DOB: </strong><i>{'12/12/1999'}</i></p></> }
           </div>
           
         </div>
@@ -303,7 +302,7 @@ const PreviousAppointmentList = () => {
        {activeTab === 'overview' && (
            <div className='all-plans-patient'>
           <div className='care-plan-details-doctor-apt'>
-          <h2>Today's Appointments</h2>
+          <h2>Upcoming Appointments</h2>
           <TodayAppointmentList/></div>
            <div className='care-plan-details-doctor-apt'>
            <h2>Previous Appointments</h2>

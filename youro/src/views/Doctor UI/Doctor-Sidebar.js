@@ -1,4 +1,4 @@
-import {React, useState,useEffect} from 'react';
+import {React, useState,useEffect, useRef} from 'react';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import Hamburger from 'hamburger-react';
 import "../../styles/Patient-ui/Patient-home.css";
@@ -12,11 +12,13 @@ import Cookies from "js-cookie";
 import { ToastContainer, toast } from 'react-toastify';
 import axios from 'axios';
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
+import NotificationSound from "../../assets/notification-sound.mp3";
 
 function DoctorSideBar(props)
 {
   const [collapse, setCollapse] = useState(true);
   const navigate = useNavigate();
+  const audioPlayer = useRef(null);
  
  const handleLogout = () => {
     // Display a loading indicator or a message if needed
@@ -53,6 +55,10 @@ function DoctorSideBar(props)
     setInterval(() => getChatHistory(false), 60000);
   }, [])
 
+  function playAudio() {
+    audioPlayer?.current?.play();
+}
+
 
 
   const [mssgCount, setTotalMssgCount] = useState(0);
@@ -69,6 +75,9 @@ function DoctorSideBar(props)
           var total = 0
           for(var i = 0; i<response.length; i++){
               total += response[i].count
+          }
+          if(total > parseInt(localStorage.getItem("mssgCount"))){
+            // playAudio();
           }
           localStorage.setItem("mssgCount", total);
           setTotalMssgCount(total)
@@ -99,7 +108,10 @@ function DoctorSideBar(props)
     }}
   >
      <div className='Hamburger'>
-      <Hamburger toggled={collapse} toggle={setCollapse} size={40} /> 
+      {/* <Hamburger toggled={collapse} toggle={setCollapse} size={40} />  */}
+      <span class="material-symbols-outlined" style={{fontSize: '40px', cursor: 'pointer'}} onClick={() => setCollapse(!collapse)}>
+        menu
+        </span>
       {/* <span class="material-symbols-outlined" style={{fontSize: '40px', cursor: 'pointer'}} onClick={() => setCollapse(!collapse)}></span> */}
       </div>
     <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={props.data==='doctor-ui'} className="Menu-item" >Home</MenuItem>
@@ -107,7 +119,7 @@ function DoctorSideBar(props)
 
     <MenuItem onClick={() => navigate("/doctor-chat")} icon={<><img style={{position: 'absolute'}} src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>{
     ((props.mssgCount && props.mssgCount != 0) || mssgCount > 0) && 
-    <p style={{fontSize: '10px', padding: '3px 6px', position: 'absolute', top: '-9px', right: '15px', lineHeight: 'normal'}}className="mssg-count-ui">{props.mssgCount ? props.mssgCount : (mssgCount > 1 && mssgCount)}</p>}</>
+    <p style={{fontSize: '10px', padding: '3px 6px', position: 'absolute', top: '-9px', right: '15px', lineHeight: 'normal'}}className="mssg-count-ui">{props.mssgCount ? props.mssgCount : (mssgCount > 0 && mssgCount)}</p>}</>
     } active={props.data==='doctor-chat'}  className="Menu-item" >Chat</MenuItem>
 
     <MenuItem onClick={() => navigate("/doctor-view-profile")} icon={<FaEdit size={40}/>}  active={props.data==='doctor-view-profile'}  className="Menu-item" > Patient Details</MenuItem>
@@ -116,6 +128,7 @@ function DoctorSideBar(props)
     </Menu>
     </Sidebar>
   </div>
+  <audio ref={audioPlayer} muted="muted" src={NotificationSound} />
       
   </div>
   );

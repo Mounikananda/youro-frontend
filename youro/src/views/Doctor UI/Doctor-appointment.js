@@ -168,13 +168,6 @@ function DoctorAppointments() {
   };
   
 
-
-
-
-  useEffect(() => {
-    fetching_api_data();
-  }, [handleCancelApptAPI]);
-
   const [newEvent, setNewEvent] = useState({ start: null, end: null, id: "" });
 
   function handleEventCreation(slotInfo) {

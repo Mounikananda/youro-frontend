@@ -45,6 +45,7 @@ const PatientChat =(props)=>
 
     useEffect(() => {
         if(seletedChat) getChat();
+        UpdateChat();
     }, [seletedChat])
 
     useEffect(() => {
@@ -74,6 +75,7 @@ const PatientChat =(props)=>
                 total += response[i].count
             }
             setTotalMssgCount(total)
+            props.updateCount(total)
             setActiveLoader(false)
         }
         catch (err) {
@@ -174,6 +176,32 @@ const PatientChat =(props)=>
         }
     }
 
+    const UpdateChat = () => {
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/updateChat`;
+        const data = {
+            "fromId": seletedChat,
+            "toId": parseInt(Cookies.get(COOKIE_KEYS.userId)),
+            "time": `${new Date()}`
+        }
+
+        axios.put(url, data).then(res => {
+            const dupChatHistory = [...chatHistory]
+            for(var j = 0; j<dupChatHistory.length; j++){
+                if(seletedChat == dupChatHistory[j].uId){
+                    setTotalMssgCount(totalMssgCount - dupChatHistory[j].count)
+                    props.updateCount(totalMssgCount - dupChatHistory[j].count)
+                    dupChatHistory[j].count = 0;
+                    break;
+                }
+            }
+            setChatHistory(dupChatHistory)
+
+          }).catch(err => {     
+            console.error(err);
+          })
+          
+    }
+
     const ChatNamesUi = (props) => {
         return (
             <div className={`select-names-div ` + (props.data.uId == seletedChat ? 'select-names-active' : '')} onClick={() => setSelectedChat(props.data.uId)}>
@@ -185,7 +213,7 @@ const PatientChat =(props)=>
                         className='' alt="Patient Image"/>
                     </div>
                     <div>
-                        <p style={{margin: '10px', fontWeight: '900', fontSize: 'large', whiteSpace: 'nowrap' , textOverflow: 'ellipsis', display: 'inline'}}>{props.data.name}</p>{props.data.count && props.data.count !=0 && <p className="mssg-count-ui">{props.data.count}</p>}
+                        <p style={{margin: '10px', fontWeight: '900', fontSize: 'large', whiteSpace: 'nowrap' , textOverflow: 'ellipsis', display: 'inline'}}>{props.data.name}</p>{(props.data.count && props.data.count !=0) ? <p className="mssg-count-ui">{props.data.count}</p> : null}
                         <p style={{margin: '10px'}}>{props.data.message ? props.data.message : <span style={{fontSize: '10px'}}>start conversation</span>}</p>
                     </div>
                 

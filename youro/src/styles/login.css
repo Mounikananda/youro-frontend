@@ -260,7 +260,7 @@ width:auto;
   
 }
 
-@media (min-width: 1441px)
+/* @media (min-width: 1441px)
 {
 
    h1
@@ -271,7 +271,7 @@ width:auto;
   {
      font-size: 3.5rem;
    } 
-}
+} */
 
 @media (max-width: 480px) {
   .option-select h1 {

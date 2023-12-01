@@ -176,8 +176,8 @@ const DoctorChat =()=>
     const UpdateChat = () => {
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/updateChat`;
         const data = {
-            "fromId": parseInt(Cookies.get(COOKIE_KEYS.userId)),
-            "toId": seletedChat,
+            "fromId": seletedChat,
+            "toId": parseInt(Cookies.get(COOKIE_KEYS.userId)),
             "time": `${new Date()}`
         }
 

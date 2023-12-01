@@ -1,13 +1,15 @@
-import {React, useState } from 'react';
+import {React, useState, useEffect } from 'react';
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import Hamburger from 'hamburger-react';
 import "../../styles/Patient-ui/Patient-home.css";
 import { FaHome,FaCalendar,FaFacebookMessenger,FaPrescription,FaPowerOff,FaHamburger } from "react-icons/fa";
-import { BrowserRouter, Link, Route, Routes,useNavigate  } from 'react-router-dom';
+import { BrowserRouter, Link, Route, Routes,useNavigate, useLocation  } from 'react-router-dom';
 import Signupoptions from '../Signupoptions';
-import { COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 import { FaSignOutAlt } from 'react-icons/fa';
+import { API_DETAILS, COOKIE_KEYS } from "../../App";
+import axios from 'axios';
+
 function SideBar(props)
 {
    const [collapse, setCollapse] = useState(true);
@@ -36,6 +38,57 @@ function SideBar(props)
     // 5000 milliseconds = 5 seconds
   };
 
+  useEffect(() => {
+    window.onbeforeunload = function() {
+      localStorage.removeItem('mssgCount')
+    };
+    const path = location.pathname
+    if(props.active == 2){
+      localStorage.removeItem('mssgCount')
+    }
+    if(props.active != 2 && localStorage.getItem('mssgCount') == undefined ||parseInt(localStorage.getItem('mssgCount')) < 0){
+      getChatHistory()
+    } else {
+      setTotalMssgCount(parseInt(localStorage.getItem('mssgCount')))
+    }
+    setInterval(() => getChatHistory(false), 60000);
+  }, [props.active])
+
+
+
+
+  const [mssgCount, setTotalMssgCount] = useState(0);
+  const location = useLocation()
+
+  const getChatHistory = async(reload = true) => {
+    const path = location.pathname
+    if(props.active != 2){
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`;
+
+      try {           
+          const res = await axios.get(url);
+          const response = res.data
+          var total = 0
+          for(var i = 0; i<response.length; i++){
+              total += response[i].count
+          }
+          if(total > parseInt(localStorage.getItem("mssgCount"))){
+            // playAudio();
+          }
+          localStorage.setItem("mssgCount", total);
+          setTotalMssgCount(total)
+      }
+      catch (err) {
+          console.error(err);
+      }
+    }else{
+      // alert('Hi')
+      localStorage.setItem("mssgCount", -1);
+      setTotalMssgCount(-1)
+    }
+    
+}
+
   return (
   <div>
   <div className='Tab-section'>
@@ -61,7 +114,10 @@ function SideBar(props)
       </div>
     <MenuItem onClick={() => props.setActive(0)} icon={<img src={require('../../assets/Homepage_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 0} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => props.setActive(1)} icon={<img src={require('../../assets/Schedule_icon.png')} height='45px' alt='home_icon'/>} active={props.active === 1} className="Menu-item" > Appointments</MenuItem>
-    <MenuItem onClick={() => props.setActive(2)} icon={<img src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>}active={props.active === 2} className="Menu-item" >Chat</MenuItem>
+    <MenuItem onClick={() => props.setActive(2)} icon={<><img style={{position: 'absolute'}} src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>{
+    ((props.count && props.count > 0) || mssgCount > 0) && 
+    <p style={{fontSize: '10px', padding: '3px 6px', position: 'absolute', top: '-9px', right: '15px', lineHeight: 'normal'}}className="mssg-count-ui">{(props.count && props.count > 0) ? props.count : (mssgCount > 0 && mssgCount)}</p>}</>
+    } active={props.active === 2} className="Menu-item" >Chat</MenuItem>
     <MenuItem onClick={() => props.setActive(3)} icon={<img src={require('../../assets/Educate_icon.png')} height='35px' alt='home_icon'/>}active={props.active === 3} className="Menu-item" > Educate yourself</MenuItem>
     <MenuItem onClick={() => props.setActive(4)} icon={<img src={require('../../assets/Profile_icon.png')} height='40px' alt='home_icon'/>} active={props.active === 4} className="Menu-item" > Profile</MenuItem>
      <MenuItem onClick={handleLogout} className="Menu-item" icon={<FaSignOutAlt size={40} color='white'/>} >Logout</MenuItem>  

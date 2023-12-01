@@ -180,8 +180,8 @@ const appointments_image = (arrayBuffer) => {
             <ul key={item.apptId}>
               <li>Diagnosisname: {item.diagName}</li>
               {/* <li onClick={openPatSymScore}>Symptom score: {item.symptomScore}</li> */}
-              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => openPatSymScore(item.patientId)}><Link style={{ textDecoration: 'none' }}>Symptom score: {item.symptomScore}</Link></li>
-              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>Take me to care plan</Link></li>
+              {item.status != 'CANCELED' && <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => openPatSymScore(item.patientId)}><Link style={{ textDecoration: 'none' }}>Symptom score: {item.symptomScore}</Link></li>}
+              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>View Profile</Link></li>
             </ul>
             {
               item.link && <>
