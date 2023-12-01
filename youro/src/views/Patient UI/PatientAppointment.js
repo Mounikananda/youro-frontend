@@ -11,6 +11,7 @@ import Cookies from "js-cookie";
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Youroheader from "../Youro-header";
 import Loader from "../../utils/loader";
+import { toast } from "react-toastify";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -130,9 +131,14 @@ const PatientAppointment = (props) => {
     }
 
     const handleBook = () => {
-        
-        console.log(selectedInfo); //.doctorIds[Math.floor(Math.random()*selectedInfo.doctorIds.length)]
-        saveNewAppointment();
+        console.log("checking result diag id ",selectedOption.length); 
+        if(selectedOption.length===0)
+        {
+          window.alert('Please select diagnosis');
+        }
+        else
+        {console.log(selectedInfo); //.doctorIds[Math.floor(Math.random()*selectedInfo.doctorIds.length)]
+        saveNewAppointment();}
     }
 
     const [newApptDocName, setNewApptDocName] = useState('');
@@ -270,7 +276,7 @@ const PatientAppointment = (props) => {
                         <select id="d" name="d" className='dropdown-chart' value={selectedOption} onChange={handleSelectChange}>
                             <option>Select Diagnosis</option>
                             {
-                            diagnosisNames.map((result) => (<option value={result.diagId}>{result.name}</option>))
+                              diagnosisNames.map((result) => (<option value={result.diagId}>{result.name}</option>))
                             }
                         </select><br/><br/>
                             <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />

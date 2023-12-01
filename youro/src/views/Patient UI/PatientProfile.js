@@ -22,8 +22,7 @@ const PatientProfile = () => {
 
   const [isPopupVisible, setPopupVisible] = useState(false);
   const [insurance,setInsurance]= useState("yes");
-  
-
+  const [viewVal, setViewVal] = useState(0);
 
   const showPopup = (data) => {
     console.log(data);
@@ -306,7 +305,7 @@ const PatientProfile = () => {
       </div>
       <div className="d-container">
         <div className='profile-column'>
-          <Youroheader />
+          <Youroheader setView={setViewVal} />
           <div className='profile-details'>
             <div className='my-profile'>
               <ToastContainer />

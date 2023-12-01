@@ -13,6 +13,8 @@ import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 import Youroheader from "../Youro-header";
 import Loader from '../../utils/loader';
+import Popup from "reactjs-popup";
+import { FaExclamationTriangle } from "react-icons/fa";
 
 // #d7b8b9
 const components =
@@ -52,7 +54,7 @@ function DoctorAppointments() {
   const [showEventDetails, setShowEventDetails] = useState(false);
   const [createvent, setcreatevent] = useState(true);
   const [selectslot, setselectslot] = useState("Available");
-
+  const [showNotificationPopup_tc, setShowNotificationPopup_tc] = useState(false);
 
   const handleSelectChange = (event) => {
     setselectslot(event.target.value);
@@ -60,6 +62,8 @@ function DoctorAppointments() {
 
   const handlecreatevent_boolen = () => {
     setNewEvent({ start: null, end: null, title: "", email: "" });
+    // setTimeConflict(false);
+    
   }
   const handleSelectEvent = (event) => {
     console.log('handleSelectEvent start :: ');
@@ -72,13 +76,17 @@ function DoctorAppointments() {
     setShowEventDetails(false);
   }
 
+  const toggleNotificationPopup = () => {
+      setShowNotificationPopup_tc(!showNotificationPopup_tc);
+  };
+
 
 
 
   const [events, setEvents] = useState([]);
   const [calenderapt, setcalenderapt] = useState([]);
-
-
+  const [isTimeConflict, setTimeConflict] = useState(false);
+ 
   const doctid = Cookies.get(COOKIE_KEYS.userId);
   const fetching_api_data = async () => {
 
@@ -136,17 +144,93 @@ function DoctorAppointments() {
     }
   }
 
+   const handleCancelApptAPI = async (selectedEvent) => {
+    console.log('handleCancelApptAPI :: ', selectedEvent);
+
+    console.log(typeof (selectedEvent.apptId));
+    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${selectedEvent.id}/${doctid}`;
+    const config = {
+      headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': '*',
+          'Content-Type': 'application/json'
+      }
+  };
+    try {
+      const res = await axios.put(url, config);
+      console.log(res);
+      hidedetails();
+      fetching_api_data();
+    }
+    catch (err) {
+      console.error(err);
+    }
+  };
+  
+
+
 
 
   useEffect(() => {
     fetching_api_data();
-  }, []);
+  }, [handleCancelApptAPI]);
 
   const [newEvent, setNewEvent] = useState({ start: null, end: null, id: "" });
 
   function handleEventCreation(slotInfo) {
     if (newEvent) {
+       
+    //  const conflicts = events.filter((event) => {
+    //   // const isStartConflict = slotInfo.start >= new Date(event.start) && slotInfo.start <= new Date(event.end);
+    //   // const isEndConflict = slotInfo.end >= new Date(event.start) && slotInfo.end <= new Date(event.end);
+    //   // const isTitleNotAvailable = event.title !== 'Available';
 
+    //   // return (isStartConflict || isEndConflict) && isTitleNotAvailable;
+    //   const isStartConflict = slotInfo.start >= new Date(event.start) && slotInfo.start < new Date(event.end);
+    //   const isEndConflict = slotInfo.end > new Date(event.start) && slotInfo.end <= new Date(event.end);
+
+    //   // Check for conflict
+    //   if (isStartConflict || isEndConflict) {
+    //     return event.title !== 'Available'; // Only consider non-'Available' events as conflicts
+    //   }
+     
+  
+
+    //   return false;
+    // });
+    const conflicts = events.filter((event) => {
+      // const isStartConflict = slotInfo.start >= new Date(event.start) && slotInfo.start < new Date(event.end);
+      // const isEndConflict = slotInfo.end > new Date(event.start) && slotInfo.end <= new Date(event.end);
+
+
+      // const isStartConflict = slotInfo.start >= new Date(event.start) && slotInfo.start < new Date(event.end);
+      // const isEndConflict = slotInfo.end > new Date(event.start) && slotInfo.end <= new Date(event.end);
+      // const isWithinEvent = slotInfo.start >= new Date(event.start) && slotInfo.end <= new Date(event.end);
+      // return (isStartConflict || isEndConflict || isWithinEvent) && event.title !== 'Available';
+      
+      const eventStart = new Date(event.start);
+      const eventEnd = new Date(event.end);
+
+      return (
+             (slotInfo.start >= eventStart && slotInfo.start < eventEnd) ||
+             (slotInfo.end > eventStart && slotInfo.end <= eventEnd) ||
+             (slotInfo.start <= eventStart && slotInfo.end >= eventEnd)
+             ) && event.title !== 'Available';
+
+      // return (isStartConflict || isEndConflict) && event.title !== 'Available';
+    });
+
+    const conflict = conflicts.length > 0;
+    console.log("printing all the conflicts",conflicts);
+    setTimeConflict(conflict);
+    // if (isTimeConflict) {
+    //   // Show a popup or alert indicating a time conflict
+    //   // window.alert('You cannot create an available slot here as there is an appointment scheduled.');
+    //      <Popup trigger={<button> Trigger</button>} position="right center">
+    //          <div>Popup content here !!</div>
+    //     </Popup>
+    // } else {
+      // No time conflict, set the new event
       // if (newEvent.title.length === 0) {
       //   newEvent.title = selectslot;
       // }
@@ -155,6 +239,7 @@ function DoctorAppointments() {
         end: slotInfo.end,
         doctid: doctid,
       })
+   
       // newEvent.start = slotInfo.start;
       // newEvent.end = slotInfo.end;
       console.log("new event details", newEvent);
@@ -169,6 +254,8 @@ function DoctorAppointments() {
       // setEvents((prevEvents) => [...prevEvents, newEvent]);
       // setNewEvent({ start: null, end: null, title: "", email: "" });
       setcreatevent(false);
+      // setTimeConflict(false);
+      // setShowNotificationPopup_tc(false);
     }
   }
 
@@ -203,34 +290,14 @@ function DoctorAppointments() {
       console.log("posting removed data", res);
       hidedetails();
       fetching_api_data();
+      // setselectslot("Available");
     }
     catch (err) {
       console.error(err);
     }
   }
 
-  const handleCancelApptAPI = async (selectedEvent) => {
-    console.log('handleCancelApptAPI :: ', selectedEvent);
-
-    console.log(typeof (selectedEvent.apptId));
-    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${selectedEvent.id}/${doctid}`;
-    const config = {
-      headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': '*',
-          'Content-Type': 'application/json'
-      }
-  };
-    try {
-      const res = await axios.put(url, config);
-      console.log(res);
-      hidedetails();
-      fetching_api_data();
-    }
-    catch (err) {
-      console.error(err);
-    }
-  };
+ 
 
   const saveNewSchedule = async () => {
 
@@ -257,13 +324,16 @@ function DoctorAppointments() {
         console.log(res);
         console.log("posting available data", res);
         fetching_api_data();
+        setTimeConflict(false);
       }
       catch (err) {
         console.error(err);
       }
     }
     else if (selectslot == "UnAvailable") {
+      
       RemoveAvailability(newEvent);
+      setselectslot("Available");
       // axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'http://localhost:3000';
       // const url = `http://52.14.33.154:9093/youro/api/v1/removeDoctorAvailability`;
       // const temp = {
@@ -327,7 +397,16 @@ function DoctorAppointments() {
                 <div className="popup-container-apt">
                   <div className="popup-background-apt"></div>
                   <div className="event-creation-form">
-                    <p><span style={{ fontWeight: 'bold' }}>Adding Slot</span></p>
+                    {/* {isTimeConflict?<div> <FaExclamationTriangle color="red"/>Adding slot will cancel the existing appointment</div>:<></>} */}
+                    <p><span style={{ fontWeight: 'bold' }}>{isTimeConflict ? 
+                     (
+                           <>
+                          <FaExclamationTriangle color="red" />
+                          Adding slot will cancel the existing appointment
+                          </>
+                       ) : (
+                         'Adding Slot'
+                      )}</span></p>
                     <select
                       style={{ width: '85%' }} className="input-field input-border"
                       value={selectslot}
@@ -346,10 +425,11 @@ function DoctorAppointments() {
                     value={newEvent.email}
                     onChange={(e) => setNewEvent({ ...newEvent, email: e.target.value })}
                   /> */}
+                    
                     <div className="slot-buttons">
-                      <button className="add-availability" onClick={handleEventCreation}>
-                        Confirm
-                      </button>
+                      {isTimeConflict  && selectslot=="Available"? (<div/>)
+                         :(<button className="add-availability" onClick={handleEventCreation}>Confirm
+                      </button>)}
                       <button className="add-availability" onClick={handlecreatevent_boolen}>Hide</button>
                     </div>
                   </div>
@@ -382,6 +462,15 @@ function DoctorAppointments() {
               </div>
             </div>
           )}
+        
+        {/* {showNotificationPopup_tc && (
+        <div className="notification-popup-overlay" onClick={toggleNotificationPopup}>
+          <div className="notification-popup" onClick={(e) => e.stopPropagation()} >
+               <div>Adding slot here will make existing appointment Cancel .Are you sure to remove appointment and add slot?</div>
+          </div>
+        </div>
+        )} */}
+          
           {/* <div className="event-container">
             <h3>All Events:</h3>
             {events.map((event, index) => (
