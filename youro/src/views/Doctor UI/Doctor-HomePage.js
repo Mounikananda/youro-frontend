@@ -170,8 +170,8 @@ const appointments_image = (arrayBuffer) => {
                   <img
                 src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 // src={item.picture!=null ? ImagePrev(item.picture): 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
-                className="profile-pic" alt="Patient Image" width="15" height="15"/>
-              <h3 style={{marginTop:'3%',marginLeft:'2%'}}>
+                className="profile-pic" alt="Patient Image" width="25" height="25"/>
+              <h3 style={{marginTop:'2%',marginLeft:'2%'}}>
                 <Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>{item.patientName}</Link>
               </h3>
             </div>
