@@ -204,7 +204,7 @@ const PatientEducate = (props) => {
                         <ToggleButton value="TREATMENT">Treatment</ToggleButton>
                         <ToggleButton value="SURGICAL_OPTIONS">Surgical Options</ToggleButton>
                     </ToggleButtonGroup>
-                    <div className='row'>
+                    <div style={{margin:'3%',height:'40vh'}}>
                         {
                             pageContext === "SYSMPTOMS" &&
                             // <div>{educationalInfo[0].symptoms}</div>
