@@ -12,6 +12,7 @@ import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Youroheader from "../Youro-header";
 import Loader from "../../utils/loader";
 import { toast } from "react-toastify";
+import "../../styles/Patient-ui/Patient-Homepage.css";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
@@ -252,7 +253,8 @@ const PatientAppointment = (props) => {
                                 var startTime = data['startTime'].split(" ")[4].split(":")[0] + ':' + data['startTime'].split(" ")[4].split(":")[1]
                                 return (
                                     <>
-                                        <div onClick={(e) => handleSelectSlot(startTime, data)} className="slot-timings">
+                                        <div onClick={(e) => handleSelectSlot(startTime, data)} className="slot-timings"
+                                           style={{backgroundColor:event==startTime? '#9CB189':'white',color:event==startTime? 'white':'black'}}>
                                             <span style={{ letterSpacing: '1.3px' }}>{startTime}</span>
                                             -
                                             <span style={{ letterSpacing: '1.3px' }}>{getEndTime(startTime)}</span>
@@ -282,7 +284,7 @@ const PatientAppointment = (props) => {
                             <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />
                             <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event} - {getEndTime(event)}
                             <br /><br /><br /><br /><br />
-                            {selectedOption!="Select Diagnosis"?<div className="btn-filled" onClick={handleBook}>Book Appointment</div>:<div/>}
+                            {selectedOption!="Select Diagnosis"?<div className="btn-filled" onClick={handleBook}>Book Appointment</div>:<div class="btn-filled-disabled">Book Appointment</div>}
                         </div>
 
                     </>
