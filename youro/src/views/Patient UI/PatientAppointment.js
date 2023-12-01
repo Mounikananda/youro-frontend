@@ -171,6 +171,7 @@ const PatientAppointment = (props) => {
             setOpen(true);
         }
         catch (err) {
+            window.alert(res.data.message);
             console.error(err);
         }
         // console.log("saveNewAppointment END");
