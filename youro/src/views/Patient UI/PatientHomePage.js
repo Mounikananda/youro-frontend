@@ -83,7 +83,7 @@ const PatientHomePage = (props) => {
           <div className='previous-appointment' >
             <div>
               <h3 style={{display: 'inline-block'}}>{new Date(item.apptStartTime).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
-              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+              <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'4.5%', alignItems: 'center'}}>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 src={item.picture!=null ? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
@@ -99,8 +99,8 @@ const PatientHomePage = (props) => {
             </div>
             <ul key={item.apptId}>
               {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
-              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>view careplan and note provided</li>
-              <li>Status: {item.status}</li>
+              {item.status != 'CANCELED' && <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>view careplan and note provided</li>}
+              {/* <li>Status: {item.status}</li> */}
               {/* <p>{item.meetup}</p> */}
             </ul>
           </div>
@@ -116,7 +116,7 @@ const PatientHomePage = (props) => {
     
     const cancelAppointment = async (data) => {
 
-      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${data.apptId}/${data.doctorId}`;
+      const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/cancelAppointment/${data.apptId}/${data.patientId}`;
       const config = {
         headers: {
             'Access-Control-Allow-Origin': '*',
@@ -149,11 +149,12 @@ const PatientHomePage = (props) => {
             <div className='previous-appointment'> 
              <div>
              <h3 style={{display: 'inline-block'}}>{new Date(item.apptStartTime).toLocaleDateString()}, {item.apptStartTime.split(' ')[4].split(':').slice(0, 2).join(":")}</h3>{item.status == 'CANCELED' && <div className='cancel-tag'>cancelled</div>}
-             <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'1.5%'}}>
+             <div style={{ display: 'flex',flexDirection:'row',height:'30px',marginTop:'4.5%', alignItems: 'center'}}>
+                  <div>
                   <img
                 // src={item.picture? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
                 src={item.picture!=null ? `data:image/png;base64,${item.picture}`: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'}
-                className="profile-pic" alt="Patient Image" width="25" height="25"/>
+                className="profile-pic" alt="Patient Image" width="25" height="25"/></div>
 
               <h3 style={{marginTop:'0.1%',marginLeft:'2%'}}>{item.doctorName}</h3> </div>
             </div>

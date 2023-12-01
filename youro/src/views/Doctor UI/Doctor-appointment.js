@@ -166,10 +166,6 @@ function DoctorAppointments() {
       console.error(err);
     }
   };
-  
-
-
-
 
   useEffect(() => {
     fetching_api_data();

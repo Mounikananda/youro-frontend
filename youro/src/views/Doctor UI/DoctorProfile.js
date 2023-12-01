@@ -397,7 +397,7 @@ const DoctorProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                  <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" width="150" height="150" />
+                  <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" style={{marginBottom: '50px'}} alt="Preview" width="150" height="150" />
                 </label>
                 <>
                   <input
