@@ -35,7 +35,7 @@ const PatientAppointment = (props) => {
     const [selectedInfo, setSelectedInfo] = useState();
     const [viewVal, setViewVal] = useState(0);
     const [diagnosisNames, setDiagnoses] = useState([]);
-    const [selectedOption, setSelectedOption] = useState('');
+    const [selectedOption, setSelectedOption] = useState('Select Diagnosis');
     const [activeLoader, setActiveLoader] = useState(false);
 
     const handleSelectChange = (event) => {
@@ -282,8 +282,7 @@ const PatientAppointment = (props) => {
                             <strong>Selected Date:</strong>&nbsp;&nbsp;{dateSelection.toDateString()} <br /><br />
                             <strong>Selected Slot:</strong>&nbsp;&nbsp;&nbsp;{event} - {getEndTime(event)}
                             <br /><br /><br /><br /><br />
-                            <div className="btn-filled" onClick={handleBook}>Book Appointment</div>
-
+                            {selectedOption!="Select Diagnosis"?<div className="btn-filled" onClick={handleBook}>Book Appointment</div>:<div/>}
                         </div>
 
                     </>
