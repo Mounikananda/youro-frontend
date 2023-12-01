@@ -17,6 +17,7 @@ const Youroheader = (props) => {
   const [showNotificationPopup, setShowNotificationPopup] = useState(false);
   // const [showNotificationPopup, setShowNotificationPopup] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  const [showbadge,setshowbadge]= useState(true);
 
   const toggleNotificationPopup = () => {
     setShowNotificationPopup(!showNotificationPopup);
@@ -26,10 +27,11 @@ const Youroheader = (props) => {
 
     console.log("fetching notifications")
     const userId = Cookies.get(COOKIE_KEYS.userId);
-    const apiUrl = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension+`/getNotifications/${userId}`;
+    const apiUrl = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension+`/getNotifications/${userId}?timeZone=${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
 
     try {
       const response = await axios.get(apiUrl);
+      console.log(response.data);
       setNotifications(response.data);
     } catch (error) {
       console.error('Error fetching notifications:', error.message);
@@ -47,14 +49,12 @@ const Youroheader = (props) => {
     }
   };
 
-  const clearAllNotifications = async (notId) => 
+  const clearAllNotifications = async () => 
   {
     const user_id = Cookies.get(COOKIE_KEYS.userId);
-     const apiUrl = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension+`/deleteNotifications/${user_id}`;
+     const apiUrl = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension+`/deleteAllNotifications/${user_id}`;
     try {
-      // Hit the API to clear the specific notification
       await axios.delete(apiUrl);
-      // Refresh notifications after clearing
       fetchNotifications();
     } catch (error) {
       console.error('Error clearing notification:', error.message);
@@ -179,11 +179,21 @@ const YouroNotificationPopup = ({ notifications, onClear, onClose}) => {
           <div>No new notifications</div>
         ) : (
           <div className="notifications-list">
-            {/* Render the list of notifications */}
             {notifications.map((notification) => (
               <div key={notification.notId} className="notification-item">
-               <div className="notification-message" >{notification.message}</div>
-                {/* Close button for each notification */}
+               <div className="notification-message" >
+                {/* {notification.message}{notification.date}</div> */}
+                 <span style={{ fontWeight: 'bold' }}>{notification.message}</span>
+                <div><span style={{ fontSize: 'small', marginLeft: '5px' }}>
+                    {/* {notification.date} */}
+                    {new Date(notification.date).toLocaleString('en-US', { month: '2-digit',
+      day: '2-digit',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+    })}
+                   </span></div>    
+                </div>
                 <button style={{ borderRadius: '10%' }} onClick={() => onClose(notification.notId)}>
                   close
                 </button>
@@ -199,10 +209,9 @@ const YouroNotificationPopup = ({ notifications, onClear, onClose}) => {
   useEffect(() => {
     get_profile_pic();
     fetchNotifications();
-    const intervalId = setInterval(fetchNotifications, 10 * 1000);
+    const intervalId = setInterval(fetchNotifications, 500 * 1000);
     return () => clearInterval(intervalId);
   }, []);
-
   return (
     <div className='youro-header'>
       <div className='header'>
@@ -212,6 +221,7 @@ const YouroNotificationPopup = ({ notifications, onClear, onClose}) => {
        <img src={props.imagePreview ? props.imagePreview : (imagePreview ? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9')} className="profile-pic" alt="Preview" width="20" height="20" />
         <h4 className='profle-bubtton-h4'>
           <div className="userprofile-button" onClick={changeView}>{userName}</div>
+          {/* <button className="userprofile-button" onClick={changeView}>{userName}</button> */}
         </h4>
        <div className="notification-icon-container">
        <div className="notification-icon" onClick={toggleNotificationPopup} style={{ marginLeft: '10px' }}>
