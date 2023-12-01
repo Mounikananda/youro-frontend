@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import Loader from "../../utils/loader";
 import axios from "axios";
 import NotificationSound from "../../assets/notification-sound.mp3";
+import { useSearchParams } from "react-router-dom";
 
 const DoctorChat =()=>
 {
@@ -22,15 +23,26 @@ const DoctorChat =()=>
     const audioPlayer = useRef(null);
     const isFirstRender = useRef(0);
 
+    const [searchParams] = useSearchParams();
+
     useEffect(() => {
         getChatHistory();
+        
         // getChatUsers();
         setInterval(() => getChatHistory(false), 60000);
       }, []);
 
     useEffect(() => {
+        setSelectedChat(searchParams.get('patientId'))
+        
+    }, [searchParams])
+
+    useEffect(() => {
         if(isFirstRender.current > 0 && isFirstRender.current < 3){
             getChatUsers();
+            if (chatHistory && (chatHistory.filter((data, i) => data.uId == searchParams.get('patientId')))){
+                alert('Hi')
+            }
             
             // isFirstRender.current = isFirstRender.current + 1;
         }  

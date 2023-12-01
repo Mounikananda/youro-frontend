@@ -166,7 +166,10 @@ function DoctorAppointments() {
       console.error(err);
     }
   };
-  
+
+  useEffect(() => {
+    fetching_api_data();
+  }, []);
 
   const [newEvent, setNewEvent] = useState({ start: null, end: null, id: "" });
 

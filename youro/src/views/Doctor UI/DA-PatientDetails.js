@@ -34,15 +34,13 @@ const PatientDetails = (props) => {
   const [diagName, setDiagName] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [carePlanView, setCarePlanView] = useState(true);
-  
-  console.log("Patient details for notes im checking props",props);
+
 
   const handleOverview = (data) => {
     setActiveTab(data);
   }
 
   useEffect(() => {
-    console.log('DA-PatientDetails.js useEffect : ' );
     console.log(patientId);
     fetchAppointments();
     getPatientDetails();
@@ -227,9 +225,9 @@ const PreviousAppointmentList = () => {
   const handleNotesSubmit = () => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/saveNotes`;
     var data = {};
-    data['apptId'] = showEditor.apptId;
-    data['patientId'] = showEditor.patientId;
-    data['doctorId'] = Cookies.get(COOKIE_KEYS.userId);
+    data['apptId'] = showEditor.apptId ? showEditor.apptId : 3;
+    data['patientId'] = parseInt(showEditor.patientId ? showEditor.patientId : patientId);
+    data['doctorId'] = parseInt(Cookies.get(COOKIE_KEYS.userId));
     data['notes'] = notes
     console.log("notes data",data);
     axios.post(url, data).then(res => {
@@ -259,7 +257,7 @@ const PreviousAppointmentList = () => {
         </div>
         <div className='p-data-row'>
           {/* <div >Message</div> */}
-            <Link style={{ textDecoration: 'none' }} to={`/doctor-chat`}>Message</Link>
+            <Link style={{ textDecoration: 'none' }} to={`/doctor-chat?patientId=${patDetails?.userId}`}>Message</Link>
           {/* {showEditor && (
         <div className="floating-editor">
             <ReactQuillWrapper/>
@@ -343,11 +341,13 @@ const PreviousAppointmentList = () => {
             <button >Maximize</button> */}
             <div className='notes-title'>
             <label>Notes</label>
-            <button onClick={() => handleNotesSubmit()}>Submit</button>
             <button onClick={() => setShowEditor(null)}>X</button>
            </div>
           {/* <ReactQuillWrapper /> */}
             <ReactQuillWrapper  val={setNotes}/>
+            <div className='notes-title'>
+            <button onClick={() => handleNotesSubmit()} style={{right: '0px', position: 'absolute', bottom: '0px'}}>Submit</button>
+            </div>
         </div> )}
       
         <Popup className={!carePlanView ? 'order-popup': 'congrats-popup'} closeOnEscape={false} open={isOpenCreatePopUp} modal closeOnDocumentClick={false} onClose={() => setOpenCreatePopUp(false)}>
