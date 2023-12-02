@@ -194,6 +194,8 @@ h4
 } */
 .notif-popup-content {
   text-align: start;
+  overflow-y: scroll;
+  height: 55vh
 }
 .notifications-list {
   margin-top: 10px;
