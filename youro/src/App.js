@@ -31,7 +31,9 @@ import ForgotPassword from './views/ForgotPassword';
 import VerifyEmail from './views/VerifyEmail';
 import AdminAssistantList from './views/Admin UI/Admin-AssistantList';
 import Cookies from "js-cookie";
-  
+import DoctorAccessDenied from './views/Doctor UI/DoctorAccessDenied';
+import axios from 'axios';  
+
 export const API_DETAILS = {
   baseUrl: 'http://3.147.74.34:',
   PORT: '9095',
@@ -78,8 +80,28 @@ const PatientProtectedRoute = ({children}) => {
   return <Navigate to={uType == 'PROVIDER' ? '/doctor-home': '/admin-doctors'} replace />;
 }
 
+// const handleDoctorAccess = async () => {
+//   const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDoctorStatus/${Cookies.get(COOKIE_KEYS.userId)}`;
+//   const config = {
+//       headers: {
+//           'Access-Control-Allow-Origin': '*',
+//           'Access-Control-Allow-Methods': '*',
+//           'Content-Type': 'application/json'
+//       }
+//   };
+
+//   var status = ''
+//   status = await axios.get(url, config).then(async (res) => {return res.data.status}).catch(e => console.log(e))
+//   return status
+
+// }
+
 const DoctorProtectedRoute = ({children}) => {
   if(!IsAuthenticated()) return <Navigate to="/login" replace />;
+
+  // if(Cookies.get('status') == 'PENDING' || Cookies.get('status') == 'DENIED') return <Navigate to="/doctor-access" replace />
+
+  // varstatus = handleDoctorAccess(); 
 
   const uType = Cookies.get(COOKIE_KEYS.userType)
 
@@ -123,6 +145,7 @@ function App() {
         <Route path='/admin-doctors' element={<AdminProtectedRoute><AdminDoctorsList/></AdminProtectedRoute>}></Route>
         <Route path='/admin-patients' element={<AdminProtectedRoute><AdminPatientList/></AdminProtectedRoute>}></Route>
         <Route path='/doctor-profile' element={<DoctorProtectedRoute><DoctorProfile/></DoctorProtectedRoute>}></Route>
+        <Route path='/doctor-access' element={<DoctorProtectedRoute><DoctorAccessDenied/></DoctorProtectedRoute>}></Route>
         <Route path='/doctor-appointment' element={<DoctorProtectedRoute><DoctorAppointments/></DoctorProtectedRoute>}></Route>
         <Route path='/doctor-view-profile/:patientId?/:apptId?' element={<DoctorProtectedRoute><ViewProfile/></DoctorProtectedRoute>}></Route>
         <Route path='/doctor-chat' element={<DoctorProtectedRoute><DoctorChat/></DoctorProtectedRoute>}></Route>

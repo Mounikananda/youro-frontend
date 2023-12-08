@@ -40,8 +40,7 @@ const Login= () =>
       }
   };
     axios.post(API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension + "/login", data, config).then((res) => {
-        console.log("login response: ", res);  
-        console.log("verificationStatus: ", res.data.verificationStatus)
+        
 
         if(res.data.uType === 'ADMIN'){
           toast.success("Successful login");
@@ -50,6 +49,7 @@ const Login= () =>
           Cookies.set(COOKIE_KEYS.userId, res.data.userId, { expires: 7 });
           Cookies.set(COOKIE_KEYS.userType, res.data.uType, { expires: 7 });
           Cookies.set(COOKIE_KEYS.userName, res.data.fullName,{expires:7}); 
+
           navigate("/admin-doctors");
         }
       
@@ -66,7 +66,10 @@ const Login= () =>
                   navigate("/patient-home");
                 }
                 else if(res.data.uType === 'PROVIDER'){
-                  navigate("/doctor-home");
+                  const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getDoctorStatus/${Cookies.get(COOKIE_KEYS.userId)}`;
+
+                  axios.get(url, config).then(async (res) => {if(res.data.status == 'PENDING' || res.data.status == 'DENIED') {navigate('/doctor-access'); Cookies.set('status', res.data.status, {expires: 7})} else {navigate("/doctor-home");}}).catch(e => console.log(e))
+                  
                 }
                 else{
                   navigate("/admin-doctors");
