@@ -236,7 +236,7 @@ const PatientChat =(props)=>
             <Loader active={activeLoader}/>
          {/* <div className='sidebar'>
         </div> */}
-        {/* <div style={{display:'flex',flexDirection:'column',margin:'0% 2%',width:'100%'}}>  */}
+        <div style={{display:'flex',flexDirection:'column',margin:'0% 2%',width:'100%'}}> 
           {/* <Youroheader/> */}
           <Youroheader setView={setViewVal}/>
             
@@ -313,7 +313,7 @@ const PatientChat =(props)=>
                     
                     </div>}
             </div>  
-        {/* </div> */}
+        </div>
        </div>
     )
 }

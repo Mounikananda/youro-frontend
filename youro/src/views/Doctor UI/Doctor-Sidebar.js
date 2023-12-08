@@ -114,7 +114,7 @@ function DoctorSideBar(props)
         </span>
       {/* <span class="material-symbols-outlined" style={{fontSize: '40px', cursor: 'pointer'}} onClick={() => setCollapse(!collapse)}></span> */}
       </div>
-    <MenuItem onClick={() => navigate("/doctor-ui")} icon={<FaHome size={40}/>} active={props.data==='doctor-ui'} className="Menu-item" >Home</MenuItem>
+    <MenuItem onClick={() => navigate("/doctor-home")} icon={<FaHome size={40}/>} active={props.data==='doctor-ui'} className="Menu-item" >Home</MenuItem>
     <MenuItem onClick={() => navigate("/doctor-appointment")} icon={<FaCalendar size={40} />} active={props.data==='doctor-appointment'} className="Menu-item" > Appointments</MenuItem>
 
     <MenuItem onClick={() => navigate("/doctor-chat")} icon={<><img style={{position: 'absolute'}} src={require('../../assets/Messaging_icon.png')} height='32px' alt='home_icon'/>{

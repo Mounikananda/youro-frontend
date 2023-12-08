@@ -305,7 +305,9 @@ const PatientProfile = () => {
       </div>
       <div className="d-container">
         <div className='profile-column'>
+        <div style={{width:"100%",margin:"0% 2%"}}>
           <Youroheader setView={setViewVal} />
+        </div>
           <div className='profile-details'>
             <div className='my-profile'>
               <ToastContainer />

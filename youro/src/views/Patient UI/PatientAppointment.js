@@ -236,7 +236,7 @@ const PatientAppointment = (props) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: "column", width: "100%" }} >
-            <div style={{ margin: "0% 2%" }}>
+            <div style={{ margin: "0% 2%", width: '100%' }}>
                 <Youroheader setView={setViewVal} />
             </div>
             <div style={{ display: 'flex', width: '100%', flexDirection: "row", alignItems: 'start' }}>

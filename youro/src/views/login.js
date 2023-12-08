@@ -63,10 +63,10 @@ const Login= () =>
                 Cookies.set(COOKIE_KEYS.userName, res.data.fullName,{expires:7});            
 
                 if(res.data.uType === 'PATIENT'){
-                  navigate("/patient-ui");
+                  navigate("/patient-home");
                 }
                 else if(res.data.uType === 'PROVIDER'){
-                  navigate("/doctor-ui");
+                  navigate("/doctor-home");
                 }
                 else{
                   navigate("/admin-doctors");

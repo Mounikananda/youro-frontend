@@ -167,8 +167,9 @@ const PatientEducate = (props) => {
 
     return (
         <div className="educate-container">
+            <div style={{width:"100%",margin:"0% 2%"}}>
             <Youroheader setView={setViewVal} />
-            <h1 style={{ marginTop: '80px', color: 'black' }}>Educate Yourself</h1>
+            <h1 style={{marginTop: '0px', marginBottom: '50px', color: 'black' }}>Educate Yourself</h1>
             <div className="educate-container-main">
                 <div className="educate-column-one">
                     {diagnosisData && diagnosisData.length != 0 && diagnosisData.map((item, index) => (
@@ -228,6 +229,7 @@ const PatientEducate = (props) => {
                     </div>
                 </div>
 
+            </div>
             </div>
         </div>
     )

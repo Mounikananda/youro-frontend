@@ -6,7 +6,7 @@ import Signupoptions from './views/Signupoptions';
 import Patientaddress from './views/PatientAddress';
 import Login from './views/login';
 
-import { BrowserRouter as Router,Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router,Routes, Route, Link, Navigate } from 'react-router-dom';
 import AdminSignup from './views/Admin-Signup';
 import PrivacyPolicy from './views/PrivacyPolicies';
 import Policy from './views/legal/policy';
@@ -30,6 +30,7 @@ import AdminMaintainenceList from './views/Admin UI/Admin-Maintainence';
 import ForgotPassword from './views/ForgotPassword';
 import VerifyEmail from './views/VerifyEmail';
 import AdminAssistantList from './views/Admin UI/Admin-AssistantList';
+import Cookies from "js-cookie";
   
 export const API_DETAILS = {
   baseUrl: 'http://3.147.74.34:',
@@ -58,6 +59,46 @@ export const COOKIE_KEYS = {
   userName: 'U_NAME',
   userType: 'U_TYPE'
 }
+
+const IsAuthenticated = () => {
+  const token = Cookies.get(COOKIE_KEYS.token)
+  if(!token) return false
+
+  return true
+}
+
+const PatientProtectedRoute = ({children}) => {
+  if(!IsAuthenticated()) return <Navigate to="/login" replace />;
+
+  const uType = Cookies.get(COOKIE_KEYS.userType)
+  console.log(uType)
+
+  if(uType == 'PATIENT') return children
+
+  return <Navigate to={uType == 'PROVIDER' ? '/doctor-home': '/admin-doctors'} replace />;
+}
+
+const DoctorProtectedRoute = ({children}) => {
+  if(!IsAuthenticated()) return <Navigate to="/login" replace />;
+
+  const uType = Cookies.get(COOKIE_KEYS.userType)
+
+  if(uType == 'PROVIDER') return children
+
+  return <Navigate to={uType == 'PATIENT' ? '/patient-home': '/admin-doctors'} replace />;
+}
+
+const AdminProtectedRoute = ({children}) => {
+  if(!IsAuthenticated()) return <Navigate to="/login" replace />;
+
+  const uType = Cookies.get(COOKIE_KEYS.userType)
+
+  if(uType == 'ADMIN') return children
+
+  return <Navigate to={uType == 'PATIENT' ? '/patient-home': '/doctor-home'} replace />;
+}
+
+
 function App() {
   return ( 
     <>
@@ -75,19 +116,22 @@ function App() {
         <Route path='/policy' element={<Policy/>}></Route>
         <Route path='/telehealth-consent' element={<Telehealth/>}></Route>
         <Route path='/terms-conditions' element={<Terms/>}></Route>
-        <Route path='/patient-ui' element={<PatientView/>}></Route>
-        <Route path='/doctor-ui' element={<DoctorHomePage/>}></Route>
-        <Route path='/admin-doctors' element={<AdminDoctorsList/>}></Route>
-        <Route path='/admin-patients' element={<AdminPatientList/>}></Route>
-        <Route path='/doctor-profile' element={<DoctorProfile/>}></Route>
-        <Route path='/doctor-appointment' element={<DoctorAppointments/>}></Route>
-        <Route path='/doctor-view-profile/:patientId?/:apptId?' element={<ViewProfile/>}></Route>
-        <Route path='/doctor-chat' element={<DoctorChat/>}></Route>
-        <Route path='/admin-denied-doctors' element={<AdminDeniedDoctorsList/>}></Route>
-        <Route path='/admin-view-doctor' element={<AdminViewDoctorProfile/>}></Route>
-        <Route path='/admin-view-patient' element={<AdminViewPatientProfile/>}></Route>
-        <Route path='manage-approved-medicine' element={<AdminMaintainenceList />}></Route>
-        <Route path='/admin-assistants' element={<AdminAssistantList/>}></Route>
+
+        
+        <Route path='/patient-home' element={<PatientProtectedRoute><PatientView/></PatientProtectedRoute>}></Route>
+        <Route path='/doctor-home' element={<DoctorProtectedRoute><DoctorHomePage/></DoctorProtectedRoute>}></Route>
+        <Route path='/admin-doctors' element={<AdminProtectedRoute><AdminDoctorsList/></AdminProtectedRoute>}></Route>
+        <Route path='/admin-patients' element={<AdminProtectedRoute><AdminPatientList/></AdminProtectedRoute>}></Route>
+        <Route path='/doctor-profile' element={<DoctorProtectedRoute><DoctorProfile/></DoctorProtectedRoute>}></Route>
+        <Route path='/doctor-appointment' element={<DoctorProtectedRoute><DoctorAppointments/></DoctorProtectedRoute>}></Route>
+        <Route path='/doctor-view-profile/:patientId?/:apptId?' element={<DoctorProtectedRoute><ViewProfile/></DoctorProtectedRoute>}></Route>
+        <Route path='/doctor-chat' element={<DoctorProtectedRoute><DoctorChat/></DoctorProtectedRoute>}></Route>
+        <Route path='/admin-denied-doctors' element={<AdminProtectedRoute><AdminDeniedDoctorsList/></AdminProtectedRoute>}></Route>
+        <Route path='/admin-view-doctor' element={<AdminProtectedRoute><AdminViewDoctorProfile/></AdminProtectedRoute>}></Route>
+        <Route path='/admin-view-patient' element={<AdminProtectedRoute><AdminViewPatientProfile/></AdminProtectedRoute>}></Route>
+        <Route path='manage-approved-medicine' element={<AdminProtectedRoute><AdminMaintainenceList /></AdminProtectedRoute>}></Route>
+        <Route path='/admin-assistants' element={<AdminProtectedRoute><AdminAssistantList/></AdminProtectedRoute>}></Route>
+
      </Routes>
     </Router>
     

@@ -40,9 +40,27 @@ const DoctorChat =()=>
     useEffect(() => {
         if(isFirstRender.current > 0 && isFirstRender.current < 3){
             getChatUsers();
-            // if (chatHistory && (chatHistory.filter((data, i) => data.uId == searchParams.get('patientId')))){
-            //     alert('Hi')
-            // }
+            if (searchParams.get('patientId')){
+                if (chatHistory && chatHistory.filter((data, i) => data.uId == searchParams.get('patientId')).length > 0){
+                    
+                } else {
+                    console.log(chatHistory)
+                    const dupChatHistory = [...chatHistory]
+        
+                    var dic = {}
+                        
+                    dic.uId = searchParams.get('patientId')
+                    dic.picture = null
+                    dic.name = searchParams.get('name')
+                    dic.email = null                  
+    
+                    
+                    dupChatHistory.unshift(dic)
+
+                    setChatHistory(dupChatHistory)
+                }
+            }
+            
             
             // isFirstRender.current = isFirstRender.current + 1;
         }  

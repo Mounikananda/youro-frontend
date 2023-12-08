@@ -98,8 +98,9 @@ const PatientHomePage = (props) => {
               <h3 style={{marginTop:'0.1%',marginLeft:'2%'}}>{item.doctorName}</h3> </div>
             </div>
             <ul key={item.apptId}>
-              {/* <li>Diagnosisname: {item.diagnosisname}</li> */}
-              {item.status != 'CANCELED' && <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>view careplan and note provided</li>}
+              
+              {item.status != 'CANCELED' && <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => {setPopupOpen(true); setSelectedCareplan(item)}}>View careplan and notes</li>}
+              <li>Diagnosisname: {item.diagName}</li>
               {/* <li>Status: {item.status}</li> */}
               {/* <p>{item.meetup}</p> */}
             </ul>
@@ -159,7 +160,8 @@ const PatientHomePage = (props) => {
               <h3 style={{marginTop:'0.1%',marginLeft:'2%'}}>{item.doctorName}</h3> </div>
             </div>
             <ul key={item.apptId}>
-              <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>
+              {item.status != 'CANCELED' && <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }} onClick={() => setOpen(true)}>Fill out symptom calculator</li>}
+              <li>Diagnosisname: {item.diagName}</li>
             </ul>
 
             {

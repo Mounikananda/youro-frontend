@@ -198,7 +198,7 @@ const appointments_image = (arrayBuffer) => {
                 <div>
                 <button className='btn-gray' style={{ width: 'fit-content', margin: '0px 20px 10px 20px', padding: '0px 5px', cursor: 'pointer' }}
                   onClick={() =>openLinkPopUp(item)} >Upload Link</button>
-                <button style={{backgroundColor:'gray',color:'white',borderRadius:'15px',cursor:'pointer'}} onClick={() => cancelAppointment(item)} >Cancel</button>
+                <button className='btn-gray' style={{width: 'fit-content', margin: '0px 20px 10px 20px', padding: '0px 5px', cursor: 'pointer'}} onClick={() => cancelAppointment(item)} >Cancel</button>
                 </div>
               </>
             }

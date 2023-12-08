@@ -257,7 +257,7 @@ const PreviousAppointmentList = () => {
         </div>
         <div className='p-data-row'>
           {/* <div >Message</div> */}
-            <Link style={{ textDecoration: 'none' }} to={`/doctor-chat?patientId=${patDetails?.userId}`}>Message</Link>
+            <Link style={{ textDecoration: 'none' }} to={`/doctor-chat?patientId=${patDetails?.userId}&name=${patDetails?.firstName + ' ' + patDetails?.lastName} `}>Message</Link>
           {/* {showEditor && (
         <div className="floating-editor">
             <ReactQuillWrapper/>

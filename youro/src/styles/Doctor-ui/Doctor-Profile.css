@@ -42,7 +42,7 @@
   /* margin-top: 5%; */
   width: 95%;
   margin: 1%;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .p-col
