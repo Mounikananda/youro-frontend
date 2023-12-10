@@ -492,7 +492,7 @@ const DoctorProfile = () => {
                 {/* <input className='input-field' type='text'></input> */}
               </div>
               <div className='p-fields'>
-                <label>City </label>
+                <label className='city'>City</label>
                 <input defaultValue={""} className="input-field input-border" type="text" {...register("city", {
                   required: true,
                   maxLength: 32,
