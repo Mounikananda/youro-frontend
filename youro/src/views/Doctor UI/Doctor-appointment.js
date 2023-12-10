@@ -426,7 +426,7 @@ function DoctorAppointments() {
                       {isTimeConflict  && selectslot=="Available"? (<div/>)
                          :(<button className="add-availability" onClick={handleEventCreation}>Confirm
                       </button>)}
-                      <button className="add-availability" onClick={handlecreatevent_boolen}>Hide</button>
+                      <button className="add-availability" onClick={handlecreatevent_boolen}>Cancel</button>
                     </div>
                   </div>
                 </div>
@@ -452,7 +452,7 @@ function DoctorAppointments() {
                       (<div><button className="remove-button" onClick={() => RemoveAvailability(selectedEvent)} > Remove availablity</button></div>) :
                       (<div><button className="remove-button" onClick={() => handleCancelApptAPI(selectedEvent)}> Cancel Appointment</button></div>)
                     }
-                    <button className="hide-button" onClick={hidedetails}>Hide</button>
+                    <button className="hide-button" onClick={hidedetails}>Cancel</button>
                   </div>
                 </div>
               </div>
