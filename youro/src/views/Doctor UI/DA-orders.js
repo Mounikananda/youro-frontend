@@ -431,7 +431,7 @@ const Orders = (props) => {
         </span>
     </div>
 
-    <h1 style={{color: 'black', padding: '20px'}}>Dosage Instructions</h1>
+    <h1 style={{color: 'black', padding: '20px'}}>Dosage Instructions & Notes </h1>
 
     <div style={{padding: '0px 20px 20px 20px'}} className='popup-height'>
       
