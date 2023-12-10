@@ -184,7 +184,7 @@ const appointments_image = (arrayBuffer) => {
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>View Profile</Link></li>
             </ul>
             {
-              item.link && <>
+              item.link && item.status != 'CANCELED' && <>
                 <div>
                 {/* <button className='join-now-button' >Join Now</button> */}
                 <button className='join-now-button' style={{ width: 'fit-content', margin: '0px 27px 10px 20px',padding: '2px 10px', cursor: 'pointer' }}
