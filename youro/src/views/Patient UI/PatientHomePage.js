@@ -192,13 +192,13 @@ const PatientHomePage = (props) => {
                 <div className='col-6'>
                   {
                   item.link ? 
-                  <button className='join-now-button' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> 
+                  <button className='p-join-now' onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>Join Now</button> 
                   : 
-                  <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
+                  <button className='p-join-now' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'not-allowed', pointerEvents: 'none', backgroundColor: '#888' }}>Join Now</button>
                   }
                 </div>
                 <div className='col-6'>
-                  <button className='join-now-button' onClick={() => cancelAppointment(item)} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>
+                  <button className='p-join-now' onClick={() => cancelAppointment(item)} style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}>
                     Cancel
                   </button>
                 </div>
