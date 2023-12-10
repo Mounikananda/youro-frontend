@@ -47,6 +47,17 @@ const PrivacyPolicy = (props) => {
     });
   }
 
+  
+  document.addEventListener('keydown', (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      console.log('Enter key pressed');
+      handleSubmit(onSubmit)();
+    }
+  });
+
+
+  
   return (
     <div className="PatientAddress-container">
       <ToastContainer />

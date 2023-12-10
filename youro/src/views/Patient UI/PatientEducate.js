@@ -208,22 +208,18 @@ const PatientEducate = (props) => {
                     <div style={{margin:'3%',height:'40vh'}}>
                         {
                             pageContext === "SYSMPTOMS" &&
-                            // <div>{educationalInfo[0].symptoms}</div>
                             <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].symptoms }} />
                         }
                         {
                             pageContext === "CAUSES" &&
-                            // <div>{educationalInfo[0].causes}</div>
                             <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].causes }} />
                         }
                         {
                             pageContext === "TREATMENT" &&
-                            // <div>{educationalInfo[0].treatment}</div>
                             <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].treatment }} />
                         }
                         {
                             pageContext === "SURGICAL_OPTIONS" &&
-                            // <div>{educationalInfo[0].surgical_options}</div>
                             <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].surgical_options }} />
                         }
                     </div>

@@ -35,7 +35,7 @@ import DoctorAccessDenied from './views/Doctor UI/DoctorAccessDenied';
 import axios from 'axios';  
 
 export const API_DETAILS = {
-  baseUrl: 'http://3.147.74.34:',
+  baseUrl: 'http://3.21.76.121:',
   PORT: '9095',
   baseExtension: '/youro/api/v1',
 };

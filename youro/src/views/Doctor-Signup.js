@@ -26,6 +26,14 @@ const DoctorSignup= () =>
     console.log("All data:",data);
   }
 
+  document.addEventListener('keydown', (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      console.log('Enter key pressed');
+      handleSubmit(onsubmit)();
+    }
+  });
+
    return (
           <div>
           {

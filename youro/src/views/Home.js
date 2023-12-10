@@ -1,9 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import "../styles/Home.css";
 import Benefits from '../assets/svgs/Benefits.svg';
 import { useNavigate } from 'react-router-dom';
+import SymptomCalculator from "./Patient UI/SymptomCalculator";
 
 const Home = () => {
+
+    const [open, setOpen] = useState(false);
 
     const navigate = useNavigate();
 
@@ -40,7 +43,7 @@ const Home = () => {
                     </div>
                     <div class="flip-card-back" style={{width: '100%',}}>
                     <p style={{wordBreak: 'break-word', whiteSpace: 'normal', padding: '20px',color:'black', }}><i>{props.info}</i></p>
-                    <div className="btn-filled" style={{width: 'fit-content', margin: 'auto auto 0px auto', padding: '5px 15px',}} onClick={() => navigate('/login')}>Calculate Symptom score</div> <br />
+                    <div className="btn-filled" style={{width: 'fit-content', margin: 'auto auto 0px auto', padding: '5px 15px',}} onClick={() => setOpen(true)}>Calculate Symptom score</div> <br />
                     <div className="btn-outlined" style={{width: 'fit-content', margin: 'auto auto 0px auto', padding: '5px 15px',}} onClick={() => navigate('/login')}>Speak to Provider</div>
                     </div>
                 </div>
@@ -152,6 +155,7 @@ const Home = () => {
 
             </div>
         </div>
+        {open && <SymptomCalculator open={open} setOpen={setOpen} />}
         </>
     )
 }

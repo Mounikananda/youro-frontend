@@ -84,7 +84,9 @@ const SymptomCalculator = (props) => {
         catch (err) {
             console.error(err);
         }
-        props.fetchSymptomScore(true);
+        if(props.fetchSymptomScore){
+            props.fetchSymptomScore(true);
+        }
     };
 
 
@@ -105,7 +107,6 @@ const SymptomCalculator = (props) => {
                     patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
                 }
                 saveNewSymptomScore(temp);
-                // props.setOpen(false)
             }
         }
         console.log("handleNext END");

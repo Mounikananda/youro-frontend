@@ -31,6 +31,13 @@ const SignupforFamilyMember = () => {
     setData(values)
   }
 
+  document.addEventListener('keydown', (event) => {
+    if (event.keyCode === 13) {
+      event.preventDefault();
+      console.log('Enter key pressed');
+      handleSubmit(onsubmit)();
+    }
+  });
 
   return (
     <div>
@@ -131,9 +138,18 @@ const SignupforFamilyMember = () => {
                 </div>
                 <div className="label-input">
                   <label >Re-type Password</label>
-                  <input className="input-field input-border" type="password" {...register("confirmPassword", {
+                  {/* <input className="input-field input-border" type="password" {...register("confirmPassword", {
                     validate: val => watch('password') === val
-                  })}  ></input>
+                  })}  ></input> */}
+                   <input
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        handleSubmit(onsubmit)();
+                      }
+                    }} className="input-field input-border" type="password" {...register("confirmPassword", {
+                      validate: val => watch('password') === val
+                    })}  ></input>
+
                   {errors?.confirmPassword && <p className="error-text">Passwords must match</p>}
                 </div>
               </div>
