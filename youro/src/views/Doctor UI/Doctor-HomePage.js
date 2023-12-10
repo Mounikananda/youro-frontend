@@ -187,9 +187,9 @@ const appointments_image = (arrayBuffer) => {
               item.link && <>
                 <div>
                 {/* <button className='join-now-button' >Join Now</button> */}
-                <button className='join-now-button' style={{ width: 'fit-content', margin: '0px auto 10px auto', cursor: 'pointer' }}
+                <button className='join-now-button' style={{ width: 'fit-content', margin: '0px 27px 10px 20px',padding: '2px 10px', cursor: 'pointer' }}
                   onClick={() => window.open(`${item.link}`,'_blank', 'rel=noopener noreferrer')}>Join Now</button>
-                <button style={{backgroundColor:'gray',color:'white',borderRadius:'15px',cursor:'pointer'}} onClick={() => cancelAppointment(item)}>Cancel</button>
+                <button className='btn-gray' style={{width:'fit-content',margin: '0px 20px 10px 20px', padding: '0px 5px',cursor:'pointer'}} onClick={() => cancelAppointment(item)}>Cancel</button>
                 </div>
               </>
             }
@@ -221,7 +221,7 @@ const appointments_image = (arrayBuffer) => {
      <div className='hm-doctor'>
         <Loader active={isLoading} />
         <div className='sidebar'>
-         <DoctorSideBar />
+         <DoctorSideBar data={'doctor-ui'}/>
        </div>
        <div className='care-plan-doctor'>
          <Youroheader />
