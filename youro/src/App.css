@@ -24,10 +24,10 @@
 }
 
 .btn-filled {
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-color) !important;
   color: white;
   border: none;
-  border-radius: 15px;
+  border-radius: 15px !important;
   border-width: 5;
   text-align: center;
   transition: all .2s ease-in;
@@ -50,7 +50,7 @@
 }
 
 .btn-filled:hover {
-  background-color: inherit;
+  background-color: inherit !important;
   color: #404040 !important;
   border: 1px solid #404040 !important;
   box-shadow: var(--shadow);
@@ -60,7 +60,7 @@
   color: #404040 !important;
   /* font-weight: 700; */
   border: 1px solid #404040 !important;
-  border-radius: 15px;
+  border-radius: 15px !important;
   border-width: 5;
   text-align: center;
   transition: all .2s ease-in;
@@ -70,7 +70,7 @@
 }
 
 .btn-outlined:hover {
-  background-color: var(--secondary-color);
+  background-color: var(--secondary-color) !important;
   color: white !important;
   border: 1px solid transparent !important;
   /* border-color: none !important; */
