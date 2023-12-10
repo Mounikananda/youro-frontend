@@ -83,16 +83,23 @@ const Login = () => {
   }
 
 
-  document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed');
+  // document.addEventListener('keydown', (event) => {
+  //   if (event.keyCode === 13) {
+  //     event.preventDefault();
+  //     console.log('Enter key pressed');
+  //     handleSubmit(onSubmit)();
+  //   }
+  // });
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
       handleSubmit(onSubmit)();
-    }
-  });
+      }
+}
 
   return (
-    <div class="Signupfamilymember-container">
+    <div class="Signupfamilymember-container" onKeyDown={handleKeyDown}>
       <ToastContainer />
       {forgot === 0 && <>
         <h1>youro</h1>

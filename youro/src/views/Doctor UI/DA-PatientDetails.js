@@ -225,7 +225,7 @@ const PreviousAppointmentList = () => {
   const handleNotesSubmit = () => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/saveNotes`;
     var data = {};
-    data['apptId'] = showEditor.apptId ? showEditor.apptId : 3;
+    data['apptId'] = showEditor.apptId ? showEditor.apptId : null;
     data['patientId'] = parseInt(showEditor.patientId ? showEditor.patientId : patientId);
     data['doctorId'] = parseInt(Cookies.get(COOKIE_KEYS.userId));
     data['notes'] = notes
@@ -246,7 +246,7 @@ const PreviousAppointmentList = () => {
       <div className='p-all-data'>
         <div className='p-data-col' style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
           <div>
-          <img style={{margin: '0px 20px 0px 0px', borderRadius: '100%', minWidth: '100px'}} src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" height="100" />
+          <img style={{margin: '0px 20px 0px 0px', borderRadius: '100%', width: '100px'}} src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" alt="Preview" height="100" />
           </div>
           
           <div>

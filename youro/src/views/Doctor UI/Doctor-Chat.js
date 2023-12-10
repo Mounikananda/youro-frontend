@@ -128,33 +128,35 @@ const DoctorChat =()=>
 
     const saveChat = async() => {
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/saveChat`;
-        const data = {
-            "msg": message,
-            "from": parseInt(Cookies.get(COOKIE_KEYS.userId)),
-            "to": seletedChat
-        }
-
-        axios.post(url, data).then(res => {
-            setChatData(res.data)
-            setActiveLoader(false)
-            
-
-            var dupChatData = [...chatData]
-            var mssg = {
-                "message": message,
-                "fromId": parseInt(Cookies.get(COOKIE_KEYS.userId)),
-                "toId": seletedChat,
-                "time": new Date()
+        if(message.trim()){
+            const data = {
+                "msg": message.trim(),
+                "from": parseInt(Cookies.get(COOKIE_KEYS.userId)),
+                "to": seletedChat
             }
-
-            dupChatData = [mssg].concat(dupChatData)
-
-            setChatData(dupChatData)
-            setIsloading(false);
-          }).catch(err => {     
-            console.error(err);
-            setIsloading(false);
-          })
+    
+            axios.post(url, data).then(res => {
+                setChatData(res.data)
+                setActiveLoader(false)
+                
+    
+                var dupChatData = [...chatData]
+                var mssg = {
+                    "message": message.trim(),
+                    "fromId": parseInt(Cookies.get(COOKIE_KEYS.userId)),
+                    "toId": seletedChat,
+                    "time": new Date()
+                }
+    
+                dupChatData = [mssg].concat(dupChatData)
+    
+                setChatData(dupChatData)
+                setIsloading(false);
+              }).catch(err => {     
+                console.error(err);
+                setIsloading(false);
+              })
+        }
           
 
         setMessage('')
