@@ -222,3 +222,19 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.p-join-now
+{
+  border: none;
+  color: white;
+  background-color: var(--secondary-color);
+  /* padding: 10px; */
+  /* border-radius: 20px; */
+  /* background-color: gray; */
+  color: white;
+  border-radius: 15px;
+  text-align: center;
+  transition: all .2s ease-out;
+  cursor: pointer;
+  font-weight: 700;
+}
