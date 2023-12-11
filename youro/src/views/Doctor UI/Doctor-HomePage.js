@@ -221,7 +221,7 @@ const appointments_image = (arrayBuffer) => {
      <div className='hm-doctor'>
         <Loader active={isLoading} />
         <div className='sidebar'>
-         <DoctorSideBar data={'doctor-ui'}/>
+         <DoctorSideBar data={'doctor-home'}/>
        </div>
        <div className='care-plan-doctor'>
          <Youroheader />

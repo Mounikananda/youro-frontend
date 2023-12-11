@@ -31,20 +31,20 @@ const SignupforFamilyMember = () => {
     setData(values)
   }
 
-  document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed');
-      handleSubmit(onsubmit)();
-    }
-  });
+  // document.addEventListener('keydown', (event) => {
+  //   if (event.keyCode === 13) {
+  //     event.preventDefault();
+  //     console.log('Enter key pressed');
+  //     handleSubmit(onsubmit)();
+  //   }
+  // });
 
   return (
     <div>
       {
         step === 0 && <>
 
-          <div class="Signupfamilymember-container">
+          <form class="Signupfamilymember-container" onSubmit={handleSubmit((onsubmit))}>
 
             <h1>youro</h1>
             <p className="h3">Membership/Sign-up gives you direct access to our team of<br /> urological providers with same or next day appointments.  </p>
@@ -142,11 +142,12 @@ const SignupforFamilyMember = () => {
                     validate: val => watch('password') === val
                   })}  ></input> */}
                    <input
-                    onKeyDown={(event) => {
-                      if (event.key === "Enter") {
-                        handleSubmit(onsubmit)();
-                      }
-                    }} className="input-field input-border" type="password" {...register("confirmPassword", {
+                    // onKeyDown={(event) => {
+                    //   if (event.key === "Enter") {
+                    //     handleSubmit(onsubmit)();
+                    //   }
+                    // }} 
+                      className="input-field input-border" type="password" {...register("confirmPassword", {
                       validate: val => watch('password') === val
                     })}  ></input>
 
@@ -159,12 +160,12 @@ const SignupforFamilyMember = () => {
                   <p>Already youro member? <span onClick={() => navigate('/login')} className="color-secondary" style={{ cursor: 'pointer' }}><u>Login</u></span> </p>
                 </div>
                 <div className="myself-label" style={{ width: "45%", position: "relative" }}>
-                  <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Next</div>
+                  <button  type="submit" className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Next</button>
 
                 </div>
               </div>
             </div>
-          </div>
+          </form>
 
         </>
       }

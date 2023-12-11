@@ -23,17 +23,17 @@ const Patientaddress = (props) => {
   }
 
   
-  document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed');
-      handleSubmit(onsubmit)();
-    }
-  });
+  // document.addEventListener('keydown', (event) => {
+  //   if (event.keyCode === 13) {
+  //     event.preventDefault();
+  //     console.log('Enter key pressed');
+  //     handleSubmit(onsubmit)();
+  //   }
+  // });
 
 
   return (
-    <div class="PatientAddress-container">
+    <form class="PatientAddress-container" onSubmit={handleSubmit((onsubmit))}>
 
       <h1>youro</h1>
       <p className="h3">If in-persons visits are best for you we will seamlessly<br /> transition your care to one of our urology patners in<br />your area</p>
@@ -122,12 +122,12 @@ const Patientaddress = (props) => {
             <p>Already youro member? <span onClick={() => navigate('/login')} className="color-secondary" style={{ cursor: 'pointer' }}><u>Login</u></span> </p>
           </div>
           <div className="myself-label" style={{ width: "45%", position: "relative" }}>
-            <div className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Next</div>
+            <button className="next-button btn-filled" onClick={handleSubmit((onsubmit))}>Next</button>
 
           </div>
         </div>
       </div>
-    </div>
+    </form>
   )
 }
 
