@@ -134,6 +134,10 @@ const Login = () => {
           <div>
             <p className="color-secondary" style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => setForgot(1)}>Forgot password?</p>
             <div className="btn-filled" style={{ marginTop: '40px' }} onClick={handleSubmit(onSubmit)}>Login</div>
+            <div style={{textAlign: 'center'}}>
+            <p>Don't have account? <span className="color-secondary" style={{ textDecoration: 'underline', cursor: 'pointer', fontWeight: 'bold' }} onClick={() => navigate("/signup")}>Sign Up</span></p>
+            </div>
+            
           </div>
         </div>
       </>
