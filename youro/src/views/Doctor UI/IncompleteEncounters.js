@@ -45,7 +45,8 @@ const IncompleteEncounters=()=>
         {data.map((item) => (
           <div className='incomplete-appt-div'> 
            <div>
-            <h3 >{item.apptDate}-{item.patientName}</h3>
+            {/* <h3 >{item.apptDate}-{item.patientName}</h3> */}
+            <h3>{item.patientName}</h3>
               <ul className='list-type'>
               <li><div>{item.orders ?<FaCheckCircle/> : <FaTimesCircle />} Orders</div></li>
               <li><div>{item.followUp ?<FaCheckCircle/> : <FaTimesCircle />} followUp</div></li>

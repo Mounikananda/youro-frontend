@@ -184,7 +184,7 @@ const appointments_image = (arrayBuffer) => {
               <li style={{ textDecoration: 'underline', color: '#9CB189', cursor: 'pointer' }}><Link style={{ textDecoration: 'none' }} to={`/doctor-view-profile/${item.patientId}`}>View Profile</Link></li>
             </ul>
             {
-              item.link && item.status != 'CANCELED' && <>
+              item.link && (item.status == 'SCHEDULED' ) && <>
                 <div>
                 {/* <button className='join-now-button' >Join Now</button> */}
                 <button className='join-now-button' style={{ width: 'fit-content', margin: '0px 27px 10px 20px',padding: '2px 10px', cursor: 'pointer' }}
@@ -194,7 +194,7 @@ const appointments_image = (arrayBuffer) => {
               </>
             }
             {
-              !item.link && item.status != 'CANCELED' && <>
+              !item.link && item.status == 'SCHEDULED' && <>
                 <div>
                 <button className='btn-gray' style={{ width: 'fit-content', margin: '0px 20px 10px 20px', padding: '0px 5px', cursor: 'pointer' }}
                   onClick={() =>openLinkPopUp(item)} >Upload Link</button>
@@ -256,7 +256,7 @@ const appointments_image = (arrayBuffer) => {
 
               </div>
               <div className="">
-                <label>Zoom meeting link:</label>
+                <label>Meeting link:</label>
                 <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} value={meetLink} onChange={e => {setMeetLink(e.target.value)}} />
               </div>
 

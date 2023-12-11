@@ -141,8 +141,8 @@ white-space:nowrap;
 
 .flip-card {
     background-color: transparent;
-    width: 500px;
-    height: 600px;
+    width: 400px;
+    height: 450px;
     perspective: 1000px; /* Remove this if you don't want the 3D effect */
     display: inline-block;
     margin-right: 100px;
@@ -201,7 +201,7 @@ white-space:nowrap;
     padding: 10px 0px;
     bottom: 0px;
     font-weight: 700;
-    font-size: 32px;
+    font-size: 24px;
     color: var(--secondary-color);
     background-color: white;
     width: 100%;

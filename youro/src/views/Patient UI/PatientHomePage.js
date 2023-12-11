@@ -187,7 +187,7 @@ const PatientHomePage = (props) => {
             </ul>
 
             {
-              item.status != 'CANCELED' ? 
+              (item.status != 'SCHEDULED') ? 
               <div className='row' style={{ display: 'flex', justifyContent: 'space-around'}}>
                 <div className='col-6'>
                   {

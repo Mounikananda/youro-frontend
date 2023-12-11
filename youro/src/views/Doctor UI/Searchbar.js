@@ -143,7 +143,10 @@ const SearchBar = () => {
                         <label className='label-pd'>{patient.email}</label>
                       </div>
                       <div className='view-more'>
-                        <button className='btn-filled' onClick={() => handleViewMore(patient.userId)}>View More</button>
+                        {/* <button className='btn-filled' onClick={() => handleViewMore(patient.userId)}>View More</button> */}
+                        <button onClick={() => handleViewMore(patient.userId)} className='view-more-class' style={{backgroundColor: 'inherit'}} >
+                                                            View More {'>>'}
+                                                        </button>
                       </div>
                     </div>
                   ))}
