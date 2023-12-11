@@ -85,9 +85,9 @@ const Home = () => {
                 <div className="features-sub">
                     <Element info='Same/next-day appointments over video or phone that always start on time.' btn='Book appointment' img='https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/ddde21132979631.61b3855f4d171.jpg'/>
                     <Element info='Symptom calculators for each diagnosis to keep you on track to reaching your peak urologic health.' btn='Calculate your symptom score' img='https://s3-prod.modernhealthcare.com/s3fs-public/TRANSFORMATION01_190229992_AR_-1_ZCXXSMFSHKJC.jpg'/>
-                    <Element info='Urologic diagnoses treated by urology experts with compassion during each encounter.' btn='Discover your diagnosis' img='https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/ddde21132979631.61b3855f4d171.jpg'/>
-                    <Element info='Diagnostic testing kits and treatments delivered directly to your door.' btn='Explore treatments' img='https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/ddde21132979631.61b3855f4d171.jpg'/>
-                    <Element info='Conveniently-located lab services for a comprehensive evaluation every time.' btn='Explore lab services' img='https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/ddde21132979631.61b3855f4d171.jpg'/>
+                    <Element info='Urologic diagnoses treated by urology experts with compassion during each encounter.' btn='Discover your diagnosis' img='https://www.goodtherapy.org/blog/blog/wp-content/uploads/2012/10/doctor-with-patient.jpg'/>
+                    <Element info='Diagnostic testing kits and treatments delivered directly to your door.' btn='Explore treatments' img='https://blog.healthians.com/wp-content/uploads/2020/08/983.jpg'/>
+                    <Element info='Conveniently-located lab services for a comprehensive evaluation every time.' btn='Explore lab services' img='https://www.rabkindermpath.com/blog/admin/uploads/2022/man-lab-doing-experiments_laboratory_1668593536.jpg'/>
 
                 </div>
 
