@@ -23,6 +23,13 @@ const SignupforMyself = () => {
     // navigate("/patientaddress",{state:data})
     setStep(1)
     setData(data)
+    // setData(data.userType=USER_TYPES.user);
+  //   // setData(data.subscription=subscriptionStatus.active);
+  //   setData({
+  // ...data,  // Spread the existing data
+  // userType: USER_TYPES.user,  // Set userType to USER_TYPES.user
+  // subscription: subscriptionStatus.active  // Set subscription to subscriptionStatus.active
+// });
   }
 
   const step2Data = (values) => {
@@ -31,18 +38,18 @@ const SignupforMyself = () => {
   }
 
 
-  document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed');
-      handleSubmit(onsubmit)();
-    }
-  });
+  // document.addEventListener('keydown', (event) => {
+  //   if (event.keyCode === 13) {
+  //     event.preventDefault();
+  //     console.log('Enter key pressed');
+  //     handleSubmit(onsubmit)();
+  //   }
+  // });
   return (
     <div>
       {
         step === 0 && <>
-          <div class="SignupMyself-container">
+          <form class="SignupMyself-container" onSubmit={handleSubmit((onsubmit))}>
             <h1>youro</h1>
             <p className="h3">Membership/Sign-up gives you direct access to our team of<br /> urological providers with same or next day appointments.  </p>
             <div className="Form-myself-Container">
@@ -129,7 +136,7 @@ const SignupforMyself = () => {
                    <button className="next-button">Next</button>
                   </div> */}
             </div>
-          </div>
+          </form>
         </>
       }
 

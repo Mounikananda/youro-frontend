@@ -26,19 +26,19 @@ const DoctorSignup= () =>
     console.log("All data:",data);
   }
 
-  document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed');
-      handleSubmit(onsubmit)();
-    }
-  });
+  // document.addEventListener('keydown', (event) => {
+  //   if (event.keyCode === 13) {
+  //     event.preventDefault();
+  //     console.log('Enter key pressed');
+  //     handleSubmit(onsubmit)();
+  //   }
+  // });
 
    return (
           <div>
           {
             step === 0 && <>
-           <div class="DoctorSignup-container">
+           <form class="DoctorSignup-container" onSubmit={handleSubmit((onsubmit))}>
              <h1>youro</h1>
              <p className="h3">Membership/Sign-up gives you direct access to our team of<br/> urological providers with same or next day appointments.  </p>
                <div className="Form-Doctorsignup">
@@ -215,7 +215,7 @@ const DoctorSignup= () =>
                 </div> */}
     
         </div>
-        </div>
+        </form>
        </>
          }
         {step === 1 && <PrivacyPolicy data={data} uType={USER_TYPES.doctor} />}

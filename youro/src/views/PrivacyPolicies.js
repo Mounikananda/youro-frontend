@@ -13,10 +13,13 @@ const PrivacyPolicy = (props) => {
     formState: { errors },
   } = useForm();
   
+  console.log("pp data ",props.data);
   const navigate = useNavigate();
 
   const onSubmit = () => {
     let usrData = props.data;
+    console.log("data user type",props.uType);
+    // console.log("data from props.data",props.data.uType);
     usrData['userType'] = props.uType;
     usrData['phoneNumber'] = '';
     if(props.uType== 'PATIENT'){  
@@ -25,7 +28,7 @@ const PrivacyPolicy = (props) => {
     }
     
     delete usrData.confirmPassword;
-    console.log("usr data :: ");
+    console.log("usr data :: ",usrData);
     console.log(usrData);
     const config = {
       headers: {          
@@ -48,18 +51,18 @@ const PrivacyPolicy = (props) => {
   }
 
   
-  document.addEventListener('keydown', (event) => {
-    if (event.keyCode === 13) {
-      event.preventDefault();
-      console.log('Enter key pressed');
-      handleSubmit(onSubmit)();
-    }
-  });
+  // document.addEventListener('keydown', (event) => {
+  //   if (event.keyCode === 13) {
+  //     event.preventDefault();
+  //     console.log('Enter key pressed');
+  //     handleSubmit(onSubmit)();
+  //   }
+  // });
 
 
   
   return (
-    <div className="PatientAddress-container">
+    <form className="PatientAddress-container" onSubmit={handleSubmit((onSubmit))}>
       <ToastContainer />
      <h1> youro</h1>
      <div className="policy-container">
@@ -98,10 +101,9 @@ const PrivacyPolicy = (props) => {
         </div>
      </div>
      <div className="myself-label" style={{position: "relative", width: "35%", padding: "20px 0px 20px 20px", display: "flex", justifyContent: "flex-end"}}>
-            <div className="btn-filled" style={{width: 'fit-content'}} onClick={handleSubmit((onSubmit))}>Finish</div>
-            
+            <button className="btn-filled" style={{width: 'fit-content'}} onClick={handleSubmit((onSubmit))}>Finish</button>    
         </div>
-    </div>
+    </form>
   );
 };
 

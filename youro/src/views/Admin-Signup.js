@@ -32,7 +32,7 @@ const AdminSignup= () =>
           <div>
           {
            step === 0 && <>
-           <div class="Admin-container">
+           <form class="Admin-container" onSubmit={handleSubmit((onsubmit))}>
              <h1>youro</h1>
              <p className="h3">Membership/Sign-up gives you direct access to our team of<br/> urological providers with same or next day appointments.  </p>
                <div className="Form-admin-Container">
@@ -119,7 +119,7 @@ const AdminSignup= () =>
                    <button className="next-button">Next</button>
                 </div> */}
         </div>
-        </div>
+        </form>
         </>
         }
          {step === 1 && <PrivacyPolicy data={data} uType={USER_TYPES.admin} />}
