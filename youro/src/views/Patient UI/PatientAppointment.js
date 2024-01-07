@@ -4,7 +4,7 @@ import { Calendar as BigCalendar, Views, momentLocalizer } from 'react-big-calen
 import moment from 'moment';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
-import 'react-calendar/dist/Calendar.css';
+// import 'react-calendar/dist/Calendar.css';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import axios from 'axios';
 import Cookies from "js-cookie";
@@ -13,6 +13,7 @@ import Youroheader from "../Youro-header";
 import Loader from "../../utils/loader";
 import { toast } from "react-toastify";
 import "../../styles/Patient-ui/Patient-Homepage.css";
+import "../../styles/Patient-ui/Patient-Apt-Calender.css";
 
 const PatientAppointment = (props) => {
     const minDate = new Date();
