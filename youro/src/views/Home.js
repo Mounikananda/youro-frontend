@@ -54,7 +54,6 @@ const Home = () => {
 
     return (
         <>
-        <body>
         <div className="home-container">
             <div className="nav-bar">
                 <div><h1>youro</h1></div>
@@ -177,7 +176,6 @@ const Home = () => {
 
             </div>
         </div>
-        </body>
         {open && <SymptomCalculator open={open} setOpen={setOpen} />}
         </>
     )
