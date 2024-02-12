@@ -198,7 +198,6 @@ const PatientAppointment = (props) => {
         // console.log("getSlots start");
         var flag = 0
         data = data ? data : slotsData
-        // console.log(data)
         for (var i = 0; i < data.length; i++) {
             // console.log(slotsData[i]);
             if (data[i].date === eve) {
@@ -227,9 +226,10 @@ const PatientAppointment = (props) => {
         // console.log("handleDateSelection start");
         // console.log(eve);
         setDateSelection(eve);
-        console.log(eve)
         // console.log(eve.getDate() > 10);
-        var date = eve.getFullYear() + "-" + (eve.getMonth() + 1) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0' + eve.getDate()));
+        console.log(eve.getMonth())
+        var date = eve.getFullYear() + "-" + (eve.getMonth() >= 10 ? eve.getMonth() + 1 : '0' + (eve.getMonth() + 1)) + "-" + (eve.getDate() >= 10 ? (eve.getDate()) : ('0' + eve.getDate()));
+        console.log(date)
         getSlots(date, data);
         setEvent(false);
         // console.log("handleDateSelection end");
