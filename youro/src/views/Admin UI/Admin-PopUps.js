@@ -54,7 +54,6 @@ const AdminPopUps = ((props) => {
     }
 
     const deletePrescription = async () => {
-        // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
         console.log('in deletePrescription::' + props.data.rowData['medicineId']);
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePrescription/${props.data.rowData['medicineId']}`;
         const config = {

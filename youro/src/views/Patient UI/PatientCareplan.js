@@ -59,7 +59,7 @@ const CarePlan = () => {
        <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
        select_check_box
        </span><strong>&nbsp;&nbsp;Follow-up not required</strong></div>} <br /> <br />
-       {data.notes.length!=0 ? (<div><strong>Notes : </strong><p style={{wordWrap: 'break-word'}}>{data.notes}</p></div>):<div/>}
+       { data && data.notes && data.notes.length!=0 ? (<div><strong>Notes : </strong><p style={{wordWrap: 'break-word'}}>{data.notes}</p></div>):<div/>}
       <br /><br /><br />
       </> : <div style={{ width: '100%', height: '80%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <h3><i>See a doctor for your careplan</i></h3>
