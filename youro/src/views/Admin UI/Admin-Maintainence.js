@@ -36,6 +36,8 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import "../../styles/Admin-ui/Admin-Maintainence.css";
 import { Edit } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Edit';
 
 const POPUPMODES = {
     NEW: 'NEW',
@@ -54,6 +56,7 @@ const AdminMaintainenceList = () => {
     const [renderDiagnosisApiData, setRenderDiagnosisApiData] = useState(false);
     const [renderPrescriptionApiData, setRenderPrescriptionApiData] = useState(false);
     const [renderQuestionnaireApiData, setRenderQuestionnaireApiData] = useState(false);
+    const [renderCategoryApiData, setRenderCategoryApiData] = useState(false);
     const [open, setOpen] = useState(false);
     const [popUpMode, setPopupMode] = useState(POPUPMODES.NEW);
     const [popUpData, setPopUpData] = useState({});
@@ -69,7 +72,10 @@ const AdminMaintainenceList = () => {
     const [selecDiagInfo, setDiagInfo] = useState('');
 
     const [diagnosisData, setDiagnosisData] = useState([]);
+    const [categoryData, setCategoryData] = useState([]);
     const [needsRefresh, setRefreshStatus] = useState(false);
+    const [editCategoryData, setEditCategoryData] = useState({});
+
 
     const [columns, setColumns] = useState(
         [
@@ -87,6 +93,10 @@ const AdminMaintainenceList = () => {
             {
                 accessorKey: 'presType',
                 header: 'Prescription Type',
+            },
+            {
+                accessorKey: 'category',
+                header: 'Category',
             },
             {
                 accessorKey: 'diagnosis',
@@ -114,6 +124,10 @@ const AdminMaintainenceList = () => {
                 {
                     accessorKey: 'presType',
                     header: 'Prescription Type',
+                },
+                {
+                    accessorKey: 'category',
+                    header: 'Category',
                 },
                 {
                     accessorKey: 'diagnosis',
@@ -162,7 +176,30 @@ const AdminMaintainenceList = () => {
                     header: 'Info',
                 }
             ]);
+
+
             setTableData(diagnosisData);
+        }
+
+
+        else if (newAlignment == 'CATEGORY') {
+            setPageContext('CATEGORY');
+            setColumns([
+                {
+                    accessorKey: 'categoryID',
+                    header: 'ID',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
+                },
+                {
+                    accessorKey: 'categoryName',
+                    header: 'Category Name',
+                },
+            ]);
+
+            
+            setTableData(categoryData);
         }
     };
 
@@ -181,6 +218,7 @@ const AdminMaintainenceList = () => {
             fetchPrescitions();
             fetchAllDiagnoses();
             fetchAllQuestionnaires();
+            fetchCategoryData();
             isRendered.current = true;
         }
         else {
@@ -201,6 +239,7 @@ const AdminMaintainenceList = () => {
         };
         try {
             const res = await axios.get(url, config);
+            console.log("HERE IS THE PRESCRIPTION DATA", res);
             canRenderAdmin(true);
             let tempData = [];
             for (let i = 0; i < res.data.length; i++) {
@@ -210,10 +249,12 @@ const AdminMaintainenceList = () => {
                     presType: res.data[i].presType,
                     diagnosis: res.data[i].diagnosis.name,
                     shortInfo: res.data[i].shortInfo,
-                    overview: res.data[i].overview
+                    overview: res.data[i].overview,
+                    category: res.data[i].category.name,
                 };
                 tempData.push(temp);
             }
+            console.log("SETTING PRESCRIPTION LIST")
             setPrescription(tempData);
             setTableData(tempData);
             setRenderPrescriptionApiData(true);
@@ -311,6 +352,49 @@ const AdminMaintainenceList = () => {
         // console.log("====^^^===");
     };
 
+    const fetchCategoryData = async () => {
+       // Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllCategories`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            const res = await axios.get(url, config); 
+            console.log("here is the category",res);
+            canRenderAdmin(true);
+            let tempData = [];
+            for (let i = 0; i < res.data.length; i++) {
+                let temp = {
+                    categoryID: res.data[i].categoryId,
+                    categoryName: res.data[i].name,
+                };
+                console.log("here is the temp",temp);
+                tempData.push(temp);
+            }
+            setCategoryData(tempData);
+            if (pageContext == 'CATEGORY') {
+                setTableData(tempData);
+            }
+            setRenderCategoryApiData(true);
+        }
+        catch (err) {
+            setRenderCategoryApiData(false);
+            console.error(err);
+        }
+
+        // let temp = [{
+        //                 catId: 1,
+        //                 catName: "testing",
+        //             }];
+        //             setCategoryData(temp);
+        //             setTableData(temp);
+        //             setRenderCategoryApiData(true);
+    };
+
     const fetchAfterDelete = () => {
         if (needsRefresh) {
             if (pageContext == 'QUESTIONNAIRE') {
@@ -321,6 +405,9 @@ const AdminMaintainenceList = () => {
             }
             else if (pageContext == 'DIAGNOSIS') {
                 fetchAllDiagnoses();
+            }
+            else if (pageContext == 'CATEGORY') {
+                fetchCategoryData();
             }
             setRefreshStatus(false);
         }
@@ -359,7 +446,8 @@ const AdminMaintainenceList = () => {
             name: data.medicineName,
             type: data.presType,
             shortInfo: data.shortInfo,
-            diagnosisId: data.diagnosis.map(d => parseInt(d))
+            diagnosisId: data.diagnosis.map(d => parseInt(d)),
+            categoryId: data.category
         };
 
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPrescription", temp).then((res) => {
@@ -395,6 +483,8 @@ const AdminMaintainenceList = () => {
     }
     
     const onClickAddPrescription = () => {
+        console.log(tableData)
+        console.log(prescriptionList)
         setOpen(true);
         setPopupMode(POPUPMODES.NEW)
         setAddPopUpContext('MEDICINE');
@@ -406,6 +496,52 @@ const AdminMaintainenceList = () => {
             handleSubmit(handleAddPrescription)();
         }
     }
+
+    const handleAddCategory = (data) => {
+        setOpen(false);
+        //debugger;
+        const temp = {
+            name: data.categoryName,
+        };
+
+        axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addCategory", temp).then((res) => {
+            toast.success('Added successfully!!');
+            fetchCategoryData();
+        }).catch((err) => {
+            console.error(err);
+            toast.error(err.response.data.errorMessage);
+        });
+    }
+
+    // const handleEditCategory = async (data) => {
+    //     const updatedData = {
+    //         name: data.categoryName,
+    //     };
+    
+    //     try {
+    //         const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editCategory/${editCategoryData.categoryID}`, updatedData);
+    //         toast.success('Category updated successfully!');
+    //         fetchCategoryData(); // Refresh the categories
+    //         setOpen(false); // Close the popup
+    //     } catch (error) {
+    //         console.error(error);
+    //         toast.error('Failed to update category');
+    //     }
+    // };
+
+    const handleEditCategorySubmit = async () => {
+        try {
+            const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editCategory/${editCategoryData.categoryID}`, {
+                name: editCategoryData.categoryName,
+            });
+            toast.success('Category updated successfully!');
+            fetchCategoryData(); // Refresh the category list
+            setOpen(false); // Close the popup
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update category');
+        }
+    };
 
     return (
         <div>
@@ -428,6 +564,12 @@ const AdminMaintainenceList = () => {
                             }
                             {/* {pageContext == 'DIAGNOSIS' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('DIAGNOSIS') }}> Add Diagnosis</div>} */}
                             {/* {pageContext == 'QUESTIONNAIRE' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('QUESTIONNAIRE'); fetchAllDiagnoses(); }}> Add Questionnaire</div>} */}
+                            {
+                                pageContext == 'CATEGORY' && 
+                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData()}}> 
+                                    Add Category
+                                </div>
+                            }
                             <ToggleButtonGroup
                                 value={pageContext}
                                 exclusive
@@ -437,6 +579,7 @@ const AdminMaintainenceList = () => {
                                 <ToggleButton value="PRESCRIPTION">Prescription</ToggleButton>
                                 <ToggleButton value="DIAGNOSIS">Diagnosis</ToggleButton>
                                 <ToggleButton value="QUESTIONNAIRE">Questionnaire</ToggleButton>
+                                <ToggleButton value="CATEGORY">Category</ToggleButton>
                             </ToggleButtonGroup>
                         </div>
                         <ToastContainer />
@@ -484,6 +627,17 @@ const AdminMaintainenceList = () => {
                                                             </Tooltip>
                                                         </Box>
                                                     )}
+                                                    {pageContext === 'CATEGORY' && (
+                                                        <Box sx={{ display: 'flex', gap: '1rem' }}>
+                                                            <Tooltip arrow placement="right" title="Edit">
+                                                                <IconButton
+                                                                    onClick={() => { setOpen(true); setAddPopUpContext('EDIT_CATEGORY'); setEditCategoryData(row.original); }}
+                                                                >
+                                                                    <EditIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Box>
+                                                    )}
                                                 </div>
                                             )
                                         )}
@@ -498,7 +652,7 @@ const AdminMaintainenceList = () => {
                                     />
                                 )
                                 : (
-                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData)) ?
+                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData) || (pageContext == 'CATEGORY' && !renderCategoryApiData))  ?
                                         (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
                                             Error Fetching Data!
                                         </div>)
@@ -580,6 +734,15 @@ const AdminMaintainenceList = () => {
                         </div>
                         <br />
                         <div className="">
+                            <label>Category :</label><br />
+                            <select style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("category", {
+                                required: true,
+                            })}>
+                                <option value="">Select</option>
+                            </select>
+                            {errors?.category&& <p className="error-text">This field is required</p>}
+                        </div> <br ></br>
+                        <div className="">
                             {popUpMode == POPUPMODES.NEW && (
                             <div style={{display: 'flex', flexDirection:'column'}}>
                                 <label>Diagnosis :</label><br />
@@ -649,7 +812,6 @@ const AdminMaintainenceList = () => {
                         <div className="">
                             <label>Detailed Overview :</label><br />
                             <MyEditor
-
                             />
                         </div>
                     </div>
@@ -665,6 +827,45 @@ const AdminMaintainenceList = () => {
                         </>
                     )}
                 </>}
+                {addPopUpContext == 'CATEGORY' && <>
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
+                        <div style={{ width: '300px' }}>
+
+                        </div>
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
+                            <label>Category Name :</label>
+                            <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} {...register("categoryName", {
+                                required: true,
+                                maxLength: 32,
+                            })} />
+                            {errors?.categoryName?.type === "required" && <p className="error-text">This field is required</p>}
+                            {errors?.categoryName?.type === "maxLength" && <p className="error-text">category Name cannot exceed 32 characters</p>}
+                        </div><br />
+                    </div>
+
+                    <div>
+                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={handleSubmit(handleAddCategory)}>Add category</div>
+                    </div>
+                </>}
+
+                {addPopUpContext === 'EDIT_CATEGORY' && (
+                    <div style={{ padding: '20px' }}>
+                        <TextField
+                            label="Category Name"
+                            defaultValue={editCategoryData.categoryName}
+                            onChange={(e) => setEditCategoryData({ ...editCategoryData, categoryName: e.target.value })}
+                            margin="normal"
+                            fullWidth
+                        />
+                        <Button
+                            onClick={() => handleEditCategorySubmit()}
+                            variant="contained"
+                            color="primary"
+                        >
+                            Save Changes
+                        </Button>
+                    </div>
+                )}
 
                 {/* {addPopUpContext == 'DIAGNOSIS' && <>
                     <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
