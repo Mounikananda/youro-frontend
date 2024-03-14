@@ -208,6 +208,7 @@ const AdminMaintainenceList = () => {
         register,
         handleSubmit,
         watch,
+        reset,
         formState: { errors },
     } = useForm();
 
@@ -250,7 +251,7 @@ const AdminMaintainenceList = () => {
                     diagnosis: res.data[i].diagnosis.name,
                     shortInfo: res.data[i].shortInfo,
                     overview: res.data[i].overview,
-                    category: res.data[i].category.name,
+                    category: res.data[i].category ? res.data[i].category.name: '-- ',
                 };
                 tempData.push(temp);
             }
@@ -483,8 +484,7 @@ const AdminMaintainenceList = () => {
     }
     
     const onClickAddPrescription = () => {
-        console.log(tableData)
-        console.log(prescriptionList)
+        reset();
         setOpen(true);
         setPopupMode(POPUPMODES.NEW)
         setAddPopUpContext('MEDICINE');
@@ -735,8 +735,8 @@ const AdminMaintainenceList = () => {
                         <br />
                         <div className="">
                             <label>Category :</label><br />
-                            <select style={{ width: '100%' }} className="input-field input-border" id="gender" {...register("category", {
-                                required: true,
+                            <select style={{ width: '25vw' }} className="input-field input-border" id="gender" {...register("category", {
+                                required: false,
                             })}>
                                 <option value="">Select</option>
                             </select>
