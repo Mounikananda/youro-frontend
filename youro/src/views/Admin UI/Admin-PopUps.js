@@ -9,13 +9,16 @@ import {
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Delete } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 import { API_DETAILS } from '../../App';
 import { ToastContainer, toast } from 'react-toastify';
+import TextField from '@mui/material/TextField';
 
 const AdminPopUps = ((props) => {
     const [isOpen, setIsOpen] = useState(false);
     const [step, setStep] = useState(props.data.step);
+    const [editCategoryName, setEditCategoryName] = useState('');
 
     const openPopup = () => {
         console.log((props.data));
@@ -77,6 +80,55 @@ const AdminPopUps = ((props) => {
         }
     }
 
+
+    const deleteCategory = async () => {
+        // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
+        console.log('in deleteCategory:' + props.data.rowData['categoryID']);
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deleteCategory/${props.data.rowData['categoryID']}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            const res = await axios.delete(url, config);
+            console.log(res.data);
+            toast.success('Deleted successfully!!');
+            props.data.setParentRefreshStatus(true);
+            props.data.postDeleteAction();
+        }
+        catch (err) {
+            console.error(" this is the error msg",err);
+            toast.error(err.response.data.errorMessage);
+        }
+    }
+
+    // const editCategory = async (newCategoryName) => {
+    //     console.log('in editCategory::' + props.data.rowData['categoryID']);
+    //     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/editCategory/${props.data.rowData['categoryID']}`;
+    //     const config = {
+    //       headers: {
+    //         'Access-Control-Allow-Origin': '*',
+    //         'Access-Control-Allow-Methods': '*',
+    //         'Content-Type': 'application/json',
+    //       },
+    //     };
+    //     try {
+    //       const res = await axios.put(url, { newName: newCategoryName }, config);
+    //       console.log(res.data);
+    //       toast.success('Updated successfully!!');
+    //       props.data.setParentRefreshStatus(true);
+    //       props.data.postEditAction();
+    //       setIsOpen(false); // Close the popup after successful edit
+    //     } catch (err) {
+    //       console.error(err);
+    //       toast.error('Error updating category');
+    //     }
+    //   };
+    
+
     const deleteDiagnosis = async () => {
         // {diagId: 9, name: 'tEST DIAG', info: 'Hardcoded info for now'}
         console.log('in deleteDiagnosis::' + props.data.rowData['diagId']);
@@ -124,6 +176,12 @@ const AdminPopUps = ((props) => {
             setStep(temp);
             console.log(step);
         }
+        else if (props.data.action === 'delete-category') {
+            console.log(props.data.rowData);
+
+            deleteCategory();
+            setIsOpen(false);
+        }
     };
 
     return (
@@ -131,6 +189,8 @@ const AdminPopUps = ((props) => {
             <IconButton color="error" onClick={openPopup} className='delete-doctor-button'>
                 <Delete />
             </IconButton>
+
+
             {
                 props.data.action == 'delete-doctor' && step == 1 &&
                 <>
@@ -251,6 +311,40 @@ const AdminPopUps = ((props) => {
                     </Popup>
                 </>
             }
+
+            {
+                props.data.action == 'delete-category' &&
+                <>
+                    <Popup
+                        open={isOpen}
+                        closeOnDocumentClick
+                        onClose={closePopup}
+                        modal
+                    >
+                        <div className="popup-content-admin">
+                            <div className='row'>
+                                <div className='col-12 info-col'>
+                                    <h3 style={{ marginLeft: '5%' }}>Are you sure you want to delete this category?</h3>
+                                </div>
+                                <div className='col-12 buttons-col row'>
+                                    <div className='col-6'></div>
+                                    <div className='col-6'>
+                                        <Button onClick={closePopup} variant="outlined" style={{ marginRight: '10px' }} >
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleSubmit} variant="contained" color="error" startIcon={<DeleteIcon />}>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
+                                {/* <div className='col-12'></div> */}
+                            </div>
+                        </div>
+                    </Popup>
+                </>
+            }
+
+
             {
                 props.data.action == 'delete-diagnosis' &&
                 <>
