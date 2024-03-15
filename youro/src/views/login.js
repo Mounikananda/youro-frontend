@@ -105,7 +105,7 @@ const Login = () => {
         <h1>youro</h1>
         <h2>Login</h2>
         <div className="Login-Form-Container">
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column'}}>
             <label>Email</label>
             <input className="input-field input-border" type="text" {...register("username", {
               required: true,
@@ -116,7 +116,7 @@ const Login = () => {
             {errors?.email?.type === "maxLength" && <p className="error-text">Email cannot exceed 32 characters</p>}
             {errors?.email?.type === "pattern" && <p className="error-text">Please enter valid email</p>}
           </div>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column'}}>
             <label >Password</label>
             <input className="input-field input-border" type="password" onKeyDown={(event) => {
               if (event.key === "Enter") {

@@ -37,3 +37,10 @@
     text-decoration: underline;
     font-size: 1rem
   }
+
+.add-icon{
+    &:hover{
+        transform: scale(1.2);
+        transition-duration: 0.3s;
+      }
+}

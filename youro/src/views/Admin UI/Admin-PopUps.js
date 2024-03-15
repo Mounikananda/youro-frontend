@@ -57,8 +57,8 @@ const AdminPopUps = ((props) => {
     }
 
     const deletePrescription = async () => {
-        console.log('in deletePrescription::' + props.data.rowData['medicineId']);
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePrescription/${props.data.rowData['medicineId']}`;
+        console.log('in deletePrescription::' + props.data.rowData['presId']);
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePrescription/${props.data.rowData['presId']}`;
         const config = {
             headers: {
                 'Access-Control-Allow-Origin': '*',
@@ -81,7 +81,7 @@ const AdminPopUps = ((props) => {
 
 
     const deleteCategory = async () => {
-        // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
+        // {presId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
         console.log('in deleteCategory:' + props.data.rowData['categoryID']);
         const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deleteCategory/${props.data.rowData['categoryID']}`;
         const config = {

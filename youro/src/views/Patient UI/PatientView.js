@@ -3,6 +3,7 @@ import PatientHomePage from "./PatientHomePage";
 import PatientAppointment from "./PatientAppointment";
 import PatientChat from "./PatientChat";
 import PatientEducate from "./PatientEducate";
+import PatientEducateRebuilt from "./PatientEducateRebuilt";
 import PatientProfile from "./PatientProfile";
 import SideBar from "./SideBar";
 
@@ -25,7 +26,8 @@ const PatientView = () => {
             {view === 0 && <PatientHomePage changeView={setView}/>}
             {view === 1 && <PatientAppointment changeView={setView}/>}
             {view === 2 && <PatientChat  changeView={setView} updateCount={updateCount} count={count}/>}
-            {view === 3 && <PatientEducate  changeView={setView}/>}
+            {/* {view === 3 && <PatientEducate  changeView={setView}/>} */}
+            {view === 3 && <PatientEducateRebuilt  changeView={setView}/>}
             {view === 4 && <PatientProfile  changeView={setView}/>}
         </div>
         </>

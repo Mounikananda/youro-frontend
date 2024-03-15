@@ -1,7 +1,8 @@
 import { React, useState, useEffect } from 'react';
 import Youroheader from "../Youro-header";
-import { API_DETAILS } from '../../App';
 import axios from 'axios';
+import { API_DETAILS, COOKIE_KEYS } from '../../App';
+import Cookies from 'js-cookie';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
@@ -10,7 +11,9 @@ const PatientEducateRebuilt = (props) => {
 
     const [step, setStep] = useState(0);
     const [viewVal, setViewVal] = useState(0);
-    const [diagnosisData, setDiagnosisData] = useState([]);
+    // const [diagnosisData, setDiagnosisData] = useState([]);
+    const [nodeList, setNodeList] = useState([]);
+    const [selectedNode, setSelectedNode] = useState({});
     const [pageContext, setPageContext] = useState('SYSMPTOMS');
 
     const navToProfile = () => {
@@ -21,52 +24,117 @@ const PatientEducateRebuilt = (props) => {
         if (viewVal == 4) {
             navToProfile();
         }
-        fetchAllDiagnoses();
+        // fetchAllDiagnoses();
+        fetchData();
     }, [viewVal]);
 
-    const fetchAllDiagnoses = async () => {
-        // console.log("====^^^===");
-        // console.log("fetchAllDiagnoses START");
-        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllDiagnoses`;
-        const config = {
-            headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Methods': '*',
-                'Content-Type': 'application/json'
-            }
-        };
+    const fetchData = async (props) => {
+        const patientId = Cookies.get(COOKIE_KEYS.userId);
+
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/getLatestCarePlanByPatient?patientId=${patientId}`;
+    
         try {
-            const res = await axios.get(url, config);
-            setDiagnosisData(res.data);
+        const res = await axios.get(url);
+        console.log('res data', res.data);
+        setNodeList(buildNodeList(res.data));
+        } catch (err) {
+        console.error(err);
         }
-        catch (err) {
-            console.error(err);
+      };
+    
+      const buildNodeList = (data) => {
+        console.log(data)
+        const nodeList = [];
+        let idx = 0;
+        nodeList.push({
+            id: idx,
+            name: data.diagName,
+            level: 0,
+            hidden: false,
+            expanded: true,
+            parent: null,
+            overview: data.diagInfo
+        })
+        setSelectedNode(nodeList[0]);
+        idx++;
+        const presTypes = ['medicines', 'lifeStyle', 'vitamins'];
+        const presTypeNameMap = {
+            medicines: "Medicines",
+            lifeStyle: "LifeStyle",
+            vitamins: "Vitamins"
         }
-        // console.log("fetchAllDiagnoses END");
-        // console.log("====^^^===");
-    };
+        presTypes.forEach( presType => {
+            if (data.carePlan[presType].length !== 0) {
+                nodeList.push({
+                    id: idx,
+                    name: presTypeNameMap[presType],
+                    level: 1,
+                    hidden: false,
+                    expanded: true,
+                    parent: 0,
+                    overview: null
+                })
+                const prnt = idx;
+                idx++;
+                data.carePlan[presType].forEach(pres => {
+                    nodeList.push({
+                        id: idx,
+                        name: pres.presName,
+                        level: 2,
+                        hidden: false,
+                        expanded: false,
+                        parent: prnt,
+                        overview: pres.overview
+                    })
+                    idx++
+                })
+            }
+        });
+        console.log(nodeList)
+        return nodeList
 
-    const renderActiveDiagnosisName = () => {
-        return <div>{diagnosisData[step].name}</div>;
+      }
+
+    const toggleChevron = (e, node) => {
+      e.preventDefault();
+      if (node.level == 0) {
+        setNodeList(nodeList.map(n => {
+          if (n.level > node.level) {
+            return {
+              ...n,
+              hidden: !n.hidden
+            }
+          }
+          return {
+            ...n,
+            expanded: !n.expanded
+          }
+        }))
+      } else {
+        setNodeList(nodeList.map(n => {
+          if (n.id == node.id) {
+            return {
+              ...n,
+              expanded: !n.expanded
+            }
+          }
+          if (n.parent == node.id) {
+            return {
+              ...n,
+              hidden: !n.hidden
+            }
+          }
+          return n
+        }))
+      }
     }
 
-    const handlePageContextChange = (event, newAlignment) => {
-
-        // symptoms, causes, treatment, surgical options
-        if (newAlignment == null || newAlignment == 'SYSMPTOMS') {
-            setPageContext('SYSMPTOMS');
-        }
-        else if (newAlignment == null || newAlignment == 'CAUSES') {
-            setPageContext('CAUSES');
-        }
-        else if (newAlignment == null || newAlignment == 'TREATMENT') {
-            setPageContext('TREATMENT');
-        }
-        else if (newAlignment == null || newAlignment == 'SURGICAL_OPTIONS') {
-            setPageContext('SURGICAL_OPTIONS');
-        }
+    const onClickNode = (e, node) => {
+      e.preventDefault();
+      if (node.level !== 1) {
+        setSelectedNode(node)
+      }
     }
-
     return (
         <div className="educate-container">
             <div style={{width:"100%",margin:"0% 2%"}}>
@@ -74,9 +142,25 @@ const PatientEducateRebuilt = (props) => {
             <h1 style={{marginTop: '0px', marginBottom: '50px', color: 'black' }}>Educate Yourself</h1>
             <div className="educate-container-main">
                 <div className="educate-column-one">
-                    {diagnosisData && diagnosisData.length != 0 && diagnosisData.map((item, index) => (
+                    {nodeList && nodeList.length !== 0 && nodeList.map(node => (
                         <div className='diagnosis-list' >
-                            <div className={`educate-column-one-name ${step === index && 'educate-column-one-name-active'}`} onClick={() => setStep(index)}>{item.name}</div>
+                          {!node.hidden && (
+                            <div 
+                              className={`educate-column-one-name ${node.id === selectedNode.id && 'educate-column-one-name-active'} ${`level-${node.level}`}`}
+                              onClick={(e, d) => onClickNode(e, node)}
+                            >
+                              {node.level !== 2 && (
+                                <span 
+                                  class="material-symbols-outlined"
+                                  style={{ color: "gray", marginRight: "8px"}}
+                                  onClick={(e,_) => toggleChevron(e, node)}
+                                >
+                                  {node.expanded ? "expand_more" : "chevron_right"}
+                                </span>
+                              )}
+                              {node.name}
+                            </div>
+                          )}
                         </div>
                     ))
                     }
@@ -96,35 +180,8 @@ const PatientEducateRebuilt = (props) => {
                     </iframe>
                 </div> */}
                 <div className="educate-column-two">
-                    <ToggleButtonGroup
-                        value={pageContext}
-                        exclusive
-                        onChange={handlePageContextChange}
-                        aria-label="Platform"
-                    >
-                        <ToggleButton value="SYSMPTOMS">Symptoms</ToggleButton>
-                        <ToggleButton value="CAUSES">Causes</ToggleButton>
-                        <ToggleButton value="TREATMENT">Treatment</ToggleButton>
-                        <ToggleButton value="SURGICAL_OPTIONS">Surgical Options</ToggleButton>
-                    </ToggleButtonGroup>
-                    {/* <div style={{margin:'3%',height:'40vh'}}>
-                        {
-                            pageContext === "SYSMPTOMS" &&
-                            <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].symptoms }} />
-                        }
-                        {
-                            pageContext === "CAUSES" &&
-                            <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].causes }} />
-                        }
-                        {
-                            pageContext === "TREATMENT" &&
-                            <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].treatment }} />
-                        }
-                        {
-                            pageContext === "SURGICAL_OPTIONS" &&
-                            <div dangerouslySetInnerHTML={{ __html: educationalInfo[0].surgical_options }} />
-                        }
-                    </div> */}
+                  <h2>{selectedNode.name}</h2>
+                  <p>{selectedNode.overview}</p>
                 </div>
 
             </div>

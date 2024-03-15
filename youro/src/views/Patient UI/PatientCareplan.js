@@ -42,11 +42,21 @@ const CarePlan = () => {
           <ul style={{margin: '0px'}}>
             {data['carePlan'][category].map(item => (
               item.indicator && <>
-                <li key={item.presId}>
-                {item.presName}
-                {item.dosage ? ` - ${item.dosage}` : ''}
-                {/* {item.indicator ? ' (Indicator)' : ''} */}
-              </li>
+                <li key={item.presId} style={{ marginBottom: "10px" }}>
+                  {item.presName}
+                  {item.dosage ? ` - ${item.dosage}` : ''}
+
+                  {item.shortInfo && (
+                    <>
+                      <br/>
+                        <span class="material-symbols-outlined" style={{ fontSize: "18px" }}>
+                          subdirectory_arrow_right
+                        </span>
+                        {item.shortInfo}
+                    </>
+                  )}
+                  {/* {item.indicator ? ' (Indicator)' : ''} */}
+                </li>
                 </>
               
             ))}

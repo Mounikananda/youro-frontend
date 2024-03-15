@@ -35,7 +35,7 @@ import { useNavigate } from 'react-router-dom';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import "../../styles/Admin-ui/Admin-Maintainence.css";
-import { Edit } from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Edit';
 
@@ -80,15 +80,15 @@ const AdminMaintainenceList = () => {
     const [columns, setColumns] = useState(
         [
             {
-                accessorKey: 'medicineId',
+                accessorKey: 'presId',
                 header: 'ID',
                 enableColumnOrdering: false,
                 enableEditing: false,
                 size: 50,
             },
             {
-                accessorKey: 'medicineName',
-                header: 'Medicine Name',
+                accessorKey: 'presName',
+                header: 'Name',
             },
             {
                 accessorKey: 'presType',
@@ -111,15 +111,15 @@ const AdminMaintainenceList = () => {
             setPageContext('PRESCRIPTION');
             setColumns([
                 {
-                    accessorKey: 'medicineId',
+                    accessorKey: 'presId',
                     header: 'ID',
                     enableColumnOrdering: false,
                     enableEditing: false,
                     size: 50,
                 },
                 {
-                    accessorKey: 'medicineName',
-                    header: 'Medicine Name',
+                    accessorKey: 'presName',
+                    header: 'Name',
                 },
                 {
                     accessorKey: 'presType',
@@ -245,8 +245,8 @@ const AdminMaintainenceList = () => {
             let tempData = [];
             for (let i = 0; i < res.data.length; i++) {
                 let temp = {
-                    medicineId: res.data[i].presId,
-                    medicineName: res.data[i].name,
+                    presId: res.data[i].presId,
+                    presName: res.data[i].name,
                     presType: res.data[i].presType,
                     diagnosis: res.data[i].diagnosis.name,
                     shortInfo: res.data[i].shortInfo,
@@ -442,9 +442,8 @@ const AdminMaintainenceList = () => {
     }
 
     const handleAddPrescription = (data) => {
-        console.log('cats')
         const temp = {
-            name: data.medicineName,
+            name: data.presName,
             type: data.presType,
             shortInfo: data.shortInfo,
             diagnosisId: data.diagnosis.map(d => parseInt(d)),
@@ -462,17 +461,34 @@ const AdminMaintainenceList = () => {
 
     }
 
+    const handleUpdatePrescription = () => {
+        const temp = {
+            shortInfo: popUpData.shortInfo,
+            overview: popUpData.overview
+        };
+
+        axios.put(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/updatePrescription/${popUpData.presId}`, temp).then((res) => {
+            toast.success(`${popUpData.presName} Updated successfully!!`);
+            fetchPrescitions();
+        }).catch((err) => {
+            console.error(err);
+            toast.error(err.response.data.errorMessage);
+        });
+        setOpen(false);
+
+    }
+
     const onClickViewInfo = (rowData) => {
         setPopUpData(rowData)
         setPopupMode(POPUPMODES.VIEW)
-        setAddPopUpContext('MEDICINE');
+        setAddPopUpContext('PRESCRIPTION');
         setOpen(true);
     }
 
     const onClickEditInfo = (rowData) => {
         setPopUpData(rowData)
         setPopupMode(POPUPMODES.EDIT)
-        setAddPopUpContext('MEDICINE');
+        setAddPopUpContext('PRESCRIPTION');
         setOpen(true);
     }
 
@@ -487,13 +503,16 @@ const AdminMaintainenceList = () => {
         reset();
         setOpen(true);
         setPopupMode(POPUPMODES.NEW)
-        setAddPopUpContext('MEDICINE');
+        setAddPopUpContext('PRESCRIPTION');
         fetchAllDiagnoses();
     }
 
     const onClickAddSave = () => {
         if (popUpMode == POPUPMODES.NEW) {
             handleSubmit(handleAddPrescription)();
+        }
+        if (popUpMode == POPUPMODES.EDIT) {
+            handleUpdatePrescription();
         }
     }
 
@@ -558,9 +577,13 @@ const AdminMaintainenceList = () => {
                         <div className='row' style={{ display: 'flex', justifyContent: 'center' }}>
                             {
                                 pageContext == 'PRESCRIPTION' && 
-                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={onClickAddPrescription}> 
-                                    Medicine
-                                </div>
+                                <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
+                                    <Tooltip arrow placement="left" title="Add Prescription">
+                                        <IconButton color="gray" onClick={onClickAddPrescription} className='add-icon' size="large">
+                                            <AddIcon fontSize='inherit'/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
                             }
                             {/* {pageContext == 'DIAGNOSIS' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('DIAGNOSIS') }}> Add Diagnosis</div>} */}
                             {/* {pageContext == 'QUESTIONNAIRE' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('QUESTIONNAIRE'); fetchAllDiagnoses(); }}> Add Questionnaire</div>} */}
@@ -615,7 +638,7 @@ const AdminMaintainenceList = () => {
                                                         <Box sx={{ display: 'flex', gap: '1rem' }}>
                                                             <Tooltip arrow placement="top" title="Edit Info">
                                                                 <IconButton color="gray" onClick={() => onClickEditInfo(row.original)} className='delete-doctor-button'>
-                                                                    <Edit />
+                                                                    <EditIcon />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </Box>
@@ -677,20 +700,20 @@ const AdminMaintainenceList = () => {
                         close
                     </span>
                 </div>
-                {addPopUpContext == 'MEDICINE' && <>
+                {addPopUpContext == 'PRESCRIPTION' && <>
                     <div style={{ padding: '25px', width: '65vw', marginBottom: '25px'}}>
                         <div className="" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             {popUpMode == POPUPMODES.NEW && (<>
                                 <label>Name:</label>
-                                <input className="input-field-doctor input-border" type="text" style={{ width: '60%', marginLeft: '20px' }} {...register("medicineName", {
+                                <input className="input-field-doctor input-border" type="text" style={{ width: '60%', marginLeft: '20px' }} {...register("presName", {
                                     required: true,
                                     maxLength: 32,
                                 })} />
-                                {errors?.medicineName?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.medicineName?.type === "maxLength" && <p className="error-text"> Name cannot exceed 32 characters</p>}
+                                {errors?.presName?.type === "required" && <p className="error-text">This field is required</p>}
+                                {errors?.presName?.type === "maxLength" && <p className="error-text"> Name cannot exceed 32 characters</p>}
                             </>)}
                             {(popUpMode == POPUPMODES.VIEW || popUpMode == POPUPMODES.EDIT)&& (<>
-                                <h2>{popUpData.medicineName}</h2>
+                                <h2>{popUpData.presName}</h2>
                             </>)}
                         </div>
                         <br />
@@ -735,7 +758,7 @@ const AdminMaintainenceList = () => {
                         <br />
                         <div className="">
                             <label>Category :</label><br />
-                            <select style={{ width: '25vw' }} className="input-field input-border" id="gender" {...register("category", {
+                            <select style={{ width: '25vw' }} className="input-field input-border" id="gender"  disabled={popUpMode != POPUPMODES.NEW} {...register("category", {
                                 required: false,
                             })}>
                                 <option value="">Select</option>
@@ -815,7 +838,7 @@ const AdminMaintainenceList = () => {
                             />
                         </div>
                     </div>
-                    {(popUpMode == POPUPMODES.NEW || popUpMode.EDIT) && (
+                    {(popUpMode == POPUPMODES.NEW || popUpMode == POPUPMODES.EDIT) && (
                         <>
                             <div 
                                 className='btn-filled'
