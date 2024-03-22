@@ -57,6 +57,7 @@ const AdminMaintainenceList = () => {
     const [renderPrescriptionApiData, setRenderPrescriptionApiData] = useState(false);
     const [renderQuestionnaireApiData, setRenderQuestionnaireApiData] = useState(false);
     const [renderCategoryApiData, setRenderCategoryApiData] = useState(false);
+    const [renderPresTypeApiData, setRenderPresTypeApiData] = useState(false);
     const [open, setOpen] = useState(false);
     const [popUpMode, setPopupMode] = useState(POPUPMODES.NEW);
     const [popUpData, setPopUpData] = useState({});
@@ -73,15 +74,24 @@ const AdminMaintainenceList = () => {
 
     const [diagnosisData, setDiagnosisData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
+    const [presTypeData, setPresTypeData] = useState([]);
     const [needsRefresh, setRefreshStatus] = useState(false);
     const [editCategoryData, setEditCategoryData] = useState({});
+    const [editPresTypeData, setEditPresTypeData] = useState({});
 
 
     const [columns, setColumns] = useState(
         [
+            // {
+            //     accessorKey: 'medicineId',
+            //     header: 'ID',
+            //     enableColumnOrdering: false,
+            //     enableEditing: false,
+            //     size: 50,
+            // },
             {
-                accessorKey: 'presId',
-                header: 'ID',
+                accessorKey: 'medicineName',
+                header: 'Medicine Name',
                 enableColumnOrdering: false,
                 enableEditing: false,
                 size: 50,
@@ -110,16 +120,19 @@ const AdminMaintainenceList = () => {
         if (newAlignment == null || newAlignment == 'PRESCRIPTION') {
             setPageContext('PRESCRIPTION');
             setColumns([
+                // {
+                //     accessorKey: 'medicineId',
+                //     header: 'ID',
+                //     enableColumnOrdering: false,
+                //     enableEditing: false,
+                //     size: 50,
+                // },
                 {
-                    accessorKey: 'presId',
-                    header: 'ID',
+                    accessorKey: 'medicineName',
+                    header: 'Medicine Name',
                     enableColumnOrdering: false,
                     enableEditing: false,
                     size: 50,
-                },
-                {
-                    accessorKey: 'presName',
-                    header: 'Name',
                 },
                 {
                     accessorKey: 'presType',
@@ -139,16 +152,19 @@ const AdminMaintainenceList = () => {
         else if (newAlignment == 'QUESTIONNAIRE') {
             setPageContext('QUESTIONNAIRE');
             setColumns([
-                {
-                    accessorKey: 'questionId',
-                    header: 'ID',
-                    enableColumnOrdering: false,
-                    enableEditing: false,
-                    size: 50,
-                },
+                // {
+                //     accessorKey: 'questionId',
+                //     header: 'ID',
+                //     enableColumnOrdering: false,
+                //     enableEditing: false,
+                //     size: 50,
+                // },
                 {
                     accessorKey: 'question',
                     header: 'Question',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
                 },
                 {
                     accessorKey: 'options',
@@ -160,16 +176,19 @@ const AdminMaintainenceList = () => {
         else if (newAlignment == 'DIAGNOSIS') {
             setPageContext('DIAGNOSIS');
             setColumns([
-                {
-                    accessorKey: 'diagId',
-                    header: 'ID',
-                    enableColumnOrdering: false,
-                    enableEditing: false,
-                    size: 50,
-                },
+                // {
+                //     accessorKey: 'diagId',
+                //     header: 'ID',
+                //     enableColumnOrdering: false,
+                //     enableEditing: false,
+                //     size: 50,
+                // },
                 {
                     accessorKey: 'name',
                     header: 'Name',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
                 },
                 {
                     accessorKey: 'info',
@@ -185,21 +204,47 @@ const AdminMaintainenceList = () => {
         else if (newAlignment == 'CATEGORY') {
             setPageContext('CATEGORY');
             setColumns([
-                {
-                    accessorKey: 'categoryID',
-                    header: 'ID',
-                    enableColumnOrdering: false,
-                    enableEditing: false,
-                    size: 50,
-                },
+                // {
+                //     accessorKey: 'categoryID',
+                //     header: 'ID',
+                //     enableColumnOrdering: false,
+                //     enableEditing: false,
+                //     size: 50,
+                // },
                 {
                     accessorKey: 'categoryName',
                     header: 'Category Name',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
                 },
             ]);
 
             
             setTableData(categoryData);
+        }
+
+        else if (newAlignment == 'PRES_TYPE') {
+            setPageContext('PRES_TYPE');
+            setColumns([
+                // {
+                //     accessorKey: 'presTypeID',
+                //     header: 'ID',
+                //     enableColumnOrdering: false,
+                //     enableEditing: false,
+                //     size: 50,
+                // },
+                {
+                    accessorKey: 'presTypeName',
+                    header: 'Prescription Type',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
+                },
+            ]);
+
+            
+            setTableData(presTypeData);
         }
     };
 
@@ -220,6 +265,7 @@ const AdminMaintainenceList = () => {
             fetchAllDiagnoses();
             fetchAllQuestionnaires();
             fetchCategoryData();
+            fetchPresTypeData();
             isRendered.current = true;
         }
         else {
@@ -396,6 +442,41 @@ const AdminMaintainenceList = () => {
         //             setRenderCategoryApiData(true);
     };
 
+    const fetchPresTypeData = async () => {
+        // Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
+         const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllPreTypes`;
+         const config = {
+             headers: {
+                 'Access-Control-Allow-Origin': '*',
+                 'Access-Control-Allow-Methods': '*',
+                 'Content-Type': 'application/json'
+             }
+         };
+         try {
+             const res = await axios.get(url, config); 
+             console.log("here is the presType",res);
+             canRenderAdmin(true);
+             let tempData = [];
+             for (let i = 0; i < res.data.length; i++) {
+                 let temp = {
+                     presTypeID: res.data[i].presTypeId,
+                     presTypeName: res.data[i].name,
+                 };
+                 console.log("here is the temp",temp);
+                 tempData.push(temp);
+             }
+             setPresTypeData(tempData);
+             if (pageContext == 'PRES_TYPE') {
+                 setTableData(tempData);
+             }
+             setRenderPresTypeApiData(true);
+         }
+         catch (err) {
+             setRenderPresTypeApiData(false);
+             console.error(err);
+         }
+    };
+
     const fetchAfterDelete = () => {
         if (needsRefresh) {
             if (pageContext == 'QUESTIONNAIRE') {
@@ -409,6 +490,9 @@ const AdminMaintainenceList = () => {
             }
             else if (pageContext == 'CATEGORY') {
                 fetchCategoryData();
+            }
+            else if (pageContext == 'PRES_TYPE') {
+                fetchPresTypeData();
             }
             setRefreshStatus(false);
         }
@@ -530,23 +614,7 @@ const AdminMaintainenceList = () => {
             console.error(err);
             toast.error(err.response.data.errorMessage);
         });
-    }
-
-    // const handleEditCategory = async (data) => {
-    //     const updatedData = {
-    //         name: data.categoryName,
-    //     };
-    
-    //     try {
-    //         const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editCategory/${editCategoryData.categoryID}`, updatedData);
-    //         toast.success('Category updated successfully!');
-    //         fetchCategoryData(); // Refresh the categories
-    //         setOpen(false); // Close the popup
-    //     } catch (error) {
-    //         console.error(error);
-    //         toast.error('Failed to update category');
-    //     }
-    // };
+    };
 
     const handleEditCategorySubmit = async () => {
         try {
@@ -555,6 +623,36 @@ const AdminMaintainenceList = () => {
             });
             toast.success('Category updated successfully!');
             fetchCategoryData(); // Refresh the category list
+            setOpen(false); // Close the popup
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to update category');
+        }
+    };
+
+    const handleAddPresType = (data) => {
+        setOpen(false);
+        //debugger;
+        const temp = {
+            name: data.presTypeName,
+        };
+
+        axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPresType", temp).then((res) => {
+            toast.success('Added successfully!!');
+            fetchPresTypeData();
+        }).catch((err) => {
+            console.error(err);
+            toast.error(err.response.data.errorMessage);
+        });
+    };
+
+    const handleEditPresTypeSubmit = async () => {
+        try {
+            const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editPresType/${editPresTypeData.presTypeID}`, {
+                name: editPresTypeData.presTypeName,
+            });
+            toast.success('Category updated successfully!');
+            fetchPresTypeData(); // Refresh the category list
             setOpen(false); // Close the popup
         } catch (error) {
             console.error(error);
@@ -593,6 +691,13 @@ const AdminMaintainenceList = () => {
                                     Add Category
                                 </div>
                             }
+
+                            {
+                                pageContext == 'PRES_TYPE' && 
+                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData()}}> 
+                                    Add Prescription Type
+                                </div>
+                            }
                             <ToggleButtonGroup
                                 value={pageContext}
                                 exclusive
@@ -603,6 +708,7 @@ const AdminMaintainenceList = () => {
                                 <ToggleButton value="DIAGNOSIS">Diagnosis</ToggleButton>
                                 <ToggleButton value="QUESTIONNAIRE">Questionnaire</ToggleButton>
                                 <ToggleButton value="CATEGORY">Category</ToggleButton>
+                                <ToggleButton value="PRES_TYPE">Prescription Type</ToggleButton>
                             </ToggleButtonGroup>
                         </div>
                         <ToastContainer />
@@ -661,6 +767,17 @@ const AdminMaintainenceList = () => {
                                                             </Tooltip>
                                                         </Box>
                                                     )}
+                                                    {pageContext === 'PRES_TYPE' && (
+                                                        <Box sx={{ display: 'flex', gap: '1rem' }}>
+                                                            <Tooltip arrow placement="right" title="Edit">
+                                                                <IconButton
+                                                                    onClick={() => { setOpen(true); setAddPopUpContext('EDIT_PRES_TYPE'); setEditPresTypeData(row.original); }}
+                                                                >
+                                                                    <EditIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </Box>
+                                                    )}
                                                 </div>
                                             )
                                         )}
@@ -675,12 +792,12 @@ const AdminMaintainenceList = () => {
                                     />
                                 )
                                 : (
-                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData) || (pageContext == 'CATEGORY' && !renderCategoryApiData))  ?
+                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData) || (pageContext == 'CATEGORY' && !renderCategoryApiData) || (pageContext == 'PRES_TYPE' && !renderPresTypeApiData))  ?
                                         (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
                                             Error Fetching Data!
                                         </div>)
                                         : !renderAdmin ?
-                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }} ><Oval /></div>)
+                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', positionActionsColumn:'last'}} ><Oval /></div>)
                                             : renderAdmin == true && tableData && tableData.length == 0 &&
                                             <>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
@@ -727,12 +844,18 @@ const AdminMaintainenceList = () => {
                                     {...register("presType", {required: true,})}
                                 >
                                     <option value="">Select</option>
+                                    {presTypeData.map((presType,index) => (
+                                        <option key={index} value={presType.presTypeName}>
+                                            {presType.presTypeName}
+                                      </option>
+                                    ))}
+                                    {/* <option value="">Select</option>
                                     <option value="LAB">LAB</option>
                                     <option value="VITAMINS">VITAMINS</option>
                                     <option value="MEDICINES">MEDICINES</option>
                                     <option value="IMAGING">IMAGING</option>
                                     <option value="LIFESTYLE">LIFESTYLE</option>
-                                    <option value="MEDIA">MEDIA</option>
+                                    <option value="MEDIA">MEDIA</option> */}
                                 </select>
                                 {errors?.presType && <p className="error-text">This field is required</p>}
                             </>)}
@@ -762,6 +885,11 @@ const AdminMaintainenceList = () => {
                                 required: false,
                             })}>
                                 <option value="">Select</option>
+                                {categoryData.map((categoryData,index) => (
+                                        <option key={index} value={categoryData.categoryName}>
+                                            {categoryData.categoryName}
+                                      </option>
+                                    ))}
                             </select>
                             {errors?.category&& <p className="error-text">This field is required</p>}
                         </div> <br ></br>
@@ -871,24 +999,99 @@ const AdminMaintainenceList = () => {
                     </div>
                 </>}
 
+
                 {addPopUpContext === 'EDIT_CATEGORY' && (
-                    <div style={{ padding: '20px' }}>
-                        <TextField
-                            label="Category Name"
-                            defaultValue={editCategoryData.categoryName}
-                            onChange={(e) => setEditCategoryData({ ...editCategoryData, categoryName: e.target.value })}
-                            margin="normal"
-                            fullWidth
-                        />
-                        <Button
-                            onClick={() => handleEditCategorySubmit()}
-                            variant="contained"
-                            color="primary"
-                        >
-                            Save Changes
-                        </Button>
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
+                        <div style={{ width: '300px' }}>
+                            {/* You can add additional elements here if needed */}
+                        </div>
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
+                            <label>Category Name :</label>
+                            <input
+                                className="input-field-doctor input-border"
+                                type="text"
+                                style={{ width: '94%' }}
+                                defaultValue={editCategoryData.categoryName}
+                                onChange={(e) => setEditCategoryData({ ...editCategoryData, categoryName: e.target.value })}
+                                required= {true}
+                                maxLength= {32}
+                                
+                            />
+                            {errors?.categoryName?.type === "required" && <p className="error-text">This field is required</p>}
+                            {errors?.categoryName?.type === "maxLength" && <p className="error-text">Category Name cannot exceed 32 characters</p>}
+
+                        </div>
+                        <br />
+                        <div>
+
+                            <div
+                                className='btn-filled'
+                                style={{ width: 'fit-content', margin: '0px auto 50px auto'}}
+                                onClick={() => handleEditCategorySubmit()}
+                            >
+                                Save Changes
+                            </div>
+                        </div>
                     </div>
                 )}
+
+                {addPopUpContext == 'PRES_TYPE' && <>
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
+                        <div style={{ width: '300px' }}>
+
+                        </div>
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
+                            <label>Prescription Type Name :</label>
+                            <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} {...register("presTypeName", {
+                                required: true,
+                                maxLength: 32,
+                            })} />
+                            {errors?.presTypeName?.type === "required" && <p className="error-text">This field is required</p>}
+                            {errors?.presTypeName?.type === "maxLength" && <p className="error-text">Prescription Type Name cannot exceed 32 characters</p>}
+                        </div><br />
+                    </div>
+
+                    <div>
+                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={handleSubmit(handleAddPresType)}>Add prescription type</div>
+                    </div>
+                </>}
+
+
+                {addPopUpContext === 'EDIT_PRES_TYPE' && (
+                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
+                        <div style={{ width: '300px' }}>
+                            {/* You can add additional elements here if needed */}
+                        </div>
+                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
+                            <label>Prescription Type Name :</label>
+                            <input
+                                className="input-field-doctor input-border"
+                                type="text"
+                                style={{ width: '94%' }}
+                                defaultValue={editPresTypeData.presTypeName}
+                                onChange={(e) => setEditPresTypeData({ ...editPresTypeData, presTypeName: e.target.value })}
+                                required= {true}
+                                maxLength= {32}
+                                
+                            />
+                            {errors?.presTypeName?.type === "required" && <p className="error-text">This field is required</p>}
+                            {errors?.presTypeName?.type === "maxLength" && <p className="error-text">Prescription Type Name cannot exceed 32 characters</p>}
+
+                        </div>
+                        <br />
+                        <div>
+
+                            <div
+                                className='btn-filled'
+                                style={{ width: 'fit-content', margin: '0px auto 50px auto'}}
+                                onClick={() => handleEditPresTypeSubmit()}
+                            >
+                                Save Changes
+                            </div>
+                        </div>
+                    </div>
+                )}
+
 
                 {/* {addPopUpContext == 'DIAGNOSIS' && <>
                     <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
