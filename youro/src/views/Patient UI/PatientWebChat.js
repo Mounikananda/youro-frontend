@@ -1,13 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
-import SideBar from "./SideBar";
 import "../../styles/Doctor-ui/Doctorchat.css";
 import Youroheader from "../Youro-header";
-import { API_DETAILS, COOKIE_KEYS } from "../../App";
+import { COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 import Loader from "../../utils/loader";
-import axios from "axios";
+import { over } from "stompjs";
+import SockJS from "sockjs-client";
+import ChatMessage from "../ChatMessage";
 
-const PatientChat = (props) => {
+const PatientWebChat = (props) => {
   const [viewVal, setViewVal] = useState(0);
   const navToProfile = () => {
     props.changeView(4);
@@ -18,9 +19,9 @@ const PatientChat = (props) => {
     }
   }, [viewVal]);
 
-  const [chatHistory, setChatHistory] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
   const [seletedChat, setSelectedChat] = useState(null);
-  const [chatData, setChatData] = useState(null);
+  const [chatData, setChatData] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
@@ -28,188 +29,210 @@ const PatientChat = (props) => {
   const [totalMssgCount, setTotalMssgCount] = useState(0);
   const isFirstRender = useRef(0);
 
+  // Socket States
+  const [stompObject, setStompObject] = useState(null);
+  const alreadyRendered = useRef(false);
+
+  //subscribe and send to get chat users
+  const fetchChatUsers = () => {
+    stompObject.send(`/app/getChatUsers/${Cookies.get(COOKIE_KEYS.userId)}`);
+  };
+  const listenToChatUsers = () => {
+    stompObject.subscribe(
+      `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-users`,
+      onReceivedChatUsers
+    );
+  };
+
+  const listenToGetChat = () => {
+    stompObject.subscribe(
+      `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-data`,
+      onReceivedChatData
+    );
+  };
+
+  //subscribe and send to get chat history
+  const fetchChatHistory = () => {
+    stompObject.send(`/app/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`);
+  };
+  const listenToChatHistory = () => {
+    stompObject.subscribe(
+      `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-history`,
+      onReceivedChatHistory
+    );
+  };
+
+  const onReceivedChatUsers = (payload) => {
+    var res = JSON.parse(payload.body);
+    const dupChatHistory = [...chatHistory];
+    const response = res;
+    var dupSearchData = [];
+
+    for (var i = 0; i < response.length; i++) {
+      var flag = 0;
+      for (var j = 0; j < dupChatHistory.length; j++) {
+        if (response[i].userId == dupChatHistory[j].uId) {
+          flag = 1;
+          break;
+        }
+      }
+      var dic = {};
+      if (flag != 1) {
+        dic.uId = response[i].userId;
+        dic.picture = response[i].image;
+        dic.name = response[i].fullName;
+        dic.email = response[i].userEmail;
+      } else {
+        dic = dupChatHistory[j];
+        dic.email = response[i].userEmail;
+      }
+
+      dupSearchData.push(dic);
+    }
+
+    setSearchData(dupSearchData);
+  };
+
+  const onReceivedChatHistory = async (payload, reload = true) => {
+    if (reload) setActiveLoader(true);
+    var res = JSON.parse(payload.body);
+    console.log("received chat history :: ", res);
+
+    setChatHistory(res);
+    const response = res;
+    var total = 0;
+    for (var i = 0; i < response.length; i++) {
+      total += response[i].count;
+    }
+    setTotalMssgCount(total);
+    props.updateCount(total);
+    setActiveLoader(false);
+  };
+
+  const onConnected = () => {
+    stompObject.subscribe(
+      "/user/" + Cookies.get(COOKIE_KEYS.userId) + "/private",
+      onPrivateMessage
+    );
+    listenToGetChat();
+    userJoin();
+
+    // subscribe to get chat users
+    listenToChatUsers();
+    fetchChatUsers();
+
+    //subscribe to get chat History
+    listenToChatHistory();
+    fetchChatHistory();
+  };
+
+  const userJoin = () => {
+    var chatMessage = {
+      senderName: Cookies.get(COOKIE_KEYS.userId),
+      status: "JOIN",
+    };
+    stompObject.send("/app/message", {}, JSON.stringify(chatMessage));
+  };
+
+  const createStompObject = () => {
+    let Sock = new SockJS("http://localhost:9095/youro/api/v1/ws");
+    const stompClient = over(Sock);
+    setStompObject(stompClient);
+  };
+
   useEffect(() => {
-    getChatHistory();
-    // setInterval(() => getChatHistory(false), 60000);
+    if (alreadyRendered.current) return;
+
+    alreadyRendered.current = true;
+    createStompObject();
   }, []);
 
+  // Connect using Stomp
   useEffect(() => {
-    if (isFirstRender.current > 0 && isFirstRender.current < 3) {
-      getChatUsers();
-    }
-    isFirstRender.current = isFirstRender.current + 1;
-    getChat(false);
-  }, [chatHistory]);
+    if (!stompObject) return;
 
-  useEffect(() => {
-    if (seletedChat) getChat();
-    UpdateChat();
-  }, [seletedChat]);
-
-  useEffect(() => {
-    getChat(false);
-  }, [chatHistory]);
+    console.log("Trying......... to connect ");
+    stompObject.connect({}, onConnected, onError);
+  }, [stompObject]);
 
   const [activeLoader, setActiveLoader] = useState(false);
 
   const divRef = useRef(null);
 
+  // Scroll into view for divRef
   useEffect(() => {
     divRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatData]);
 
-  const getChatHistory = async (reload = true) => {
-    const url =
-      API_DETAILS.baseUrl +
-      API_DETAILS.PORT +
-      `/youro/api/v1/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`;
-    if (reload) setActiveLoader(true);
-
-    try {
-      const res = await axios.get(url);
-      await setChatHistory(res.data);
-      const response = res.data;
-      var total = 0;
-      for (var i = 0; i < response.length; i++) {
-        total += response[i].count;
-      }
-      setTotalMssgCount(total);
-      props.updateCount(total);
-      setActiveLoader(false);
-    } catch (err) {
-      console.error(err);
-      setActiveLoader(false);
-    }
+  const onError = (err) => {
+    console.log(err);
   };
 
-  const getChat = async (reload = true) => {
-    const url =
-      API_DETAILS.baseUrl +
-      API_DETAILS.PORT +
-      `/youro/api/v1/getChat/${Cookies.get(
-        COOKIE_KEYS.userId
-      )}/${seletedChat}?timeZone=${
-        Intl.DateTimeFormat().resolvedOptions().timeZone
-      }`;
-    if (reload) setActiveLoader(true);
+  const onPrivateMessage = (payload) => {
+    var payloadData = JSON.parse(payload.body);
 
-    try {
-      const res = await axios.get(url);
-      setChatData(res.data);
-      setActiveLoader(false);
-    } catch (err) {
-      console.error(err);
-      setActiveLoader(false);
-    }
+    // const receivedChat = {
+    //   time: payloadData.time,
+    //   message: payloadData.msg,
+    //   toId: payloadData.to,
+    //   fromId: payloadData.from,
+    // };
+    const receivedChat = {
+      time: payloadData.time,
+      message: payloadData.message,
+      toId: payloadData.toId,
+      fromId: payloadData.fromId,
+      seen: payloadData.seen,
+    };
+
+    setChatData((prevChatData) => [receivedChat, ...prevChatData]);
+  };
+
+  const getChat = async (userId, reload = true) => {
+    const sendUrl = `/app/getChat`;
+
+    const data = {
+      senderId: Cookies.get(COOKIE_KEYS.userId),
+      receiverId: userId,
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    };
+
+    stompObject.send(sendUrl, {}, JSON.stringify(data));
+  };
+
+  const onReceivedChatData = async (payload, reload = true) => {
+    const res = JSON.parse(payload.body);
+    setChatData(res);
   };
 
   const saveChat = async () => {
-    const url =
-      API_DETAILS.baseUrl + API_DETAILS.PORT + `/youro/api/v1/saveChat`;
     if (message.trim()) {
-      const data = {
-        msg: message.trim(),
-        from: parseInt(Cookies.get(COOKIE_KEYS.userId)),
-        to: seletedChat,
-      };
+      const msg = message.trim();
+      const fromId = parseInt(Cookies.get(COOKIE_KEYS.userId));
+      const toId = seletedChat;
+      const sendTime = new Date();
 
-      axios
-        .post(url, data)
-        .then((res) => {
-          setChatData(res.data);
-          setActiveLoader(false);
+      const data = { msg, from: fromId, to: toId, time: sendTime };
 
-          var dupChatData = [...chatData];
-          var mssg = {
-            message: message.trim(),
-            fromId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
-            toId: seletedChat,
-            time: new Date(),
-          };
+      stompObject.send("/app/saveChat", {}, JSON.stringify(data));
 
-          dupChatData = [mssg].concat(dupChatData);
+      const mssg = { message: msg, fromId, toId, time: sendTime, seen: false };
 
-          setChatData(dupChatData);
-          setIsloading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setIsloading(false);
-        });
+      const newData = [mssg, ...chatData];
+      setChatData(newData);
     }
-
     setMessage("");
   };
 
-  const getChatUsers = async () => {
-    const url =
-      API_DETAILS.baseUrl +
-      API_DETAILS.PORT +
-      `/youro/api/v1/getChatUsers/${Cookies.get(COOKIE_KEYS.userId)}`;
-    // setActiveLoader(true);
+  const updateChatHistory = (userId) => {
+    const userIdx = chatHistory.findIndex((x) => x.uId === userId);
 
-    try {
-      const res = await axios.get(url);
-      const dupChatHistory = [...chatHistory];
-      const response = res.data;
-      var dupSearchData = [];
+    if (userIdx > -1) {
+      setTotalMssgCount((prev) => prev - chatHistory[userIdx].count);
+      chatHistory[userIdx].count = 0;
 
-      for (var i = 0; i < response.length; i++) {
-        var flag = 0;
-        for (var j = 0; j < dupChatHistory.length; j++) {
-          if (response[i].userId == dupChatHistory[j].uId) {
-            flag = 1;
-            break;
-          }
-        }
-        var dic = {};
-        if (flag != 1) {
-          dic.uId = response[i].userId;
-          dic.picture = response[i].image;
-          dic.name = response[i].fullName;
-          dic.email = response[i].userEmail;
-        } else {
-          dic = dupChatHistory[j];
-          dic.email = response[i].userEmail;
-        }
-
-        dupSearchData.push(dic);
-      }
-
-      setSearchData(dupSearchData);
-      // setActiveLoader(false);
-    } catch (err) {
-      console.error(err);
-      // setActiveLoader(false);
+      setChatHistory(chatHistory);
     }
-  };
-
-  const UpdateChat = () => {
-    const url =
-      API_DETAILS.baseUrl + API_DETAILS.PORT + `/youro/api/v1/updateChat`;
-    const data = {
-      fromId: seletedChat,
-      toId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
-      time: `${new Date()}`,
-    };
-
-    axios
-      .put(url, data)
-      .then((res) => {
-        const dupChatHistory = [...chatHistory];
-        for (var j = 0; j < dupChatHistory.length; j++) {
-          if (seletedChat == dupChatHistory[j].uId) {
-            setTotalMssgCount(totalMssgCount - dupChatHistory[j].count);
-            props.updateCount(totalMssgCount - dupChatHistory[j].count);
-            dupChatHistory[j].count = 0;
-            break;
-          }
-        }
-        setChatHistory(dupChatHistory);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
   };
 
   const ChatNamesUi = (props) => {
@@ -219,7 +242,11 @@ const PatientChat = (props) => {
           `select-names-div ` +
           (props.data.uId == seletedChat ? "select-names-active" : "")
         }
-        onClick={() => setSelectedChat(props.data.uId)}
+        onClick={() => {
+          setSelectedChat(props.data.uId);
+          getChat(props.data.uId);
+          updateChatHistory(props.data.uId);
+        }}
       >
         {/* <h3>{data.name}</h3> */}
 
@@ -357,34 +384,42 @@ const PatientChat = (props) => {
                       var prevTimeStamp = k ? k.toLocaleDateString() : "";
 
                       return (
-                        <>
-                          <div
-                            className={
-                              data.fromId == Cookies.get(COOKIE_KEYS.userId)
-                                ? "chat-sent-text"
-                                : "chat-received-text"
-                            }
-                          >
-                            {data.message}
-                            <span className="chat-time-stamp">
-                              &nbsp;&nbsp;
-                              {timestamp.toLocaleTimeString().split(":")[0] +
-                                ":" +
-                                timestamp.toLocaleTimeString().split(":")[1] +
-                                " " +
-                                timestamp.toLocaleTimeString().split(" ")[1]}
-                            </span>
-                          </div>
-                          {!prevTimeStamp ||
-                          (prevTimeStamp &&
-                            prevTimeStamp != timestamp.toLocaleDateString()) ? (
-                            <div className="chat-timestamp">
-                              {timestamp.toLocaleDateString()}
-                            </div>
-                          ) : (
-                            ""
-                          )}
-                        </>
+                        <ChatMessage
+                          key={`${data.time}-${i}`}
+                          data={data}
+                          timestamp={timestamp}
+                          prevTimeStamp={prevTimeStamp}
+                          stompObject={stompObject}
+                          selectedChat={seletedChat}
+                        />
+                        // <>
+                        //   <div
+                        //     className={
+                        //       data.fromId == Cookies.get(COOKIE_KEYS.userId)
+                        //         ? "chat-sent-text"
+                        //         : "chat-received-text"
+                        //     }
+                        //   >
+                        //     {data.message}
+                        //     <span className="chat-time-stamp">
+                        //       &nbsp;&nbsp;
+                        //       {timestamp.toLocaleTimeString().split(":")[0] +
+                        //         ":" +
+                        //         timestamp.toLocaleTimeString().split(":")[1] +
+                        //         " " +
+                        //         timestamp.toLocaleTimeString().split(" ")[1]}
+                        //     </span>
+                        //   </div>
+                        //   {!prevTimeStamp ||
+                        //   (prevTimeStamp &&
+                        //     prevTimeStamp != timestamp.toLocaleDateString()) ? (
+                        //     <div className="chat-timestamp">
+                        //       {timestamp.toLocaleDateString()}
+                        //     </div>
+                        //   ) : (
+                        //     ""
+                        //   )}
+                        // </>
                       );
                     })}
 
@@ -457,4 +492,4 @@ const PatientChat = (props) => {
     </div>
   );
 };
-export default PatientChat;
+export default PatientWebChat;
