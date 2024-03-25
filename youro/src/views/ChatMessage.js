@@ -54,6 +54,17 @@ const ChatMessage = ({
             " " +
             timestamp.toLocaleTimeString().split(" ")[1]}
         </span>
+
+        {/* Show message status (ticks) */}
+        {data.fromId == Cookies.get(COOKIE_KEYS.userId) && (
+          <span className="message-status">
+            {data.seen ? (
+              <span>✓✓</span> // Blue tick for seen message
+            ) : (
+              <span>✓</span> // Single tick for unseen message
+            )}
+          </span>
+        )}
       </div>
       {!prevTimeStamp ||
       (prevTimeStamp && prevTimeStamp != timestamp.toLocaleDateString()) ? (

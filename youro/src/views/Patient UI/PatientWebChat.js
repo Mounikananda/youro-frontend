@@ -262,7 +262,7 @@ const PatientWebChat = (props) => {
             alt="Patient Image"
           />
         </div>
-        <div>
+        <div className="chat-user">
           <p
             style={{
               margin: "10px",
@@ -278,7 +278,7 @@ const PatientWebChat = (props) => {
           {props.data.count && props.data.count != 0 ? (
             <p className="mssg-count-ui">{props.data.count}</p>
           ) : null}
-          <p style={{ margin: "10px" }}>
+          <p className="chat-user-msg">
             {props.data.message ? (
               props.data.message
             ) : (
