@@ -39,11 +39,6 @@ import AdminAssistantList from "./views/Admin UI/Admin-AssistantList";
 import Cookies from "js-cookie";
 import DoctorAccessDenied from "./views/Doctor UI/DoctorAccessDenied";
 
-// @TODO: Remove import
-import ChatApp from "./views/ChatApp";
-
-import axios from "axios";
-
 export const API_DETAILS = {
   baseUrl: "http://localhost:",
   PORT: "9095",
@@ -165,9 +160,6 @@ function App() {
           <Route path="/policy" element={<Policy />}></Route>
           <Route path="/telehealth-consent" element={<Telehealth />}></Route>
           <Route path="/terms-conditions" element={<Terms />}></Route>
-
-          {/* @TODO: Just for socket POC */}
-          <Route path="/chat" element={<ChatApp />}></Route>
 
           <Route
             path="/patient-home"

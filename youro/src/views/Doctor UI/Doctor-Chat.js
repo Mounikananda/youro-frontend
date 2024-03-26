@@ -235,8 +235,8 @@ const DoctorChat = () => {
   const getChat = async (userId, reload = true) => {
     const sendUrl = `/app/getChat`;
     const data = {
-      senderId: Cookies.get(COOKIE_KEYS.userId),
-      receiverId: userId,
+      receiverId: Cookies.get(COOKIE_KEYS.userId),
+      senderId: userId,
       timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     };
 
