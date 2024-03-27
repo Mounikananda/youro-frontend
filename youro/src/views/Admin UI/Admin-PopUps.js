@@ -96,7 +96,32 @@ const AdminPopUps = ((props) => {
             console.log(res.data);
             toast.success('Deleted successfully!!');
             props.data.setParentRefreshStatus(true);
-            props.data.postDeleteAction();
+            //props.data.postDeleteAction();
+        }
+        catch (err) {
+            console.error(" this is the error msg",err);
+            toast.error(err.response.data.errorMessage);
+        }
+    }
+
+    const deletePresType = async () => {
+        // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
+        console.log('in deletePresType:' + props.data.rowData['presTypeID']);
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePresType/${props.data.rowData['presTypeID']}`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            const res = await axios.delete(url, config);
+            console.log(res.data);
+            toast.success('Deleted successfully!!');
+            //props.data.postDeleteAction();
+            props.data.setParentRefreshStatus(true);
+            
         }
         catch (err) {
             console.error(" this is the error msg",err);
@@ -179,6 +204,12 @@ const AdminPopUps = ((props) => {
             console.log(props.data.rowData);
 
             deleteCategory();
+            setIsOpen(false);
+        }
+        else if (props.data.action === 'delete-pres_type') {
+            console.log(props.data.rowData);
+
+            deletePresType();
             setIsOpen(false);
         }
     };
@@ -324,6 +355,38 @@ const AdminPopUps = ((props) => {
                             <div className='row'>
                                 <div className='col-12 info-col'>
                                     <h3 style={{ marginLeft: '5%' }}>Are you sure you want to delete this category?</h3>
+                                </div>
+                                <div className='col-12 buttons-col row'>
+                                    <div className='col-6'></div>
+                                    <div className='col-6'>
+                                        <Button onClick={closePopup} variant="outlined" style={{ marginRight: '10px' }} >
+                                            Cancel
+                                        </Button>
+                                        <Button onClick={handleSubmit} variant="contained" color="error" startIcon={<DeleteIcon />}>
+                                            Delete
+                                        </Button>
+                                    </div>
+                                </div>
+                                {/* <div className='col-12'></div> */}
+                            </div>
+                        </div>
+                    </Popup>
+                </>
+            }
+
+            {
+                props.data.action == 'delete-pres_type' &&
+                <>
+                    <Popup
+                        open={isOpen}
+                        closeOnDocumentClick
+                        onClose={closePopup}
+                        modal
+                    >
+                        <div className="popup-content-admin">
+                            <div className='row'>
+                                <div className='col-12 info-col'>
+                                    <h3 style={{ marginLeft: '5%' }}>Are you sure you want to delete this prescription type?</h3>
                                 </div>
                                 <div className='col-12 buttons-col row'>
                                     <div className='col-6'></div>
