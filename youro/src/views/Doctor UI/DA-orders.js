@@ -101,6 +101,7 @@ const Orders = (props) => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getCarePlanDetails/${cId}?edit=${edit}`;
     try {
       const res = await axios.get(url);
+      console.log("here is get care plan details",res);
       if (!edit) setCarePlan(res.data);
       if (edit) setCarePlanDetails([res.data.carePlan]); setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId); setNotes(res.data.notes); setFollowUp(res.data.followUp)
     }
@@ -120,6 +121,7 @@ const Orders = (props) => {
     try {
       setIsLoading(true)
       const res = await axios.get(url);
+      console.log("fetchMedicines : Doc UI ",res);
       setIsLoading(false)
       setCarePlanDetails([res.data])
       setNotes(res.data.notes)
@@ -317,10 +319,6 @@ const Orders = (props) => {
     </div>
     </>}
 
-  
-
-
-  
     {showItems.includes('vitamins') && <>
     <div className="orders-name" style={{width: '33.3%'}}>
     <p className='order-label' style={{wordBreak: 'wrap'}}><strong>Vitamins/<br />Supplements</strong></p>

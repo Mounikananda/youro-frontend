@@ -94,15 +94,11 @@ const AdminMaintainenceList = () => {
             //     size: 50,
             // },
             {
-                accessorKey: 'medicineName',
-                header: 'Medicine Name',
+                accessorKey: 'presName',
+                header: 'Name',
                 enableColumnOrdering: false,
                 enableEditing: false,
                 size: 50,
-            },
-            {
-                accessorKey: 'presName',
-                header: 'Name',
             },
             {
                 accessorKey: 'presType',
@@ -132,8 +128,8 @@ const AdminMaintainenceList = () => {
                 //     size: 50,
                 // },
                 {
-                    accessorKey: 'medicineName',
-                    header: 'Medicine Name',
+                    accessorKey: 'presName',
+                    header: 'Name',
                     enableColumnOrdering: false,
                     enableEditing: false,
                     size: 50,
@@ -297,7 +293,7 @@ const AdminMaintainenceList = () => {
                 let temp = {
                     presId: res.data[i].presId,
                     presName: res.data[i].name,
-                    presType: res.data[i].presType,
+                    presType: res.data[i].presType.name,
                     diagnosis: res.data[i].diagnosis.name,
                     diagnosisId: res.data[i].diagnosis.diagId,
                     shortInfo: res.data[i].shortInfo,
@@ -534,11 +530,11 @@ const AdminMaintainenceList = () => {
     const handleAddPrescription = (data) => {
         const temp = {
             name: data.presName,
-            type: data.presType,
+            type: parseInt(data.presType),
             shortInfo: data.shortInfo,
             overview: getEditorinHTML(),
             diagnosisId: data.diagnosis.map(d => parseInt(d)),
-            categoryId: data.category
+            categoryId: parseInt(data.category)
         };
 
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPrescription", temp).then((res) => {
@@ -718,16 +714,30 @@ const AdminMaintainenceList = () => {
                             {/* {pageContext == 'QUESTIONNAIRE' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('QUESTIONNAIRE'); fetchAllDiagnoses(); }}> Add Questionnaire</div>} */}
                             {
                                 pageContext == 'CATEGORY' && 
-                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData()}}> 
-                                    Add Category
-                                </div>
+                                <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
+                                    <Tooltip arrow placement="left" title="Add Category">
+                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData()}} className='add-icon' size="large">
+                                            <AddIcon fontSize='inherit'/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                                // <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData()}}> 
+                                //     Add Category
+                                // </div>
                             }
 
                             {
                                 pageContext == 'PRES_TYPE' && 
-                                <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData()}}> 
-                                    Add Prescription Type
-                                </div>
+                                <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
+                                    <Tooltip arrow placement="left" title="Add Prescription Type">
+                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData()}} className='add-icon' size="large">
+                                            <AddIcon fontSize='inherit'/>
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                                // <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData()}}> 
+                                //     Add Prescription Type
+                                // </div>
                             }
                             <ToggleButtonGroup
                                 value={pageContext}
@@ -747,6 +757,7 @@ const AdminMaintainenceList = () => {
                             renderAdmin == true && tableData && tableData.length > 0 ?
                                 (
                                     <MaterialReactTable
+                                        options={{actionsColumnIndex: -1}}
                                         displayColumnDefOptions={{
                                             'mrt-row-actions': {
                                                 muiTableHeadCellProps: {
@@ -828,7 +839,7 @@ const AdminMaintainenceList = () => {
                                             Error Fetching Data!
                                         </div>)
                                         : !renderAdmin ?
-                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', positionActionsColumn:'last'}} ><Oval /></div>)
+                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh'}} ><Oval /></div>)
                                             : renderAdmin == true && tableData && tableData.length == 0 &&
                                             <>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
@@ -888,7 +899,7 @@ const AdminMaintainenceList = () => {
                                 >
                                     <option value="">Select</option>
                                     {presTypeData.map((presType,index) => (
-                                        <option key={index} value={presType.presTypeName}>
+                                        <option key={index} value={presType.presTypeID}>
                                             {presType.presTypeName}
                                       </option>
                                     ))}
@@ -930,7 +941,7 @@ const AdminMaintainenceList = () => {
                             })}>
                                 <option value="">Select</option>
                                 {categoryData.map((categoryData,index) => (
-                                        <option key={index} value={categoryData.categoryName}>
+                                        <option key={index} value={categoryData.categoryID}>
                                             {categoryData.categoryName}
                                       </option>
                                     ))}
