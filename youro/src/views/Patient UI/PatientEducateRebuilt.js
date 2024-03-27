@@ -181,7 +181,7 @@ const PatientEducateRebuilt = (props) => {
                 </div> */}
                 <div className="educate-column-two">
                   <h2>{selectedNode.name}</h2>
-                  <p>{selectedNode.overview}</p>
+                  <div dangerouslySetInnerHTML={{ __html: selectedNode.overview || '<p></p>' }} />
                 </div>
 
             </div>

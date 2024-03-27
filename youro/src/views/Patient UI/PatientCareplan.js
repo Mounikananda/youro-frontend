@@ -33,34 +33,41 @@ const CarePlan = () => {
     fetchData();
   }, []);
 
+  console.log(data && data['carePlan'] && data['carePlan']['medicines'] && Object.entries(Object.groupBy(data['carePlan']['medicines'], ({ categoryName }) => categoryName)).map(([category, items]) => category))
   return (
     // <div>
     <>
-      {data && data['carePlan'] ? <>{Object.keys(data['carePlan']).map(category => (
-        <div key={category}>
-          {data['carePlan'][category].filter(item => item.indicator)[0] && <h4 style={{margin: '15px 0px'}}>{category}</h4>}
-          <ul style={{margin: '0px'}}>
-            {data['carePlan'][category].map(item => (
-              item.indicator && <>
-                <li key={item.presId} style={{ marginBottom: "10px" }}>
-                  {item.presName}
-                  {item.dosage ? ` - ${item.dosage}` : ''}
+      {data && data['carePlan'] ? <>{Object.keys(data['carePlan']).map(presType => (
+        <div key={presType}>
+          {data['carePlan'][presType].filter(item => item.indicator)[0] && <h4 style={{margin: '10px 0px'}}>{presType}</h4>}
 
-                  {item.shortInfo && (
-                    <>
-                      <br/>
-                        <span class="material-symbols-outlined" style={{ fontSize: "18px" }}>
-                          subdirectory_arrow_right
-                        </span>
-                        {item.shortInfo}
+          {Object.entries(Object.groupBy(data['carePlan'][presType], ({ categoryName }) => categoryName)).map(([category, items]) => (
+            <>
+            <h5 style={{margin: '10px 10px'}}>{category !== 'null' ? category : ''}</h5>
+              <ul style={{margin: '0px'}}>
+                {items.map(item => (
+                  item.indicator && <>
+                    <li key={item.presId} style={{ marginBottom: "10px" }}>
+                      {item.presName}
+                      {item.dosage ? ` - ${item.dosage}` : ''}
+
+                      {item.shortInfo && (
+                        <>
+                          <br/>
+                            <span class="material-symbols-outlined" style={{ fontSize: "18px" }}>
+                              subdirectory_arrow_right
+                            </span>
+                            {item.shortInfo}
+                        </>
+                      )}
+                      {/* {item.indicator ? ' (Indicator)' : ''} */}
+                    </li>
                     </>
-                  )}
-                  {/* {item.indicator ? ' (Indicator)' : ''} */}
-                </li>
-                </>
-              
-            ))}
-          </ul>
+                  
+                ))}
+              </ul>
+            </>
+          ))}
       
         </div>       
       ))}<br /><br />{data.followUp ? <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">

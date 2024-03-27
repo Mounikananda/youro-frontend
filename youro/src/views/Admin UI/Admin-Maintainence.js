@@ -17,13 +17,16 @@ import {
     Tooltip,
     Switch
 } from '@mui/material';
+import { EditorState, convertToRaw , ContentState } from 'draft-js';
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
 
 import "../../styles/Admin-ui/Admin-DoctorsList.css";
 import { API_DETAILS, COOKIE_KEYS, USER_TYPES } from '../../App';
 import AdminSideBar from './Admin-SideBar';
 import { Link } from 'react-router-dom'
 import AdminPopUps from './Admin-PopUps';
-import MyEditor from '../MyEditor';
+import CustomToolbarEditor from '../RichTextEditor';
 import Popup from 'reactjs-popup';
 import { set, useForm } from "react-hook-form";
 import { Oval } from 'react-loader-spinner';
@@ -70,11 +73,13 @@ const AdminMaintainenceList = () => {
     const [questionnairesList, setQuestionnaires] = useState([]);
     const [selecDiag, setDiag] = useState('');
     const [selecDiagInfo, setDiagInfo] = useState('');
+    const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
     const [diagnosisData, setDiagnosisData] = useState([]);
     const [categoryData, setCategoryData] = useState([]);
     const [needsRefresh, setRefreshStatus] = useState(false);
     const [editCategoryData, setEditCategoryData] = useState({});
+    
 
 
     const [columns, setColumns] = useState(
@@ -249,9 +254,11 @@ const AdminMaintainenceList = () => {
                     presName: res.data[i].name,
                     presType: res.data[i].presType,
                     diagnosis: res.data[i].diagnosis.name,
+                    diagnosisId: res.data[i].diagnosis.diagId,
                     shortInfo: res.data[i].shortInfo,
                     overview: res.data[i].overview,
                     category: res.data[i].category ? res.data[i].category.name: '-- ',
+                    categoryId: res.data[i].category && res.data[i].category.categoryId,
                 };
                 tempData.push(temp);
             }
@@ -446,6 +453,7 @@ const AdminMaintainenceList = () => {
             name: data.presName,
             type: data.presType,
             shortInfo: data.shortInfo,
+            overview: getEditorinHTML(),
             diagnosisId: data.diagnosis.map(d => parseInt(d)),
             categoryId: data.category
         };
@@ -462,11 +470,16 @@ const AdminMaintainenceList = () => {
     }
 
     const handleUpdatePrescription = () => {
+        console.log(popUpData)
         const temp = {
+            name: popUpData.presName,
+            type: popUpData.presType,
+            diagnosisId: popUpData.diagnosisId,
             shortInfo: popUpData.shortInfo,
-            overview: popUpData.overview
+            categoryId: popUpData.categoryId,
+            overview: getEditorinHTML()
         };
-
+        console.log(temp)
         axios.put(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/updatePrescription/${popUpData.presId}`, temp).then((res) => {
             toast.success(`${popUpData.presName} Updated successfully!!`);
             fetchPrescitions();
@@ -480,27 +493,46 @@ const AdminMaintainenceList = () => {
 
     const onClickViewInfo = (rowData) => {
         setPopUpData(rowData)
+        setEditorFromHTML(rowData.overview || '')
         setPopupMode(POPUPMODES.VIEW)
-        setAddPopUpContext('PRESCRIPTION');
+        setAddPopUpContext(pageContext);
         setOpen(true);
     }
 
     const onClickEditInfo = (rowData) => {
         setPopUpData(rowData)
+        setEditorFromHTML(rowData.overview || '')
         setPopupMode(POPUPMODES.EDIT)
-        setAddPopUpContext('PRESCRIPTION');
+        setAddPopUpContext(pageContext);
         setOpen(true);
     }
 
-    const setShortInfo = (val) => {
+    const setEditInfo = (key, val) => {
         setPopUpData({
             ...popUpData,
-            shortInfo: val
+            [key]: val
         })
     }
     
+    const clearEditor = () => {
+        setEditorState(EditorState.createEmpty())
+    }
+
+    const setEditorFromHTML = (content) => {
+        const blocksFromHtml = htmlToDraft(content);
+        const { contentBlocks, entityMap } = blocksFromHtml;
+        const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+        const editorState = EditorState.createWithContent(contentState);
+        setEditorState(editorState);
+    }
+
+    const getEditorinHTML = () => {
+        return draftToHtml(convertToRaw(editorState.getCurrentContent()))
+    }
+
     const onClickAddPrescription = () => {
         reset();
+        clearEditor();
         setOpen(true);
         setPopupMode(POPUPMODES.NEW)
         setAddPopUpContext('PRESCRIPTION');
@@ -703,16 +735,28 @@ const AdminMaintainenceList = () => {
                 {addPopUpContext == 'PRESCRIPTION' && <>
                     <div style={{ padding: '25px', width: '65vw', marginBottom: '25px'}}>
                         <div className="" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
-                            {popUpMode == POPUPMODES.NEW && (<>
+                            {(popUpMode == POPUPMODES.NEW || popUpMode == POPUPMODES.EDIT) && (<>
                                 <label>Name:</label>
-                                <input className="input-field-doctor input-border" type="text" style={{ width: '60%', marginLeft: '20px' }} {...register("presName", {
-                                    required: true,
-                                    maxLength: 32,
-                                })} />
-                                {errors?.presName?.type === "required" && <p className="error-text">This field is required</p>}
-                                {errors?.presName?.type === "maxLength" && <p className="error-text"> Name cannot exceed 32 characters</p>}
+                                {popUpMode == POPUPMODES.NEW ? (
+                                    <>
+                                    <input className="input-field-doctor input-border" type="text" style={{ width: '60%', marginLeft: '20px' }} {...register("presName", {
+                                        required: true,
+                                        maxLength: 32,
+                                    })} />
+                                    {errors?.presName?.type === "required" && <p className="error-text">This field is required</p>}
+                                    {errors?.presName?.type === "maxLength" && <p className="error-text"> Name cannot exceed 32 characters</p>}
+                                    </>
+                                ) : (
+                                    <input 
+                                        className="input-field-doctor input-border"
+                                        type="text"
+                                        style={{ width: '60%', marginLeft: '20px' }}
+                                        value={popUpData.presName || ''}
+                                        onChange={e => setEditInfo('presName', e.target.value)}
+                                    />
+                                )}
                             </>)}
-                            {(popUpMode == POPUPMODES.VIEW || popUpMode == POPUPMODES.EDIT)&& (<>
+                            {(popUpMode == POPUPMODES.VIEW)&& (<>
                                 <h2>{popUpData.presName}</h2>
                             </>)}
                         </div>
@@ -736,13 +780,14 @@ const AdminMaintainenceList = () => {
                                 </select>
                                 {errors?.presType && <p className="error-text">This field is required</p>}
                             </>)}
-                            {(popUpMode == POPUPMODES.VIEW || popUpMode == POPUPMODES.EDIT)&& (<>
+                            {(popUpMode === POPUPMODES.VIEW || popUpMode === POPUPMODES.EDIT)&& (<>
                                 <select
                                     style={{ width: '25vw' }}
                                     className="input-field input-border"
                                     id="gender"
-                                    disabled
+                                    disabled={popUpMode === POPUPMODES.VIEW}
                                     value={popUpData.presType}
+                                    onChange={e => setEditInfo('presType', e.target.value)}
                                      
                                 >
                                     <option value="">Select</option>
@@ -789,9 +834,21 @@ const AdminMaintainenceList = () => {
                             </div>
                             )}
                             {(popUpMode == POPUPMODES.VIEW || popUpMode == POPUPMODES.EDIT)&& (<>
-                            <div style={{display: 'flex', flexDirection:'row'}}>
-                                <label style={{marginRight: '20px'}}>Diagnosis :</label>
-                                <label>{popUpData.diagnosis}</label>
+                            <div className=''>
+                                <label>Diagnosis :</label> <br/>
+                                <select
+                                    style={{ width: '25vw' }}
+                                    className="input-field input-border"
+                                    id="gender"
+                                    disabled={popUpMode === POPUPMODES.VIEW}
+                                    value={popUpData.diagnosisId}
+                                    onChange={e => setEditInfo('diagnosisId', parseInt(e.target.value))}
+                                     
+                                >
+                                    {diagnosisData.map(diagnosis => (
+                                        <option value={diagnosis.diagId}>{diagnosis.name}</option>
+                                    ))}
+                                </select>                            
                             </div><br/>
                             </>)}
 
@@ -827,14 +884,17 @@ const AdminMaintainenceList = () => {
                                     type="text"
                                     style={{ width: '98%'}}
                                     value={popUpData.shortInfo || ''}
-                                    onChange={e => setShortInfo(e.target.value)}
+                                    onChange={e => setEditInfo('shortInfo', e.target.value)}
                                 />
                             </>)}
                         </div>                             
                         <br/>
                         <div className="">
                             <label>Detailed Overview :</label><br />
-                            <MyEditor
+                            <CustomToolbarEditor
+                                readOnly={popUpMode === POPUPMODES.VIEW}
+                                editorState={editorState}
+                                setEditorState={setEditorState}
                             />
                         </div>
                     </div>
