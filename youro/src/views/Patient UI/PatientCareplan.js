@@ -32,45 +32,44 @@ const CarePlan = () => {
   useEffect(() => {
     fetchData();
   }, []);
-  console.log(data)
-  console.log(data && data['carePlan'] && data['carePlan']['medicines'] && Object.entries(Object.groupBy(data['carePlan']['medicines'], ({ categoryName }) => categoryName)).map(([category, items]) => category))
+
+  const prescriptions = data && data['carePlan'] && data['carePlan']['presTypes']
   return (
     // <div>
     <>
-      {data && data['carePlan'] ? <>{Object.keys(data['carePlan']).map(presType => (
-        <></>
-        // <div key={presType}>
-        //   {data['carePlan'][presType].filter(item => item.indicator)[0] && <h4 style={{margin: '10px 0px'}}>{presType}</h4>}
+      {prescriptions ? <>{Object.keys(prescriptions).map(presType => (
+        <div key={presType}>
+          {prescriptions[presType].filter(item => item.indicator)[0] && <h4 style={{margin: '10px 0px'}}>{prescriptions[presType][0].type.name}</h4>}
 
-        //   {Object.entries(Object.groupBy(data['carePlan'][presType], ({ categoryName }) => categoryName)).map(([category, items]) => (
-        //     <>
-        //     <h5 style={{margin: '10px 10px'}}>{category !== 'null' ? category : ''}</h5>
-        //       <ul style={{margin: '0px'}}>
-        //         {items.map(item => (
-        //           item.indicator && <>
-        //             <li key={item.presId} style={{ marginBottom: "10px" }}>
-        //               {item.presName}
-        //               {item.dosage ? ` - ${item.dosage}` : ''}
+          {Object.entries(Object.groupBy(prescriptions[presType], ({ categoryName }) => categoryName)).map(([category, items]) => (
+            <>
+            <h5 style={{margin: '10px 10px'}}>{category !== 'null' ? category : ''}</h5>
+              <ul style={{margin: '0px'}}>
+                {items.map(item => (
+                  item.indicator && <>
+                    <li key={item.presId} style={{ marginBottom: "10px" }}>
+                      {item.presName}
+                      {item.dosage ? ` - ${item.dosage}` : ''}
 
-        //               {item.shortInfo && (
-        //                 <>
-        //                   <br/>
-        //                     <span class="material-symbols-outlined" style={{ fontSize: "18px" }}>
-        //                       subdirectory_arrow_right
-        //                     </span>
-        //                     {item.shortInfo}
-        //                 </>
-        //               )}
-        //               {/* {item.indicator ? ' (Indicator)' : ''} */}
-        //             </li>
-        //             </>
+                      {item.shortInfo && (
+                        <>
+                          <br/>
+                            <span class="material-symbols-outlined" style={{ fontSize: "18px" }}>
+                              subdirectory_arrow_right
+                            </span>
+                            {item.shortInfo}
+                        </>
+                      )}
+                      {/* {item.indicator ? ' (Indicator)' : ''} */}
+                    </li>
+                    </>
                   
-        //         ))}
-        //       </ul>
-        //     </>
-        //   ))}
+                ))}
+              </ul>
+            </>
+          ))}
       
-        // </div>       
+        </div>       
       ))}<br /><br />{data.followUp ? <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
       sync
       </span><strong>&nbsp;&nbsp;Follow-up required</strong></div> :
