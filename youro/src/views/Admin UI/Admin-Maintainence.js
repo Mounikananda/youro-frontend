@@ -781,7 +781,14 @@ const AdminMaintainenceList = () => {
                                                 <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                                                     <Box sx={{ display: 'flex', gap: '1rem' }}>
                                                         <Tooltip arrow placement="top" title="Delete">
-                                                            <AdminPopUps data={{ 'action': `delete-${pageContext.toLowerCase()}`, 'step': 1, 'rowData': row.original, 'postDeleteAction': fetchAfterDelete(), 'setParentRefreshStatus': setRefreshStatus }} />
+                                                            <AdminPopUps
+                                                                data={{
+                                                                    'action': `delete-${pageContext.toLowerCase()}`,
+                                                                    'step': 1,
+                                                                    'rowData': row.original,
+                                                                    'postDeleteAction': fetchAfterDelete(),
+                                                                    'setParentRefreshStatus': setRefreshStatus 
+                                                                }} />
                                                         </Tooltip>
                                                     </Box>
                                                     {pageContext === 'PRESCRIPTION' && (

@@ -43,7 +43,6 @@ const PatientEducateRebuilt = (props) => {
       };
     
       const buildNodeList = (data) => {
-        console.log(data)
         const nodeList = [];
         let idx = 0;
         nodeList.push({
@@ -57,17 +56,19 @@ const PatientEducateRebuilt = (props) => {
         })
         setSelectedNode(nodeList[0]);
         idx++;
-        const presTypes = ['medicines', 'lifeStyle', 'vitamins'];
-        const presTypeNameMap = {
-            medicines: "Medicines",
-            lifeStyle: "LifeStyle",
-            vitamins: "Vitamins"
-        }
-        presTypes.forEach( presType => {
-            if (data.carePlan[presType].length !== 0) {
+        const presTypesToShow = ['Medicines', 'Lifestyle', 'Vitamins'];
+
+        const presTypeNameMap = {};
+        const prescriptions = data.carePlan.presTypes
+        Object.keys(prescriptions).forEach(pres => {
+          const name = prescriptions[pres][0].type.name
+          if (presTypesToShow.includes(name)) presTypeNameMap[pres] = name;
+        })
+        Object.entries(presTypeNameMap).forEach( ([presType, presTypeName]) => {
+            if (prescriptions[presType].length !== 0) {
                 nodeList.push({
                     id: idx,
-                    name: presTypeNameMap[presType],
+                    name: presTypeName,
                     level: 1,
                     hidden: false,
                     expanded: true,
@@ -76,7 +77,7 @@ const PatientEducateRebuilt = (props) => {
                 })
                 const prnt = idx;
                 idx++;
-                data.carePlan[presType].forEach(pres => {
+                prescriptions[presType].forEach(pres => {
                     nodeList.push({
                         id: idx,
                         name: pres.presName,

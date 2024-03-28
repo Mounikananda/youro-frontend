@@ -71,7 +71,7 @@ const AdminPopUps = ((props) => {
             console.log(res.data);
             toast.success('Deleted successfully!!');
             props.data.setParentRefreshStatus(true);
-            props.data.postDeleteAction();
+            // props.data.postDeleteAction();
         }
         catch (err) {
             console.error(err);
