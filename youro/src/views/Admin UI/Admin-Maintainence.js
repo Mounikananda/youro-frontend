@@ -228,7 +228,7 @@ const AdminMaintainenceList = () => {
             setPageContext('PRES_TYPE');
             setColumns([
                 // {
-                //     accessorKey: 'presTypeID',
+                //     accessorKey: 'presTypeId',
                 //     header: 'ID',
                 //     enableColumnOrdering: false,
                 //     enableEditing: false,
@@ -294,6 +294,7 @@ const AdminMaintainenceList = () => {
                     presId: res.data[i].presId,
                     presName: res.data[i].name,
                     presType: res.data[i].presType.name,
+                    presTypeId: res.data[i].presType.presTypeId,
                     diagnosis: res.data[i].diagnosis.name,
                     diagnosisId: res.data[i].diagnosis.diagId,
                     shortInfo: res.data[i].shortInfo,
@@ -461,7 +462,7 @@ const AdminMaintainenceList = () => {
              let tempData = [];
              for (let i = 0; i < res.data.length; i++) {
                  let temp = {
-                     presTypeID: res.data[i].presTypeId,
+                     presTypeId: res.data[i].presTypeId,
                      presTypeName: res.data[i].name,
                  };
                  console.log("here is the temp",temp);
@@ -552,7 +553,7 @@ const AdminMaintainenceList = () => {
         console.log(popUpData)
         const temp = {
             name: popUpData.presName,
-            type: popUpData.presType,
+            type: popUpData.presTypeId,
             diagnosisId: popUpData.diagnosisId,
             shortInfo: popUpData.shortInfo,
             categoryId: popUpData.categoryId,
@@ -571,6 +572,7 @@ const AdminMaintainenceList = () => {
     }
 
     const onClickViewInfo = (rowData) => {
+        console.log(rowData)
         setPopUpData(rowData)
         setEditorFromHTML(rowData.overview || '')
         setPopupMode(POPUPMODES.VIEW)
@@ -675,7 +677,7 @@ const AdminMaintainenceList = () => {
 
     const handleEditPresTypeSubmit = async () => {
         try {
-            const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editPresType/${editPresTypeData.presTypeID}`, {
+            const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editPresType/${editPresTypeData.presTypeId}`, {
                 name: editPresTypeData.presTypeName,
             });
             toast.success('Category updated successfully!');
@@ -899,9 +901,9 @@ const AdminMaintainenceList = () => {
                                 >
                                     <option value="">Select</option>
                                     {presTypeData.map((presType,index) => (
-                                        <option key={index} value={presType.presTypeID}>
+                                        <option key={index} value={presType.presTypeId}>
                                             {presType.presTypeName}
-                                      </option>
+                                        </option>
                                     ))}
                                     {/* <option value="">Select</option>
                                     <option value="LAB">LAB</option>
@@ -919,34 +921,52 @@ const AdminMaintainenceList = () => {
                                     className="input-field input-border"
                                     id="gender"
                                     disabled={popUpMode === POPUPMODES.VIEW}
-                                    value={popUpData.presType}
-                                    onChange={e => setEditInfo('presType', e.target.value)}
+                                    value={popUpData.presTypeId}
+                                    onChange={e => setEditInfo('presTypeId', parseInt(e.target.value))}
                                      
                                 >
-                                    <option value="">Select</option>
-                                    <option value="LAB">LAB</option>
-                                    <option value="VITAMINS">VITAMINS</option>
-                                    <option value="MEDICINES">MEDICINES</option>
-                                    <option value="IMAGING">IMAGING</option>
-                                    <option value="LIFESTYLE">LIFESTYLE</option>
-                                    <option value="MEDIA">MEDIA</option>
+                                    {presTypeData.map(presType => (
+                                        <option key={presType.presTypeId} value={presType.presTypeId}>
+                                            {presType.presTypeName}
+                                        </option>
+                                    ))}
                                 </select>
                             </>)}
                         </div>
                         <br />
                         <div className="">
                             <label>Category :</label><br />
-                            <select style={{ width: '25vw' }} className="input-field input-border" id="gender"  disabled={popUpMode != POPUPMODES.NEW} {...register("category", {
-                                required: false,
-                            })}>
-                                <option value="">Select</option>
-                                {categoryData.map((categoryData,index) => (
+                            {popUpMode == POPUPMODES.NEW && (
+                            <>
+                                <select style={{ width: '25vw' }} className="input-field input-border" id="gender"  disabled={popUpMode != POPUPMODES.NEW} {...register("category", {
+                                    required: false,
+                                })}>
+                                    <option value="">Select</option>
+                                    {categoryData.map((categoryData,index) => (
+                                        <option key={index} value={categoryData.categoryID}>
+                                                {categoryData.categoryName}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors?.category&& <p className="error-text">This field is required</p>}
+                            </>
+                            )}
+                            {(popUpMode === POPUPMODES.VIEW || popUpMode === POPUPMODES.EDIT)&& (<>
+                                <select
+                                    style={{ width: '25vw' }}
+                                    className="input-field input-border"
+                                    id="gender"
+                                    disabled={popUpMode === POPUPMODES.VIEW}
+                                    value={popUpData.categoryId}
+                                    onChange={e => setEditInfo('categoryId', parseInt(e.target.value))}
+                                >
+                                    {categoryData.map((categoryData,index) => (
                                         <option key={index} value={categoryData.categoryID}>
                                             {categoryData.categoryName}
-                                      </option>
+                                        </option>
                                     ))}
-                            </select>
-                            {errors?.category&& <p className="error-text">This field is required</p>}
+                                </select>
+                            </>)}
                         </div> <br ></br>
                         <div className="">
                             {popUpMode == POPUPMODES.NEW && (

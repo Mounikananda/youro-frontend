@@ -106,8 +106,8 @@ const AdminPopUps = ((props) => {
 
     const deletePresType = async () => {
         // {medicineId: 2, medicineName: 'new vit', category: 'VITAMINS', diagnosis: 'Diag 103'}
-        console.log('in deletePresType:' + props.data.rowData['presTypeID']);
-        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePresType/${props.data.rowData['presTypeID']}`;
+        console.log('in deletePresType:' + props.data.rowData['presTypeId']);
+        const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + API_DETAILS.baseExtension +`/deletePresType/${props.data.rowData['presTypeId']}`;
         const config = {
             headers: {
                 'Access-Control-Allow-Origin': '*',
