@@ -4,22 +4,21 @@ import Youroheader from "../Youro-header";
 import { COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 import Loader from "../../utils/loader";
-import { over } from "stompjs";
-import SockJS from "sockjs-client";
 import ChatMessage from "../ChatMessage";
+import { useChatContext } from "../../context/ChatContext";
 
 const PatientWebChat = (props) => {
   const {
     stompObject,
     chatUserDetails,
-    count,
+    totalMsgCount,
     updateCount,
     updateChatUserDetails,
-    seletedChat,
+    selectedChat,
     setSelectedChat,
     chatData,
     setChatData,
-  } = props;
+  } = useChatContext();
 
   const [viewVal, setViewVal] = useState(0);
   const navToProfile = () => {
@@ -37,31 +36,8 @@ const PatientWebChat = (props) => {
   const [isLoading, setIsloading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchData, setSearchData] = useState(null);
-  const [totalMssgCount, setTotalMssgCount] = useState(0);
-  const isFirstRender = useRef(0);
 
-  const isAlreadyRendered = useRef(false);
-
-  //subscribe and send to get chat users
-
-  // const listenToGetChat = () => {
-  //   stompObject.subscribe(
-  //     `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-data`,
-  //     onReceivedChatData
-  //   );
-  // };
-
-  // //subscribe and send to get chat history
-  // const fetchChatHistory = () => {
-  //   stompObject.send(`/app/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`);
-  // };
-
-  // const listenToChatHistory = () => {
-  //   stompObject.subscribe(
-  //     `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-history`,
-  //     onReceivedChatHistory
-  //   );
-  // };
+  const [activeLoader, setActiveLoader] = useState(true);
 
   const onReceivedChatUsers = (payload) => {
     var res = JSON.parse(payload.body);
@@ -81,98 +57,27 @@ const PatientWebChat = (props) => {
 
       chatUsers.push(modObj);
     });
-
-    // const dupChatHistory = [...chatHistory];
-    // const response = res;
-    // var dupSearchData = [];
-
-    // //@TODO: Understand the use case of this code
-    // for (var i = 0; i < response.length; i++) {
-    //   var flag = 0;
-    //   for (var j = 0; j < dupChatHistory.length; j++) {
-    //     if (response[i].userId == dupChatHistory[j].uId) {
-    //       flag = 1;
-    //       break;
-    //     }
-    //   }
-    //   var dic = {};
-    //   if (flag != 1) {
-    //     dic.uId = response[i].userId;
-    //     dic.picture = response[i].image;
-    //     dic.name = response[i].fullName;
-    //     dic.email = response[i].userEmail;
-    //   } else {
-    //     dic = dupChatHistory[j];
-    //     dic.email = response[i].userEmail;
-    //   }
-
-    //   dupSearchData.push(dic);
-    // }
-
     setSearchData(chatUsers);
   };
 
-  // const onReceivedChatHistory = async (payload, reload = true) => {
-  //   if (reload) setActiveLoader(true);
-  //   var res = JSON.parse(payload.body);
-  //   console.log("received chat history :: ", res);
+  // const sortChatUsers = (chatUserDetails) => {
+  //   const keyValueArr = Object.entries(chatUserDetails);
 
-  //   setChatHistory(res);
-  //   const response = res;
-  //   var total = 0;
-  //   for (var i = 0; i < response.length; i++) {
-  //     total += response[i].count;
+  //   keyValueArr.sort((a, b) => {
+  //     const d1 = new Date(a[1].time);
+  //     const d2 = new Date(b[1].time);
+
+  //     return d1 - d2;
+  //   });
+
+  //   const sortedArr = {};
+  //   for (const [key, value] of keyValueArr) {
+  //     sortedArr[key] = value;
   //   }
-  //   setTotalMssgCount(total);
-  //   props.updateCount(total);
-  //   setActiveLoader(false);
+
+  //   console.log("Sorted arra ::: ", sortedArr);
+  //   updateChatUserDetails(sortedArr);
   // };
-
-  // const onConnected = () => {
-  //   stompObject.subscribe(
-  //     "/user/" + Cookies.get(COOKIE_KEYS.userId) + "/private",
-  //     onPrivateMessage
-  //   );
-  //   listenToGetChat();
-  //   userJoin();
-
-  //   // subscribe to get chat users
-  //   listenToChatUsers();
-  //   fetchChatUsers();
-
-  //   //subscribe to get chat History
-  //   listenToChatHistory();
-  //   fetchChatHistory();
-  // };
-
-  // const userJoin = () => {
-  //   var chatMessage = {
-  //     senderName: Cookies.get(COOKIE_KEYS.userId),
-  //     status: "JOIN",
-  //   };
-  //   stompObject.send("/app/message", {}, JSON.stringify(chatMessage));
-  // };
-
-  // const createStompObject = () => {
-  //   let Sock = new SockJS("http://localhost:9095/youro/api/v1/ws");
-  //   const stompClient = over(Sock);
-  //   setStompObject(stompClient);
-  // };
-
-  // useEffect(() => {
-  //   if (alreadyRendered.current) return;
-
-  //   alreadyRendered.current = true;
-  //   createStompObject();
-  // }, []);
-
-  // // Connect using Stomp
-  // useEffect(() => {
-  //   if (!stompObject) return;
-
-  //   console.log("Trying......... to connect ");
-  //   stompObject.connect({}, onConnected, onError);
-  // }, [stompObject]);
 
   const listenToGetChat = () => {
     stompObject.subscribe(
@@ -193,15 +98,20 @@ const PatientWebChat = (props) => {
   };
 
   useEffect(() => {
-    if (isAlreadyRendered.current) return;
+    if (!stompObject || !stompObject.connected) return;
 
-    isAlreadyRendered.current = true;
+    setActiveLoader(false);
     listenToChatUsers();
-    fetchChatUsers();
+    // fetchChatUsers();
     listenToGetChat();
-  }, []);
+  }, [stompObject?.connected]);
 
-  const [activeLoader, setActiveLoader] = useState(false);
+  useEffect(() => {
+    console.log("Before if condition in useEffect :: ", chatUserDetails);
+    if (!chatUserDetails || Object.keys(chatUserDetails).length == 0) return;
+    console.log("Before fetching chat users :: ", chatUserDetails);
+    fetchChatUsers();
+  }, [chatUserDetails]);
 
   const divRef = useRef(null);
 
@@ -209,30 +119,6 @@ const PatientWebChat = (props) => {
   useEffect(() => {
     divRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatData]);
-
-  const onError = (err) => {
-    console.log(err);
-  };
-
-  const onPrivateMessage = (payload) => {
-    var payloadData = JSON.parse(payload.body);
-
-    // const receivedChat = {
-    //   time: payloadData.time,
-    //   message: payloadData.msg,
-    //   toId: payloadData.to,
-    //   fromId: payloadData.from,
-    // };
-    const receivedChat = {
-      time: payloadData.time,
-      message: payloadData.message,
-      toId: payloadData.toId,
-      fromId: payloadData.fromId,
-      seen: payloadData.seen,
-    };
-
-    setChatData((prevChatData) => [receivedChat, ...prevChatData]);
-  };
 
   const getChat = async (userId, reload = true) => {
     const sendUrl = `/app/getChat`;
@@ -248,7 +134,7 @@ const PatientWebChat = (props) => {
 
   const onReceivedChatData = async (payload, reload = true) => {
     const res = JSON.parse(payload.body);
-
+    console.log("Chat-response :: ", res);
     setChatData(res);
   };
 
@@ -256,7 +142,7 @@ const PatientWebChat = (props) => {
     if (message.trim()) {
       const msg = message.trim();
       const fromId = parseInt(Cookies.get(COOKIE_KEYS.userId));
-      const toId = seletedChat;
+      const toId = selectedChat;
       const sendTime = new Date();
 
       const data = { msg, from: fromId, to: toId, time: sendTime };
@@ -265,6 +151,18 @@ const PatientWebChat = (props) => {
 
       const mssg = { message: msg, fromId, toId, time: sendTime, seen: false };
 
+      const updatedChatUserDetails = {
+        ...chatUserDetails,
+        [toId]: {
+          ...chatUserDetails[toId],
+          message: msg,
+        },
+      };
+
+      updateChatUserDetails(updatedChatUserDetails);
+
+      // sortChatUsers(updatedChatUserDetails);
+
       const newData = [mssg, ...chatData];
       setChatData(newData);
     }
@@ -272,20 +170,12 @@ const PatientWebChat = (props) => {
   };
 
   const updateChatHistory = (userId) => {
-    // const userIdx = chatHistory.findIndex((x) => x.uId === userId);
-
     if (!chatUserDetails[userId]) return;
 
     console.log("Chat use details in update ::: ", chatUserDetails);
-    updateCount(count - chatUserDetails[userId].count);
+    updateCount(totalMsgCount - chatUserDetails[userId].count);
     chatUserDetails[userId].count = 0;
     updateChatUserDetails(chatUserDetails);
-    // if (userIdx > -1) {
-    //   setTotalMssgCount((prev) => prev - chatHistory[userIdx].count);
-    //   chatHistory[userIdx].count = 0;
-
-    //   setChatHistory(chatHistory);
-    // }
   };
 
   const ChatNamesUi = (props) => {
@@ -293,7 +183,7 @@ const PatientWebChat = (props) => {
       <div
         className={
           `select-names-div ` +
-          (props.data.uId == seletedChat ? "select-names-active" : "")
+          (props.data.uId == selectedChat ? "select-names-active" : "")
         }
         onClick={() => {
           setSelectedChat(props.data.uId);
@@ -328,7 +218,7 @@ const PatientWebChat = (props) => {
           >
             {props.data.name}
           </p>
-          {chatUserDetails[props.data.uId] ? (
+          {chatUserDetails[props.data.uId]?.count ? (
             <p className="mssg-count-ui">
               {chatUserDetails[props.data.uId].count}
             </p>
@@ -387,13 +277,13 @@ const PatientWebChat = (props) => {
 
             {!searchInput &&
               chatHistory &&
-              chatHistory.map((data) => {
-                return <ChatNamesUi data={data} />;
+              chatHistory.map((data, idx) => {
+                return <ChatNamesUi data={data} key={idx} />;
               })}
 
             {((chatHistory && !chatHistory[0]) || searchInput) &&
               searchData &&
-              searchData.map((data) => {
+              searchData.map((data, idx) => {
                 return (
                   <>
                     {(data.name
@@ -403,14 +293,14 @@ const PatientWebChat = (props) => {
                         data.email
                           .toLowerCase()
                           .includes(searchInput.toLowerCase()))) && (
-                      <ChatNamesUi data={data} />
+                      <ChatNamesUi data={data} key={idx} />
                     )}
                   </>
                 );
               })}
           </div>
-
-          {seletedChat ? (
+          {console.log("Selected  chat :: ", selectedChat)}
+          {selectedChat ? (
             <div className="selected-chat-view" onKeyDown={handleKeyDown}>
               <div
                 id="chat-scroll"
@@ -445,36 +335,8 @@ const PatientWebChat = (props) => {
                           timestamp={timestamp}
                           prevTimeStamp={prevTimeStamp}
                           stompObject={stompObject}
-                          selectedChat={seletedChat}
+                          selectedChat={selectedChat}
                         />
-                        // <>
-                        //   <div
-                        //     className={
-                        //       data.fromId == Cookies.get(COOKIE_KEYS.userId)
-                        //         ? "chat-sent-text"
-                        //         : "chat-received-text"
-                        //     }
-                        //   >
-                        //     {data.message}
-                        //     <span className="chat-time-stamp">
-                        //       &nbsp;&nbsp;
-                        //       {timestamp.toLocaleTimeString().split(":")[0] +
-                        //         ":" +
-                        //         timestamp.toLocaleTimeString().split(":")[1] +
-                        //         " " +
-                        //         timestamp.toLocaleTimeString().split(" ")[1]}
-                        //     </span>
-                        //   </div>
-                        //   {!prevTimeStamp ||
-                        //   (prevTimeStamp &&
-                        //     prevTimeStamp != timestamp.toLocaleDateString()) ? (
-                        //     <div className="chat-timestamp">
-                        //       {timestamp.toLocaleDateString()}
-                        //     </div>
-                        //   ) : (
-                        //     ""
-                        //   )}
-                        // </>
                       );
                     })}
 

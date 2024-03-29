@@ -27,11 +27,15 @@ import Zoom from "@mui/material/Zoom";
 import axios from "axios";
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import NotificationSound from "../../assets/notification-sound.mp3";
+import { useChatContext } from "../../context/ChatContext";
 
 function DoctorSideBar(props) {
   const [collapse, setCollapse] = useState(true);
   const navigate = useNavigate();
   const audioPlayer = useRef(null);
+  const { stompObject } = useChatContext();
+
+  const { totalMsgCount, setSelectedChat, setStompObject } = useChatContext();
 
   const handleLogout = () => {
     // Display a loading indicator or a message if needed
@@ -43,31 +47,19 @@ function DoctorSideBar(props) {
     Cookies.remove(COOKIE_KEYS.userId);
     Cookies.remove(COOKIE_KEYS.token);
     Cookies.remove(COOKIE_KEYS.userType);
+    if (stompObject) {
+      stompObject.disconnect(function () {
+        console.log("Disconnected from WebSocket.");
+      });
+      setStompObject(null);
+    }
     navigate("/");
-    // removeCookies();
-    // }, 5000);
-
-    // 5000 milliseconds = 5 seconds
   };
 
-  useEffect(() => {
-    window.onbeforeunload = function () {
-      localStorage.removeItem("mssgCount");
-    };
-    const path = location.pathname;
-    if (path == "/doctor-chat") {
-      localStorage.removeItem("mssgCount");
-    }
-    if (
-      localStorage.getItem("mssgCount") == undefined ||
-      parseInt(localStorage.getItem("mssgCount")) < 0
-    ) {
-      getChatHistory();
-    } else {
-      setTotalMssgCount(parseInt(localStorage.getItem("mssgCount")));
-    }
-    setInterval(() => getChatHistory(false), 60000);
-  }, []);
+  const handleMenuClick = (navigationUrl, remvoeSelectedChat = true) => {
+    if (remvoeSelectedChat) setSelectedChat(null);
+    navigate(navigationUrl);
+  };
 
   function playAudio() {
     audioPlayer?.current?.play();
@@ -79,37 +71,7 @@ function DoctorSideBar(props) {
   const handleMouseEnter = () => setShow(true);
   const handleMouseLeave = () => setShow(false);
 
-  const [mssgCount, setTotalMssgCount] = useState(0);
   const location = useLocation();
-
-  const getChatHistory = async (reload = true) => {
-    const path = location.pathname;
-    if (path != "/doctor-chat") {
-      const url =
-        API_DETAILS.baseUrl +
-        API_DETAILS.PORT +
-        `/youro/api/v1/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`;
-
-      try {
-        const res = await axios.get(url);
-        const response = res.data;
-        var total = 0;
-        for (var i = 0; i < response.length; i++) {
-          total += response[i].count;
-        }
-        if (total > parseInt(localStorage.getItem("mssgCount"))) {
-          // playAudio();
-        }
-        localStorage.setItem("mssgCount", total);
-        setTotalMssgCount(total);
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      localStorage.setItem("mssgCount", -1);
-      setTotalMssgCount(-1);
-    }
-  };
 
   return (
     <div>
@@ -151,7 +113,7 @@ function DoctorSideBar(props) {
               disableTouchListener
             >
               <MenuItem
-                onClick={() => navigate("/doctor-home")}
+                onClick={() => handleMenuClick("/doctor-home")}
                 icon={<FaHome size={40} />}
                 active={props.data === "doctor-home"}
                 className="Menu-item"
@@ -172,7 +134,7 @@ function DoctorSideBar(props) {
               disableTouchListener
             >
               <MenuItem
-                onClick={() => navigate("/doctor-appointment")}
+                onClick={() => handleMenuClick("/doctor-appointment")}
                 icon={<FaCalendar size={40} />}
                 active={props.data === "doctor-appointment"}
                 className="Menu-item"
@@ -192,7 +154,7 @@ function DoctorSideBar(props) {
               disableTouchListener
             >
               <MenuItem
-                onClick={() => navigate("/doctor-chat")}
+                onClick={() => handleMenuClick("/doctor-chat", false)}
                 icon={
                   <>
                     <img
@@ -201,8 +163,7 @@ function DoctorSideBar(props) {
                       height="32px"
                       alt="home_icon"
                     />
-                    {((props.mssgCount && props.mssgCount != 0) ||
-                      mssgCount > 0) && (
+                    {totalMsgCount > 0 && (
                       <p
                         style={{
                           fontSize: "10px",
@@ -214,9 +175,7 @@ function DoctorSideBar(props) {
                         }}
                         className="mssg-count-ui"
                       >
-                        {props.mssgCount
-                          ? props.mssgCount
-                          : mssgCount > 0 && mssgCount}
+                        {totalMsgCount}
                       </p>
                     )}
                   </>
@@ -242,7 +201,7 @@ function DoctorSideBar(props) {
               disableTouchListener
             >
               <MenuItem
-                onClick={() => navigate("/doctor-view-profile")}
+                onClick={() => handleMenuClick("/doctor-view-profile")}
                 icon={<FaEdit size={40} />}
                 active={props.data === "doctor-view-profile"}
                 className="Menu-item"
@@ -262,7 +221,7 @@ function DoctorSideBar(props) {
               disableTouchListener
             >
               <MenuItem
-                onClick={() => navigate("/doctor-profile")}
+                onClick={() => handleMenuClick("/doctor-profile")}
                 icon={
                   <img
                     src={require("../../assets/Profile_icon.png")}

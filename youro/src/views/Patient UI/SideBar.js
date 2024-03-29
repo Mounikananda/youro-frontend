@@ -1,111 +1,35 @@
-import { React, useState, useEffect } from "react";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import Hamburger from "hamburger-react";
+import { React, useState } from "react";
+import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import "../../styles/Patient-ui/Patient-home.css";
-import {
-  FaHome,
-  FaCalendar,
-  FaFacebookMessenger,
-  FaPrescription,
-  FaPowerOff,
-  FaHamburger,
-} from "react-icons/fa";
-import {
-  BrowserRouter,
-  Link,
-  Route,
-  Routes,
-  useNavigate,
-  useLocation,
-} from "react-router-dom";
-import Signupoptions from "../Signupoptions";
+import { useNavigate, useLocation } from "react-router-dom";
 import Cookies from "js-cookie";
 import { FaSignOutAlt } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
 import Zoom from "@mui/material/Zoom";
-import { API_DETAILS, COOKIE_KEYS } from "../../App";
-import axios from "axios";
+import { COOKIE_KEYS } from "../../App";
+import { useChatContext } from "../../context/ChatContext";
 
 function SideBar(props) {
   const [collapse, setCollapse] = useState(true);
   const navigate = useNavigate();
-
-  // const toggleSidebar = () => {
-  //   setCollapse(!collapse);
-  // };
+  const { stompObject, setStompObject, setIsLoggedIn, totalMsgCount } =
+    useChatContext();
 
   const handleLogout = () => {
-    // Display a loading indicator or a message if needed
-    // For example, you can set a loading state variable.
-
-    // Wait for 5 seconds before removing cookies
-    // setTimeout(() => {
-    // toast.success("loging out");
     Cookies.remove(COOKIE_KEYS.userId);
     Cookies.remove(COOKIE_KEYS.token);
     Cookies.remove(COOKIE_KEYS.userType);
+    if (stompObject) {
+      stompObject.disconnect(function () {
+        console.log("Disconnected from WebSocket.");
+      });
+      setStompObject(null);
+      setIsLoggedIn(false);
+    }
     navigate("/");
-    // removeCookies();
-    // }, 5000);
-
-    // 5000 milliseconds = 5 seconds
   };
 
-  useEffect(() => {
-    window.onbeforeunload = function () {
-      localStorage.removeItem("mssgCount");
-    };
-    const path = location.pathname;
-    if (props.active == 2) {
-      localStorage.removeItem("mssgCount");
-    }
-    if (
-      (props.active != 2 && localStorage.getItem("mssgCount") == undefined) ||
-      parseInt(localStorage.getItem("mssgCount")) < 0
-    ) {
-      getChatHistory();
-    } else {
-      setTotalMssgCount(parseInt(localStorage.getItem("mssgCount")));
-    }
-
-    {
-      /* @TODO: will delete later */
-    }
-    setInterval(() => getChatHistory(false), 60000);
-  }, [props.active]);
-
-  const [mssgCount, setTotalMssgCount] = useState(0);
   const location = useLocation();
-
-  const getChatHistory = async (reload = true) => {
-    const path = location.pathname;
-    if (props.active != 2) {
-      const url =
-        API_DETAILS.baseUrl +
-        API_DETAILS.PORT +
-        `/youro/api/v1/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`;
-
-      try {
-        const res = await axios.get(url);
-        const response = res.data;
-        var total = 0;
-        for (var i = 0; i < response.length; i++) {
-          total += response[i].count;
-        }
-        if (total > parseInt(localStorage.getItem("mssgCount"))) {
-          // playAudio();
-        }
-        localStorage.setItem("mssgCount", total);
-        setTotalMssgCount(total);
-      } catch (err) {
-        console.error(err);
-      }
-    } else {
-      // alert('Hi')
-      localStorage.setItem("mssgCount", -1);
-      setTotalMssgCount(-1);
-    }
-  };
 
   return (
     <div>
@@ -211,7 +135,7 @@ function SideBar(props) {
                       height="32px"
                       alt="home_icon"
                     />
-                    {((props.count && props.count > 0) || mssgCount > 0) && (
+                    {props.count > 0 && (
                       <p
                         style={{
                           fontSize: "10px",
@@ -223,9 +147,7 @@ function SideBar(props) {
                         }}
                         className="mssg-count-ui"
                       >
-                        {props.count && props.count > 0
-                          ? props.count
-                          : mssgCount > 0 && mssgCount}
+                        {props.count}
                       </p>
                     )}
                   </>

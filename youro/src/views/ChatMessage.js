@@ -24,7 +24,7 @@ const ChatMessage = ({
   useEffect(() => {
     if (alreadyRendered.current || data.seen) return;
 
-    console.log("caht data ::: ", data);
+    console.log("chat data ::: ", data);
     console.log(
       "Conds :: ",
       data.fromId != Cookies.get(COOKIE_KEYS.userId),

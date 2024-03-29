@@ -5,38 +5,71 @@ import Youroheader from "../Youro-header";
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
 import Cookies from "js-cookie";
 import Loader from "../../utils/loader";
-import axios from "axios";
 import NotificationSound from "../../assets/notification-sound.mp3";
 import { useSearchParams } from "react-router-dom";
-import { over } from "stompjs";
-import SockJS from "sockjs-client";
 
 import ChatMessage from "../ChatMessage";
+import { useChatContext } from "../../context/ChatContext";
 
-// var stompClient = null;
-const DoctorChat = () => {
+const DoctorChat = (props) => {
+  const {
+    stompObject,
+    chatUserDetails,
+    totalMsgCount,
+    updateCount,
+    updateChatUserDetails,
+    selectedChat,
+    setSelectedChat,
+    chatData,
+    setChatData,
+  } = useChatContext();
+
   const [chatHistory, setChatHistory] = useState([]);
-  const [seletedChat, setSelectedChat] = useState(null);
-  const [chatData, setChatData] = useState([]);
   const [message, setMessage] = useState("");
   const [isLoading, setIsloading] = useState(false);
   const [searchInput, setSearchInput] = useState("");
   const [searchData, setSearchData] = useState(null);
-  const [totalMssgCount, setTotalMssgCount] = useState(0);
+
+  const [activeLoader, setActiveLoader] = useState(true);
 
   const audioPlayer = useRef(null);
   const isFirstRender = useRef(0);
 
   const [searchParams] = useSearchParams();
 
-  // socket states
-  const alreadyRendered = useRef(false);
-  const [stompObject, setStompObject] = useState(null);
+  const onReceivedChatUsers = (payload) => {
+    var res = JSON.parse(payload.body);
+    const chatUsers = [];
 
-  //subscribe and send to get chat users
+    res.forEach((x) => {
+      const modObj = {
+        name: x.fullName,
+        picture: x.image,
+        email: x.userEmail,
+        uId: x.userId,
+      };
+
+      if (chatUserDetails[x.userId]) {
+        modObj["message"] = chatUserDetails[x.userId].message;
+      }
+
+      chatUsers.push(modObj);
+    });
+
+    setSearchData(chatUsers);
+  };
+
+  const listenToGetChat = () => {
+    stompObject.subscribe(
+      `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-data`,
+      onReceivedChatData
+    );
+  };
+
   const fetchChatUsers = () => {
     stompObject.send(`/app/getChatUsers/${Cookies.get(COOKIE_KEYS.userId)}`);
   };
+
   const listenToChatUsers = () => {
     stompObject.subscribe(
       `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-users`,
@@ -44,134 +77,14 @@ const DoctorChat = () => {
     );
   };
 
-  //subscribe and send to get chat history
-  const fetchChatHistory = () => {
-    stompObject.send(`/app/getChatHistory/${Cookies.get(COOKIE_KEYS.userId)}`);
-  };
+  useEffect(() => {
+    if (!stompObject || !stompObject.connected) return;
 
-  const listenToChatHistory = () => {
-    stompObject.subscribe(
-      `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-history`,
-      onReceivedChatHistory
-    );
-  };
-
-  const listenToGetChat = () => {
-    console.log("Stomp opbject :: ", stompObject);
-    stompObject.subscribe(
-      `/user/${Cookies.get(COOKIE_KEYS.userId)}/chat-data`,
-      onReceivedChatData
-    );
-  };
-
-  const onReceivedChatUsers = (payload) => {
-    var res = JSON.parse(payload.body);
-
-    console.log("Payload ::: ", res);
-    //remove this 1 line later
-    // getChatHistory();
-    console.log("Chat history :: ", chatHistory);
-    const dupChatHistory = [...chatHistory];
-    const response = res;
-    var dupSearchData = [];
-
-    for (var i = 0; i < response.length; i++) {
-      var flag = 0;
-      for (var j = 0; j < dupChatHistory.length; j++) {
-        if (response[i].userId == dupChatHistory[j].uId) {
-          flag = 1;
-          break;
-        }
-      }
-      var dic = {};
-      if (flag != 1) {
-        dic.uId = response[i].userId;
-        dic.picture = response[i].image;
-        dic.name = response[i].fullName;
-        dic.email = response[i].userEmail;
-      } else {
-        dic = dupChatHistory[j];
-        dic.email = response[i].userEmail;
-      }
-
-      dupSearchData.push(dic);
-    }
-
-    setSearchData(dupSearchData);
-  };
-
-  const onConnected = () => {
-    stompObject.subscribe(
-      "/user/" + Cookies.get(COOKIE_KEYS.userId) + "/private",
-      onPrivateMessage
-    );
-
-    listenToGetChat();
-    userJoin();
-
-    // subscribe to get chat users
+    setActiveLoader(false);
     listenToChatUsers();
     fetchChatUsers();
-
-    //subscribe to get chat History
-    listenToChatHistory();
-    fetchChatHistory();
-  };
-
-  const createStompObject = () => {
-    let Sock = new SockJS("http://localhost:9095/youro/api/v1/ws");
-    const stompClient = over(Sock);
-    setStompObject(stompClient);
-  };
-
-  const userJoin = () => {
-    var chatMessage = {
-      senderName: Cookies.get(COOKIE_KEYS.userId),
-      status: "JOIN",
-    };
-    stompObject.send("/app/message", {}, JSON.stringify(chatMessage));
-  };
-
-  const onError = (err) => {
-    console.log(err);
-  };
-
-  const onPrivateMessage = (payload) => {
-    console.log("on  proivate msg entry");
-    var payloadData = JSON.parse(payload.body);
-
-    console.log("Paylooad ::: ", payloadData);
-
-    // const receivedChat = {
-    //   time: payloadData.time,
-    //   message: payloadData.msg,
-    //   toId: payloadData.to,
-    //   fromId: payloadData.from,
-    // };
-    const receivedChat = {
-      time: payloadData.time,
-      message: payloadData.message,
-      toId: payloadData.toId,
-      fromId: payloadData.fromId,
-      seen: payloadData.seen,
-    };
-
-    console.log("Received data :: ", receivedChat);
-    setChatData((prevChatData) => [receivedChat, ...prevChatData]);
-  };
-
-  useEffect(() => {
-    if (alreadyRendered.current) return;
-
-    alreadyRendered.current = true;
-    createStompObject();
-  }, []);
-
-  useEffect(() => {
-    if (!stompObject) return;
-    console.log("Trying......... to connect ");
-    stompObject.connect({}, onConnected, onError);
-  }, [stompObject]);
+    listenToGetChat();
+  }, [stompObject?.connected]);
 
   useEffect(() => {
     setSelectedChat(searchParams.get("patientId"));
@@ -206,34 +119,15 @@ const DoctorChat = () => {
     isFirstRender.current = isFirstRender.current + 1;
   }, [chatHistory]);
 
-  const [activeLoader, setActiveLoader] = useState(false);
-
   const divRef = useRef(null);
 
   useEffect(() => {
     divRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatData]);
 
-  // function playAudio() {
-  //   audioPlayer?.current?.play();
-  // }
-
-  const onReceivedChatHistory = async (payload, reload = true) => {
-    if (reload) setActiveLoader(true);
-    var res = JSON.parse(payload.body);
-    await setChatHistory(res);
-    const response = res;
-    var total = 0;
-    for (var i = 0; i < response.length; i++) {
-      total += response[i].count;
-    }
-    setTotalMssgCount(total);
-    //props.updateCount(total);
-    setActiveLoader(false);
-  };
-
   const getChat = async (userId, reload = true) => {
     const sendUrl = `/app/getChat`;
+
     const data = {
       receiverId: Cookies.get(COOKIE_KEYS.userId),
       senderId: userId,
@@ -245,14 +139,34 @@ const DoctorChat = () => {
 
   const onReceivedChatData = async (payload, reload = true) => {
     const res = JSON.parse(payload.body);
+    console.log("Chat-response :: ", res);
     setChatData(res);
   };
+
+  // const sortChatUsers = (chatUserDetails) => {
+  //   const keyValueArr = Object.entries(chatUserDetails);
+
+  //   keyValueArr.sort((a, b) => {
+  //     const d1 = new Date(a[1].time || "03-29-2025");
+  //     const d2 = new Date(b[1].time || "03-29-2025");
+
+  //     return d1 - d2;
+  //   });
+
+  //   const sortedArr = {};
+  //   for (const [key, value] of keyValueArr) {
+  //     sortedArr[key] = value;
+  //   }
+
+  //   console.log("Sorted arra ::: ", sortedArr);
+  //   updateChatUserDetails(sortedArr);
+  // };
 
   const saveChat = async () => {
     if (message.trim()) {
       const msg = message.trim();
       const fromId = parseInt(Cookies.get(COOKIE_KEYS.userId));
-      const toId = seletedChat;
+      const toId = selectedChat;
       const sendTime = new Date();
 
       const data = { msg, from: fromId, to: toId, time: sendTime };
@@ -261,21 +175,30 @@ const DoctorChat = () => {
 
       const mssg = { message: msg, fromId, toId, time: sendTime, seen: false };
 
+      const updatedChatUserDet = {
+        ...chatUserDetails,
+        [toId]: {
+          ...chatUserDetails[toId],
+          message: msg,
+          time: sendTime,
+        },
+      };
+      updateChatUserDetails(updatedChatUserDet);
+
       const newData = [mssg, ...chatData];
       setChatData(newData);
+      // sortChatUsers(updatedChatUserDet);
     }
     setMessage("");
   };
 
   const updateChatHistory = (userId) => {
-    const userIdx = chatHistory.findIndex((x) => x.uId === userId);
+    if (!chatUserDetails[userId]) return;
 
-    if (userIdx > -1) {
-      setTotalMssgCount((prev) => prev - chatHistory[userIdx].count);
-      chatHistory[userIdx].count = 0;
-
-      setChatHistory([...chatHistory]);
-    }
+    console.log("Chat use details in update ::: ", chatUserDetails);
+    updateCount(totalMsgCount - chatUserDetails[userId].count);
+    chatUserDetails[userId].count = 0;
+    updateChatUserDetails(chatUserDetails);
   };
 
   const ChatNamesUi = (props) => {
@@ -283,7 +206,7 @@ const DoctorChat = () => {
       <div
         className={
           `select-names-div ` +
-          (props.data.uId == seletedChat ? "select-names-active" : "")
+          (props.data.uId == selectedChat ? "select-names-active" : "")
         }
         onClick={() => {
           setSelectedChat(props.data.uId);
@@ -318,12 +241,14 @@ const DoctorChat = () => {
           >
             {props.data.name}
           </p>
-          {props.data.count && props.data.count != 0 ? (
-            <p className="mssg-count-ui">{props.data.count}</p>
+          {chatUserDetails[props.data.uId]?.count ? (
+            <p className="mssg-count-ui">
+              {chatUserDetails[props.data.uId].count}
+            </p>
           ) : null}
           <p className="chat-user-msg">
-            {props.data.message ? (
-              props.data.message
+            {chatUserDetails[props.data.uId] ? (
+              chatUserDetails[props.data.uId].message
             ) : (
               <span style={{ fontSize: "10px" }}>start conversation</span>
             )}
@@ -351,7 +276,7 @@ const DoctorChat = () => {
       <Loader active={activeLoader} />
       <div className="doctor-chat">
         <div className="sidebar">
-          <DoctorSideBar data={"doctor-chat"} mssgCount={totalMssgCount} />
+          <DoctorSideBar data={"doctor-chat"} totalMsgCount={totalMsgCount} />
         </div>
         <div
           style={{
@@ -375,11 +300,11 @@ const DoctorChat = () => {
                   ></input>
                 </div>
 
-                {!searchInput &&
+                {/* {!searchInput &&
                   chatHistory &&
                   chatHistory.map((data) => {
                     return <ChatNamesUi data={data} />;
-                  })}
+                  })} */}
 
                 {((chatHistory && !chatHistory[0]) || searchInput) &&
                   searchData &&
@@ -400,7 +325,7 @@ const DoctorChat = () => {
                   })}
               </div>
 
-              {seletedChat ? (
+              {selectedChat ? (
                 <div className="selected-chat-view" onKeyDown={handleKeyDown}>
                   <div
                     id="chat-scroll"
@@ -435,7 +360,7 @@ const DoctorChat = () => {
                               timestamp={timestamp}
                               prevTimeStamp={prevTimeStamp}
                               stompObject={stompObject}
-                              selectedChat={seletedChat}
+                              selectedChat={selectedChat}
                             />
                           );
                         })}
