@@ -135,9 +135,9 @@ const Orders = (props) => {
       if(res.data && res.data.length){
         setCareplanVersions(res.data);
         setSelectedVersion(res.data[0].cId);
-        getCarePlanDetails(res.data[0].cId, true);//false
+        getCarePlanDetails(res.data[0].cId, false);//false
       }else{
-        setEditCarePlan(false) //true
+        setEditCarePlan(true) //true
         props.setCarePlanView(false)
       }
     }
@@ -161,8 +161,8 @@ const Orders = (props) => {
         //console.log("diagnosisNames: ", diagnosisNames);
         console.log("res.data", res.data);
         //console.log("inside edit", diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId);
-        //if(diagnosisNames) setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId);
-        setSelectedOption(res.data.diagId);
+        setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId);
+        //setSelectedOption(res.data.diagId);
         setNotes(res.data.notes); 
         setFollowUp(res.data.followUp)
       }
@@ -350,11 +350,12 @@ const Orders = (props) => {
           careplanVersion.map((result) => (<option value={result.cId}>{result.version}</option>))
         }
       </select>
-      {Object.keys(carePlan['carePlan']).map(presType => (
-        carePlan['carePlan'][presType].filter(item => item.indicator)[0] && <div key={presType}>
-          <h4 style={{margin: '15px 0px'}}>{presType}</h4>
+      {Object.keys(carePlan['carePlan'].presTypes).map(presType => (
+        carePlan['carePlan'].presTypes[presType].filter(item => item.indicator).map(item => (<div key={presType}> {/* should check 0 */}
+          <h4 style={{margin: '15px 0px'}}>{item.type.name}</h4>
+          <h5 style={{margin: '0px 10px'}}>{item.categoryName}</h5>
           <ul style={{margin: '0px'}}>
-            { carePlan['carePlan'][presType].map(item => (
+            { carePlan['carePlan'].presTypes[presType].map(item => (
               item.indicator && <>
                 <li key={item.presId}>
                 {item.presName}
@@ -366,7 +367,7 @@ const Orders = (props) => {
             ))}
           </ul>
         </div>      
-      ))} <br /><br />
+      ))))} <br /><br />
       {carePlan.followUp ? <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
                             sync
                             </span><strong>&nbsp;&nbsp;Follow-up required</strong></div> :
