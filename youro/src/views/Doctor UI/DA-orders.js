@@ -15,9 +15,9 @@ const Orders = (props) => {
   const [selectedOption, setSelectedOption] = useState(props.diag);
   const [diagnosisNames, setDiagnoses] = useState([]);
   const [carePlan, setCarePlan] = useState([]);
-  const [carePlanDetails, setCarePlanDetails] = useState([]);
+  const [carePlanDetails, setCarePlanDetails] = useState({}); // []
   const [editCarePlan, setEditCarePlan] = useState(false);
-  const [showItems, setShowItems] = useState(['vitamins', 'medicines', 'lifeStyle']);
+  //const [showItems, setShowItems] = useState(['vitamins', 'medicines', 'lifeStyle']);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [careplanVersion, setCareplanVersions] = useState([]);
@@ -41,37 +41,85 @@ const Orders = (props) => {
     }   
   }, [])
 
+
+
   const handleSubmitDosage = async () => {
-    const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/saveCarePlanDetails`;
-    var data = {};
-    var dupData = [...carePlanDetails][0]
-    var dupData2 = {}
-    dupData2['vitamins'] = dupData.vitamins.filter((i) => i.indicator)
-    dupData2['lifeStyle'] = dupData.lifeStyle.filter((i) => i.indicator)
-    dupData2['medicines'] = dupData.medicines.filter((i) => i.indicator)
-    dupData2['labs'] = dupData.labs.filter((i) => i.indicator)
-    dupData2['imaging'] = dupData.imaging.filter((i) => i.indicator)
-    data['carePlanDetails'] = dupData2;
-    data['apptId'] = props.apptId;
-    data['diagID'] = selectedOption;
-    data['notes'] = notes;
-    data['doctorId'] = Cookies.get(COOKIE_KEYS.userId);
-    data['followUp'] = followUp;
-    console.log(data)
+    const url = `${API_DETAILS.baseUrl}${API_DETAILS.PORT}/youro/api/v1/saveCarePlanDetails`;
+    let filteredPrescriptions = {};
+
+    // Assuming carePlanDetails is structured with presTypes nested within
+    if (carePlanDetails.presTypes) {
+        Object.entries(carePlanDetails.presTypes).forEach(([typeId, prescriptions]) => {
+            // Filter prescriptions that have their indicator set to true
+            const filtered = prescriptions.filter(prescription => prescription.indicator);
+            if (filtered.length > 0) {
+                // Add filtered prescriptions to the corresponding type in the new object
+                // The API expects the keys to be the names of the types (converted from typeId if necessary)
+                //const typeName = prescriptions[0]?.type?.presTypeId; // Adjust based on actual API expectations
+                filteredPrescriptions[typeId] = filtered;
+            }
+        });
+    }
+
+    // Prepare the data object for submission
+    var data = {
+        carePlanDetails: {presTypes: filteredPrescriptions},
+        apptId: props.apptId,
+        diagID: selectedOption,
+        notes: notes,
+        doctorId: Cookies.get(COOKIE_KEYS.userId),
+        followUp: followUp
+    };
+
+    console.log("handleSubmitDosage: ", data);
+
+    // Submit the data
     axios.post(url, data).then(res => {
-      props.handleToast(true)
+        props.handleToast(true);
     }).catch(err => {     
-      props.handleToast(false)     
-    })
-    setOpen(false)
-    props.closePopup(false)
-    props.nav()
-  }
+        props.handleToast(false);     
+    });
+
+    // Close the popup and navigate as necessary
+    setOpen(false);
+    props.closePopup(false);
+    props.nav();
+};
+
+
+
+  // const handleSubmitDosage = async () => {
+  //   const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/saveCarePlanDetails`;
+  //   var data = {};
+  //   var dupData = [...carePlanDetails][0]
+  //   var dupData2 = {}
+  //   dupData2['vitamins'] = dupData.vitamins.filter((i) => i.indicator)
+  //   dupData2['lifeStyle'] = dupData.lifeStyle.filter((i) => i.indicator)
+  //   dupData2['medicines'] = dupData.medicines.filter((i) => i.indicator)
+  //   dupData2['labs'] = dupData.labs.filter((i) => i.indicator)
+  //   dupData2['imaging'] = dupData.imaging.filter((i) => i.indicator)
+  //   data['carePlanDetails'] = dupData2;
+  //   data['apptId'] = props.apptId;
+  //   data['diagID'] = selectedOption;
+  //   data['notes'] = notes;
+  //   data['doctorId'] = Cookies.get(COOKIE_KEYS.userId);
+  //   data['followUp'] = followUp;
+  //   console.log(data)
+  //   axios.post(url, data).then(res => {
+  //     props.handleToast(true)
+  //   }).catch(err => {     
+  //     props.handleToast(false)     
+  //   })
+  //   setOpen(false)
+  //   props.closePopup(false)
+  //   props.nav()
+  // }
 
   const fetchAllDiagnoses = async () => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getAllDiagnoses`;
     try {
       const res = await axios.get(url);
+      console.log("fetchAllDiagnoses: ",res.data);
       setDiagnoses(res.data);
     }
     catch (err) {
@@ -83,12 +131,13 @@ const Orders = (props) => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getCarePlanVersions/${props.apptId}`;
     try {
       const res = await axios.get(url);
+      console.log("fetchVersions: ", res);
       if(res.data && res.data.length){
         setCareplanVersions(res.data);
         setSelectedVersion(res.data[0].cId);
-        getCarePlanDetails(res.data[0].cId, false);
+        getCarePlanDetails(res.data[0].cId, true);//false
       }else{
-        setEditCarePlan(true)
+        setEditCarePlan(false) //true
         props.setCarePlanView(false)
       }
     }
@@ -100,10 +149,23 @@ const Orders = (props) => {
   const getCarePlanDetails = async (cId, edit) => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getCarePlanDetails/${cId}?edit=${edit}`;
     try {
+      console.log("url: ", url);
       const res = await axios.get(url);
-      console.log("here is get care plan details",res);
-      if (!edit) setCarePlan(res.data);
-      if (edit) setCarePlanDetails([res.data.carePlan]); setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId); setNotes(res.data.notes); setFollowUp(res.data.followUp)
+      console.log("getCarePlanDetails: ",res);
+      if (!edit) {
+        console.log("inside !edit");
+        setCarePlan(res.data);
+      }
+      if (edit) {
+        setCarePlanDetails(res.data.carePlan); 
+        //console.log("diagnosisNames: ", diagnosisNames);
+        console.log("res.data", res.data);
+        //console.log("inside edit", diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId);
+        //if(diagnosisNames) setSelectedOption(diagnosisNames.filter(val => val.name == res.data.diagName)[0].diagId);
+        setSelectedOption(res.data.diagId);
+        setNotes(res.data.notes); 
+        setFollowUp(res.data.followUp)
+      }
     }
     catch (err) {
       console.error(err);
@@ -116,14 +178,17 @@ const Orders = (props) => {
     fetchMedicines(event.target.value);
   };
 
+
   const fetchMedicines = async(diagId) => {
     const url = API_DETAILS.baseUrl+ API_DETAILS.PORT + `/youro/api/v1/getCarePlanDetailsById/${diagId}`;
     try {
       setIsLoading(true)
       const res = await axios.get(url);
-      console.log("fetchMedicines : Doc UI ",res);
-      setIsLoading(false)
-      setCarePlanDetails([res.data])
+      console.log("fetchMedicines : ",res);
+      setIsLoading(false);
+      console.log("res.data: ", res.data);
+      setCarePlanDetails(res.data);
+      console.log("carePlanDetails set are: ", carePlanDetails);
       setNotes(res.data.notes)
     }
     catch (err) {
@@ -132,90 +197,131 @@ const Orders = (props) => {
     }
   }
 
-  const handleItemSelection = (item) => {
-    const shwItems = [...showItems]
-    if(showItems.includes(item)){
-      const index = shwItems.indexOf(item);
-      shwItems.splice(index, 1);
-    } else {
-      shwItems.push(item)
+  // const handleItemSelection = (item) => {
+  //   const shwItems = [...showItems]
+  //   if(showItems.includes(item)){
+  //     const index = shwItems.indexOf(item);
+  //     shwItems.splice(index, 1);
+  //   } else {
+  //     shwItems.push(item)
+  //   }
+
+  //   setShowItems(shwItems)
+  // }
+
+
+
+  const handleCheckboxChange = (i, presType) => {
+    // Assuming carePlanDetails is structured with presTypes nested within an array at the first index
+    let dupUserRes = { ...carePlanDetails }; // Create a shallow copy of the carePlanDetails object
+    
+    // Dynamically find the right prescription type array and update the indicator for the matched prescription ID
+    if(dupUserRes.presTypes && dupUserRes.presTypes[presType]) {
+      dupUserRes.presTypes[presType] = dupUserRes.presTypes[presType].map(item =>
+        // add log here to see if the item is being updated
+        item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
+      );
     }
-
-    setShowItems(shwItems)
-  }
-
-  const handleCheckboxChange = (i, category) => {
-    var dupUserRes = [...carePlanDetails]
-    switch (category) {
-      case 'lifestyle':
-        dupUserRes[0]['lifeStyle'] = dupUserRes[0]['lifeStyle'].map((item) =>
-            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
-          )
-        break;
-      case 'vitamins':
-        dupUserRes[0]['vitamins'] = dupUserRes[0]['vitamins'].map((item) =>
-            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
-          )
-        break;
-      case 'medicines':
-        dupUserRes[0]['medicines'] = dupUserRes[0]['medicines'].map((item) =>
-            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
-          )
-        break;
-       case 'labs':
-        dupUserRes[0]['labs'] = dupUserRes[0]['labs'].map((item) =>
-            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
-          )
-        break;
-      case 'imaging':
-        dupUserRes[0]['imaging'] = dupUserRes[0]['imaging'].map((item) =>
-            item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
-          )
-        break;
-     
-      default:
-        break;
-    }
-
-    setCarePlanDetails(dupUserRes)
+  
+    // Update state with the modified object
+    console.log("handleCheckboxChange: ", dupUserRes);
+    setCarePlanDetails(dupUserRes);
   };
+  
 
-  const handleDosage = (category, i, value) => {
-    console.log(i)
-    var dupUserRes = [...carePlanDetails]
-    switch (category) {
-      case 'lifeStyle':
-        dupUserRes[0]['lifeStyle'] = dupUserRes[0]['lifeStyle'].map((item) =>
-            item.presId === i.presId ? { ...item, dosage: value } : item
-          )
-        break;
-      case 'vitamins':
-        dupUserRes[0]['vitamins'] = dupUserRes[0]['vitamins'].map((item) =>
-            item.presId === i.presId ? { ...item, dosage: value } : item
-          )
-        break;
-      case 'medicines':
-        dupUserRes[0]['medicines'] = dupUserRes[0]['medicines'].map((item) =>
-            item.presId === i.presId ? { ...item, dosage: value } : item
-          )
-        break;
-       case 'labs':
-        dupUserRes[0]['labs'] = dupUserRes[0]['labs'].map((item) =>
-            item.presId === i.presId ? { ...item, dosage: value } : item
-          )
-        break;
-      case 'imaging':
-        dupUserRes[0]['imaging'] = dupUserRes[0]['imaging'].map((item) =>
-            item.presId === i.presId ? { ...item, dosage: value } : item
-          )
-        break;
+
+
+  // const handleCheckboxChange = (i, presType) => {
+  //   var dupUserRes = [...carePlanDetails]
+  //   switch (presType) {
+  //     case 'lifestyle':
+  //       dupUserRes[0]['lifeStyle'] = dupUserRes[0]['lifeStyle'].map((item) =>
+  //           item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
+  //         )
+  //       break;
+  //     case 'vitamins':
+  //       dupUserRes[0]['vitamins'] = dupUserRes[0]['vitamins'].map((item) =>
+  //           item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
+  //         )
+  //       break;
+  //     case 'medicines':
+  //       dupUserRes[0]['medicines'] = dupUserRes[0]['medicines'].map((item) =>
+  //           item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
+  //         )
+  //       break;
+  //      case 'labs':
+  //       dupUserRes[0]['labs'] = dupUserRes[0]['labs'].map((item) =>
+  //           item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
+  //         )
+  //       break;
+  //     case 'imaging':
+  //       dupUserRes[0]['imaging'] = dupUserRes[0]['imaging'].map((item) =>
+  //           item.presId === i.presId ? { ...item, indicator: !item.indicator } : item
+  //         )
+  //       break;
      
-      default:
-        break;
-    }
+  //     default:
+  //       break;
+  //   }
 
-    setCarePlanDetails(dupUserRes)
-  };
+  //   setCarePlanDetails(dupUserRes)
+  // };
+
+  const handleDosage = (presType, prescription, value) => {
+    // Assuming carePlanDetails is structured with presTypes
+    let dupCarePlanDetails = { ...carePlanDetails }; // Create a shallow copy of the carePlanDetails object
+    
+    // Dynamically find the right prescription type array and update the dosage for the matched prescription ID
+    if(dupCarePlanDetails.presTypes && dupCarePlanDetails.presTypes[presType]) {
+      dupCarePlanDetails.presTypes[presType] = dupCarePlanDetails.presTypes[presType].map(item =>
+        item.presId === prescription.presId ? { ...item, dosage: value } : item
+      );
+    }
+  
+    // Update state with the modified object
+    console.log("handleDosage: ", dupCarePlanDetails);
+    setCarePlanDetails(dupCarePlanDetails);
+};
+
+
+
+
+  // const handleDosage = (presType, i, value) => {
+  //   console.log(i)
+  //   var dupUserRes = [...carePlanDetails]
+  //   switch (presType) {
+  //     case 'lifeStyle':
+  //       dupUserRes[0]['lifeStyle'] = dupUserRes[0]['lifeStyle'].map((item) =>
+  //           item.presId === i.presId ? { ...item, dosage: value } : item
+  //         )
+  //       break;
+  //     case 'vitamins':
+  //       dupUserRes[0]['vitamins'] = dupUserRes[0]['vitamins'].map((item) =>
+  //           item.presId === i.presId ? { ...item, dosage: value } : item
+  //         )
+  //       break;
+  //     case 'medicines':
+  //       dupUserRes[0]['medicines'] = dupUserRes[0]['medicines'].map((item) =>
+  //           item.presId === i.presId ? { ...item, dosage: value } : item
+  //         )
+  //       break;
+  //      case 'labs':
+  //       dupUserRes[0]['labs'] = dupUserRes[0]['labs'].map((item) =>
+  //           item.presId === i.presId ? { ...item, dosage: value } : item
+  //         )
+  //       break;
+  //     case 'imaging':
+  //       dupUserRes[0]['imaging'] = dupUserRes[0]['imaging'].map((item) =>
+  //           item.presId === i.presId ? { ...item, dosage: value } : item
+  //         )
+  //       break;
+     
+  //     default:
+  //       break;
+  //   }
+
+  //   setCarePlanDetails(dupUserRes)
+  // };
 
 
   const handleSub = () => {
@@ -244,11 +350,11 @@ const Orders = (props) => {
           careplanVersion.map((result) => (<option value={result.cId}>{result.version}</option>))
         }
       </select>
-      {Object.keys(carePlan['carePlan']).map(category => (
-        carePlan['carePlan'][category].filter(item => item.indicator)[0] && <div key={category}>
-          <h4 style={{margin: '15px 0px'}}>{category}</h4>
+      {Object.keys(carePlan['carePlan']).map(presType => (
+        carePlan['carePlan'][presType].filter(item => item.indicator)[0] && <div key={presType}>
+          <h4 style={{margin: '15px 0px'}}>{presType}</h4>
           <ul style={{margin: '0px'}}>
-            { carePlan['carePlan'][category].map(item => (
+            { carePlan['carePlan'][presType].map(item => (
               item.indicator && <>
                 <li key={item.presId}>
                 {item.presName}
@@ -295,115 +401,43 @@ const Orders = (props) => {
 {selectedOption && <>
 
 <></>
+
+
 <div className="orders-checklist">
   <div className='orders-3' style={{width: '60%'}}>
-  {(showItems.includes('vitamins') || showItems.includes('lifeStyle') || showItems.includes('medicines')) && <>
-  
-    
-    {showItems.includes('lifeStyle') && <>
-    <div className="orders-name" style={{width: '33.3%'}}>
-    <p className='order-label'><strong>LifeStyle</strong></p>
-    <div>
-      {carePlanDetails[0] && carePlanDetails[0].lifeStyle.map((item) => (
-        <div key={item.presId}>
-          <input
-            type="checkbox"
-            id={`lifestyle-item-${item.id}`}
-            checked={item.indicator}
-            onChange={() => handleCheckboxChange(item, 'lifestyle')}
-          />
-          <label htmlFor={`lifestyle-item-${item.presId}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
-        </div>
-      ))}
-    </div>
-    </div>
-    </>}
-
-    {showItems.includes('vitamins') && <>
-    <div className="orders-name" style={{width: '33.3%'}}>
-    <p className='order-label' style={{wordBreak: 'wrap'}}><strong>Vitamins/<br />Supplements</strong></p>
-    <div>
-      {carePlanDetails[0] && carePlanDetails[0].vitamins.map((item) => (
-        <div key={item.presId}>
-          <input
-            type="checkbox"
-            id={`lifestyle-item-${item.id}`}
-            checked={item.indicator}
-            onChange={() => handleCheckboxChange(item, 'vitamins')}
-          />
-          <label htmlFor={`lifestyle-item-${item.presId}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
-        </div>
-      ))}
-    </div>
-    </div>
-    </>}
-
-
-  
-    {showItems.includes('medicines') && <>
-    <div className="orders-name" style={{width: '33.3%'}}>
-    <p className='order-label'><strong>Medicines</strong></p>
-    <div>
-      {carePlanDetails[0] && carePlanDetails[0].medicines.map((item) => (
-        <div key={item.presId}>
-          <input
-            type="checkbox"
-            id={`lifestyle-item-${item.id}`}
-            checked={item.indicator}
-            onChange={() => handleCheckboxChange(item, 'medicines')}
-          />
-          <label htmlFor={`lifestyle-item-${item.id}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
-        </div>
-      ))}
-    </div>
-    </div>
-    </>}
-  </>}
-  
+    {carePlanDetails.presTypes && Object.keys(carePlanDetails.presTypes).map((typeKey) => (
+      <div key={typeKey} className="orders-name" style={{width: '33.3%'}}>
+        <p className='order-label'><strong>{carePlanDetails.presTypes[typeKey][0].type.name}</strong></p>
+        {/* Group by category */}
+        {Object.values(carePlanDetails.presTypes[typeKey].reduce((acc, item) => {
+          // Create a group for each category if it doesn't exist
+          if (!acc[item.category.name]) {
+            acc[item.category.name] = [];
+          }
+          // Add the item to the category group
+          acc[item.category.name].push(item);
+          return acc;
+        }, {})).map((categoryItems, index) => (
+          <div key={index} style={{marginLeft: '10px'}}>
+            <p style={{fontSize: '0.8rem'}}>{categoryItems[0].category.name}</p>
+            {categoryItems.map(item => (
+              <div key={item.presId} style={{marginLeft: '20px'}}>
+                <input
+                  type="checkbox"
+                  id={`item-${item.presId}`}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, item.type.presTypeId)} // name changes to type.presTypeId
+                />
+                <label htmlFor={`item-${item.presId}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    ))}
   </div>
-
-
-<div className='orders-3' style={{width: '30%'}}>
-    
-    <div className="orders-name" style={{width: '50%'}}>
-    <p className='order-label'><strong>Labs</strong></p>
-    <div>
-      {carePlanDetails[0] && carePlanDetails[0].labs.map((item) => (
-        <div key={item.presId}>
-          <input
-            type="checkbox"
-            id={`lifestyle-item-${item.id}`}
-            checked={item.indicator}
-            onChange={() => handleCheckboxChange(item, 'labs')}
-          />
-          <label htmlFor={`lifestyle-item-${item.id}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
-        </div>
-      ))}
-    </div>
-    </div>
-
-
-
-    <div className="orders-name" style={{width: '50%'}}>
-    <p className='order-label'><strong>Imaging</strong></p>
-    <div>
-      {carePlanDetails[0] && carePlanDetails[0].imaging.map((item) => (
-        <div key={item.presId}>
-          <input
-            type="checkbox"
-            id={`lifestyle-item-${item.id}`}
-            checked={item.indicator}
-            onChange={() => handleCheckboxChange(item, 'imaging')}
-          />
-          <label htmlFor={`lifestyle-item-${item.id}`} style={{fontSize: '0.8rem'}}><i>{item.presName}</i></label>
-        </div>
-      ))}
-    </div>
-    </div>
-
-    
- </div>
 </div>
+
 <div style={{width: '95%', margin: '0px auto'}}>
 <textarea style={{width: '100%', height: '50px'}} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder='Enter your notes here...'></textarea>
 </div>
@@ -422,7 +456,46 @@ const Orders = (props) => {
             </div>
 </>}
 
+
 <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
+    <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => setOpen(false)}>
+        <span class="material-symbols-outlined">close</span>
+    </div>
+
+    <h1 style={{color: 'black', padding: '20px'}}>Dosage Instructions & Notes</h1>
+
+    <div style={{padding: '0px 20px 20px 20px'}} className='popup-height'>
+        {carePlanDetails.presTypes && Object.entries(carePlanDetails.presTypes).map(([typeId, prescriptions]) => {
+            const presType = prescriptions[0]?.type?.name;
+            const hasIndicator = prescriptions.some(prescription => prescription.indicator);
+
+            return hasIndicator && (
+                <>
+                    <h3>{presType}</h3>
+                    <div style={{width: '100%', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', rowGap: '10px'}}>
+                        {prescriptions.map((prescription, i) => prescription.indicator && (
+                            <div style={{width: '45%'}} key={i}>
+                                <label>{prescription.presName} :</label>
+                                <input 
+                                    className="input-field input-border" 
+                                    type="text" 
+                                    value={prescription.dosage || ''} 
+                                    onChange={(e) => handleDosage(prescription.type.presTypeId, prescription, e.target.value)} //presType.toLowerCase()
+                                />
+                            </div>
+                        ))}
+                    </div>
+                    <hr style={{marginTop: '20px'}}></hr>
+                </>
+            );
+        })}
+        
+        <div className='btn-filled' style={{padding: '10px 15px'}} onClick={handleSubmitDosage}>Submit</div>
+    </div>
+</Popup>
+
+
+{/* <Popup open={open} modal closeOnDocumentClick={false} onClose={() => setOpen(false)} className="congrats-popup">
     <div style={{ position: 'absolute', top: '20px', right: '20px', cursor: 'pointer' }} onClick={() => { setOpen(false) }}>
         <span class="material-symbols-outlined">
             close
@@ -517,7 +590,7 @@ const Orders = (props) => {
 
     </div>
 
-</Popup>
+</Popup> */}
 
 
 </div>}
