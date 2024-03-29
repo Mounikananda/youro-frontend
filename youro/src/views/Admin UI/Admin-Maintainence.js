@@ -17,7 +17,7 @@ import {
     Tooltip,
     Switch
 } from '@mui/material';
-import { EditorState, convertToRaw , ContentState } from 'draft-js';
+import { EditorState, convertToRaw, ContentState } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 
@@ -72,8 +72,6 @@ const AdminMaintainenceList = () => {
     const [prescriptionList, setPrescription] = useState([]);
     // const [diagnosisList, setDiagnoses] = useState([]);
     const [questionnairesList, setQuestionnaires] = useState([]);
-    const [selecDiag, setDiag] = useState('');
-    const [selecDiagInfo, setDiagInfo] = useState('');
     const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
     const [diagnosisData, setDiagnosisData] = useState([]);
@@ -190,10 +188,10 @@ const AdminMaintainenceList = () => {
                     enableEditing: false,
                     size: 50,
                 },
-                {
-                    accessorKey: 'info',
-                    header: 'Info',
-                }
+                // {
+                //     accessorKey: 'info',
+                //     header: 'Info',
+                // }
             ]);
 
 
@@ -220,7 +218,7 @@ const AdminMaintainenceList = () => {
                 },
             ]);
 
-            
+
             setTableData(categoryData);
         }
 
@@ -243,7 +241,7 @@ const AdminMaintainenceList = () => {
                 },
             ]);
 
-            
+
             setTableData(presTypeData);
         }
     };
@@ -299,7 +297,7 @@ const AdminMaintainenceList = () => {
                     diagnosisId: res.data[i].diagnosis.diagId,
                     shortInfo: res.data[i].shortInfo,
                     overview: res.data[i].overview,
-                    category: res.data[i].category ? res.data[i].category.name: '-- ',
+                    category: res.data[i].category ? res.data[i].category.name : '-- ',
                     categoryId: res.data[i].category && res.data[i].category.categoryId,
                 };
                 tempData.push(temp);
@@ -348,14 +346,14 @@ const AdminMaintainenceList = () => {
     };
 
     const getOptionsStringFromApiData = (qOptsArray) => {
-        let str  = "$ ";
+        let str = "$ ";
         for (let i = 0; i < qOptsArray.length; i++) {
             let temp = qOptsArray[i].oName + " $ ";
             str += temp;
         }
         // console.log('Opts str :: '+ str);
         return str;
-    }   
+    }
     //   getAllQuestionnaires
     const fetchAllQuestionnaires = async () => {
         // console.log("====^^^===");
@@ -373,7 +371,7 @@ const AdminMaintainenceList = () => {
             let tempData = [];
             for (let i = 0; i < res.data.length; i++) {
                 let optStr = getOptionsStringFromApiData(res.data[i].options);
-                console.log('Opts str :: '+ optStr);
+                console.log('Opts str :: ' + optStr);
                 let temp = {
                     questionId: res.data[i].questionId,
                     question: res.data[i].question,
@@ -385,7 +383,7 @@ const AdminMaintainenceList = () => {
             if (pageContext == 'QUESTIONNAIRE') {
                 setTableData(tempData);
             }
-            
+
             setRenderQuestionnaireApiData(true);
         }
         catch (err) {
@@ -403,7 +401,7 @@ const AdminMaintainenceList = () => {
     };
 
     const fetchCategoryData = async () => {
-       // Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
+        // Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
         const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllCategories`;
         const config = {
             headers: {
@@ -413,8 +411,8 @@ const AdminMaintainenceList = () => {
             }
         };
         try {
-            const res = await axios.get(url, config); 
-            console.log("here is the category",res);
+            const res = await axios.get(url, config);
+            console.log("here is the category", res);
             canRenderAdmin(true);
             let tempData = [];
             for (let i = 0; i < res.data.length; i++) {
@@ -422,7 +420,7 @@ const AdminMaintainenceList = () => {
                     categoryID: res.data[i].categoryId,
                     categoryName: res.data[i].name,
                 };
-                console.log("here is the temp",temp);
+                console.log("here is the temp", temp);
                 tempData.push(temp);
             }
             setCategoryData(tempData);
@@ -447,37 +445,37 @@ const AdminMaintainenceList = () => {
 
     const fetchPresTypeData = async () => {
         // Cookies.get(COOKIE_KEYS.userType) == 'ADMIN' ? setAuthContext('ADMIN') : (Cookies.get(COOKIE_KEYS.userType) == 'ASSITANT' ? setAuthContext('ASSITANT') : navigate('/login'));
-         const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllPreTypes`;
-         const config = {
-             headers: {
-                 'Access-Control-Allow-Origin': '*',
-                 'Access-Control-Allow-Methods': '*',
-                 'Content-Type': 'application/json'
-             }
-         };
-         try {
-             const res = await axios.get(url, config); 
-             console.log("here is the presType",res);
-             canRenderAdmin(true);
-             let tempData = [];
-             for (let i = 0; i < res.data.length; i++) {
-                 let temp = {
-                     presTypeId: res.data[i].presTypeId,
-                     presTypeName: res.data[i].name,
-                 };
-                 console.log("here is the temp",temp);
-                 tempData.push(temp);
-             }
-             setPresTypeData(tempData);
-             if (pageContext == 'PRES_TYPE') {
-                 setTableData(tempData);
-             }
-             setRenderPresTypeApiData(true);
-         }
-         catch (err) {
-             setRenderPresTypeApiData(false);
-             console.error(err);
-         }
+        const url = API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/getAllPreTypes`;
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        try {
+            const res = await axios.get(url, config);
+            console.log("here is the presType", res);
+            canRenderAdmin(true);
+            let tempData = [];
+            for (let i = 0; i < res.data.length; i++) {
+                let temp = {
+                    presTypeId: res.data[i].presTypeId,
+                    presTypeName: res.data[i].name,
+                };
+                console.log("here is the temp", temp);
+                tempData.push(temp);
+            }
+            setPresTypeData(tempData);
+            if (pageContext == 'PRES_TYPE') {
+                setTableData(tempData);
+            }
+            setRenderPresTypeApiData(true);
+        }
+        catch (err) {
+            setRenderPresTypeApiData(false);
+            console.error(err);
+        }
     };
 
     const fetchAfterDelete = () => {
@@ -501,31 +499,26 @@ const AdminMaintainenceList = () => {
         }
     }
 
-    const handleAddDiagnosis = () => {
-        if (selecDiag != '' && selecDiagInfo != '') {
-            setOpen(false);
-            const temp = {
-                name: selecDiag,
-                info: selecDiagInfo
-            };
-            const config = {
-                headers: {
-                    'Access-Control-Allow-Origin': '*',
-                    'Access-Control-Allow-Methods': '*',
-                    'Content-Type': 'application/json'
-                }
-            };
-            axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addDiagnosis", temp, config).then((res) => {
-                toast.success('Added successfully!!');
-                fetchAllDiagnoses();
-            }).catch((err) => {
-                console.error(err);
-                toast.error('Error adding diagnosis');
-            });
+    const handleAddDiagnosis = (data) => {
+        setOpen(false);
+        const temp = {
+            name: data.diagnosisName,
+            info: getEditorinHTML()
         }
-        else {
-            console.clear();
-        }
+        const config = {
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': '*',
+                'Content-Type': 'application/json'
+            }
+        };
+        axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addDiagnosis", temp, config).then((res) => {
+            toast.success('Added successfully!!');
+            fetchAllDiagnoses();
+        }).catch((err) => {
+            console.error(err);
+            toast.error(err.response.data.errorMessage);
+        });
     }
 
     const handleAddPrescription = (data) => {
@@ -571,18 +564,39 @@ const AdminMaintainenceList = () => {
 
     }
 
+    const handleUpdateDiagnosis = () => {
+        console.log(popUpData)
+        const temp = {
+            name: popUpData.name,
+            info: getEditorinHTML()
+        };
+        console.log(temp)
+        axios.put(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + `/updateDiagnosis/${popUpData.diagId}`, temp).then((res) => {
+            toast.success(`${popUpData.name} Updated successfully!!`);
+            fetchAllDiagnoses();
+        }).catch((err) => {
+            console.error(err);
+            toast.error(err.response.data.errorMessage);
+        });
+        setOpen(false);
+
+    }
+
     const onClickViewInfo = (rowData) => {
-        console.log(rowData)
-        setPopUpData(rowData)
-        setEditorFromHTML(rowData.overview || '')
+        setPopUpData(rowData);        
+        const info = pageContext === 'PRESCRIPTION' ? rowData.overview : rowData.info;
+        setEditorFromHTML(info || '')
         setPopupMode(POPUPMODES.VIEW)
         setAddPopUpContext(pageContext);
         setOpen(true);
     }
 
     const onClickEditInfo = (rowData) => {
-        setPopUpData(rowData)
-        setEditorFromHTML(rowData.overview || '')
+        console.log(rowData)
+        setPopUpData(rowData);        
+        const info = pageContext === 'PRESCRIPTION' ? rowData.overview : rowData.info;
+        
+        setEditorFromHTML(info || '')
         setPopupMode(POPUPMODES.EDIT)
         setAddPopUpContext(pageContext);
         setOpen(true);
@@ -594,7 +608,7 @@ const AdminMaintainenceList = () => {
             [key]: val
         })
     }
-    
+
     const clearEditor = () => {
         setEditorState(EditorState.createEmpty())
     }
@@ -608,6 +622,8 @@ const AdminMaintainenceList = () => {
     }
 
     const getEditorinHTML = () => {
+        console.log(editorState.getCurrentContent())
+        console.log(convertToRaw(editorState.getCurrentContent()))
         return draftToHtml(convertToRaw(editorState.getCurrentContent()))
     }
 
@@ -620,7 +636,15 @@ const AdminMaintainenceList = () => {
         fetchAllDiagnoses();
     }
 
-    const onClickAddSave = () => {
+    const onClickAddDiagnosis = () => {
+        reset();
+        clearEditor();
+        setOpen(true);
+        setPopupMode(POPUPMODES.NEW)
+        setAddPopUpContext('DIAGNOSIS');
+    }
+
+    const onClickAddSavePrescription = () => {
         if (popUpMode == POPUPMODES.NEW) {
             handleSubmit(handleAddPrescription)();
         }
@@ -629,6 +653,14 @@ const AdminMaintainenceList = () => {
         }
     }
 
+    const onClickAddSaveDiagnosis = () => {
+        if (popUpMode == POPUPMODES.NEW) {
+            handleSubmit(handleAddDiagnosis)();
+        }
+        if (popUpMode == POPUPMODES.EDIT) {
+            handleUpdateDiagnosis();
+        }
+    }
     const handleAddCategory = (data) => {
         setOpen(false);
         //debugger;
@@ -702,24 +734,31 @@ const AdminMaintainenceList = () => {
                             <Youroheader />
                         </div>
                         <div className='row' style={{ display: 'flex', justifyContent: 'center' }}>
-                            {
-                                pageContext == 'PRESCRIPTION' && 
+                            {pageContext == 'PRESCRIPTION' &&
                                 <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
                                     <Tooltip arrow placement="left" title="Add Prescription">
                                         <IconButton color="gray" onClick={onClickAddPrescription} className='add-icon' size="large">
-                                            <AddIcon fontSize='inherit'/>
+                                            <AddIcon fontSize='inherit' />
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
                             }
-                            {/* {pageContext == 'DIAGNOSIS' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('DIAGNOSIS') }}> Add Diagnosis</div>} */}
+                            {pageContext == 'DIAGNOSIS' &&
+                                <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
+                                    <Tooltip arrow placement="left" title="Add Diagnosis">
+                                        <IconButton color="gray" onClick={onClickAddDiagnosis} className='add-icon' size="large">
+                                            <AddIcon fontSize='inherit' />
+                                        </IconButton>
+                                    </Tooltip>
+                                </Box>
+                            }
                             {/* {pageContext == 'QUESTIONNAIRE' && <div className='btn-filled' style={{ width: 'fit-content', marginLeft: '15px' }} onClick={() => { setOpen(true); setAddPopUpContext('QUESTIONNAIRE'); fetchAllDiagnoses(); }}> Add Questionnaire</div>} */}
                             {
-                                pageContext == 'CATEGORY' && 
+                                pageContext == 'CATEGORY' &&
                                 <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
                                     <Tooltip arrow placement="left" title="Add Category">
-                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData()}} className='add-icon' size="large">
-                                            <AddIcon fontSize='inherit'/>
+                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData() }} className='add-icon' size="large">
+                                            <AddIcon fontSize='inherit' />
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
@@ -729,11 +768,11 @@ const AdminMaintainenceList = () => {
                             }
 
                             {
-                                pageContext == 'PRES_TYPE' && 
+                                pageContext == 'PRES_TYPE' &&
                                 <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
                                     <Tooltip arrow placement="left" title="Add Prescription Type">
-                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData()}} className='add-icon' size="large">
-                                            <AddIcon fontSize='inherit'/>
+                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData() }} className='add-icon' size="large">
+                                            <AddIcon fontSize='inherit' />
                                         </IconButton>
                                     </Tooltip>
                                 </Box>
@@ -759,7 +798,7 @@ const AdminMaintainenceList = () => {
                             renderAdmin == true && tableData && tableData.length > 0 ?
                                 (
                                     <MaterialReactTable
-                                        options={{actionsColumnIndex: -1}}
+                                        options={{ actionsColumnIndex: -1 }}
                                         displayColumnDefOptions={{
                                             'mrt-row-actions': {
                                                 muiTableHeadCellProps: {
@@ -778,7 +817,7 @@ const AdminMaintainenceList = () => {
                                         positionActionsColumn='last'
                                         renderRowActions={({ row }) => (
                                             authContext == 'ADMIN' && (
-                                                <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
+                                                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center' }}>
                                                     <Box sx={{ display: 'flex', gap: '1rem' }}>
                                                         <Tooltip arrow placement="top" title="Delete">
                                                             <AdminPopUps
@@ -787,20 +826,24 @@ const AdminMaintainenceList = () => {
                                                                     'step': 1,
                                                                     'rowData': row.original,
                                                                     'postDeleteAction': fetchAfterDelete(),
-                                                                    'setParentRefreshStatus': setRefreshStatus 
+                                                                    'setParentRefreshStatus': setRefreshStatus
                                                                 }} />
                                                         </Tooltip>
                                                     </Box>
-                                                    {pageContext === 'PRESCRIPTION' && (
+                                                    {(pageContext === 'PRESCRIPTION' || pageContext === 'DIAGNOSIS') && (
                                                         <Box sx={{ display: 'flex', gap: '1rem' }}>
                                                             <Tooltip arrow placement="top" title="Edit Info">
-                                                                <IconButton color="gray" onClick={() => onClickEditInfo(row.original)} className='delete-doctor-button'>
+                                                                <IconButton
+                                                                    color="gray"
+                                                                    onClick={() => onClickEditInfo(row.original)}
+                                                                    className='delete-doctor-button'
+                                                                >
                                                                     <EditIcon />
                                                                 </IconButton>
                                                             </Tooltip>
                                                         </Box>
                                                     )}
-                                                    {pageContext === 'PRESCRIPTION' && (
+                                                    {(pageContext === 'PRESCRIPTION' || pageContext === 'DIAGNOSIS') && (
                                                         <Box sx={{ display: 'flex', gap: '1rem' }}>
                                                             <Tooltip arrow placement="top" title="View Info">
                                                                 <button type="button" className='view-info-button' onClick={() => onClickViewInfo(row.original)}>View Info</button>
@@ -843,12 +886,12 @@ const AdminMaintainenceList = () => {
                                     />
                                 )
                                 : (
-                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData) || (pageContext == 'CATEGORY' && !renderCategoryApiData) || (pageContext == 'PRES_TYPE' && !renderPresTypeApiData))  ?
+                                    ((pageContext == 'PRESCRIPTION' && !renderPrescriptionApiData) || (pageContext == 'DIAGNOSIS' && !renderDiagnosisApiData) || (pageContext == 'QUESTIONNAIRE' && !renderQuestionnaireApiData) || (pageContext == 'CATEGORY' && !renderCategoryApiData) || (pageContext == 'PRES_TYPE' && !renderPresTypeApiData)) ?
                                         (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
                                             Error Fetching Data!
                                         </div>)
                                         : !renderAdmin ?
-                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh'}} ><Oval /></div>)
+                                            (<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh' }} ><Oval /></div>)
                                             : renderAdmin == true && tableData && tableData.length == 0 &&
                                             <>
                                                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: "98%", borderRadius: '10px', height: '70vh', }}>
@@ -869,21 +912,21 @@ const AdminMaintainenceList = () => {
                     </span>
                 </div>
                 {addPopUpContext == 'PRESCRIPTION' && <>
-                    <div style={{ padding: '25px', width: '65vw', marginBottom: '25px'}}>
+                    <div style={{ padding: '25px', width: '65vw', marginBottom: '25px' }}>
                         <div className="" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' }}>
                             {(popUpMode == POPUPMODES.NEW || popUpMode == POPUPMODES.EDIT) && (<>
                                 <label>Name:</label>
                                 {popUpMode == POPUPMODES.NEW ? (
                                     <>
-                                    <input className="input-field-doctor input-border" type="text" style={{ width: '60%', marginLeft: '20px' }} {...register("presName", {
-                                        required: true,
-                                        maxLength: 32,
-                                    })} />
-                                    {errors?.presName?.type === "required" && <p className="error-text">This field is required</p>}
-                                    {errors?.presName?.type === "maxLength" && <p className="error-text"> Name cannot exceed 32 characters</p>}
+                                        <input className="input-field-doctor input-border" type="text" style={{ width: '60%', marginLeft: '20px' }} {...register("presName", {
+                                            required: true,
+                                            maxLength: 32,
+                                        })} />
+                                        {errors?.presName?.type === "required" && <p className="error-text">This field is required</p>}
+                                        {errors?.presName?.type === "maxLength" && <p className="error-text"> Name cannot exceed 32 characters</p>}
                                     </>
                                 ) : (
-                                    <input 
+                                    <input
                                         className="input-field-doctor input-border"
                                         type="text"
                                         style={{ width: '60%', marginLeft: '20px' }}
@@ -892,7 +935,7 @@ const AdminMaintainenceList = () => {
                                     />
                                 )}
                             </>)}
-                            {(popUpMode == POPUPMODES.VIEW)&& (<>
+                            {(popUpMode == POPUPMODES.VIEW) && (<>
                                 <h2>{popUpData.presName}</h2>
                             </>)}
                         </div>
@@ -902,12 +945,12 @@ const AdminMaintainenceList = () => {
                             {popUpMode == POPUPMODES.NEW && (<>
                                 <select
                                     style={{ width: '25vw' }}
-                                    className="input-field input-border" 
-                                    id="gender" 
-                                    {...register("presType", {required: true,})}
+                                    className="input-field input-border"
+                                    id="gender"
+                                    {...register("presType", { required: true, })}
                                 >
                                     <option value="">Select</option>
-                                    {presTypeData.map((presType,index) => (
+                                    {presTypeData.map((presType, index) => (
                                         <option key={index} value={presType.presTypeId}>
                                             {presType.presTypeName}
                                         </option>
@@ -922,7 +965,7 @@ const AdminMaintainenceList = () => {
                                 </select>
                                 {errors?.presType && <p className="error-text">This field is required</p>}
                             </>)}
-                            {(popUpMode === POPUPMODES.VIEW || popUpMode === POPUPMODES.EDIT)&& (<>
+                            {(popUpMode === POPUPMODES.VIEW || popUpMode === POPUPMODES.EDIT) && (<>
                                 <select
                                     style={{ width: '25vw' }}
                                     className="input-field input-border"
@@ -930,7 +973,7 @@ const AdminMaintainenceList = () => {
                                     disabled={popUpMode === POPUPMODES.VIEW}
                                     value={popUpData.presTypeId}
                                     onChange={e => setEditInfo('presTypeId', parseInt(e.target.value))}
-                                     
+
                                 >
                                     {presTypeData.map(presType => (
                                         <option key={presType.presTypeId} value={presType.presTypeId}>
@@ -944,21 +987,21 @@ const AdminMaintainenceList = () => {
                         <div className="">
                             <label>Category :</label><br />
                             {popUpMode == POPUPMODES.NEW && (
-                            <>
-                                <select style={{ width: '25vw' }} className="input-field input-border" id="gender"  disabled={popUpMode != POPUPMODES.NEW} {...register("category", {
-                                    required: false,
-                                })}>
-                                    <option value="">Select</option>
-                                    {categoryData.map((categoryData,index) => (
-                                        <option key={index} value={categoryData.categoryID}>
+                                <>
+                                    <select style={{ width: '25vw' }} className="input-field input-border" id="gender" disabled={popUpMode != POPUPMODES.NEW} {...register("category", {
+                                        required: false,
+                                    })}>
+                                        <option value="">Select</option>
+                                        {categoryData.map((categoryData, index) => (
+                                            <option key={index} value={categoryData.categoryID}>
                                                 {categoryData.categoryName}
-                                        </option>
-                                    ))}
-                                </select>
-                                {errors?.category&& <p className="error-text">This field is required</p>}
-                            </>
+                                            </option>
+                                        ))}
+                                    </select>
+                                    {errors?.category && <p className="error-text">This field is required</p>}
+                                </>
                             )}
-                            {(popUpMode === POPUPMODES.VIEW || popUpMode === POPUPMODES.EDIT)&& (<>
+                            {(popUpMode === POPUPMODES.VIEW || popUpMode === POPUPMODES.EDIT) && (<>
                                 <select
                                     style={{ width: '25vw' }}
                                     className="input-field input-border"
@@ -967,7 +1010,7 @@ const AdminMaintainenceList = () => {
                                     value={popUpData.categoryId}
                                     onChange={e => setEditInfo('categoryId', parseInt(e.target.value))}
                                 >
-                                    {categoryData.map((categoryData,index) => (
+                                    {categoryData.map((categoryData, index) => (
                                         <option key={index} value={categoryData.categoryID}>
                                             {categoryData.categoryName}
                                         </option>
@@ -977,56 +1020,56 @@ const AdminMaintainenceList = () => {
                         </div> <br ></br>
                         <div className="">
                             {popUpMode == POPUPMODES.NEW && (
-                            <div style={{display: 'flex', flexDirection:'column'}}>
-                                <label>Diagnosis :</label><br />
-                                <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row'}}>
-                                    {
-                                        diagnosisData.map((diagosis) => {
-                                            return (
-                                                <>
-                                                <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '20px'}}>
-                                                    <input type="checkbox" id="html" name="diagnosis" value={diagosis.diagId} {...register("diagnosis", {
-                                                        required: true,
-                                                    })} />
-                                                    <label for="html" style={{ marginLeft: '10px' }}>{diagosis.name}</label><br /><br />
-                                                </div>
-                                                </>
-                                            )
-                                        })
-                                    }
+                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                    <label>Diagnosis :</label><br />
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', flexDirection: 'row' }}>
+                                        {
+                                            diagnosisData.map((diagosis) => {
+                                                return (
+                                                    <>
+                                                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '20px' }}>
+                                                            <input type="checkbox" id="html" name="diagnosis" value={diagosis.diagId} {...register("diagnosis", {
+                                                                required: true,
+                                                            })} />
+                                                            <label for="html" style={{ marginLeft: '10px' }}>{diagosis.name}</label><br /><br />
+                                                        </div>
+                                                    </>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                    {errors?.diagnosis && <p className="error-text">This field is required</p>}
                                 </div>
-                                {errors?.diagnosis && <p className="error-text">This field is required</p>}
-                            </div>
                             )}
-                            {(popUpMode == POPUPMODES.VIEW || popUpMode == POPUPMODES.EDIT)&& (<>
-                            <div className=''>
-                                <label>Diagnosis :</label> <br/>
-                                <select
-                                    style={{ width: '25vw' }}
-                                    className="input-field input-border"
-                                    id="gender"
-                                    disabled={popUpMode === POPUPMODES.VIEW}
-                                    value={popUpData.diagnosisId}
-                                    onChange={e => setEditInfo('diagnosisId', parseInt(e.target.value))}
-                                     
-                                >
-                                    {diagnosisData.map(diagnosis => (
-                                        <option value={diagnosis.diagId}>{diagnosis.name}</option>
-                                    ))}
-                                </select>                            
-                            </div><br/>
+                            {(popUpMode == POPUPMODES.VIEW || popUpMode == POPUPMODES.EDIT) && (<>
+                                <div className=''>
+                                    <label>Diagnosis :</label> <br />
+                                    <select
+                                        style={{ width: '25vw' }}
+                                        className="input-field input-border"
+                                        id="gender"
+                                        disabled={popUpMode === POPUPMODES.VIEW}
+                                        value={popUpData.diagnosisId}
+                                        onChange={e => setEditInfo('diagnosisId', parseInt(e.target.value))}
+
+                                    >
+                                        {diagnosisData.map(diagnosis => (
+                                            <option value={diagnosis.diagId}>{diagnosis.name}</option>
+                                        ))}
+                                    </select>
+                                </div><br />
                             </>)}
 
                         </div>
                         <br />
-                        <div className="" style={{ display: 'flex', flexDirection: 'column'}}>
+                        <div className="" style={{ display: 'flex', flexDirection: 'column' }}>
                             <label>Brief Overview :</label>
                             {popUpMode == POPUPMODES.NEW && (<>
-                                <input 
+                                <input
                                     className="input-field-doctor input-border"
                                     type="text"
-                                    style={{ width: '98%'}}
-                                    {...register("shortInfo", 
+                                    style={{ width: '98%' }}
+                                    {...register("shortInfo",
                                         {
                                             required: false,
                                             maxLength: 128,
@@ -1035,25 +1078,25 @@ const AdminMaintainenceList = () => {
                                 />
                             </>)}
                             {(popUpMode == POPUPMODES.VIEW) && (<>
-                                <input 
+                                <input
                                     className="input-field-doctor input-border"
                                     type="text"
-                                    style={{ width: '98%'}}
+                                    style={{ width: '98%' }}
                                     value={popUpData.shortInfo || ''}
                                     disabled
                                 />
                             </>)}
-                            {(popUpMode == POPUPMODES.EDIT)&& (<>
-                                <input 
+                            {(popUpMode == POPUPMODES.EDIT) && (<>
+                                <input
                                     className="input-field-doctor input-border"
                                     type="text"
-                                    style={{ width: '98%'}}
+                                    style={{ width: '98%' }}
                                     value={popUpData.shortInfo || ''}
                                     onChange={e => setEditInfo('shortInfo', e.target.value)}
                                 />
                             </>)}
-                        </div>                             
-                        <br/>
+                        </div>
+                        <br />
                         <div className="">
                             <label>Detailed Overview :</label><br />
                             <CustomToolbarEditor
@@ -1065,12 +1108,65 @@ const AdminMaintainenceList = () => {
                     </div>
                     {(popUpMode == POPUPMODES.NEW || popUpMode == POPUPMODES.EDIT) && (
                         <>
-                            <div 
+                            <div
                                 className='btn-filled'
                                 style={{ width: 'fit-content', margin: '0px auto 25px auto' }}
-                                onClick={onClickAddSave}
+                                onClick={onClickAddSavePrescription}
                             >
-                                {popUpMode == POPUPMODES.NEW ? "Add Prescription": "Save Changes"}
+                                {popUpMode == POPUPMODES.NEW ? "Add Prescription" : "Save Changes"}
+                            </div>
+                        </>
+                    )}
+                </>}
+                {addPopUpContext == 'DIAGNOSIS' && <>
+                <div style={{ padding: '25px', width: '65vw', marginBottom: '25px' }}>
+                    <div className="" style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', marginBottom: '20px'}}>
+                    {(popUpMode == POPUPMODES.NEW || popUpMode == POPUPMODES.EDIT) ? (
+                        <>                    
+                            <label>Name:</label>
+                            {popUpMode == POPUPMODES.NEW ? (
+                                <>
+                                    <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} {...register("diagnosisName", {
+                                        required: true,
+                                        maxLength: 32,
+                                    })} />
+                                    {errors?.diagnosisName?.type === "required" && <p className="error-text">This field is required</p>}
+                                    {errors?.diagnosisName?.type === "maxLength" && <p className="error-text">Diagnosis Name cannot exceed 32 characters</p>}
+                                </>
+                            ): (
+                                <input
+                                className="input-field-doctor input-border"
+                                type="text"
+                                style={{ width: '94%' }}
+                                value={popUpData.name}
+                                onChange={e => setEditInfo('name', e.target.value)}
+                                /> 
+                            )}
+                        </>) : (
+                            <h2>{popUpData.name}</h2>
+                        )}
+
+                    </div>
+
+                    <div className="">
+                        <label>Diagnosis Info :</label>
+                        <CustomToolbarEditor
+                            readOnly={popUpMode === POPUPMODES.VIEW}
+                            editorState={editorState}
+                            setEditorState={setEditorState}
+                        />
+                    </div>
+
+
+                    </div>
+                    {(popUpMode == POPUPMODES.NEW || popUpMode == POPUPMODES.EDIT) && (
+                        <>
+                            <div
+                                className='btn-filled'
+                                style={{ width: 'fit-content', margin: '0px auto 25px auto' }}
+                                onClick={onClickAddSaveDiagnosis}
+                            >
+                                {popUpMode == POPUPMODES.NEW ? "Add Diagnosis" : "Save Changes"}
                             </div>
                         </>
                     )}
@@ -1110,9 +1206,9 @@ const AdminMaintainenceList = () => {
                                 style={{ width: '94%' }}
                                 defaultValue={editCategoryData.categoryName}
                                 onChange={(e) => setEditCategoryData({ ...editCategoryData, categoryName: e.target.value })}
-                                required= {true}
-                                maxLength= {32}
-                                
+                                required={true}
+                                maxLength={32}
+
                             />
                             {errors?.categoryName?.type === "required" && <p className="error-text">This field is required</p>}
                             {errors?.categoryName?.type === "maxLength" && <p className="error-text">Category Name cannot exceed 32 characters</p>}
@@ -1123,7 +1219,7 @@ const AdminMaintainenceList = () => {
 
                             <div
                                 className='btn-filled'
-                                style={{ width: 'fit-content', margin: '0px auto 50px auto'}}
+                                style={{ width: 'fit-content', margin: '0px auto 50px auto' }}
                                 onClick={() => handleEditCategorySubmit()}
                             >
                                 Save Changes
@@ -1167,9 +1263,9 @@ const AdminMaintainenceList = () => {
                                 style={{ width: '94%' }}
                                 defaultValue={editPresTypeData.presTypeName}
                                 onChange={(e) => setEditPresTypeData({ ...editPresTypeData, presTypeName: e.target.value })}
-                                required= {true}
-                                maxLength= {32}
-                                
+                                required={true}
+                                maxLength={32}
+
                             />
                             {errors?.presTypeName?.type === "required" && <p className="error-text">This field is required</p>}
                             {errors?.presTypeName?.type === "maxLength" && <p className="error-text">Prescription Type Name cannot exceed 32 characters</p>}
@@ -1180,7 +1276,7 @@ const AdminMaintainenceList = () => {
 
                             <div
                                 className='btn-filled'
-                                style={{ width: 'fit-content', margin: '0px auto 50px auto'}}
+                                style={{ width: 'fit-content', margin: '0px auto 50px auto' }}
                                 onClick={() => handleEditPresTypeSubmit()}
                             >
                                 Save Changes
@@ -1188,30 +1284,6 @@ const AdminMaintainenceList = () => {
                         </div>
                     </div>
                 )}
-
-
-                {/* {addPopUpContext == 'DIAGNOSIS' && <>
-                    <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
-                        <div style={{ width: '300px' }}>
-
-                        </div>
-                        <div className="" style={{ display: 'flex', marginBottom: '1.5vh' }}>
-                            <label>Diagnosis Name :</label>
-                            <input className="input-field-doctor input-border" type="text" style={{ width: '94%' }} onChange={(e) => setDiag(e.target.value)} />
-                        </div>
-
-                        <div className="">
-                            <label>Diagnosis Info :</label>
-                            <ReactQuillWrapper val={setDiagInfo} />
-                        </div>
-
-                        
-                    </div>
-
-                    <div>
-                        <div className='btn-filled' style={{ width: 'fit-content', margin: '0px auto 50px auto' }} onClick={() => handleAddDiagnosis()}>Add diagnosis</div>
-                    </div>
-                </>} */}
 
                 {/* {addPopUpContext == 'QUESTIONNAIRE' && <>
                     <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
