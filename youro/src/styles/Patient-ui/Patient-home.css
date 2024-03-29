@@ -116,7 +116,12 @@ body
 }
 
 .level-2 {
-  padding-left: 78px;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
+.level-3 {
+  padding-left: 98px;
   padding-right: 50px;
 }
 

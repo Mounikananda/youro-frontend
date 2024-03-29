@@ -77,18 +77,35 @@ const PatientEducateRebuilt = (props) => {
                 })
                 const prnt = idx;
                 idx++;
-                prescriptions[presType].forEach(pres => {
-                    nodeList.push({
+                Object.entries(Object.groupBy(prescriptions[presType], ({ categoryName }) => categoryName)).map(([categoryName, items]) => {
+                  let cat = null;
+                  if (categoryName !== 'null') {
+                      nodeList.push({
                         id: idx,
-                        name: pres.presName,
+                        name: categoryName,
                         level: 2,
                         hidden: false,
                         expanded: false,
                         parent: prnt,
+                        overview: null
+                      })
+                      cat = idx;
+                      idx++
+                  }
+                  items.forEach(pres => {
+                    nodeList.push({
+                        id: idx,
+                        name: pres.presName,
+                        level: categoryName !== 'null' ? 3 : 2,
+                        hidden: false,
+                        expanded: false,
+                        parent: categoryName !== 'null' ? prnt : cat,
                         overview: pres.overview
                     })
                     idx++
                 })
+                })
+
             }
         });
         console.log(nodeList)
@@ -132,7 +149,7 @@ const PatientEducateRebuilt = (props) => {
 
     const onClickNode = (e, node) => {
       e.preventDefault();
-      if (node.level !== 1) {
+      if (node.level !== 1 || node.level !== 2) {
         setSelectedNode(node)
       }
     }
@@ -150,7 +167,7 @@ const PatientEducateRebuilt = (props) => {
                               className={`educate-column-one-name ${node.id === selectedNode.id && 'educate-column-one-name-active'} ${`level-${node.level}`}`}
                               onClick={(e, d) => onClickNode(e, node)}
                             >
-                              {node.level !== 2 && (
+                              {node.level !== 3 && (
                                 <span 
                                   class="material-symbols-outlined"
                                   style={{ color: "gray", marginRight: "8px"}}
