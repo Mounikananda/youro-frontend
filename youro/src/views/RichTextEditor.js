@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, Component } from 'react';
-
-import Editor, { createEditorStateWithText } from '@draft-js-plugins/editor';
+import React, { useRef } from 'react';
+import { Modifier, EditorState, RichUtils } from 'draft-js';
+import Editor from '@draft-js-plugins/editor';
 
 import createToolbarPlugin, {
   Separator,
@@ -23,70 +23,72 @@ import {
   BlockquoteButton,
   CodeBlockButton,
 } from '@draft-js-plugins/buttons';
+
 import editorStyles from '../styles/Editor/editorStyles.module.css';
 import buttonStyles from '../styles/Editor/buttonStyles.module.css';
 import toolbarStyles from '../styles/Editor/toolbarStyles.module.css';
 
-// const HeadlinesPicker = ({ onOverrideContent }) => {
-//   useEffect(() => {
-//     const onWindowClick = () => {
-//       // Call `onOverrideContent` again with `undefined`
-//       // so the toolbar can show its regular content again.
-//       onOverrideContent(undefined);
-//     };
+const HeadlineFourButton = (props) => {
+  const { editorState, setEditorState } = props;
 
-//     setTimeout(() => {
-//       window.addEventListener('click', onWindowClick);
-//     });
+  const onHeadlineFourClick = () => {
+    const newEditorState = RichUtils.toggleBlockType(editorState, 'header-four');
+    setEditorState(newEditorState);
+  };
 
-//     return () => {
-//       window.removeEventListener('click', onWindowClick);
-//     };
-//   }, [onOverrideContent]);
+  return (
+    <button onClick={onHeadlineFourClick} className={buttonStyles.button}>
+      H4
+    </button>
+  );
+};
 
-//   const buttons = [HeadlineOneButton, HeadlineTwoButton, HeadlineThreeButton];
-//   return (
-//     <div>
-//       {buttons.map((Button, i) => (
-//         <Button key={i} onOverrideContent={onOverrideContent} />
-//       ))}
-//     </div>
-//   );
-// };
+const HeadlineFiveButton = (props) => {
+  const { editorState, setEditorState } = props;
 
-// const HeadlinesButton = ({ onOverrideContent }) => {
-//   const onClick = () => {
-//     // A button can call `onOverrideContent` to replace the content
-//     // of the toolbar. This can be useful for displaying sub
-//     // menus or requesting additional information from the user.
-//     onOverrideContent(HeadlinesPicker);
-//   };
+  const onClick = () => {
+    const newEditorState = RichUtils.toggleBlockType(editorState, 'header-five');
+    setEditorState(newEditorState);
+  };
 
-//   return (
-//     <div className={editorStyles.headlineButtonWrapper}>
-//       <button onClick={onClick} className={editorStyles.headlineButton}>
-//         H
-//       </button>
-//     </div>
-//   );
-// };
+  return (
+    <button onClick={onClick} className={buttonStyles.button}>
+      H5
+    </button>
+  );
+};
 
-// // const HeadlinesButton = () => {
-// //   const onClick = () => {
-// //     // A button can call `onOverrideContent` to replace the content
-// //     // of the toolbar. This can be useful for displaying sub
-// //     // menus or requesting additional information from the user.
-// //     onOverrideContent(HeadlinesPicker);
-// //   };
+const FontSizeSelect = (props) => {
+  const { editorState, setEditorState } = props;
 
-// //   return (
-// //     <div className={editorStyles.headlineButtonWrapper}>
-// //       <button onClick={onClick} className={editorStyles.headlineButton}>
-// //         H
-// //       </button>
-// //     </div>
-// //   );
-// // };
+  const onFontSizeChange = (e) => {
+    const fontSize = e.target.value;
+
+    // Toggle the inline style for font size
+    const newEditorState = RichUtils.toggleInlineStyle(
+      editorState,
+      {'fontSize': fontSize}
+    );
+    console.log(newEditorState)
+    setEditorState(newEditorState);
+  };
+
+  return (
+    <select onChange={onFontSizeChange}>
+      <option value="12px">12px</option>
+      <option value="14px">14px</option>
+      <option value="16px">16px</option>
+      <option value="18px">18px</option>
+      <option value="20px">20px</option>
+      <option value="24px">24px</option>
+      <option value="28px">28px</option>
+      <option value="32px">32px</option>
+      <option value="36px">36px</option>
+      <option value="40px">40px</option>
+    </select>
+  );
+};
+
 const toolbarPlugin = createToolbarPlugin({
   theme: { buttonStyles, toolbarStyles },
 });
@@ -131,8 +133,14 @@ const CustomToolbarEditor = (props) => {
                   {/* <CodeButton {...externalProps} /> */}
                   <Separator {...externalProps} />
                   {/* <HeadlinesButton {...externalProps} /> */}
+                  {/* <FontSizeSelect  {...externalProps} editorState={props.editorState} setEditorState={props.setEditorState}/> */}
                   <UnorderedListButton {...externalProps} />
                   <OrderedListButton {...externalProps} />
+                  <HeadlineOneButton {...externalProps}/>
+                  <HeadlineTwoButton {...externalProps}/>
+                  <HeadlineThreeButton {...externalProps}/>
+                  <HeadlineFourButton  {...externalProps} editorState={props.editorState} setEditorState={props.setEditorState}/>
+                  <HeadlineFiveButton  {...externalProps} editorState={props.editorState} setEditorState={props.setEditorState}/>
                   <BlockquoteButton {...externalProps} />
                   {/* <CodeBlockButton {...externalProps} /> */}
                 </div>
