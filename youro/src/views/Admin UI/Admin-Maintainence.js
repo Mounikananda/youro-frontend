@@ -114,6 +114,24 @@ const AdminMaintainenceList = () => {
     );
 
 
+    // const getActionsColumn = (renderRowActions) => ({
+    //     id: 'actions',
+    //     Header: 'Actions',
+    //     accessorKey: 'actions', // not used but needed for definition
+    //     Cell: ({ row }) => renderRowActions({ row }),
+    //     disableSortBy: true,
+    //     canReorder: false
+    // });
+      
+    //   const handlePageContextChange = (event, newAlignment) => {
+    //       // Your existing logic to set up columns based on the page context
+          
+    //       // Ensure the actions column is always added as the last column
+    //       setColumns(currentColumns => [...currentColumns.filter(column => column.id !== 'actions'), actionsColumn]);
+    //   };
+      
+
+
     const handlePageContextChange = (event, newAlignment) => {
         if (newAlignment == null || newAlignment == 'PRESCRIPTION') {
             setPageContext('PRESCRIPTION');
@@ -143,7 +161,11 @@ const AdminMaintainenceList = () => {
                 {
                     accessorKey: 'diagnosis',
                     header: 'Diagnosis',
-                }
+                },
+                // {
+                //     accessorKey: 'actions',
+                //     header: 'Actions',
+                // }
             ]);
             setTableData(prescriptionList)
         }
@@ -270,6 +292,18 @@ const AdminMaintainenceList = () => {
             console.log('useEffect re-render : ' + count);
         }
     }, []);
+
+    // Move the "Actions" column to the end of the columns array
+    // useEffect(() => {
+    //     if (columns.length > 0) {
+    //         const actionsColumnIndex = columns.findIndex(column => column.header === 'Actions');
+    //         if (actionsColumnIndex !== -1) {
+    //             const actionsColumn = columns.splice(actionsColumnIndex, 1)[0];
+    //             columns.push(actionsColumn);
+    //             setColumns([...columns]);
+    //         }
+    //     }
+    // }, [columns]);
 
     // diagId, name, info
     const fetchPrescitions = async () => {
@@ -798,7 +832,7 @@ const AdminMaintainenceList = () => {
                             renderAdmin == true && tableData && tableData.length > 0 ?
                                 (
                                     <MaterialReactTable
-                                        options={{ actionsColumnIndex: -1 }}
+                                        //options={{ actionsColumnIndex: -1 }}
                                         displayColumnDefOptions={{
                                             'mrt-row-actions': {
                                                 muiTableHeadCellProps: {
