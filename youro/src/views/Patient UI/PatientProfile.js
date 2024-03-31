@@ -307,11 +307,13 @@ const PatientProfile = () => {
         <div className='profile-column'>
         <div style={{width:"100%",margin:"0% 2%"}}>
           <Youroheader setView={setViewVal} />
+           <div className="profile-header"><h1>My Profile</h1></div> 
         </div>
           <div className='profile-details'>
+             
             <div className='my-profile'>
               <ToastContainer />
-              <h1>My Profile</h1>
+            
 
               <div>
                 {/* <img  src={'https://d2jx2rerrg6sh3.cloudfront.net/image-handler/ts/20210415093010/ri/673/picture/2021/4/shutterstock_1170639043.jpg'} alt="My Image" width="200" height="150" /> */}
@@ -324,7 +326,8 @@ const PatientProfile = () => {
                 {errors?.image?.type === "required" && <p className="error-text">This field is required</p>}
                 } */}
                 <label for='imgupload'>
-                  <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" style={{marginBottom: '50px'}} alt="Preview" width="150" height="150" />
+                  {/* <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="profile-pic" style={{marginBottom: '50px'}} alt="Preview" width="150" height="150" /> */}
+                    <img src={imagePreview? imagePreview : 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=740&t=st=1697800963~exp=1697801563~hmac=a964f83412aeedf85e035a4192fe19e1c7001f7ec339ba51104c9372481f77c9'} className="patient-profile-pic" style={{marginBottom: '50px'}} alt="Preview" />
                 </label>
                 <>
                   <input
@@ -342,6 +345,7 @@ const PatientProfile = () => {
 
               </div>
             </div>
+            <div className="edit-profile_details">
             <div className='p-col'>
               {/* <div className='p-fields'>  
             <h3>Edit Info</h3>
@@ -521,6 +525,7 @@ const PatientProfile = () => {
               </div> */}
               {/* <button className='cancel-button'>Cancel</button> */}
             </div>
+           </div>
 
             {isPopupVisible && (
               <div className="popup-container">
