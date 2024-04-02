@@ -350,24 +350,91 @@ const Orders = (props) => {
           careplanVersion.map((result) => (<option value={result.cId}>{result.version}</option>))
         }
       </select>
-      {Object.keys(carePlan['carePlan'].presTypes).map(presType => (
-        carePlan['carePlan'].presTypes[presType].filter(item => item.indicator).map(item => (<div key={presType}> {/* should check 0 */}
+
+
+      {Object.keys(carePlan['carePlan'].presTypes).map(presTypeKey => {
+        const itemsByPresType = carePlan['carePlan'].presTypes[presTypeKey];
+
+        // Group items by categoryName
+        const categories = itemsByPresType.reduce((acc, item) => {
+          if (item.indicator) {
+            if (!acc[item.categoryName]) {
+              acc[item.categoryName] = {
+                items: [],
+                typeName: item.type.name
+              };
+            }
+            acc[item.categoryName].items.push(item);
+          }
+          return acc;
+        }, {});
+
+        return Object.entries(categories).map(([categoryName, { items, typeName }]) => (
+          <div key={presTypeKey + categoryName}>
+            <h4 style={{margin: '15px 0px'}}>{typeName}</h4>
+            <h5 style={{margin: '0px 10px'}}>{categoryName}</h5>
+            <ul style={{margin: '0px'}}>
+              {items.map(item => (
+                <li key={item.presId}>
+                  {item.presName}{item.dosage ? ` - ${item.dosage}` : ''}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ));
+      })} <br /><br />
+
+
+      {/* {Object.keys(carePlan['carePlan'].presTypes).map(presTypeKey => {
+        // Assuming the first item's type.name can represent the presType group accurately.
+        // If this assumption doesn't hold, you might need a more complex structure to associate presTypes with their names.
+        const representativeItem = carePlan['carePlan'].presTypes[presTypeKey][0];
+
+        const filteredItemsByPresType = carePlan['carePlan'].presTypes[presTypeKey].filter(item => item.indicator);
+        
+        const groupedByCategory = filteredItemsByPresType.reduce((acc, item) => {
+          const { categoryName } = item;
+          acc[categoryName] = acc[categoryName] || [];
+          acc[categoryName].push(item);
+          return acc;
+        }, {});
+
+        return Object.keys(groupedByCategory).map(categoryName => (
+          <div key={presTypeKey + categoryName}>
+            <h4 style={{margin: '15px 0px'}}>{representativeItem.type.name}</h4>
+            <h5 style={{margin: '0px 10px'}}>{categoryName}</h5>
+            <ul style={{margin: '0px'}}>
+              {groupedByCategory[categoryName].map(item => (
+                <li key={item.presId}>
+                  {item.presName}
+                  {item.dosage ? ` - ${item.dosage}` : ''}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ));
+      })} <br /><br /> */}
+
+
+
+      {/* {Object.keys(carePlan['carePlan'].presTypes).map(presType => (
+        carePlan['carePlan'].presTypes[presType].filter(item => item.indicator).map(item => (<div key={presType+item.categoryName}>
           <h4 style={{margin: '15px 0px'}}>{item.type.name}</h4>
           <h5 style={{margin: '0px 10px'}}>{item.categoryName}</h5>
           <ul style={{margin: '0px'}}>
             { carePlan['carePlan'].presTypes[presType].map(item => (
-              item.indicator && <>
+              item.indicator &&<>
                 <li key={item.presId}>
                 {item.presName}
                 {item.dosage ? ` - ${item.dosage}` : ''}
-                {/* {item.indicator ? ' (Indicator)' : ''} */}
+
               </li>
                 </>
               
             ))}
           </ul>
         </div>      
-      ))))} <br /><br />
+      ))))} <br /><br /> */}
       {carePlan.followUp ? <div style={{display: 'flex', alignItems: 'center'}}><span class="material-symbols-outlined">
                             sync
                             </span><strong>&nbsp;&nbsp;Follow-up required</strong></div> :

@@ -81,6 +81,8 @@ const AdminMaintainenceList = () => {
     const [editCategoryData, setEditCategoryData] = useState({});
     const [editPresTypeData, setEditPresTypeData] = useState({});
 
+    // Add a state to force re-render
+    const [refreshCounter, setRefreshCounter] = useState(0);
 
     const [columns, setColumns] = useState(
         [
@@ -135,6 +137,8 @@ const AdminMaintainenceList = () => {
     const handlePageContextChange = (event, newAlignment) => {
         if (newAlignment == null || newAlignment == 'PRESCRIPTION') {
             setPageContext('PRESCRIPTION');
+            //setPageContext(newPageContext); // Update your page context
+            setRefreshCounter(prevCounter => prevCounter + 1);
             setColumns([
                 // {
                 //     accessorKey: 'medicineId',
@@ -171,6 +175,7 @@ const AdminMaintainenceList = () => {
         }
         else if (newAlignment == 'QUESTIONNAIRE') {
             setPageContext('QUESTIONNAIRE');
+            setRefreshCounter(prevCounter => prevCounter + 1);
             setColumns([
                 // {
                 //     accessorKey: 'questionId',
@@ -195,6 +200,7 @@ const AdminMaintainenceList = () => {
         }
         else if (newAlignment == 'DIAGNOSIS') {
             setPageContext('DIAGNOSIS');
+            setRefreshCounter(prevCounter => prevCounter + 1);
             setColumns([
                 // {
                 //     accessorKey: 'diagId',
@@ -223,6 +229,7 @@ const AdminMaintainenceList = () => {
 
         else if (newAlignment == 'CATEGORY') {
             setPageContext('CATEGORY');
+            setRefreshCounter(prevCounter => prevCounter + 1);
             setColumns([
                 // {
                 //     accessorKey: 'categoryID',
@@ -246,6 +253,7 @@ const AdminMaintainenceList = () => {
 
         else if (newAlignment == 'PRES_TYPE') {
             setPageContext('PRES_TYPE');
+            setRefreshCounter(prevCounter => prevCounter + 1);
             setColumns([
                 // {
                 //     accessorKey: 'presTypeId',
@@ -696,7 +704,6 @@ const AdminMaintainenceList = () => {
         }
     }
     const handleAddCategory = (data) => {
-        setOpen(false);
         //debugger;
         const temp = {
             name: data.categoryName,
@@ -705,10 +712,12 @@ const AdminMaintainenceList = () => {
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addCategory", temp).then((res) => {
             toast.success('Added successfully!!');
             fetchCategoryData();
+            reset();
         }).catch((err) => {
             console.error(err);
             toast.error(err.response.data.errorMessage);
         });
+        setOpen(false);
     };
 
     const handleEditCategorySubmit = async () => {
@@ -726,7 +735,6 @@ const AdminMaintainenceList = () => {
     };
 
     const handleAddPresType = (data) => {
-        setOpen(false);
         //debugger;
         const temp = {
             name: data.presTypeName,
@@ -735,10 +743,12 @@ const AdminMaintainenceList = () => {
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPresType", temp).then((res) => {
             toast.success('Added successfully!!');
             fetchPresTypeData();
+            reset();
         }).catch((err) => {
             console.error(err);
             toast.error(err.response.data.errorMessage);
         });
+        setOpen(false);
     };
 
     const handleEditPresTypeSubmit = async () => {
@@ -841,6 +851,7 @@ const AdminMaintainenceList = () => {
                                                 size: 120,
                                             },
                                         }}
+                                        key={refreshCounter} // Use the refreshCounter as a key to force re-render
                                         columns={columns}
                                         data={tableData}
                                         enableStickyHeader
