@@ -23,13 +23,6 @@ const ChatMessage = ({
 
   useEffect(() => {
     if (alreadyRendered.current || data.seen) return;
-
-    console.log("chat data ::: ", data);
-    console.log(
-      "Conds :: ",
-      data.fromId != Cookies.get(COOKIE_KEYS.userId),
-      !data.seen
-    );
     alreadyRendered.current = true;
     if (data.fromId != Cookies.get(COOKIE_KEYS.userId) && !data.seen) {
       updateChatStatus();

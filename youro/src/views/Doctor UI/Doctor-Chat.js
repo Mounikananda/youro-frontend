@@ -100,7 +100,6 @@ const DoctorChat = (props) => {
           ).length > 0
         ) {
         } else {
-          console.log(chatHistory);
           const dupChatHistory = [...chatHistory];
 
           var dic = {};
@@ -139,7 +138,6 @@ const DoctorChat = (props) => {
 
   const onReceivedChatData = async (payload, reload = true) => {
     const res = JSON.parse(payload.body);
-    console.log("Chat-response :: ", res);
     setChatData(res);
   };
 
@@ -195,7 +193,6 @@ const DoctorChat = (props) => {
   const updateChatHistory = (userId) => {
     if (!chatUserDetails[userId]) return;
 
-    console.log("Chat use details in update ::: ", chatUserDetails);
     updateCount(totalMsgCount - chatUserDetails[userId].count);
     chatUserDetails[userId].count = 0;
     updateChatUserDetails(chatUserDetails);
