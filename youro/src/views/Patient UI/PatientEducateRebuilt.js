@@ -6,6 +6,12 @@ import Cookies from 'js-cookie';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
+const NODETYPES = {
+  DIAGNOSIS: 'DIAGNOSIS',
+  PRESCRIPTION_TYPE: 'PRESCRIPTION_TYPE',
+  CATEGORY: 'CATEGORY',
+  PRESCRIPTION: 'PRESCRIPTION'
+}
 
 const PatientEducateRebuilt = (props) => {
 
@@ -48,6 +54,7 @@ const PatientEducateRebuilt = (props) => {
         nodeList.push({
             id: idx,
             name: data.diagName,
+            type: NODETYPES.DIAGNOSIS,
             level: 0,
             hidden: false,
             expanded: true,
@@ -56,37 +63,40 @@ const PatientEducateRebuilt = (props) => {
         })
         setSelectedNode(nodeList[0]);
         idx++;
-        const presTypesToShow = ['Medicines', 'Lifestyle', 'Vitamins'];
 
         const presTypeNameMap = {};
         const prescriptions = data.carePlan.presTypes
         Object.keys(prescriptions).forEach(pres => {
           const name = prescriptions[pres][0].type.name
-          if (presTypesToShow.includes(name)) presTypeNameMap[pres] = name;
+          
+          if (prescriptions[pres][0].type.showOverview) presTypeNameMap[pres] = name;
         })
         Object.entries(presTypeNameMap).forEach( ([presType, presTypeName]) => {
             if (prescriptions[presType].length !== 0) {
                 nodeList.push({
                     id: idx,
                     name: presTypeName,
+                    type: NODETYPES.PRESCRIPTION_TYPE,
                     level: 1,
                     hidden: false,
                     expanded: true,
                     parent: 0,
                     overview: null
                 })
-                const prnt = idx;
+                const pretype = idx;
                 idx++;
                 Object.entries(Object.groupBy(prescriptions[presType], ({ categoryName }) => categoryName)).map(([categoryName, items]) => {
+                  const categoried = categoryName !== 'null';
                   let cat = null;
-                  if (categoryName !== 'null') {
+                  if (categoried) {
                       nodeList.push({
                         id: idx,
                         name: categoryName,
+                        type: NODETYPES.CATEGORY,
                         level: 2,
                         hidden: false,
-                        expanded: false,
-                        parent: prnt,
+                        expanded: true,
+                        parent: pretype,
                         overview: null
                       })
                       cat = idx;
@@ -96,10 +106,11 @@ const PatientEducateRebuilt = (props) => {
                     nodeList.push({
                         id: idx,
                         name: pres.presName,
-                        level: categoryName !== 'null' ? 3 : 2,
+                        type: NODETYPES.PRESCRIPTION,
+                        level: categoried ? 3 : 2,
                         hidden: false,
                         expanded: false,
-                        parent: categoryName !== 'null' ? prnt : cat,
+                        parent: categoried ? pretype : cat,
                         overview: pres.overview
                     })
                     idx++
@@ -149,7 +160,7 @@ const PatientEducateRebuilt = (props) => {
 
     const onClickNode = (e, node) => {
       e.preventDefault();
-      if (node.level !== 1 || node.level !== 2) {
+      if (![NODETYPES.PRESCRIPTION_TYPE, NODETYPES.CATEGORY].includes(node.type)) {
         setSelectedNode(node)
       }
     }
@@ -164,10 +175,10 @@ const PatientEducateRebuilt = (props) => {
                         <div className='diagnosis-list' >
                           {!node.hidden && (
                             <div 
-                              className={`educate-column-one-name ${node.id === selectedNode.id && 'educate-column-one-name-active'} ${`level-${node.level}`}`}
+                              className={`educate-column-one-name ${node.id === selectedNode.id && 'educate-column-one-name-active'} ${`level-${node.level}${node.type === NODETYPES.PRESCRIPTION ? '-last' : ''}`}`}
                               onClick={(e, d) => onClickNode(e, node)}
                             >
-                              {node.level !== 3 && (
+                              {node.type !== NODETYPES.PRESCRIPTION && (
                                 <span 
                                   class="material-symbols-outlined"
                                   style={{ color: "gray", marginRight: "8px"}}

@@ -269,6 +269,14 @@ const AdminMaintainenceList = () => {
                     enableEditing: false,
                     size: 50,
                 },
+                {
+                    id: 'presTypeShowOverview',
+                    accessorFn: (row) => row.presTypeShowOverview ? 'True' : 'False', 
+                    header: 'Show in Education Tab',
+                    enableColumnOrdering: false,
+                    enableEditing: false,
+                    size: 50,
+                },
             ]);
 
 
@@ -504,6 +512,7 @@ const AdminMaintainenceList = () => {
                 let temp = {
                     presTypeId: res.data[i].presTypeId,
                     presTypeName: res.data[i].name,
+                    presTypeShowOverview: res.data[i].showOverview
                 };
                 console.log("here is the temp", temp);
                 tempData.push(temp);
@@ -738,6 +747,7 @@ const AdminMaintainenceList = () => {
         //debugger;
         const temp = {
             name: data.presTypeName,
+            showOverview: data.presTypeShowOverview || false
         };
 
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPresType", temp).then((res) => {
@@ -755,8 +765,9 @@ const AdminMaintainenceList = () => {
         try {
             const response = await axios.put(`${API_DETAILS.baseUrl}${API_DETAILS.PORT}${API_DETAILS.baseExtension}/editPresType/${editPresTypeData.presTypeId}`, {
                 name: editPresTypeData.presTypeName,
+                showOverview: editPresTypeData.presTypeShowOverview
             });
-            toast.success('Category updated successfully!');
+            toast.success('Prescription Type updated successfully!');
             fetchPresTypeData(); // Refresh the category list
             setOpen(false); // Close the popup
         } catch (error) {
@@ -859,6 +870,15 @@ const AdminMaintainenceList = () => {
                                         enableRowActions={authContext == 'ADMIN'}
                                         enableEditing={authContext == 'ADMIN'}
                                         muiTableContainerProps={{ sx: { maxHeight: window.innerHeight } }}
+                                        positionGlobalFilter="left"
+                                        initialState={{
+                                            showGlobalFilter: true,
+                                        }}
+                                        muiSearchTextFieldProps={{
+                                          placeholder: `Search`,
+                                          sx: { minWidth: '300px'},
+                                          variant: 'outlined',
+                                        }}
                                         positionActionsColumn='last'
                                         renderRowActions={({ row }) => (
                                             authContext == 'ADMIN' && (
@@ -1287,6 +1307,14 @@ const AdminMaintainenceList = () => {
                             {errors?.presTypeName?.type === "required" && <p className="error-text">This field is required</p>}
                             {errors?.presTypeName?.type === "maxLength" && <p className="error-text">Prescription Type Name cannot exceed 32 characters</p>}
                         </div><br />
+                        <div>
+                            <input 
+                                type="checkbox" 
+                                id="html" 
+                                {...register("presTypeShowOverview")} 
+                            />
+                            <label for="html" style={{ marginLeft: '10px' }}>Show in Education Tab</label><br />
+                        </div>
                     </div>
 
                     <div>
@@ -1314,7 +1342,15 @@ const AdminMaintainenceList = () => {
                             />
                             {errors?.presTypeName?.type === "required" && <p className="error-text">This field is required</p>}
                             {errors?.presTypeName?.type === "maxLength" && <p className="error-text">Prescription Type Name cannot exceed 32 characters</p>}
-
+                        </div>
+                        <div>
+                            <input 
+                                type="checkbox" 
+                                id="html" 
+                                checked={editPresTypeData.presTypeShowOverview} 
+                                onChange={() => setEditPresTypeData({ ...editPresTypeData, presTypeShowOverview: !editPresTypeData.presTypeShowOverview })}
+                            />
+                            <label for="html" style={{ marginLeft: '10px' }}>Show in Education Tab</label><br />
                         </div>
                         <br />
                         <div>
