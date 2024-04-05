@@ -247,8 +247,10 @@ const AdminMaintainenceList = () => {
                 },
             ]);
 
+            const filteredCategoryData = categoryData.filter(category => category.categoryID !== 1);
 
-            setTableData(categoryData);
+            setTableData(filteredCategoryData);
+            //setTableData(categoryData);
         }
 
         else if (newAlignment == 'PRES_TYPE') {
@@ -694,6 +696,20 @@ const AdminMaintainenceList = () => {
         setPopupMode(POPUPMODES.NEW)
         setAddPopUpContext('DIAGNOSIS');
     }
+    const onClickAddCategory = () => {
+        reset();
+        clearEditor();
+        setOpen(true);
+        setPopupMode(POPUPMODES.NEW)
+        setAddPopUpContext('CATEGORY');
+    }
+    const onClickAddPresType = () => {
+        reset();
+        clearEditor();
+        setOpen(true);
+        setPopupMode(POPUPMODES.NEW)
+        setAddPopUpContext('PRES_TYPE');
+    }
 
     const onClickAddSavePrescription = () => {
         if (popUpMode == POPUPMODES.NEW) {
@@ -721,7 +737,7 @@ const AdminMaintainenceList = () => {
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addCategory", temp).then((res) => {
             toast.success('Added successfully!!');
             fetchCategoryData();
-            reset();
+            //reset();
         }).catch((err) => {
             console.error(err);
             toast.error(err.response.data.errorMessage);
@@ -753,7 +769,7 @@ const AdminMaintainenceList = () => {
         axios.post(API_DETAILS.baseUrl + API_DETAILS.PORT + API_DETAILS.baseExtension + "/addPresType", temp).then((res) => {
             toast.success('Added successfully!!');
             fetchPresTypeData();
-            reset();
+            //reset();
         }).catch((err) => {
             console.error(err);
             toast.error(err.response.data.errorMessage);
@@ -812,7 +828,7 @@ const AdminMaintainenceList = () => {
                                 pageContext == 'CATEGORY' &&
                                 <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
                                     <Tooltip arrow placement="left" title="Add Category">
-                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('CATEGORY'); fetchCategoryData() }} className='add-icon' size="large">
+                                        <IconButton color="gray" onClick={onClickAddCategory} className='add-icon' size="large">
                                             <AddIcon fontSize='inherit' />
                                         </IconButton>
                                     </Tooltip>
@@ -826,7 +842,7 @@ const AdminMaintainenceList = () => {
                                 pageContext == 'PRES_TYPE' &&
                                 <Box sx={{ display: 'flex', gap: '1rem', marginLeft: '15px' }}>
                                     <Tooltip arrow placement="left" title="Add Prescription Type">
-                                        <IconButton color="gray" onClick={() => { setOpen(true); setAddPopUpContext('PRES_TYPE'); fetchPresTypeData() }} className='add-icon' size="large">
+                                        <IconButton color="gray" onClick={onClickAddPresType} className='add-icon' size="large">
                                             <AddIcon fontSize='inherit' />
                                         </IconButton>
                                     </Tooltip>
@@ -1056,8 +1072,8 @@ const AdminMaintainenceList = () => {
                                     <select style={{ width: '25vw' }} className="input-field input-border" id="gender" disabled={popUpMode != POPUPMODES.NEW} {...register("category", {
                                         required: false,
                                     })}>
-                                        <option value="">Select</option>
-                                        {categoryData.map((categoryData, index) => (
+                                        <option value="1">Select</option>
+                                        {categoryData.filter(category => category.categoryID !== 1).map((categoryData, index) => (
                                             <option key={index} value={categoryData.categoryID}>
                                                 {categoryData.categoryName}
                                             </option>

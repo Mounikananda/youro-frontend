@@ -43,7 +43,7 @@ const CarePlan = () => {
 
           {Object.entries(Object.groupBy(prescriptions[presType], ({ categoryName }) => categoryName)).map(([category, items]) => (
             <>
-            <h5 style={{margin: '10px 10px'}}>{category !== 'null' ? category : ''}</h5>
+            {category !== 'Not Selected' && <h5 style={{margin: '10px 10px'}}>{category !== 'null' ? category : ''}</h5>}
               <ul style={{margin: '0px'}}>
                 {items.map(item => (
                   item.indicator && <>

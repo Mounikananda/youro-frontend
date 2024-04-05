@@ -361,7 +361,8 @@ const Orders = (props) => {
             if (!acc[item.categoryName]) {
               acc[item.categoryName] = {
                 items: [],
-                typeName: item.type.name
+                typeName: item.type.name,
+                categoryID: item.category.categoryId
               };
             }
             acc[item.categoryName].items.push(item);
@@ -369,10 +370,10 @@ const Orders = (props) => {
           return acc;
         }, {});
 
-        return Object.entries(categories).map(([categoryName, { items, typeName }]) => (
+        return Object.entries(categories).map(([categoryName, { items, typeName, categoryID }]) => (
           <div key={presTypeKey + categoryName}>
             <h4 style={{margin: '15px 0px'}}>{typeName}</h4>
-            <h5 style={{margin: '0px 10px'}}>{categoryName}</h5>
+            {categoryID !== 1 && <h5 style={{margin: '0px 10px'}}>{categoryName}</h5>}
             <ul style={{margin: '0px'}}>
               {items.map(item => (
                 <li key={item.presId}>
@@ -471,12 +472,55 @@ const Orders = (props) => {
 <></>
 
 
-<div className="orders-checklist">
+
+<div className="orders-checklist" style={{ overflowX: 'auto',overflowY: 'auto', maxHeight: 'max-content', padding: '20px' }}>
+  <div className='orders-container' style={{ display: 'flex', minWidth: 'max-content', gap: '20px', backgroundColor: '#f9f9f9', padding: '20px', paddingRight: '20px', borderRadius: '8px' }}>
+    {carePlanDetails.presTypes && Object.keys(carePlanDetails.presTypes).map((typeKey) => (
+      <div key={typeKey} className="orders-name" style={{ overflowY: 'auto',minWidth: '250px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <p className='order-label' style={{ textAlign: 'center', fontWeight: 'bold', fontSize: '1.2rem', color: '#333', borderBottom: '2px solid #eee', paddingBottom: '5px' }}>{carePlanDetails.presTypes[typeKey][0].type.name}</p>
+        {/* Group by category */}
+        {Object.values(carePlanDetails.presTypes[typeKey].reduce((acc, item) => {
+          if (!acc[item.category.name]) {
+            acc[item.category.name] = [];
+          }
+          acc[item.category.name].push(item);
+          return acc;
+        }, {})).map((categoryItems, index) => (
+          <div key={index} style={{ display: 'flex', flexDirection: 'column'}}>
+            {categoryItems[0].category.categoryId != 1 && (<p style={{ paddingLeft: '10px', fontWeight: 'bold', fontSize: '1rem', color: '#666' }}>{categoryItems[0].category.name}</p>)}
+            {categoryItems.map(item => (
+              <div 
+                key={item.presId} 
+                style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: categoryItems[0].category.categoryId == 1 ? '10px' : '40px', paddingTop: categoryItems[0].category.categoryId == 1 ? '10px' : '0px', paddingBottom: categoryItems[0].category.categoryId == 1 ? '10px' : '0px' }}
+                >
+                <input
+                  type="checkbox"
+                  id={`item-${item.presId}`}
+                  checked={item.indicator}
+                  onChange={() => handleCheckboxChange(item, item.type.presTypeId)}
+                  style={{ cursor: 'pointer' }}
+                />
+                <label htmlFor={`item-${item.presId}`} 
+                  style={{ fontSize: '0.9rem', color: '#555', fontStyle: 'italic', cursor: 'pointer', whiteSpace: 'normal', 
+                  display: 'inline-block', maxWidth: '80%', overflowWrap: 'break-word' }}>{item.presName}</label>
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+
+
+
+
+{/* <div className="orders-checklist">
   <div className='orders-3' style={{width: '60%'}}>
     {carePlanDetails.presTypes && Object.keys(carePlanDetails.presTypes).map((typeKey) => (
       <div key={typeKey} className="orders-name" style={{width: '33.3%'}}>
         <p className='order-label'><strong>{carePlanDetails.presTypes[typeKey][0].type.name}</strong></p>
-        {/* Group by category */}
         {Object.values(carePlanDetails.presTypes[typeKey].reduce((acc, item) => {
           // Create a group for each category if it doesn't exist
           if (!acc[item.category.name]) {
@@ -504,7 +548,7 @@ const Orders = (props) => {
       </div>
     ))}
   </div>
-</div>
+</div> */}
 
 <div style={{width: '95%', margin: '0px auto'}}>
 <textarea style={{width: '100%', height: '50px'}} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder='Enter your notes here...'></textarea>
