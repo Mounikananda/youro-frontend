@@ -1,12 +1,10 @@
 @import "../../App.css";
 
-body
-{ 
-   background-color: var(--primary-color);
+body {
+  background-color: var(--primary-color);
 }
 
-.Hamburger
-{
+.Hamburger {
   background-color: var(--primary-color);
   /* margin-left: 20px; */
   /* border: 1px solid black; */
@@ -17,51 +15,44 @@ body
 {
   display: flex;
   /* margin: 30px; */
-   /* margin-top: 60px; */
+/* margin-top: 60px; */
 
-
-.Side-bar
-{
-  
-   /* display: flex; */
-   /* height: ; */
-   height: 95vh;
-   overflow-y: auto;
-   /* display: flex; */
-   flex-direction: column;
+.Side-bar {
+  /* display: flex; */
+  /* height: ; */
+  height: 95vh;
+  overflow-y: auto;
+  /* display: flex; */
+  flex-direction: column;
   /* font-size: 50rem; */
   /* color: var(--secondary-color); */
 }
 
-
-
-.Menu-item
-{
+.Menu-item {
   font-size: large;
-  margin-top: 30px; 
+  margin-top: 30px;
   margin-bottom: 30px;
   color: white;
   /* margin-left: 2px;
   margin-right: 2px; */
 }
 
-.css-aa2pg5 >.ps-menu-button:hover{
+.css-aa2pg5 > .ps-menu-button:hover {
   background-color: #777 !important;
 }
 
-.css-1t8x7v1 >.ps-menu-button:hover {
+.css-1t8x7v1 > .ps-menu-button:hover {
   background-color: #777 !important;
 }
 
 .Menu-item:hover {
   background-color: #777;
-  
+
   transform: scale(1.1);
   transition-duration: 0.3s;
 }
 
-.patient-div
-{
+.patient-div {
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -147,10 +138,10 @@ body
 
 .chat-container-main {
   width: 92%;
-    padding: 15px 50px;
-    background-color: white;
-    display: flex;
-    height: 82vh;
+  padding: 15px 50px;
+  background-color: white;
+  display: flex;
+  height: 82vh;
 }
 
 .select-names {
@@ -160,7 +151,7 @@ body
   overflow: auto;
 }
 
-.select-names-div{
+.select-names-div {
   padding: 10px 20px;
   border-bottom: 1px solid;
   border-radius: 10px 0px 0px 10px;
@@ -182,12 +173,13 @@ body
 
 .chat-received-text {
   padding: 5px 10px;
-    width: fit-content;
-    max-width: 300px;
-    border-radius: 5px;
-    margin: 5px 0px;
-    background-color: var(--secondary-color);
-    color: white;
+  width: fit-content;
+  max-width: 300px;
+  border-radius: 5px;
+  margin: 5px 0px;
+  background-color: var(--secondary-color);
+  color: white;
+  word-break: break-all;
 }
 
 .chat-time-stamp {
@@ -205,6 +197,18 @@ body
   margin: 5px 0px 5px auto;
   position: relative;
   bottom: -3px;
+  /* changes for showing status of msg at sender end */
+  padding-right: 20px;
+  position: relative;
+  word-break: break-all;
+}
+
+/* changes for showing status of msg at sender end */
+.message-status {
+  position: absolute;
+  bottom: 0px;
+  font-size: 9px;
+  right: 3px;
 }
 
 .text-input-styled {
@@ -215,7 +219,7 @@ body
   width: 90%;
 }
 
-.text-input-styled:focus{
+.text-input-styled:focus {
   outline: none;
 }
 
@@ -241,4 +245,14 @@ body
   background-color: var(--secondary-color);
   color: white;
   cursor: pointer;
+}
+
+.chat-user {
+  overflow: hidden;
+}
+
+.chat-user .chat-user-msg {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 10px;
 }

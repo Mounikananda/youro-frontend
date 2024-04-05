@@ -4,14 +4,13 @@
   box-sizing: border-box;
 } */
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
-
 /* doctor appointment calender css inbuilt css changed here starting with .rbc */
-.rbc-toolbar-label
-{ 
+.rbc-toolbar-label {
   font-size: 150%;
   font-family: sans-serif;
 }
@@ -22,9 +21,7 @@ html, body {
   border: 10px solid saddlebrown;
 } */
 
-.rbc-month-header
-{
-
+.rbc-month-header {
   /* background: rgb(59 130 246 / 0.5); */
   /* color: white;  */
   background: #d4d4d4;
@@ -39,26 +36,22 @@ html, body {
   background: blueviolet;
   color: white; 
 } */
-.rbc-events-container 
-{
-  
-  width:100%;
+.rbc-events-container {
+  width: 100%;
 }
 
-.rbc-timeslot-group
-{
-  min-height:12vh !important;
-} 
-.rbc-toolbar .button
-{
-   /* border: 0.5px solid black; */
-   border: none;
-   margin: 10%;
+.rbc-timeslot-group {
+  min-height: 12vh !important;
+}
+.rbc-toolbar .button {
+  /* border: 0.5px solid black; */
+  border: none;
+  margin: 10%;
   /* background-color: rgb(59 130 246 / 0.5); */
-   /* border: 2px solid black; */
+  /* border: 2px solid black; */
 }
 .rbc-btn-group > button:first-child:not(:last-child) {
-   border: none;
+  border: none;
 }
 .rbc-btn-group > button:not(:first-child):not(:last-child) {
   border: none;
@@ -72,21 +65,18 @@ html, body {
 /* .rbc-btn-group:last-child{
   display: none;
 } */
-.rbc-event
-{
+.rbc-event {
   padding: 0 !important;
   border: none !important;
   border-radius: 5px !important;
   background-color: transparent !important;
 }
-.rbc-event-label
-{
-   display: none !important;
+.rbc-event-label {
+  display: none !important;
 }
 
-.rbc-toolbar
-{
-   /* background: blueviolet; */
+.rbc-toolbar {
+  /* background: blueviolet; */
   /* color: white;  */
   background: var(--secondary-color);
   padding: 2%;
@@ -97,9 +87,8 @@ html, body {
 
 body {
   margin: 0;
-  font-family: 'Comfortaa', 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif !important;
+  font-family: "Comfortaa", "Segoe UI", "Roboto", "Oxygen", "Ubuntu",
+    "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
@@ -111,12 +100,11 @@ body {
   --sb-thumb-color: #636363;
   --sb-size: 12px;
 
-  scrollbar-color: var(--sb-thumb-color) 
-                   var(--sb-track-color);
+  scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
 }
 
 body::-webkit-scrollbar {
-  width: var(--sb-size) 
+  width: var(--sb-size);
 }
 
 body::-webkit-scrollbar-track {
@@ -131,6 +119,6 @@ body::-webkit-scrollbar-thumb {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
