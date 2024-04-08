@@ -1,13 +1,13 @@
 :root {
-  --primary-color :  #E9E4D7;
-  --secondary-color: #9CB189;
-  --neon-color: #E5FF7E;
+  --primary-color: #e9e4d7;
+  --secondary-color: #9cb189;
+  --neon-color: #e5ff7e;
   --error-color: #ff0033;
   --shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
 }
 
 .color-secondary {
-    color: var(--secondary-color);
+  color: var(--secondary-color);
 }
 
 .input-border:focus {
@@ -30,7 +30,7 @@
   border-radius: 15px !important;
   border-width: 5;
   text-align: center;
-  transition: all .2s ease-in;
+  transition: all 0.2s ease-in;
   cursor: pointer;
   padding: 15px 25px;
   border: 1px solid transparent !important;
@@ -43,7 +43,7 @@
   border-radius: 15px;
   border-width: 5;
   text-align: center;
-  transition: all .2s ease-in;
+  transition: all 0.2s ease-in;
   cursor: not-allowed;
   pointer-events: none;
   padding: 15px 25px;
@@ -63,7 +63,7 @@
   border-radius: 15px !important;
   border-width: 5;
   text-align: center;
-  transition: all .2s ease-in;
+  transition: all 0.2s ease-in;
   cursor: pointer;
   padding: 15px 25px;
   width: fit-content;
@@ -87,7 +87,7 @@
   border-radius: 15px;
   border-width: 5;
   text-align: center;
-  transition: all .2s ease-in;
+  transition: all 0.2s ease-in;
   cursor: pointer;
   padding: 15px 25px;
   width: fit-content;
@@ -98,7 +98,7 @@
   color: black;
   border-radius: 15px;
   text-align: center;
-  transition: all .2s ease-out;
+  transition: all 0.2s ease-out;
   cursor: pointer;
   padding: 15px 25px;
   font-weight: 700;
@@ -108,13 +108,12 @@
   box-shadow: var(--shadow);
 }
 
-.btn-gray
-{
+.btn-gray {
   background-color: gray;
   color: white;
   border-radius: 15px;
   text-align: center;
-  transition: all .2s ease-out;
+  transition: all 0.2s ease-out;
   cursor: pointer;
   padding: 15px 25px;
   font-weight: 700;
@@ -123,8 +122,7 @@
   box-shadow: var(--shadow);
 } */
 
-
-.congrats-popup-content  {
+.congrats-popup-content {
   width: fit-content !important;
   border-radius: 10px;
   position: relative;
@@ -136,13 +134,13 @@
   position: relative;
 }
 
-.symptom-popup-content{
+.symptom-popup-content {
   width: 500px !important;
   border-radius: 10px;
   position: relative;
 }
 
-.css-1wvake5{
+.css-1wvake5 {
   border: none !important;
 }
 
@@ -152,9 +150,7 @@
   /* margin-bottom: 50px; */
 }
 
-
-
-input[type='radio']:after {
+input[type="radio"]:after {
   width: 15px;
   height: 15px;
   border-radius: 15px;
@@ -162,13 +158,13 @@ input[type='radio']:after {
   left: -1px;
   position: relative;
   background-color: #dfdede;
-  content: '';
+  content: "";
   display: inline-block;
   visibility: visible;
   border: 2px solid white;
 }
 
-input[type='radio']:checked:after {
+input[type="radio"]:checked:after {
   width: 15px;
   height: 15px;
   border-radius: 15px;
@@ -176,13 +172,13 @@ input[type='radio']:checked:after {
   left: -1px;
   position: relative;
   background-color: var(--secondary-color);
-  content: '';
+  content: "";
   display: inline-block;
   visibility: visible;
   border: 2px solid var(--secondary-color);
 }
 
-.cancel-tag{
+.cancel-tag {
   background-color: var(--error-color);
   color: white;
   width: fit-content;
