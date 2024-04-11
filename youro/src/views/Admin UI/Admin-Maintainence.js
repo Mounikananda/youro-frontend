@@ -70,6 +70,7 @@ const AdminMaintainenceList = () => {
   const [diagnosisData, setDiagnosisData] = useState([]);
   const [needsRefresh, setRefreshStatus] = useState(false);
   //added by nanda
+  const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
   const [actionsColumnPosition, setActionsColumnPosition] = useState("last");
   const [isQuestionnaireSelected, setisQuestionnanireSelected] =
@@ -85,10 +86,26 @@ const AdminMaintainenceList = () => {
   const [showAdminPopUps, setShowAdminPopUps] = useState(false);
   const [selectedQuestion, setSelectedQuestion] = useState("");
   const [selectedDiagnosis, setSelectedDiagnosis] = useState("");
+  const [optionsList, setOptionsList] = useState([]);
+  const [isEditQuestionClicked, setIsEditQuestionClicked] = useState(false);
 
   const handleDiagnosisChange = (event) => {
     setSelectedDiagnosis(event.target.value);
   };
+  const [customOptions, setCustomOptions] = useState([]);
+  const [customOption, setCustomOption] = useState("");
+
+  const handleCustomOptionChange = (e) => {
+    setCustomOption(e.target.value);
+  };
+
+  const handleAddCustomOption = () => {
+    if (customOption.trim() !== "") {
+      setCustomOptions([...customOptions, customOption]);
+      setCustomOption("");
+    }
+  };
+
   const [columns, setColumns] = useState([
     {
       accessorKey: "medicineId",
@@ -110,29 +127,30 @@ const AdminMaintainenceList = () => {
       header: "Diagnosis",
     },
   ]);
-
-  const diagnosisIdMapping = {
-    "Intake Form": 1000,
-    "General Form Cat-1": 1001,
-    "General Form Cat-2": 1001,
-    "General Form Cat-3": 1001,
-    "General Form Cat-4": 1001,
-    "General Form Cat-5": 1001,
-    "General Form Cat-6": 1001,
-    BPH: 1,
-    "Recurrent UTIs": 2,
-    "Premature Ejaculation": 3,
-    "Erectile dysfunction": 4,
-    OAB: 5,
-    "Recurrent stones": 6,
-    Infertility: 7,
+  const handleClosePopup = () => {
+    setCustomOption("");
+    setCustomOptions([]);
+    setOptionsList([]);
+    setSelectedOption("");
+    setOpenInnerPopUp(false);
   };
+
   const handleOptionChange = (event) => {
+    if (event.target.value === "") {
+      setOptionsList(null);
+    } else {
+      setOptionsList(event.target.value.split("/"));
+    }
     setSelectedOption(event.target.value);
   };
   //added by nanda
-  const handleQuestionnaireSelection = async (questionnaire_id) => {
-    setSelectedQuestionnaire(questionnaire_id);
+
+  const handleQuestionnaireSelection = async (
+    questionnaire_id,
+    questionnaire_type
+  ) => {
+    setSelectedQuestionnaireId(questionnaire_id);
+    setSelectedQuestionnaire(questionnaire_type);
     setisQuestionnanireSelected(true);
     hanldeUpdateColumns(questionnaire_id);
     setOpen(true);
@@ -151,12 +169,11 @@ const AdminMaintainenceList = () => {
     };
     try {
       const res = await axios.get(url, config);
-      //const transformedData = res.data.map(({ id, ...rest }) => rest);
-      const tempData = [];
-      for (let i = 0; i < res.data.length; i++) {
-        tempData.push(res.data[i].question);
-      }
-      setQuestions(tempData);
+      // const tempData = [];
+      // for (let i = 0; i < res.data.length; i++) {
+      //   tempData.push(res.data[i].question);
+      // }
+      setQuestions(res.data);
       console.log(res.data);
     } catch {}
   };
@@ -189,7 +206,12 @@ const AdminMaintainenceList = () => {
             <button
               key={`edit-${row.original.questionnaire_type}`}
               aria-label="Edit"
-              onClick={() => handleQuestionnaireSelection(row.original.id)}
+              onClick={() =>
+                handleQuestionnaireSelection(
+                  row.original.id,
+                  row.original.questionnaire_type
+                )
+              }
               style={{
                 border: "none",
                 background: "transparent",
@@ -291,7 +313,6 @@ const AdminMaintainenceList = () => {
     if (!isRendered.current) {
       fetchPrescitions();
       fetchAllDiagnoses();
-      //fetchAllQuestionnaires();
       fetchAllQuestionnaireForms();
       isRendered.current = true;
     } else {
@@ -302,7 +323,6 @@ const AdminMaintainenceList = () => {
   useEffect(() => {
     if (!refetchQuestionnaire || !selectedQuestion) return;
     fetchAllQuestionnaireForms();
-    // setRefetchQuestionnaire(false);
   }, [refetchQuestionnaire, selectedQuestion]);
 
   // diagId, name, info
@@ -383,59 +403,8 @@ const AdminMaintainenceList = () => {
       let temp = qOptsArray[i].oName + " $ ";
       str += temp;
     }
-    // console.log('Opts str :: '+ str);
     return str;
   };
-  //   getAllQuestionnaires
-  // const fetchAllQuestionnaires = async () => {
-  //   // console.log("====^^^===");
-  //   // console.log("fetchAllQuestionnaires START");
-  //   const url =
-  //     API_DETAILS.baseUrl +
-  //     API_DETAILS.PORT +
-  //     API_DETAILS.baseExtension +
-  //     `/getAllQuestionnaires`;
-  //   const config = {
-  //     headers: {
-  //       "Access-Control-Allow-Origin": "*",
-  //       "Access-Control-Allow-Methods": "*",
-  //       "Content-Type": "application/json",
-  //     },
-  //   };
-  //   try {
-  //     let tempData = [];
-  //     // for (let i = 0; i < res.data.length; i++) {
-  //     for (let i = 0; i < Questionnaires.length; i++) {
-  //       //let optStr = getOptionsStringFromApiData(res.data[i].options);
-  //       //console.log("Opts str :: " + optStr);
-  //       let temp = {
-  //         questionnaire_type: Questionnaires[i],
-  //         //question: res.data[i].question,
-  //         //options: optStr,
-  //       };
-  //       tempData.push(temp);
-  //     }
-  //     setQuestionnairesUpdate(tempData);
-  //     if (pageContext === "QUESTIONNAIRE") {
-  //       Questionnaires.map((questionnaire_type) => ({
-  //         questionnaire_type,
-  //       }));
-  //     }
-
-  //     setRenderQuestionnaireApiData(true);
-  //   } catch (err) {
-  //     cannotrenderapidata({
-  //       prescriptionRender: true,
-  //       diagnosisRender: true,
-  //       questionnairesRender: false,
-  //     });
-  //     setRenderQuestionnaireApiData(false);
-  //     console.error(err);
-  //   }
-  //   // console.log("fetchAllQuestionnaires END");
-  //   // console.log("====^^^===");
-  // };
-
   const fetchAfterDelete = () => {
     if (needsRefresh) {
       if (pageContext === "QUESTIONNAIRE") {
@@ -526,7 +495,7 @@ const AdminMaintainenceList = () => {
 
     const temp = {
       questionnaire_type: newQuestionnaire,
-      diag_id: selectedDiagnosis,
+      diag_id: selectedDiagnosis === "" ? null : selectedDiagnosis,
       status: checkbox.checked ? "Active" : "Inactive",
     };
 
@@ -573,7 +542,6 @@ const AdminMaintainenceList = () => {
     };
     try {
       const res = await axios.get(url, config);
-      //const transformedData = res.data.map(({ id, ...rest }) => rest);
       if (pageContext === "QUESTIONNAIRE" || refetchQuestionnaire) {
         setTableData(res.data);
       }
@@ -603,20 +571,17 @@ const AdminMaintainenceList = () => {
     setOptions(options);
     setIsAddQuestionClicked(true);
     setOpenInnerPopUp(true);
-    //fetchAllQuestionnaireForms();
   };
 
   const handleAddQuestionInner = async () => {
     const newQuestion = inputRef.current.value;
-    const diagnosisId = diagnosisIdMapping[selectedQuestionnaire] || null;
-    const optionsList = selectedOption.split("/");
+    //const optionsList = selectedOption.split("/");
     if (newQuestion.trim() !== "") {
       const temp = {
         question: newQuestion,
         weight: 1,
-        diagnosisId: diagnosisId,
-        questionnaireType: selectedQuestionnaire,
-        optionsList: optionsList,
+        questionnaire_id: selectedQuestionnaireId,
+        optionsList: optionsList.length === 0 ? customOptions : optionsList,
       };
       const config = {
         headers: {
@@ -647,6 +612,30 @@ const AdminMaintainenceList = () => {
     }
     setOpenInnerPopUp(false);
   };
+
+  const handleEditQuestion = async (qid) => {
+    const url =
+      API_DETAILS.baseUrl +
+      API_DETAILS.PORT +
+      API_DETAILS.baseExtension +
+      `/getQuestionsWithOptions/${qid}`;
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+      },
+    };
+    try {
+      const res = await axios.get(url, config);
+      setQuestionnairesUpdate(res.data);
+      setIsEditQuestionClicked(true);
+      console.log(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <div>
       {
@@ -713,14 +702,6 @@ const AdminMaintainenceList = () => {
             <ToastContainer />
             {renderAdmin === true && tableData && tableData.length > 0 ? (
               <MaterialReactTable
-                // displayColumnDefOptions={{
-                //   "mrt-row-actions": {
-                //     muiTableHeadCellProps: {
-                //       align: "flex-end",
-                //     },
-                //     size: 120,
-                //   },
-                // }}
                 columns={columns}
                 data={tableData}
                 enableStickyHeader={false}
@@ -731,30 +712,6 @@ const AdminMaintainenceList = () => {
                   sx: { maxHeight: window.innerHeight },
                 }}
                 positionActionsColumn="last"
-                // renderRowActions={({ row }) =>
-                //   authContext === "ADMIN" && (
-                //     <Box sx={{ display: "flex", gap: "1rem" }}>
-                //       <Tooltip arrow placement="right" title="Delete">
-                //         <AdminPopUps
-                //           data={{
-                //             action: `delete-${pageContext.toLowerCase()}`,
-                //             step: 1,
-                //             rowData: row.original,
-                //             postDeleteAction: fetchAfterDelete(),
-                //             setParentRefreshStatus: setRefreshStatus,
-                //           }}
-                //         />
-                //       </Tooltip>
-                //     </Box>
-                //   )
-                // }
-                // muiTableBodyProps={{
-                //   sx: () => ({
-                //     "& tr:nth-of-type(odd)": {
-                //       backgroundColor: "lightgray",
-                //     },
-                //   }),
-                // }}
               />
             ) : (pageContext === "PRESCRIPTION" &&
                 !renderPrescriptionApiData) ||
@@ -1052,7 +1009,7 @@ const AdminMaintainenceList = () => {
                 <div style={{ textAlign: "center", marginTop: "0px" }}>
                   <h2>{selectedQuestionnaire} Questionnaire :</h2>
                 </div>
-                {questions.map((question) => (
+                {questions.map((questionItem) => (
                   <div
                     style={{
                       display: "flex",
@@ -1060,9 +1017,9 @@ const AdminMaintainenceList = () => {
                       marginBottom: "10px",
                     }}
                   >
-                    <p style={{ flexGrow: 1 }}>{question}</p>
+                    <p style={{ flexGrow: 1 }}>{questionItem.question}</p>
                     <EditIcon
-                      onClick={() => console.log("edit")}
+                      onClick={handleEditQuestion(questionItem.qId)}
                       style={{
                         cursor: "pointer",
                         marginRight: "10px",
@@ -1075,28 +1032,19 @@ const AdminMaintainenceList = () => {
                         action: `delete-question`,
                         step: 1,
                         rowData: {
-                          question: question,
-                          questionnaire_type: selectedQuestionnaire,
+                          question: questionItem.question,
+                          questionnaire_type: selectedQuestionnaireId,
                         },
                         postDeleteAction: () => {
-                          handleQuestionnaireSelection(selectedQuestionnaire);
+                          handleQuestionnaireSelection(selectedQuestionnaireId);
                           setShowAdminPopUps(false);
                         },
                         setParentRefreshStatus: (status) => {
                           setRefreshStatus(status);
-                          setShowAdminPopUps(false); // Optionally close the popup after action
+                          setShowAdminPopUps(false);
                         },
                       }}
                     />
-                    {/* <DeleteIcon
-                      onClick={() => {
-                        setSelectedQuestion(question);
-                        setShowAdminPopUps(true);
-                      }}
-                      style={{ cursor: "pointer", color: "red" }}
-                    >
-                      Delete
-                    </DeleteIcon> */}
                   </div>
                 ))}
 
@@ -1121,7 +1069,7 @@ const AdminMaintainenceList = () => {
         open={openInnerPopUp}
         modal
         closeOnDocumentClick={false}
-        onClose={() => setOpenInnerPopUp(false)}
+        onClose={handleClosePopup}
         className="congrats-popup"
       >
         <div
@@ -1131,7 +1079,7 @@ const AdminMaintainenceList = () => {
             right: "20px",
             cursor: "pointer",
           }}
-          onClick={() => setOpenInnerPopUp(false)}
+          onClick={handleClosePopup}
         >
           <span class="material-symbols-outlined">close</span>
         </div>
@@ -1170,24 +1118,72 @@ const AdminMaintainenceList = () => {
                   ref={inputRef}
                 />
               </div>
+
               <div style={{ marginTop: "10px" }}>
-                <div style={{ marginBottom: "5px" }}>Options type:</div>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {options.map((option) => (
-                    <div key={option}>
-                      <input
-                        type="radio"
-                        name="options"
-                        value={option}
-                        checked={selectedOption === option}
-                        onChange={handleOptionChange}
-                      />
-                      <label htmlFor={"options"} style={{ marginLeft: "5px" }}>
+                <div style={{ marginBottom: "5px" }}>Select/Add Options :</div>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    marginBottom: "5px",
+                  }}
+                >
+                  <select
+                    value={selectedOption}
+                    onChange={handleOptionChange}
+                    style={{ marginRight: "10px" }}
+                  >
+                    <option value="">Select Options</option>
+                    {options.map((option) => (
+                      <option key={option} value={option}>
                         {option}
-                      </label>
-                    </div>
-                  ))}
+                      </option>
+                    ))}
+                  </select>
+                  <div style={{ marginRight: "10px", fontWeight: "bold" }}>
+                    or
+                  </div>
+                  <input
+                    type="text"
+                    value={customOption}
+                    onChange={(e) => setCustomOption(e.target.value)}
+                    style={{ marginRight: "10px" }}
+                    placeholder="Enter custom option"
+                  />
+                  <button onClick={handleAddCustomOption}>Add</button>
                 </div>
+
+                {customOptions.length > 0 && (
+                  <div style={{ marginBottom: "10px" }}>
+                    <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                      Options Added:
+                    </div>
+                    {customOptions.map((custom, index) => (
+                      <div key={index} style={{ marginBottom: "5px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          {index + 1}.{" "}
+                        </span>
+                        {custom}
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {optionsList != null && optionsList.length > 0 && (
+                  <div style={{ marginBottom: "10px" }}>
+                    <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                      Options Selected:
+                    </div>
+                    {optionsList.map((option, index) => (
+                      <div key={index} style={{ marginBottom: "5px" }}>
+                        <span style={{ fontWeight: "bold" }}>
+                          {index + 1}.{" "}
+                        </span>
+                        {option}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               <div style={{ marginTop: "10px" }}>
                 <input type="checkbox" id="isRequired" name="isRequired" />
