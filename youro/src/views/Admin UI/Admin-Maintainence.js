@@ -992,6 +992,7 @@ const AdminMaintainenceList = () => {
           setIsChecked(false);
           setSelectedQuestionnaireId(null);
           setErrorMessage(null);
+          setSelectedDiagnosis(null);
         }}
         className="congrats-popup"
         contentStyle={{
