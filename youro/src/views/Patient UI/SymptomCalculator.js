@@ -7,51 +7,45 @@ import { API_DETAILS, COOKIE_KEYS } from "../../App";
 const SymptomCalculator = (props) => {
   const [chooseDiagnosis, setChooseDiagnosis] = useState(true);
 
-  const [questionnare, setQuestionnare] = useState([
-    {
-      question: "How are you?",
-      options: ["Good", "Bad", "Neutral", "None"],
-      questionId: "1",
-    },
-    {
-      question: "What is your name?",
-      options: ["Alan Hunt", "Farah", "Both", "None"],
-      questionId: "2",
-    },
-  ]);
-  const [questionNum, setQuestionNum] = useState(0);
-
+  const [questionnaire, setquestionnaire] = useState([]);
   const [userResponse, setUserResponse] = useState([]);
-
-  const [selDiag, setDiagId] = useState("");
+  const [selDiag, setDiagName] = useState("");
+  const [diagId, setDiagId] = useState("");
   const [diagnosisNames, setDiagnoses] = useState([]);
   const [symptomScore, setSymptomScore] = useState(-1);
   const [symptomScorePage, setSymptomScorePage] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(-1);
+  const [qId, setQId] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentChildQuestionIndex, setCurrentChildQuestionIndex] = useState(0);
+  const [initialCondition, setInitialCondition] = useState(true);
 
   useEffect(() => {
     fetchAllDiagnoses();
   }, []);
 
   const fetchQuesByDiagId = async () => {
+    const temp = {
+      questionnaire_type: selDiag,
+      last_question_id: qId,
+      selected_option_id: selectedOption,
+    };
     const url =
       API_DETAILS.baseUrl +
       API_DETAILS.PORT +
       API_DETAILS.baseExtension +
-      `/getQuestionsBydiagId/${selDiag}`;
-    const config = {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "*",
-        "Content-Type": "application/json",
-      },
-    };
-    try {
-      const res = await axios.get(url, config);
-      console.log(res);
-      setQuestionnare(res.data);
-    } catch (err) {
-      console.error(err);
-    }
+      "/getQuestionsByQuestionnaireType";
+    axios
+      .post(url, temp)
+      .then((res) => {
+        console.log(res);
+
+        setquestionnaire(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    setSelectedOption(0);
   };
 
   const fetchAllDiagnoses = async () => {
@@ -91,13 +85,10 @@ const SymptomCalculator = (props) => {
       },
     };
     try {
-      // console.log(data);
       const res = await axios.post(url, data, config);
       setDiagnoses(res.data);
       console.log(res.data);
       setNewScoreInfo(res.data);
-
-      // setSymptomScorePage(true)
     } catch (err) {
       console.error(err);
     }
@@ -109,42 +100,43 @@ const SymptomCalculator = (props) => {
   const handleNext = () => {
     console.log("====^^^===");
     console.log("handleNext START");
-    if (chooseDiagnosis) {
-      setChooseDiagnosis(false);
-      fetchQuesByDiagId();
-    } else {
-      if (questionNum + 1 < questionnare.length) {
-        setQuestionNum(questionNum + 1);
-      } else {
-        const now = new Date();
-        const temp = {
-          diagnosisId: parseInt(selDiag),
-          questionData: userResponse,
-          patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
-        };
-        saveNewSymptomScore(temp);
-      }
+
+    setSelectedOption(0);
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    fetchQuesByDiagId();
+
+    if (questionnaire.length === 0) {
+      const now = new Date();
+      const temp = {
+        diagnosisId: diagId,
+        questionData: userResponse,
+        patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
+      };
+      saveNewSymptomScore(temp);
     }
+
     console.log("handleNext END");
     console.log("====^^^===");
   };
 
-  const handleResponse = (questionNum, option) => {
+  const handleResponse = (qId, question, oId, option) => {
+    setSelectedOption(oId);
+    setQId(qId);
     var userResponses = [...userResponse];
     console.log(userResponses);
-    console.log(userResponse[questionNum]);
-    if (userResponse[questionNum]) {
+    console.log(userResponse[currentQuestionIndex]);
+    if (userResponse[currentQuestionIndex]) {
       console.log("data in questionNum index already exists");
       userResponses.pop();
       userResponses.push({
-        qId: questionnare[questionNum].questionId,
-        question: questionnare[questionNum].question,
+        qId: qId,
+        question: question,
         optionsData: [option],
       });
     } else {
       userResponses.push({
-        qId: questionnare[questionNum].questionId,
-        question: questionnare[questionNum].question,
+        qId: qId,
+        question: question,
         optionsData: [option],
       });
     }
@@ -154,8 +146,30 @@ const SymptomCalculator = (props) => {
 
   const handleDiagChange = (event) => {
     console.log(event.target.value);
-    setDiagId(event.target.value);
+    const selectedDiagnosis = JSON.parse(event.target.value);
+    const { id, name } = selectedDiagnosis;
+    setDiagId(id);
+    setDiagName(name);
   };
+  const onClickHandler = () => {
+    if (initialCondition) {
+      fetchQuesByDiagId();
+      setInitialCondition(false);
+    } else if (
+      questionnaire.length > 1 &&
+      currentChildQuestionIndex !== questionnaire.length - 1
+    ) {
+      handleNextQuestion();
+    } else {
+      handleNext();
+    }
+  };
+  const handleNextQuestion = () => {
+    setSelectedOption(0);
+    setCurrentChildQuestionIndex(currentChildQuestionIndex + 1);
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+  };
+  const currentQuestion = questionnaire[currentChildQuestionIndex];
 
   return (
     <Popup
@@ -185,21 +199,8 @@ const SymptomCalculator = (props) => {
           {!symptomScorePage && (
             <>
               <h2>Symptom Calculator</h2>
-              {questionnare.length == 0 && (
-                <>
-                  <div>No questions related to this Diagnosis</div>
-                </>
-              )}
-              {questionnare.length > 0 && (
-                <>
-                  {chooseDiagnosis ? (
-                    <p>Choose the diagnosis</p>
-                  ) : (
-                    <p>
-                      Question {questionNum + 1} out of {questionnare.length}
-                    </p>
-                  )}
-                </>
+              {questionnaire.length === 0 && (
+                <>{initialCondition ? <p>Choose the diagnosis</p> : <p></p>}</>
               )}
             </>
           )}
@@ -207,22 +208,25 @@ const SymptomCalculator = (props) => {
         </div>
 
         <div style={{ textAlign: "start" }}>
-          {chooseDiagnosis && (
+          {initialCondition && chooseDiagnosis && (
             <div
               style={{ display: "flex", flexWrap: "wrap", maxHeight: "30vh" }}
             >
-              {diagnosisNames.map((diagosis) => {
+              {diagnosisNames.map((diagnosis) => {
                 return (
                   <div style={{ width: "200px" }}>
                     <input
                       type="radio"
                       id="html"
                       name="diagnosis"
-                      value={diagosis.diagId}
+                      value={JSON.stringify({
+                        id: diagnosis.diagId,
+                        name: diagnosis.name,
+                      })}
                       onChange={handleDiagChange}
                     />
                     <label for="html" style={{ marginLeft: "10px" }}>
-                      {diagosis.name}
+                      {diagnosis.name}
                     </label>
                     <br />
                     <br />
@@ -231,7 +235,7 @@ const SymptomCalculator = (props) => {
               })}
             </div>
           )}
-          {!chooseDiagnosis ? (
+          {chooseDiagnosis ? (
             symptomScorePage ? (
               <div style={{ textAlign: "center" }}>
                 <h2>Your Symptom Score</h2>
@@ -244,57 +248,131 @@ const SymptomCalculator = (props) => {
                 </p>
               </div>
             ) : (
-              <>
-                <p>{questionnare[questionNum]?.question}</p>
-                {questionnare[questionNum]?.options.map((option) => {
-                  return (
+              <div>
+                <div>
+                  {questionnaire.length === 1 && (
                     <>
-                      <input
-                        type="radio"
-                        id="html"
-                        name={questionnare[questionNum].questionId}
-                        checked={
-                          userResponse[questionNum] &&
-                          userResponse[questionNum]["optionsData"][0].oName ===
-                            option.oName
-                        }
-                        onChange={() => handleResponse(questionNum, option)}
-                      />
+                      {questionnaire.map((question) => (
+                        <div key={question.questionId}>
+                          <p>{question.question}</p>
 
-                      <label for="html" style={{ marginLeft: "10px" }}>
-                        {option.oName}
-                      </label>
-                      <br />
-                      <br />
+                          {question.options.map((option) => {
+                            return (
+                              <div style={{ marginLeft: "0px" }}>
+                                <input
+                                  type="radio"
+                                  id={`option-${option.oId}`}
+                                  name={`question-${question.questionId}`}
+                                  value={option.oId}
+                                  onChange={() =>
+                                    handleResponse(
+                                      question.questionId,
+                                      question.question,
+                                      option.oId,
+                                      option
+                                    )
+                                  }
+                                />
+                                <label
+                                  style={{ marginLeft: "10px" }}
+                                  htmlFor={`option-${option.oId}`}
+                                >
+                                  {option.oName}
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))}
                     </>
-                  );
-                })}
-              </>
+                  )}
+                  {questionnaire.length > 1 && (
+                    <>
+                      {
+                        <div key={currentQuestion?.questionId}>
+                          <p>{currentQuestion?.question}</p>
+
+                          {currentQuestion.options.map((option) => {
+                            return (
+                              <div style={{ marginLeft: "0px" }}>
+                                <input
+                                  type="radio"
+                                  id={`option-${option.oId}`}
+                                  name={`question-${currentQuestion.questionId}`}
+                                  value={option.oId}
+                                  onChange={() =>
+                                    handleResponse(
+                                      currentQuestion.questionId,
+                                      currentQuestion.question,
+                                      option.oId,
+                                      option
+                                    )
+                                  }
+                                />
+                                <label
+                                  style={{ marginLeft: "10px" }}
+                                  htmlFor={`option-${option.oId}`}
+                                >
+                                  {option.oName}
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      }
+                    </>
+                  )}
+                  {!initialCondition && questionnaire.length === 0 && (
+                    <div style={{ textAlign: "center" }}>
+                      Thank You for taking this survey!!!
+                    </div>
+                  )}
+                </div>
+              </div>
             )
           ) : (
             ""
           )}
         </div>
 
-        {!symptomScorePage && (
+        {(initialCondition || questionnaire.length !== 0) && (
           <div
             className={
-              !chooseDiagnosis && !userResponse[questionNum]
-                ? "btn-filled-disabled"
-                : "btn-filled"
+              selectedOption === 0 ? "btn-filled-disabled" : "btn-filled"
             }
             style={{
               width: "fit-content",
-              marginLeft: "auto",
-              marginTop: "20px",
+              margin: "20px auto",
+              display: "flex",
+              justifyContent: "center",
+              textAlign: "center",
             }}
-            onClick={handleNext}
+            onClick={onClickHandler}
           >
-            {chooseDiagnosis || questionNum + 1 < questionnare.length
-              ? "Next"
-              : "Submit"}
+            Next
           </div>
         )}
+        {!initialCondition &&
+          questionnaire.length === 0 &&
+          !symptomScorePage && (
+            <div
+              className={
+                !questionnaire.length === 0
+                  ? "btn-filled-disabled"
+                  : "btn-filled"
+              }
+              style={{
+                width: "fit-content",
+                margin: "20px auto",
+                display: "flex",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
+              onClick={handleNext}
+            >
+              Submit
+            </div>
+          )}
       </div>
     </Popup>
   );

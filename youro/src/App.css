@@ -123,7 +123,8 @@
 } */
 
 .congrats-popup-content {
-  width: fit-content !important;
+  /* width: fit-content !important; */
+  width: fit-content;
   border-radius: 10px;
   position: relative;
 }

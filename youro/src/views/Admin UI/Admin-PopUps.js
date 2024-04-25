@@ -112,7 +112,7 @@ const AdminPopUps = (props) => {
       API_DETAILS.baseUrl +
       API_DETAILS.PORT +
       API_DETAILS.baseExtension +
-      `/deleteQuestionnaire/${props.data.rowData}`;
+      `/deleteQuestionnaire/${props.data.rowData.id}`;
     const config = {
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -125,6 +125,7 @@ const AdminPopUps = (props) => {
       console.log(res.data);
       toast.success("Deleted successfully!!");
       props.data.setParentRefreshStatus(true);
+      props.data.setPageContextAgain("QUESTIONNAIRE");
       props.data.postDeleteAction();
     } catch (err) {
       //console.error(err);
@@ -134,17 +135,14 @@ const AdminPopUps = (props) => {
     }
   };
   const deleteQuestion = async () => {
-    const temp = {
-      question: props.data.rowData.question,
-      questionnaireType: props.data.rowData.questionnaire_type,
-    };
+    const q_id = props.data.rowData.q_id;
+
     const config = {
       headers: {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "*",
         "Content-Type": "application/json",
       },
-      data: temp,
     };
 
     axios
@@ -152,7 +150,7 @@ const AdminPopUps = (props) => {
         API_DETAILS.baseUrl +
           API_DETAILS.PORT +
           API_DETAILS.baseExtension +
-          "/deleteQuestion",
+          `/deleteQuestion/${q_id}`,
         config
       )
       .then((res) => {

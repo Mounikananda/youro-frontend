@@ -41,6 +41,7 @@ import { useNavigate } from "react-router-dom";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import "../../styles/Admin-ui/Admin-Maintainence.css";
+import AddIcon from "@mui/icons-material/Add";
 
 const AdminMaintainenceList = () => {
   const [tableData, setTableData] = useState([]);
@@ -69,7 +70,7 @@ const AdminMaintainenceList = () => {
 
   const [diagnosisData, setDiagnosisData] = useState([]);
   const [needsRefresh, setRefreshStatus] = useState(false);
-  //added by nanda
+
   const [selectedQuestionnaireId, setSelectedQuestionnaireId] = useState(null);
   const [selectedQuestionnaire, setSelectedQuestionnaire] = useState(null);
   const [actionsColumnPosition, setActionsColumnPosition] = useState("last");
@@ -88,12 +89,23 @@ const AdminMaintainenceList = () => {
   const [selectedDiagnosis, setSelectedDiagnosis] = useState("");
   const [optionsList, setOptionsList] = useState([]);
   const [isEditQuestionClicked, setIsEditQuestionClicked] = useState(false);
+  const [questionId, setQuestionId] = useState(null);
 
   const handleDiagnosisChange = (event) => {
     setSelectedDiagnosis(event.target.value);
   };
   const [customOptions, setCustomOptions] = useState([]);
   const [customOption, setCustomOption] = useState("");
+  const [questionOptions, setQuestionOptions] = useState([]);
+  const [isFollowUp, setIsFollowUp] = useState(false);
+  const [followUpQuestions, setFollowUpQuestions] = useState(new Map());
+  const [parentId, setParentId] = useState(null);
+  const [optionId, setOptionId] = useState(null);
+  const [questionMap, setQuestionMap] = useState(new Map());
+  const [isChecked, setIsChecked] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isEditQuestionnaireClicked, setIsEditQuestionnaireClicked] =
+    useState(false);
 
   const handleCustomOptionChange = (e) => {
     setCustomOption(e.target.value);
@@ -133,6 +145,17 @@ const AdminMaintainenceList = () => {
     setOptionsList([]);
     setSelectedOption("");
     setOpenInnerPopUp(false);
+    setParentId(null);
+    setOptionId(null);
+  };
+  const handleCloseEditPopup = () => {
+    setCustomOption("");
+    setCustomOptions([]);
+    setOptionsList([]);
+    setSelectedOption("");
+    setIsEditQuestionClicked(false);
+    setParentId(null);
+    setOptionId(null);
   };
 
   const handleOptionChange = (event) => {
@@ -152,7 +175,6 @@ const AdminMaintainenceList = () => {
     setSelectedQuestionnaireId(questionnaire_id);
     setSelectedQuestionnaire(questionnaire_type);
     setisQuestionnanireSelected(true);
-    hanldeUpdateColumns(questionnaire_id);
     setOpen(true);
     setAddPopUpContext("QUESTION");
     const url =
@@ -169,15 +191,29 @@ const AdminMaintainenceList = () => {
     };
     try {
       const res = await axios.get(url, config);
-      // const tempData = [];
-      // for (let i = 0; i < res.data.length; i++) {
-      //   tempData.push(res.data[i].question);
-      // }
       setQuestions(res.data);
       console.log(res.data);
+      const questionGroupMap = new Map();
+      res.data.forEach((question) => {
+        const { qId, question: qText, parent_question_id } = question;
+        if (parent_question_id !== 0) {
+          if (questionGroupMap.has(parent_question_id)) {
+            const existingQuestions = questionGroupMap.get(parent_question_id);
+            questionGroupMap.set(parent_question_id, [
+              ...existingQuestions,
+              { qId, qText },
+            ]);
+          } else {
+            questionGroupMap.set(parent_question_id, [{ qId, qText }]);
+          }
+        }
+      });
+      setQuestionMap(questionGroupMap);
+      console.log(questionGroupMap);
     } catch {}
   };
   //
+
   const hanldeUpdateColumns = (questionnaire = "") => {
     setColumns([
       {
@@ -206,6 +242,28 @@ const AdminMaintainenceList = () => {
             <button
               key={`edit-${row.original.questionnaire_type}`}
               aria-label="Edit"
+              onClick={() => {
+                setOpen(true);
+                setAddPopUpContext("QUESTIONNAIRE");
+                setSelectedQuestionnaire(row.original.questionnaire_type);
+                setSelectedDiagnosis(row.original.diag_id);
+                setIsEditQuestionnaireClicked(true);
+                setSelectedQuestionnaireId(row.original.id);
+                row.original.status === "Active"
+                  ? setIsChecked(true)
+                  : setIsChecked(false);
+              }}
+              style={{
+                border: "none",
+                background: "transparent",
+                cursor: "pointer",
+              }}
+            >
+              <EditIcon />
+            </button>
+            <button
+              key={`add-${row.original.questionnaire_type}`}
+              aria-label="Edit"
               onClick={() =>
                 handleQuestionnaireSelection(
                   row.original.id,
@@ -218,19 +276,29 @@ const AdminMaintainenceList = () => {
                 cursor: "pointer",
               }}
             >
-              <EditIcon />
+              <AddIcon />
             </button>
             <Tooltip arrow placement="right" title="Delete">
               <AdminPopUps
                 data={{
                   action: `delete-questionnaire`,
                   step: 1,
-                  rowData: row.original.questionnaire_type,
+                  rowData: { id: row.original.id },
                   postDeleteAction: () => {
-                    setPageContext("QUESTIONNAIRE");
-                    setRefetchQuestionnaire(true);
+                    // handleSetPageContext();
+                    // // setPageContext("QUESTIONNAIRE");
+                    // // setRefetchQuestionnaire(true);
+                    fetchAllQuestionnaireForms();
+                    setShowAdminPopUps(false);
                   },
-                  setParentRefreshStatus: (status) => setRefreshStatus(status),
+                  setParentRefreshStatus: (status) => {
+                    setRefreshStatus(status);
+                    setShowAdminPopUps(false);
+                  },
+                  setPageContextAgain: (context) => {
+                    setPageContext(context);
+                    setShowAdminPopUps(false);
+                  },
                 }}
               />
             </Tooltip>
@@ -239,7 +307,9 @@ const AdminMaintainenceList = () => {
       },
     ]);
   };
-
+  const handleSetPageContext = () => {
+    setPageContext("QUESTIONNAIRE");
+  };
   const handlePageContextChange = (event, newAlignment) => {
     if (newAlignment === null || newAlignment === "PRESCRIPTION") {
       setPageContext("PRESCRIPTION");
@@ -527,6 +597,42 @@ const AdminMaintainenceList = () => {
 
     setOpen(false);
   };
+  const handleEditQuestionnaire = () => {
+    const temp = {
+      id: selectedQuestionnaireId,
+      questionnaire_type: selectedQuestionnaire,
+      diagnosis_id: selectedDiagnosis,
+      status: isChecked ? "Active" : "Inactive",
+    };
+
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .put(
+        API_DETAILS.baseUrl +
+          API_DETAILS.PORT +
+          API_DETAILS.baseExtension +
+          "/updateQuestionnaireInfo",
+        temp,
+        config
+      )
+      .then((res) => {
+        toast.success("Saved successfully!!");
+        fetchAllQuestionnaireForms();
+        setSelectedDiagnosis(null);
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Error saving Questionnaire_form");
+      });
+
+    setOpen(false);
+  };
   const fetchAllQuestionnaireForms = async () => {
     const url =
       API_DETAILS.baseUrl +
@@ -573,14 +679,32 @@ const AdminMaintainenceList = () => {
     setOpenInnerPopUp(true);
   };
 
+  const handleAddFollowUpQuestion = (pId, oId) => {
+    const options = [
+      "Mild/Severe/None",
+      "Yes/No",
+      "Yes/No/Skip",
+      "Yes/No/Unsure",
+      "1/2/3/4/5",
+      "1/2/3/4/5/6/7/8/9/10",
+    ];
+    setOptions(options);
+    setIsAddQuestionClicked(true);
+    setOpenInnerPopUp(true);
+    setIsFollowUp(true);
+    setParentId(pId);
+    setOptionId(oId);
+  };
+
   const handleAddQuestionInner = async () => {
     const newQuestion = inputRef.current.value;
-    //const optionsList = selectedOption.split("/");
     if (newQuestion.trim() !== "") {
       const temp = {
         question: newQuestion,
         weight: 1,
         questionnaire_id: selectedQuestionnaireId,
+        parent_question_id: parentId,
+        bound_option_id: optionId,
         optionsList: optionsList.length === 0 ? customOptions : optionsList,
       };
       const config = {
@@ -601,24 +725,29 @@ const AdminMaintainenceList = () => {
         )
         .then((res) => {
           toast.success("Added successfully!!");
+
           setQuestions([...questions, newQuestion]);
-          inputRef.current.value = "";
+          handleQuestionnaireSelection(
+            selectedQuestionnaireId,
+            selectedQuestionnaire
+          );
+          handleEditQuestion(parentId, newQuestion);
+          //inputRef.current.value = "";
           setSelectedOption("");
         })
         .catch((err) => {
-          console.error(err);
           toast.error("Error adding Question");
         });
     }
     setOpenInnerPopUp(false);
   };
 
-  const handleEditQuestion = async (qid) => {
+  const handleEditQuestion = async (qid, ques) => {
     const url =
       API_DETAILS.baseUrl +
       API_DETAILS.PORT +
       API_DETAILS.baseExtension +
-      `/getQuestionsWithOptions/${qid}`;
+      `/getQuestionOptions/${qid}`;
     const config = {
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -628,12 +757,94 @@ const AdminMaintainenceList = () => {
     };
     try {
       const res = await axios.get(url, config);
-      setQuestionnairesUpdate(res.data);
-      setIsEditQuestionClicked(true);
-      console.log(res.data);
+
+      if (Array.isArray(res.data)) {
+        const updatedFollowUpQuestionsMap = new Map();
+
+        res.data.forEach((item) => {
+          if (item.hasFollowUpQuestion) {
+            const childQuestions = item.childQuestions || [];
+
+            if (!updatedFollowUpQuestionsMap.has(item.oId)) {
+              updatedFollowUpQuestionsMap.set(item.oId, []);
+            }
+
+            const followUpQues = updatedFollowUpQuestionsMap.get(item.oId);
+            followUpQues.push(...childQuestions);
+          }
+        });
+        setFollowUpQuestions(updatedFollowUpQuestionsMap);
+        setQuestionOptions(res.data);
+        setSelectedQuestion(ques);
+        setQuestionId(qid);
+        setIsEditQuestionClicked(true);
+        setIsFollowUp(true);
+        console.log(res.data);
+      }
     } catch (err) {
       console.error(err);
     }
+  };
+  const handleSaveEditQuestion = () => {
+    const temp = {
+      q_id: questionId,
+      question: selectedQuestion,
+      questionnaire_id: selectedQuestionnaireId,
+    };
+
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+      },
+    };
+    axios
+      .put(
+        API_DETAILS.baseUrl +
+          API_DETAILS.PORT +
+          API_DETAILS.baseExtension +
+          "/updateQuestionInfo",
+        temp,
+        config
+      )
+      .then((res) => {
+        toast.success("Saved successfully!!");
+      })
+      .catch((err) => {
+        console.error(err);
+        toast.error("Error saving Question");
+      });
+
+    setOpen(false);
+  };
+  var parentQuestionCounter = 1;
+  const handleActiveChange = () => {
+    if (isChecked) {
+      setIsChecked(false);
+    } else {
+      const isPresent = Questionnaires.some(
+        (questionnaire) =>
+          questionnaire.questionnaire_type === inputRef.current.value.trim() &&
+          questionnaire.status === "Active" &&
+          questionnaire.id !== selectedQuestionnaireId
+      );
+      if (isPresent) {
+        setErrorMessage(
+          "Questionnaire form with the same name is already present. Please change the name and try again."
+        );
+      } else {
+        setErrorMessage("");
+      }
+      setIsChecked(!isPresent);
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setSelectedQuestionnaire(event.target.value);
+  };
+  const handleQuestionChange = (event) => {
+    setSelectedQuestion(event.target.value);
   };
 
   return (
@@ -773,122 +984,150 @@ const AdminMaintainenceList = () => {
         open={open}
         modal
         closeOnDocumentClick={false}
-        onClose={() => setOpen(false)}
+        onClose={() => {
+          setOpen(false);
+          setIsChecked(false);
+          setSelectedQuestionnaire(null);
+          setIsEditQuestionnaireClicked(false);
+          setIsChecked(false);
+          setSelectedQuestionnaireId(null);
+          setErrorMessage(null);
+        }}
         className="congrats-popup"
+        contentStyle={{
+          width: "70%",
+          height: "70vh",
+          overflowY: "auto",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
       >
         <div
           style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            cursor: "pointer",
-          }}
-          onClick={() => {
-            setOpen(false);
+            width: "100%",
+            position: "relative",
+            padding: "20px",
+            boxSizing: "border-box",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
         >
-          <span class="material-symbols-outlined">close</span>
-        </div>
-        {addPopUpContext === "MEDICINE" && (
-          <>
-            <div
-              style={{
-                padding: "50px 20px",
-                maxWidth: "60vw",
-                minWidth: "30vw",
-              }}
-            >
-              <div style={{ width: "300px" }}></div>
+          <div
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              cursor: "pointer",
+            }}
+            onClick={() => {
+              setOpen(false);
+            }}
+          >
+            <span class="material-symbols-outlined">close</span>
+          </div>
+          {addPopUpContext === "MEDICINE" && (
+            <>
               <div
-                className=""
-                style={{ display: "flex", marginBottom: "1.5vh" }}
+                style={{
+                  padding: "50px 20px",
+                  maxWidth: "60vw",
+                  minWidth: "30vw",
+                }}
               >
-                <label>Medicine Name :</label>
-                <input
-                  className="input-field-doctor input-border"
-                  type="text"
-                  style={{ width: "94%" }}
-                  {...register("medicineName", {
-                    required: true,
-                    maxLength: 32,
-                  })}
-                />
-                {errors?.medicineName?.type === "required" && (
-                  <p className="error-text">This field is required</p>
-                )}
-                {errors?.medicineName?.type === "maxLength" && (
-                  <p className="error-text">
-                    Medicine Name cannot exceed 32 characters
-                  </p>
-                )}
-              </div>
-              <br />
-              <div className="">
-                <label>Category :</label>
-                <br />
-                <select
-                  style={{ width: "100%" }}
-                  className="input-field input-border"
-                  id="gender"
-                  {...register("category", {
-                    required: true,
-                  })}
+                <div style={{ width: "300px" }}></div>
+                <div
+                  className=""
+                  style={{ display: "flex", marginBottom: "1.5vh" }}
                 >
-                  <option value="">Select</option>
-                  <option value="LAB">LAB</option>
-                  <option value="VITAMINS">VITAMINS</option>
-                  <option value="MEDICINES">MEDICINES</option>
-                  <option value="IMAGING">IMAGING</option>
-                  <option value="LIFESTYLE">LIFESTYLE</option>
-                  <option value="MEDIA">MEDIA</option>
-                </select>
-                {errors?.category && (
-                  <p className="error-text">This field is required</p>
-                )}
-              </div>{" "}
-              <br></br>
-              <div className="">
-                <label>Diagnosis :</label>
+                  <label>Medicine Name :</label>
+                  <input
+                    className="input-field-doctor input-border"
+                    type="text"
+                    style={{ width: "94%" }}
+                    {...register("medicineName", {
+                      required: true,
+                      maxLength: 32,
+                    })}
+                  />
+                  {errors?.medicineName?.type === "required" && (
+                    <p className="error-text">This field is required</p>
+                  )}
+                  {errors?.medicineName?.type === "maxLength" && (
+                    <p className="error-text">
+                      Medicine Name cannot exceed 32 characters
+                    </p>
+                  )}
+                </div>
                 <br />
-                {diagnosisData.map((diagosis) => {
-                  return (
-                    <div style={{ maxWidth: "200px", minWidth: "150px" }}>
-                      <input
-                        type="checkbox"
-                        id="html"
-                        name="diagnosis"
-                        value={diagosis.diagId}
-                        {...register("diagnosis", {
-                          required: true,
-                        })}
-                      />
-                      <label for="html" style={{ marginLeft: "10px" }}>
-                        {diagosis.name}
-                      </label>
-                      <br />
-                      <br />
-                    </div>
-                  );
-                })}
-                {errors?.diagnosis && (
-                  <p className="error-text">This field is required</p>
-                )}
+                <div className="">
+                  <label>Category :</label>
+                  <br />
+                  <select
+                    style={{ width: "100%" }}
+                    className="input-field input-border"
+                    id="gender"
+                    {...register("category", {
+                      required: true,
+                    })}
+                  >
+                    <option value="">Select</option>
+                    <option value="LAB">LAB</option>
+                    <option value="VITAMINS">VITAMINS</option>
+                    <option value="MEDICINES">MEDICINES</option>
+                    <option value="IMAGING">IMAGING</option>
+                    <option value="LIFESTYLE">LIFESTYLE</option>
+                    <option value="MEDIA">MEDIA</option>
+                  </select>
+                  {errors?.category && (
+                    <p className="error-text">This field is required</p>
+                  )}
+                </div>{" "}
+                <br></br>
+                <div className="">
+                  <label>Diagnosis :</label>
+                  <br />
+                  {diagnosisData.map((diagosis) => {
+                    return (
+                      <div style={{ maxWidth: "200px", minWidth: "150px" }}>
+                        <input
+                          type="checkbox"
+                          id="html"
+                          name="diagnosis"
+                          value={diagosis.diagId}
+                          {...register("diagnosis", {
+                            required: true,
+                          })}
+                        />
+                        <label for="html" style={{ marginLeft: "10px" }}>
+                          {diagosis.name}
+                        </label>
+                        <br />
+                        <br />
+                      </div>
+                    );
+                  })}
+                  {errors?.diagnosis && (
+                    <p className="error-text">This field is required</p>
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div>
-              <div
-                className="btn-filled"
-                style={{ width: "fit-content", margin: "0px auto 50px auto" }}
-                onClick={handleSubmit(handleAddPrescription)}
-              >
-                Add medicine
+              <div>
+                <div
+                  className="btn-filled"
+                  style={{ width: "fit-content", margin: "0px auto 50px auto" }}
+                  onClick={handleSubmit(handleAddPrescription)}
+                >
+                  Add medicine
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
 
-        {/* {addPopUpContext == 'DIAGNOSIS' && <>
+          {/* {addPopUpContext == 'DIAGNOSIS' && <>
                     <div style={{ padding: '50px 20px', maxWidth: '60vw', minWidth: '30vw' }}>
                         <div style={{ width: '300px' }}>
 
@@ -911,143 +1150,248 @@ const AdminMaintainenceList = () => {
                     </div>
                 </>} */}
 
-        {addPopUpContext === "QUESTIONNAIRE" && (
-          <div
-            style={{
-              padding: "22px 9px",
-              width: "467px",
-              minHeight: "300px",
-              backgroundColor: "white",
-              borderRadius: "10px",
-              boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-              boxSizing: "border-box",
-            }}
-          >
-            <div style={{ textAlign: "center", marginTop: "0px" }}>
-              <h2>Add New Questionnaire</h2>
-            </div>
-            <div style={{ marginTop: "10px" }}>
-              <label htmlFor="question">Questionnaire:</label>
+          {addPopUpContext === "QUESTIONNAIRE" && (
+            <div
+              style={{
+                padding: "22px 9px",
+                width: "467px",
+                minHeight: "300px",
+                backgroundColor: "white",
+                borderRadius: "10px",
+                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                boxSizing: "border-box",
+              }}
+            >
+              <div style={{ textAlign: "center", marginTop: "0px" }}>
+                {isEditQuestionnaireClicked ? (
+                  <h2>Edit Questionnaire</h2>
+                ) : (
+                  <h2>Add New Questionnaire</h2>
+                )}
+              </div>
+              <div style={{ marginTop: "10px" }}>
+                <label htmlFor="question">Questionnaire:</label>
+                <br />
+                <br />
+                <input
+                  type="text"
+                  id="question"
+                  name="question"
+                  style={{
+                    marginLeft: "2px",
+                    width: "100%",
+                    padding: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    backgroundColor: "lightgrey",
+                    boxSizing: "border-box",
+                  }}
+                  ref={inputRef}
+                  value={selectedQuestionnaire}
+                  onChange={handleInputChange}
+                />
+              </div>
               <br />
-              <br />
-              <input
-                type="text"
-                id="question"
-                name="question"
-                style={{
-                  marginLeft: "2px",
-                  width: "100%",
-                  padding: "10px",
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  backgroundColor: "lightgrey",
-                  boxSizing: "border-box",
-                }}
-                ref={inputRef}
-              />
-            </div>
-            <br />
-            <div style={{ marginTop: "10px" }}>
-              <label htmlFor="diagnosis">Diagnosis:</label>
-              <br />
-              <br />
-              <select
-                id="diagnosis"
-                name="diagnosis"
-                style={{
-                  marginLeft: "2px",
-                  width: "100%",
-                  padding: "10px",
-                  border: "1px solid #ccc",
-                  borderRadius: "5px",
-                  backgroundColor: "lightgrey",
-                  boxSizing: "border-box",
-                }}
-                onChange={handleDiagnosisChange}
-                value={selectedDiagnosis || ""}
-              >
-                <option value="" disabled hidden>
-                  Select a diagnosis
-                </option>
-                {diagnosisData.map((diagnosis) => (
-                  <option key={diagnosis.diagId} value={diagnosis.diagId}>
-                    {diagnosis.name}
+              <div style={{ marginTop: "10px" }}>
+                <label htmlFor="diagnosis">Diagnosis:</label>
+                <br />
+                <br />
+                <select
+                  id="diagnosis"
+                  name="diagnosis"
+                  style={{
+                    marginLeft: "2px",
+                    width: "100%",
+                    padding: "10px",
+                    border: "1px solid #ccc",
+                    borderRadius: "5px",
+                    backgroundColor: "lightgrey",
+                    boxSizing: "border-box",
+                  }}
+                  onChange={handleDiagnosisChange}
+                  value={selectedDiagnosis || ""}
+                >
+                  <option value="" disabled hidden>
+                    Select a diagnosis
                   </option>
-                ))}
-              </select>
-            </div>
-            <br />
-            <div style={{ marginTop: "10px" }}>
-              <input type="checkbox" id="ActiveCheck" name="ActiveCheck" />
-              <label htmlFor="ActiveCheck" style={{ marginLeft: "5px" }}>
-                Active?
-              </label>
-            </div>
-            <div>
-              <div
-                className="btn-filled"
-                style={{
-                  width: "fit-content",
-                  margin: "0px auto 50px auto",
-                }}
-                onClick={() => handleAddQuestionnaireNew()}
-              >
-                Add Questionnaire
+                  {diagnosisData.map((diagnosis) => (
+                    <option key={diagnosis.diagId} value={diagnosis.diagId}>
+                      {diagnosis.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <br />
+              <div style={{ marginTop: "10px" }}>
+                <input
+                  type="checkbox"
+                  id="ActiveCheck"
+                  name="ActiveCheck"
+                  onChange={handleActiveChange}
+                  checked={isChecked}
+                />
+                <label htmlFor="ActiveCheck" style={{ marginLeft: "5px" }}>
+                  Active?
+                </label>
+                {errorMessage && (
+                  <p style={{ color: "red", marginLeft: "5px" }}>
+                    {errorMessage}
+                  </p>
+                )}
+              </div>
+              <div>
+                <div
+                  className="btn-filled"
+                  style={{
+                    width: "fit-content",
+                    margin: "0px auto 50px auto",
+                  }}
+                  onClick={() =>
+                    isEditQuestionnaireClicked
+                      ? handleEditQuestionnaire()
+                      : handleAddQuestionnaireNew()
+                  }
+                >
+                  {isEditQuestionnaireClicked ? "Save" : "Add Questionnaire"}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {addPopUpContext === "QUESTION" && (
-          <>
-            {
+          {addPopUpContext === "QUESTION" && (
+            <>
               <div
                 style={{
                   padding: "15px 15px",
+                  maxHeight: "400px",
+                  overflowY: "auto",
                 }}
               >
                 <div style={{ textAlign: "center", marginTop: "0px" }}>
                   <h2>{selectedQuestionnaire} Questionnaire :</h2>
                 </div>
-                {questions.map((questionItem) => (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <p style={{ flexGrow: 1 }}>{questionItem.question}</p>
-                    <EditIcon
-                      onClick={handleEditQuestion(questionItem.qId)}
-                      style={{
-                        cursor: "pointer",
-                        marginRight: "10px",
-                      }}
-                    >
-                      Edit
-                    </EditIcon>
-                    <AdminPopUps
-                      data={{
-                        action: `delete-question`,
-                        step: 1,
-                        rowData: {
-                          question: questionItem.question,
-                          questionnaire_type: selectedQuestionnaireId,
-                        },
-                        postDeleteAction: () => {
-                          handleQuestionnaireSelection(selectedQuestionnaireId);
-                          setShowAdminPopUps(false);
-                        },
-                        setParentRefreshStatus: (status) => {
-                          setRefreshStatus(status);
-                          setShowAdminPopUps(false);
-                        },
-                      }}
-                    />
-                  </div>
-                ))}
-
+                <div style={{ textAlign: "left", marginTop: "0px" }}>
+                  {questions.map((questionItem, idx) => {
+                    const parentQuestion = questionItem;
+                    const childQuestions = questions.filter(
+                      (childQuestion) =>
+                        childQuestion.parent_question_id ===
+                          parentQuestion.qId &&
+                        childQuestion.qId !== parentQuestion.qId
+                    );
+                    const mapValues = Array.from(questionMap.values());
+                    const isParentQuestion = mapValues.some((innerArray) =>
+                      innerArray.some((obj) => obj.qId === questionItem.qId)
+                    );
+                    //);
+                    if (!isParentQuestion) {
+                      return (
+                        <div
+                          key={parentQuestion.qId}
+                          style={{ marginBottom: "20px" }}
+                        >
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: "10px",
+                            }}
+                          >
+                            <p style={{ marginRight: "10px" }}>
+                              {" "}
+                              {parentQuestionCounter++}.
+                            </p>{" "}
+                            <p style={{ flexGrow: 1 }}>
+                              {parentQuestion.question}
+                            </p>
+                            <EditIcon
+                              onClick={() =>
+                                handleEditQuestion(
+                                  parentQuestion.qId,
+                                  parentQuestion.question
+                                )
+                              }
+                              style={{ cursor: "pointer", marginRight: "10px" }}
+                            >
+                              Edit
+                            </EditIcon>
+                            <AdminPopUps
+                              data={{
+                                action: `delete-question`,
+                                step: 1,
+                                rowData: {
+                                  q_id: parentQuestion.qId,
+                                },
+                                postDeleteAction: () => {
+                                  handleQuestionnaireSelection(
+                                    selectedQuestionnaireId,
+                                    selectedQuestionnaire
+                                  );
+                                  setShowAdminPopUps(false);
+                                },
+                                setParentRefreshStatus: (status) => {
+                                  setRefreshStatus(status);
+                                  setShowAdminPopUps(false);
+                                },
+                              }}
+                            />
+                          </div>
+                          {childQuestions.map((childQuestion, childIndex) => (
+                            <div
+                              key={childQuestion.qId}
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                marginLeft: "20px",
+                              }}
+                            >
+                              <p style={{ marginRight: "10px" }}>
+                                {childIndex + 1}.
+                              </p>{" "}
+                              <p style={{ flexGrow: 1 }}>
+                                {childQuestion.question}
+                              </p>
+                              <EditIcon
+                                onClick={() =>
+                                  handleEditQuestion(
+                                    childQuestion.qId,
+                                    childQuestion.question
+                                  )
+                                }
+                                style={{
+                                  cursor: "pointer",
+                                  marginRight: "10px",
+                                }}
+                              >
+                                Edit
+                              </EditIcon>
+                              <AdminPopUps
+                                data={{
+                                  action: `delete-question`,
+                                  step: 1,
+                                  rowData: {
+                                    q_id: childQuestion.qId,
+                                  },
+                                  postDeleteAction: () => {
+                                    handleQuestionnaireSelection(
+                                      selectedQuestionnaireId,
+                                      selectedQuestionnaire
+                                    );
+                                    setShowAdminPopUps(false);
+                                  },
+                                  setParentRefreshStatus: (status) => {
+                                    setRefreshStatus(status);
+                                    setShowAdminPopUps(false);
+                                  },
+                                }}
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      );
+                    }
+                  })}
+                </div>
                 <div>
                   <div
                     className="btn-filled"
@@ -1061,9 +1405,9 @@ const AdminMaintainenceList = () => {
                   </div>
                 </div>
               </div>
-            }
-          </>
-        )}
+            </>
+          )}
+        </div>
       </Popup>
       <Popup
         open={openInnerPopUp}
@@ -1071,142 +1415,304 @@ const AdminMaintainenceList = () => {
         closeOnDocumentClick={false}
         onClose={handleClosePopup}
         className="congrats-popup"
+        contentStyle={{
+          width: "70%",
+          height: "70vh",
+          overflowY: "auto",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
       >
         <div
           style={{
-            position: "absolute",
-            top: "20px",
-            right: "20px",
-            cursor: "pointer",
+            width: "100%",
+            position: "relative",
+            padding: "20px",
+            boxSizing: "border-box",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
           }}
-          onClick={handleClosePopup}
         >
-          <span class="material-symbols-outlined">close</span>
-        </div>
-        {isAddQuestionClicked && (
-          <>
-            <div
-              style={{
-                padding: "22px 9px",
-                width: "467px",
-                minHeight: "300px",
-                backgroundColor: "white",
-                borderRadius: "10px",
-                boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
-                boxSizing: "border-box",
-              }}
-            >
-              <div style={{ textAlign: "center", marginTop: "0px" }}>
-                <h2>Add New Question</h2>
-              </div>
-              <div style={{ marginTop: "10px" }}>
-                <label htmlFor="question">Question:</label>
-                <br />
-                <input
-                  type="text"
-                  id="question"
-                  name="question"
-                  style={{
-                    marginLeft: "5px",
-                    width: "100%",
-                    padding: "10px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px",
-                    backgroundColor: "lightgrey",
-                    boxSizing: "border-box",
-                  }}
-                  ref={inputRef}
-                />
-              </div>
-
-              <div style={{ marginTop: "10px" }}>
-                <div style={{ marginBottom: "5px" }}>Select/Add Options :</div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginBottom: "5px",
-                  }}
-                >
-                  <select
-                    value={selectedOption}
-                    onChange={handleOptionChange}
-                    style={{ marginRight: "10px" }}
-                  >
-                    <option value="">Select Options</option>
-                    {options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <div style={{ marginRight: "10px", fontWeight: "bold" }}>
-                    or
-                  </div>
+          <div
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              cursor: "pointer",
+            }}
+            onClick={handleClosePopup}
+          >
+            <span class="material-symbols-outlined">close</span>
+          </div>
+          {isAddQuestionClicked && (
+            <>
+              <div
+                style={{
+                  padding: "22px 9px",
+                  width: "467px",
+                  minHeight: "300px",
+                  backgroundColor: "white",
+                  borderRadius: "10px",
+                  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                  boxSizing: "border-box",
+                }}
+              >
+                <div style={{ textAlign: "center", marginTop: "0px" }}>
+                  <h2>Add New Question</h2>
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <label htmlFor="question">Question:</label>
+                  <br />
                   <input
                     type="text"
-                    value={customOption}
-                    onChange={(e) => setCustomOption(e.target.value)}
-                    style={{ marginRight: "10px" }}
-                    placeholder="Enter custom option"
+                    id="question"
+                    name="question"
+                    style={{
+                      marginLeft: "5px",
+                      width: "100%",
+                      padding: "10px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      backgroundColor: "lightgrey",
+                      boxSizing: "border-box",
+                    }}
+                    ref={inputRef}
                   />
-                  <button onClick={handleAddCustomOption}>Add</button>
                 </div>
 
-                {customOptions.length > 0 && (
-                  <div style={{ marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                      Options Added:
-                    </div>
-                    {customOptions.map((custom, index) => (
-                      <div key={index} style={{ marginBottom: "5px" }}>
-                        <span style={{ fontWeight: "bold" }}>
-                          {index + 1}.{" "}
-                        </span>
-                        {custom}
-                      </div>
-                    ))}
+                <div style={{ marginTop: "10px" }}>
+                  <div style={{ marginBottom: "5px" }}>
+                    Select/Add Options :
                   </div>
-                )}
-                {optionsList != null && optionsList.length > 0 && (
-                  <div style={{ marginBottom: "10px" }}>
-                    <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
-                      Options Selected:
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      marginBottom: "5px",
+                    }}
+                  >
+                    <select
+                      value={selectedOption}
+                      onChange={handleOptionChange}
+                      style={{ marginRight: "10px" }}
+                    >
+                      <option value="">Select Options</option>
+                      {options.map((option) => (
+                        <option key={option} value={option}>
+                          {option}
+                        </option>
+                      ))}
+                    </select>
+                    <div style={{ marginRight: "10px", fontWeight: "bold" }}>
+                      or
                     </div>
-                    {optionsList.map((option, index) => (
-                      <div key={index} style={{ marginBottom: "5px" }}>
-                        <span style={{ fontWeight: "bold" }}>
-                          {index + 1}.{" "}
-                        </span>
-                        {option}
-                      </div>
-                    ))}
+                    <input
+                      type="text"
+                      value={customOption}
+                      onChange={(e) => setCustomOption(e.target.value)}
+                      style={{ marginRight: "10px" }}
+                      placeholder="Enter custom option"
+                    />
+                    <button onClick={handleAddCustomOption}>Add</button>
                   </div>
-                )}
+
+                  {customOptions.length > 0 && (
+                    <div style={{ marginBottom: "10px" }}>
+                      <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                        Options Added:
+                      </div>
+                      {customOptions.map((custom, index) => (
+                        <div key={index} style={{ marginBottom: "5px" }}>
+                          <span style={{ fontWeight: "bold" }}>
+                            {index + 1}.{" "}
+                          </span>
+                          {custom}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {optionsList != null && optionsList.length > 0 && (
+                    <div style={{ marginBottom: "10px" }}>
+                      <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                        Options Selected:
+                      </div>
+                      {optionsList.map((option, index) => (
+                        <div key={index} style={{ marginBottom: "5px" }}>
+                          <span style={{ fontWeight: "bold" }}>
+                            {index + 1}.{" "}
+                          </span>
+                          {option}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                <div
+                  style={{
+                    width: "fit-content",
+                    margin: "20px auto 50px auto",
+                  }}
+                >
+                  <button
+                    onClick={handleAddQuestionInner}
+                    className="btn-filled"
+                  >
+                    Add Question
+                  </button>
+                </div>
               </div>
-              <div style={{ marginTop: "10px" }}>
-                <input type="checkbox" id="isRequired" name="isRequired" />
-                <label htmlFor="isRequired" style={{ marginLeft: "5px" }}>
-                  Contains Additional Info?
-                </label>
-              </div>
-              <div style={{ marginTop: "10px" }}>
-                <input type="checkbox" id="isRequired" name="isRequired" />
-                <label htmlFor="isRequired" style={{ marginLeft: "5px" }}>
-                  Has any follow-up?
-                </label>
-              </div>
+            </>
+          )}
+        </div>
+      </Popup>
+      <Popup
+        open={isEditQuestionClicked}
+        modal
+        closeOnDocumentClick={false}
+        onClose={handleCloseEditPopup}
+        className="congrats-popup"
+        contentStyle={{
+          width: "70%",
+          height: "70vh",
+          overflowY: "auto",
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            position: "relative",
+            padding: "20px",
+            boxSizing: "border-box",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              top: "20px",
+              right: "20px",
+              cursor: "pointer",
+            }}
+            onClick={handleCloseEditPopup}
+          >
+            <span class="material-symbols-outlined">close</span>
+          </div>
+          {isEditQuestionClicked && (
+            <>
               <div
-                style={{ width: "fit-content", margin: "20px auto 50px auto" }}
+                style={{
+                  padding: "22px 9px",
+                  width: "467px",
+                  minHeight: "300px",
+                  backgroundColor: "white",
+                  borderRadius: "10px",
+                  boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.1)",
+                  boxSizing: "border-box",
+                }}
               >
-                <button onClick={handleAddQuestionInner} className="btn-filled">
-                  Add Question
-                </button>
+                <div style={{ textAlign: "center", marginTop: "0px" }}>
+                  <h2>Edit Question</h2>
+                </div>
+                <div style={{ marginTop: "10px" }}>
+                  <label htmlFor="question">Question:</label>
+                  <br />
+                  <input
+                    type="text"
+                    id="question"
+                    name="question"
+                    style={{
+                      marginLeft: "5px",
+                      width: "100%",
+                      padding: "10px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      backgroundColor: "lightgrey",
+                      boxSizing: "border-box",
+                    }}
+                    value={selectedQuestion}
+                    ref={inputRef}
+                    onChange={handleQuestionChange}
+                  />
+                </div>
+                <br />
+
+                {questionOptions != null && questionOptions.length > 0 && (
+                  <div style={{ marginBottom: "10px" }}>
+                    <div style={{ fontWeight: "bold", marginBottom: "5px" }}>
+                      Options:
+                    </div>
+                    {questionOptions.map((option, index) => (
+                      <div key={index} style={{ marginBottom: "10px" }}>
+                        <div style={{ display: "flex", alignItems: "center" }}>
+                          <div
+                            style={{ fontWeight: "bold", marginRight: "5px" }}
+                          >
+                            {index + 1}. {option.optionName}
+                          </div>
+                          <button
+                            onClick={() =>
+                              handleAddFollowUpQuestion(questionId, option.oid)
+                            }
+                            style={{
+                              borderRadius: "50%",
+                              width: "25px",
+                              height: "25px",
+                              border: "1px solid #ccc",
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              cursor: "pointer",
+                              marginLeft: "10px",
+                            }}
+                          >
+                            <span style={{ fontSize: "12px" }}>+</span>
+                          </button>
+                        </div>
+                        <div style={{ marginTop: "5px", marginLeft: "20px" }}>
+                          Follow Ups:
+                          {isFollowUp &&
+                            followUpQuestions.has(option.oid) &&
+                            followUpQuestions
+                              .get(option.oid)
+                              .map((followUpQuestion, idx) => (
+                                <div key={idx} style={{ marginLeft: "15px" }}>
+                                  {idx + 1}. {followUpQuestion}
+                                </div>
+                              ))}
+                        </div>
+                        <br />
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <div
+                  style={{
+                    width: "fit-content",
+                    margin: "20px auto 50px auto",
+                  }}
+                >
+                  <button
+                    onClick={handleSaveEditQuestion}
+                    className="btn-filled"
+                  >
+                    Save
+                  </button>
+                </div>
               </div>
-            </div>
-          </>
-        )}
+            </>
+          )}
+        </div>
       </Popup>
     </div>
   );

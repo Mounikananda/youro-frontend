@@ -5,35 +5,48 @@ import Cookies from "js-cookie";
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
 
 const IntakeForm = (props) => {
-  const [questionnare, setQuestionnare] = useState([
-    {
-      question: "How are you?",
-      options: ["Good", "Bad", "Neutral", "None"],
-      questionId: "1",
-    },
-    {
-      question: "What is your name?",
-      options: ["Alan Hunt", "Farah", "Both", "None"],
-      questionId: "2",
-    },
-  ]);
-  const [questionNum, setQuestionNum] = useState(0);
-
   const [userResponse, setUserResponse] = useState([]);
-  const [selDiag, setDiagId] = useState("1000");
   const [showTextField, setShowTextField] = useState(false);
   const [listText, setListText] = useState("");
+  const [ques, setQues] = useState([]);
+  const [selectedOption, setSelectedOption] = useState(-1);
+  const [qId, setQId] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentChildQuestionIndex, setCurrentChildQuestionIndex] = useState(0);
+  const [openModal, setOpenModal] = useState(props.open);
 
   useEffect(() => {
-    fetchAllQuestions();
+    fetchQuestion();
   }, []);
 
-  const fetchAllQuestions = async () => {
+  const handleNext = () => {
+    console.log("====^^^===");
+    console.log("handleNext START");
+
+    setSelectedOption(0);
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
+    fetchQuestion();
+
+    if (ques.length === 0) {
+      setOpenModal(false);
+      const now = new Date();
+      const temp = {
+        diagnosisId: 0,
+        questionData: userResponse,
+        patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
+      };
+      saveNewSymptomScore(temp);
+    }
+
+    console.log("handleNext END");
+    console.log("====^^^===");
+  };
+  const saveNewSymptomScore = async (data) => {
     const url =
       API_DETAILS.baseUrl +
       API_DETAILS.PORT +
       API_DETAILS.baseExtension +
-      `/getQuestionsBydiagId/${selDiag}`;
+      `/saveSymptomScore`;
     const config = {
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -42,186 +55,252 @@ const IntakeForm = (props) => {
       },
     };
     try {
-      const res = await axios.get(url, config);
-      console.log(res);
-      setQuestionnare(res.data);
+      const res = await axios.post(url, data, config);
+      console.log(res.data);
     } catch (err) {
       console.error(err);
     }
   };
-
-  const handleNext = () => {
-    console.log("====^^^===");
-    console.log("handleNext START");
-
-    if (questionNum + 1 < questionnare.length) {
-      setQuestionNum(questionNum + 1);
-    } else {
-      const now = new Date();
-      const temp = {
-        questionData: userResponse,
-        patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
-      };
-      //saveNewSymptomScore(temp);
-    }
-
-    console.log("handleNext END");
-    console.log("====^^^===");
+  const handleNextQuestion = () => {
+    setSelectedOption(0);
+    setCurrentChildQuestionIndex(currentChildQuestionIndex + 1);
+    setCurrentQuestionIndex(currentQuestionIndex + 1);
   };
-
   const handleTextChange = (event) => {
     const newText = event.target.value;
     setListText(newText);
   };
-  const handleResponse = (questionNum, option) => {
+  const handleResponse = (qId, question, oId, option) => {
+    setSelectedOption(oId);
+    setQId(qId);
     var userResponses = [...userResponse];
     console.log(userResponses);
-    console.log(userResponse[questionNum]);
-    if (option.oName === "Yes") {
-      setShowTextField(true);
-    } else if (option.oName === "No") {
-      setShowTextField(false);
-    }
-    if (userResponse[questionNum]) {
+    console.log(userResponse[currentQuestionIndex]);
+    // if (option.oName === "Yes") {
+    //   setShowTextField(true);
+    // } else if (option.oName === "No") {
+    //   setShowTextField(false);
+    // }
+    if (userResponse[currentQuestionIndex]) {
       console.log("data in questionNum index already exists");
       userResponses.pop();
       userResponses.push({
-        qId: questionnare[questionNum].questionId,
-        question: questionnare[questionNum].question,
+        qId: qId,
+        question: question,
         optionsData: [option],
-        list_text: listText,
+        //list_text: listText,
       });
     } else {
       userResponses.push({
-        qId: questionnare[questionNum].questionId,
-        question: questionnare[questionNum].question,
+        qId: qId,
+        question: question,
         optionsData: [option],
-        list_text: listText,
+        //list_text: listText,
       });
     }
     setUserResponse(userResponses);
     console.log(userResponses);
   };
+  const onClickHandler = () => {
+    if (ques.length > 1 && currentChildQuestionIndex !== ques.length - 1) {
+      handleNextQuestion();
+    } else {
+      handleNext();
+    }
+  };
+  const currentQuestion = ques[currentChildQuestionIndex];
+  const fetchQuestion = async () => {
+    const temp = {
+      questionnaire_type: "Intake Form",
+      last_question_id: qId,
+      selected_option_id: selectedOption,
+    };
+    const url =
+      API_DETAILS.baseUrl +
+      API_DETAILS.PORT +
+      API_DETAILS.baseExtension +
+      `/getQuestionsByQuestionnaireType`;
+    axios
+      .post(url, temp)
+      .then((res) => {
+        setQues(res.data);
+        console.log(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    setSelectedOption(0);
+  };
 
   return (
     <Popup
-      open={props.open}
-      modal
+      open={openModal}
       closeOnDocumentClick={false}
       onClose={() => {
         props.setOpen(false);
+        setSelectedOption(0);
       }}
-      className="symptom-popup"
+      className="congrats-popup"
+      contentStyle={{
+        width: "70%",
+        height: "70vh",
+        overflowY: "auto",
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+      }}
     >
       <div
         style={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          cursor: "pointer",
-        }}
-        onClick={() => {
-          props.setOpen(false);
+          width: "100%",
+          position: "relative",
+          padding: "20px",
+          boxSizing: "border-box",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        <span class="material-symbols-outlined">close</span>
-      </div>
-      <div style={{ padding: "30px 50px" }}>
-        <div style={{ textAlign: "center" }}>
-          {
-            <>
-              <h2>Intake Form</h2>
-              {questionnare.length > 0 && (
+        <div
+          style={{
+            position: "absolute",
+            top: "20px",
+            right: "20px",
+            cursor: "pointer",
+          }}
+          onClick={() => {
+            props.setOpen(false);
+            setSelectedOption(0);
+          }}
+        >
+          <span class="material-symbols-outlined">close</span>
+        </div>
+        <div style={{ padding: "30px 50px" }}>
+          <div style={{ textAlign: "center" }}>
+            {
+              <>
+                <h2>Intake Form</h2>
+              </>
+            }
+          </div>
+          <div>
+            <div>
+              {ques.length === 1 && (
                 <>
-                  <p>
-                    Question {questionNum + 1} out of {questionnare.length}
-                  </p>
+                  {ques.map((question) => (
+                    <div key={question.questionId}>
+                      <p>{question.question}</p>
+
+                      {question.options.map((option) => {
+                        return (
+                          <div style={{ marginLeft: "0px" }}>
+                            <input
+                              type="radio"
+                              id={`option-${option.oId}`}
+                              name={`question-${question.questionId}`}
+                              value={option.oId}
+                              onChange={() =>
+                                handleResponse(
+                                  question.questionId,
+                                  question.question,
+                                  option.oId,
+                                  option
+                                )
+                              }
+                            />
+                            <label
+                              style={{ marginLeft: "10px" }}
+                              htmlFor={`option-${option.oId}`}
+                            >
+                              {option.oName}
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ))}
                 </>
               )}
-            </>
-          }
-        </div>
-        <div>
-          {
-            <>
-              <p>{questionnare[questionNum]?.question}</p>
-              {questionnare[questionNum]?.options.map((option) => {
-                return (
-                  <>
-                    <input
-                      type="radio"
-                      id="html"
-                      name={questionnare[questionNum].questionId}
-                      checked={
-                        userResponse[questionNum] &&
-                        userResponse[questionNum]["optionsData"][0].oName ===
-                          option.oName
-                      }
-                      onChange={() => handleResponse(questionNum, option)}
-                    />
+              {ques.length > 1 && (
+                <>
+                  {
+                    <div key={currentQuestion?.questionId}>
+                      <p>{currentQuestion?.question}</p>
 
-                    <label for="html" style={{ marginLeft: "10px" }}>
-                      {option.oName}
-                    </label>
-                    {showTextField &&
-                    userResponse[questionNum]["optionsData"][0].oName ===
-                      "Yes" &&
-                    option.oName === "Yes" ? (
-                      <div style={{ marginTop: "20px" }}>
-                        <label>List them here:</label> <br /> <br />
-                        <input
-                          type="text"
-                          placeholder="Enter your list here"
-                          value={listText}
-                          onChange={handleTextChange}
-                          style={{
-                            marginLeft: "2px",
-                            width: "100%",
-                            padding: "10px",
-                            border: "1px solid #ccc",
-                            borderRadius: "5px",
-                            backgroundColor: "lightgrey",
-                            boxSizing: "border-box",
-                          }}
-                        />
-                      </div>
-                    ) : (
-                      <>
-                        {option.oName === "No" && (
-                          <>
-                            <br />
-                            <br />
-                          </>
-                        )}
-                      </>
-                    )}
-
-                    <br />
-                    <br />
-                  </>
-                );
-              })}
-            </>
-          }
-        </div>
-
-        {
-          <div
-            className={
-              !userResponse[questionNum] ? "btn-filled-disabled" : "btn-filled"
-            }
-            style={{
-              width: "fit-content",
-              marginLeft: "150px",
-              marginTop: "20px",
-              display: "flex",
-              justifyContent: "center",
-            }}
-            onClick={handleNext}
-          >
-            {questionNum + 1 < questionnare.length ? "Next" : "Submit"}
+                      {currentQuestion.options.map((option) => {
+                        return (
+                          <div style={{ marginLeft: "0px" }}>
+                            <input
+                              type="radio"
+                              id={`option-${option.oId}`}
+                              name={`question-${currentQuestion.questionId}`}
+                              value={option.oId}
+                              onChange={() =>
+                                handleResponse(
+                                  currentQuestion.questionId,
+                                  currentQuestion.question,
+                                  option.oId,
+                                  option
+                                )
+                              }
+                            />
+                            <label
+                              style={{ marginLeft: "10px" }}
+                              htmlFor={`option-${option.oId}`}
+                            >
+                              {option.oName}
+                            </label>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  }
+                </>
+              )}
+              {ques.length === 0 && (
+                <div style={{ textAlign: "center" }}>
+                  Thank You for taking this survey!!!
+                </div>
+              )}
+            </div>
           </div>
-        }
+
+          {ques.length !== 0 && (
+            <div
+              className={
+                selectedOption === 0 ? "btn-filled-disabled" : "btn-filled"
+              }
+              style={{
+                width: "fit-content",
+                margin: "20px auto",
+                display: "flex",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
+              onClick={onClickHandler}
+            >
+              Next
+            </div>
+          )}
+          {ques.length === 0 && (
+            <div
+              className={
+                !ques.length === 0 ? "btn-filled-disabled" : "btn-filled"
+              }
+              style={{
+                width: "fit-content",
+                margin: "20px auto",
+                display: "flex",
+                justifyContent: "center",
+                textAlign: "center",
+              }}
+              onClick={handleNext}
+            >
+              Submit
+            </div>
+          )}
+        </div>
       </div>
     </Popup>
   );
