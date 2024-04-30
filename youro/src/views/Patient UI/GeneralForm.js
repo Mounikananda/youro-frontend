@@ -3,6 +3,7 @@ import Popup from "reactjs-popup";
 import axios from "axios";
 import Cookies from "js-cookie";
 import { API_DETAILS, COOKIE_KEYS } from "../../App";
+import { ToastContainer, toast } from "react-toastify";
 
 const GeneralForm = (props) => {
   const [userResponse, setUserResponse] = useState([]);
@@ -14,10 +15,43 @@ const GeneralForm = (props) => {
   const [openModal, setOpenModal] = useState(props.open);
   const [userName, setUserName] = useState("");
   const [errors, setErrors] = useState({});
+  const statementToConditionMap = new Map([
+    [
+      "I am experiencing (or have experienced) urinary issues such as frequency, urgency, dribbling, or difficulty emptying my bladder.",
+      "BPH",
+    ],
+    [
+      "I am a male and am experiencing (or have experienced) sexual issues related to erections or orgasms.",
+      "Erectile Dysfunction",
+    ],
+    [
+      "I am experiencing (or have experienced) symptoms such as flank pain (pain on either side of the lower back) that radiates to the groin or pain in the stomach that does not go away.",
+      "Kidney Stones",
+    ],
+    [
+      "I have had kidney stones in the past and would like to prevent future stones.",
+      "Kidney Stones",
+    ],
+    [
+      "I am experiencing (or have experienced) symptoms such as burning with urination, foul-smelling urine, or blood in the urine.",
+      "UTI",
+    ],
+    [
+      "I am a male and am having (or have had) difficulty achieving pregnancy with my female partner.",
+      "Infertility",
+    ],
+  ]);
+  const [selectedCondition, setSelectedCondition] = useState(null);
 
   useEffect(() => {
     fetchQuestion();
   }, []);
+
+  // Function to handle selection of a statement
+  const handleCategorySelection = (selectedCatogory) => {
+    const condition = statementToConditionMap.get(selectedCatogory);
+    setSelectedCondition(condition);
+  };
 
   const handleNext = () => {
     console.log("====^^^===");
@@ -30,13 +64,46 @@ const GeneralForm = (props) => {
       const now = new Date();
       const temp = {
         questionData: userResponse,
-        patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
+        email: userName,
+        questionnaire_type: "General Form",
       };
       saveNewSymptomScore(temp);
+      sendEmail();
     }
 
     console.log("handleNext END");
     console.log("====^^^===");
+  };
+
+  const sendEmail = async () => {
+    console.log("user email in sendEmail() : ", userName);
+    console.log("user diagnosis in sendEmail() : ", selectedCondition);
+    const url =
+      API_DETAILS.baseUrl +
+      API_DETAILS.PORT +
+      API_DETAILS.baseExtension +
+      `/send-email/${userName}/${selectedCondition}`;
+    const config = {
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "*",
+        "Content-Type": "application/json",
+      },
+    };
+    await axios
+      .get(url, config)
+      .then((res) => {
+        console.log("otp: ", res.data.message);
+        toast.success("otp sent to the email", {
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+        });
+      })
+      .catch((res) => {
+        toast.error(res.response.data.errorMessage);
+        console.error(res.response.data.errorMessage);
+      });
   };
   const handleNextQuestion = () => {
     setSelectedOption(0);
@@ -79,7 +146,7 @@ const GeneralForm = (props) => {
       API_DETAILS.baseUrl +
       API_DETAILS.PORT +
       API_DETAILS.baseExtension +
-      `/saveSymptomScore`;
+      `/saveScore`;
     const config = {
       headers: {
         "Access-Control-Allow-Origin": "*",
@@ -95,6 +162,12 @@ const GeneralForm = (props) => {
     }
   };
   const handleResponse = (qId, question, oId, option) => {
+    if (
+      question === "Which category does your most bothersome symptom fall into?"
+    ) {
+      handleCategorySelection(option.oName);
+    }
+    console.log(selectedCondition);
     setSelectedOption(oId);
     setQId(qId);
     var userResponses = [...userResponse];
@@ -226,7 +299,7 @@ const GeneralForm = (props) => {
                                   question.questionId,
                                   question.question,
                                   option.oId,
-                                  option.oName
+                                  option
                                 )
                               }
                             />
@@ -262,7 +335,7 @@ const GeneralForm = (props) => {
                                   currentQuestion.questionId,
                                   currentQuestion.question,
                                   option.oId,
-                                  option.oName
+                                  option
                                 )
                               }
                             />

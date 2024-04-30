@@ -33,7 +33,8 @@ const IntakeForm = (props) => {
       const temp = {
         diagnosisId: 0,
         questionData: userResponse,
-        patientId: parseInt(Cookies.get(COOKIE_KEYS.userId)),
+        email: props.email,
+        questionnaire_type: "Intake Form",
       };
       saveNewSymptomScore(temp);
     }
@@ -46,7 +47,7 @@ const IntakeForm = (props) => {
       API_DETAILS.baseUrl +
       API_DETAILS.PORT +
       API_DETAILS.baseExtension +
-      `/saveSymptomScore`;
+      `/saveScore`;
     const config = {
       headers: {
         "Access-Control-Allow-Origin": "*",

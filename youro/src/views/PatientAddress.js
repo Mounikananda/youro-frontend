@@ -15,6 +15,7 @@ const Patientaddress = (props) => {
     formState: { errors },
   } = useForm();
   const [open, setOpen] = useState(false);
+  console.log(props.data);
   //const [intakeForm, setInTakeForm] = useState(true);
   const onsubmit = (values) => {
     const allData = Object.assign(values, props.data);
@@ -231,7 +232,7 @@ const Patientaddress = (props) => {
         </div>
       </div>
       {open && (
-        <IntakeForm open={open} setOpen={setOpen} /> //changes done by nandu
+        <IntakeForm email={props.data.email} open={open} setOpen={setOpen} /> //changes done by nandu
       )}
     </form>
   );
